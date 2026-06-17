@@ -1,8 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-/* ── Reusable underline input styles ── */
+/* ── Validation schema ── */
+const schema = z.object({
+  name:    z.string().min(2, "Name must be at least 2 characters"),
+  email:   z.string().email("Enter a valid email address"),
+  company: z.string().optional(),
+  website: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+/.test(val),
+      { message: "Enter a valid website URL" }
+    ),
+  service: z.string().min(1, "Please select a service"),
+  message: z.string().optional(),
+});
+
+type FormData = z.infer<typeof schema>;
+
+/* ── Styles ── */
 const inputBase =
   "w-full bg-transparent font-[family-name:var(--font-dm-sans)] text-[15px] text-[#0a0f1e] placeholder:text-[#9ca3af] outline-none py-2.5";
 
@@ -16,67 +37,38 @@ const SERVICES = [
   "Other",
 ];
 
-type Fields = {
-  name: string;
-  email: string;
-  company: string;
-  website: string;
-  service: string;
-  message: string;
-};
-
-function validate(fields: Fields) {
-  const e: Partial<Record<keyof Fields, string>> = {};
-  if (!fields.name.trim())
-    e.name = "Name is required";
-  else if (fields.name.trim().length < 2)
-    e.name = "Name must be at least 2 characters";
-
-  if (!fields.email.trim())
-    e.email = "Email is required";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email))
-    e.email = "Enter a valid email address";
-
-  if (!fields.service)
-    e.service = "Please select a service";
-
-  if (
-    fields.website &&
-    !/^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+/.test(fields.website)
-  )
-    e.website = "Enter a valid website URL";
-
-  return e;
+/* ── Error message component ── */
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return (
+    <p className="mt-1 text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">
+      {message}
+    </p>
+  );
 }
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [submitAttempted, setSubmitAttempted] = useState(false);
-  const [fields, setFields] = useState<Fields>({
-    name: "", email: "", company: "", website: "", service: "", message: "",
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: "", email: "", company: "", website: "", service: "", message: "" },
   });
-  const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
 
-  const errors = validate(fields);
-  const isValid = Object.keys(errors).length === 0;
+  const serviceValue = watch("service");
 
-  const show = (f: keyof Fields) => !!(touched[f] || submitAttempted) && !!errors[f];
-
-  const set = (f: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-    setFields((prev) => ({ ...prev, [f]: e.target.value }));
-
-  const blur = (f: keyof Fields) => () =>
-    setTouched((prev) => ({ ...prev, [f]: true }));
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitAttempted(true);
-    if (isValid) setSubmitted(true);
+  const onSubmit = (_data: FormData) => {
+    setSubmitted(true);
   };
 
-  /* ── input wrapper: red border when error, blue on focus otherwise ── */
-  const wrap = (f: keyof Fields) =>
-    `border-b ${show(f) ? "border-red-400" : "border-[#e5e7eb] focus-within:border-[#1d4ed8]"} transition-colors duration-200`;
+  const wrapClass = (hasError: boolean) =>
+    `border-b ${hasError ? "border-red-400" : "border-[#e5e7eb] focus-within:border-[#1d4ed8]"} transition-colors duration-200`;
 
   return (
     <>
@@ -140,7 +132,7 @@ export default function ContactPage() {
             <div className="flex flex-col items-center gap-5 py-20 text-center">
               <div className="w-14 h-14 rounded-full bg-[#EEF4FF] flex items-center justify-center">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"/>
+                  <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
               <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] text-[#0a0f1e]">
@@ -150,7 +142,7 @@ export default function ContactPage() {
                 Our team will get back to you within 1 business day.
               </p>
               <button
-                onClick={() => { setSubmitted(false); setSubmitAttempted(false); setTouched({}); setFields({ name: "", email: "", company: "", website: "", service: "", message: "" }); }}
+                onClick={() => { setSubmitted(false); reset(); }}
                 className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#1d4ed8] hover:underline"
               >
                 Send another message
@@ -182,123 +174,108 @@ export default function ContactPage() {
               </div>
 
               {/* ── Right: form ── */}
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-10">
 
                 {/* Name + Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                   <div>
-                    <div className={wrap("name")}>
+                    <div className={wrapClass(!!errors.name)}>
                       <input
                         type="text"
                         placeholder="Enter your name"
                         className={inputBase}
-                        value={fields.name}
-                        onChange={set("name")}
-                        onBlur={blur("name")}
+                        {...register("name")}
                       />
                     </div>
-                    {show("name") && (
-                      <p className="mt-1 text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">{errors.name}</p>
-                    )}
+                    <FieldError message={errors.name?.message} />
                   </div>
                   <div>
-                    <div className={wrap("email")}>
+                    <div className={wrapClass(!!errors.email)}>
                       <input
                         type="email"
                         placeholder="Email address"
                         className={inputBase}
-                        value={fields.email}
-                        onChange={set("email")}
-                        onBlur={blur("email")}
+                        {...register("email")}
                       />
                     </div>
-                    {show("email") && (
-                      <p className="mt-1 text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">{errors.email}</p>
-                    )}
+                    <FieldError message={errors.email?.message} />
                   </div>
                 </div>
 
                 {/* Company + Website */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                   <div>
-                    <div className={wrap("company")}>
+                    <div className={wrapClass(!!errors.company)}>
                       <input
                         type="text"
                         placeholder="Company name"
                         className={inputBase}
-                        value={fields.company}
-                        onChange={set("company")}
-                        onBlur={blur("company")}
+                        {...register("company")}
                       />
                     </div>
+                    <FieldError message={errors.company?.message} />
                   </div>
                   <div>
-                    <div className={wrap("website")}>
+                    <div className={wrapClass(!!errors.website)}>
                       <input
                         type="text"
                         placeholder="www.example.com"
                         className={inputBase}
-                        value={fields.website}
-                        onChange={set("website")}
-                        onBlur={blur("website")}
+                        {...register("website")}
                       />
                     </div>
-                    {show("website") && (
-                      <p className="mt-1 text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">{errors.website}</p>
-                    )}
+                    <FieldError message={errors.website?.message} />
                   </div>
                 </div>
 
                 {/* Select service */}
                 <div>
-                  <div className={wrap("service")}>
+                  <div className={wrapClass(!!errors.service)}>
                     <select
                       className={`${inputBase} cursor-pointer appearance-none`}
-                      value={fields.service}
-                      onChange={set("service")}
-                      onBlur={blur("service")}
-                      style={{ color: fields.service ? "#0a0f1e" : "#9ca3af" }}
+                      style={{ color: serviceValue ? "#0a0f1e" : "#9ca3af" }}
+                      {...register("service")}
                     >
-                      <option value="" disabled style={{ color: "#9ca3af" }}>Select your services</option>
+                      <option value="" style={{ color: "#9ca3af" }}>Select your services</option>
                       {SERVICES.map((s) => (
                         <option key={s} value={s} style={{ color: "#0a0f1e" }}>{s}</option>
                       ))}
                     </select>
                   </div>
-                  {show("service") && (
-                    <p className="mt-1 text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">{errors.service}</p>
-                  )}
+                  <FieldError message={errors.service?.message} />
                 </div>
 
                 {/* Message */}
                 <div>
-                  <div className={wrap("message")}>
+                  <div className={wrapClass(!!errors.message)}>
                     <textarea
                       rows={4}
                       placeholder="Project description"
                       className={`${inputBase} resize-none`}
-                      value={fields.message}
-                      onChange={set("message")}
-                      onBlur={blur("message")}
+                      {...register("message")}
                     />
                   </div>
+                  <FieldError message={errors.message?.message} />
                 </div>
 
                 {/* Submit */}
                 <div>
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200"
                     style={{
                       backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
-                      opacity: submitAttempted && !isValid ? 0.6 : 1,
-                      cursor: "pointer",
+                      opacity: isSubmitting ? 0.7 : 1,
+                      cursor: isSubmitting ? "not-allowed" : "pointer",
                     }}
                   >
-                    Send Message
-                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {!isSubmitting && (
+                      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                   </button>
                 </div>
 

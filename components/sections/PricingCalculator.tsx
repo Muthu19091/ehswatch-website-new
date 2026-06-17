@@ -1,6 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+/* ── Proposal form schema ── */
+const proposalSchema = z.object({
+  name:    z.string().min(2, "Full name must be at least 2 characters"),
+  email:   z.string().email("Enter a valid work email"),
+  phone:   z.string().min(7, "Enter a valid phone number"),
+  company: z.string().min(1, "Company name is required"),
+});
+
+type ProposalData = z.infer<typeof proposalSchema>;
+
+type ProposalField = { label: string; key: keyof ProposalData; type: string; placeholder: string };
+const PROPOSAL_FIELDS: ProposalField[] = [
+  { label: "Full Name",    key: "name",    type: "text",  placeholder: "Jane Smith" },
+  { label: "Work Email",   key: "email",   type: "email", placeholder: "jane@company.com" },
+  { label: "Phone Number", key: "phone",   type: "tel",   placeholder: "+1 000 000 0000" },
+  { label: "Company",      key: "company", type: "text",  placeholder: "Your organisation name" },
+];
 
 // ── App data ──────────────────────────────────────────────────────────────────
 
@@ -106,8 +127,15 @@ export default function PricingCalculator() {
   const [selectedApps, setSelectedApps] = useState<Set<string>>(new Set());
   const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
   const [org, setOrg] = useState({ employees: "", sites: "", industry: "" });
-  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "" });
   const [submitted, setSubmitted] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors, isSubmitting },
+  } = useForm<ProposalData>({ resolver: zodResolver(proposalSchema) });
+
   const toggleApp = (id: string) =>
     setSelectedApps((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
 
@@ -120,12 +148,7 @@ export default function PricingCalculator() {
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
-  const formComplete = form.name.trim() !== "" && form.email.trim() !== "" && form.phone.trim() !== "" && form.company.trim() !== "";
+  const onSubmit = (_data: ProposalData) => setSubmitted(true);
 
   return (
     <section id="calculator" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
@@ -413,43 +436,38 @@ export default function PricingCalculator() {
                 <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#6b7280] mb-7">
                   We&apos;ll send you a detailed proposal based on your selections
                 </p>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  {[
-                    { label: "Full Name",    key: "name",    type: "text",  placeholder: "Jane Smith" },
-                    { label: "Work Email",   key: "email",   type: "email", placeholder: "jane@company.com" },
-                    { label: "Phone Number", key: "phone",   type: "tel",   placeholder: "+1 000 000 0000" },
-                    { label: "Company",      key: "company", type: "text",  placeholder: "Your organisation name" },
-                  ].map(({ label, key, type, placeholder }) => (
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
+                  {PROPOSAL_FIELDS.map(({ label, key, type, placeholder }) => (
                     <div key={key} className="flex flex-col gap-2">
                       <label className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#374151]">
                         {label} <span style={{ color: "#ef4444" }}>*</span>
                       </label>
                       <input
-                        required
                         type={type}
                         placeholder={placeholder}
                         className="calc-input w-full rounded-xl border px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] placeholder:text-[#9ca3af] transition-all duration-200"
-                        style={{ borderColor: "#e5e7eb" }}
-                        value={form[key as keyof typeof form]}
-                        onChange={(e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))}
+                        style={{ borderColor: errors[key] ? "#f87171" : "#e5e7eb" }}
+                        {...register(key)}
                       />
+                      {errors[key] && (
+                        <p className="text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">
+                          {errors[key]?.message}
+                        </p>
+                      )}
                     </div>
                   ))}
                   <button
                     type="submit"
-                    disabled={!formComplete}
+                    disabled={isSubmitting}
                     className="mt-2 w-full py-[13px] rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[15px] text-white transition-all duration-300"
                     style={{
-                      backgroundImage: formComplete
-                        ? "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)"
-                        : "none",
-                      background: formComplete ? undefined : "#e5e7eb",
-                      color: formComplete ? "white" : "#9ca3af",
-                      boxShadow: formComplete ? "0 4px 20px rgba(249,115,22,0.35)" : "none",
-                      cursor: formComplete ? "pointer" : "not-allowed",
+                      backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
+                      boxShadow: "0 4px 20px rgba(249,115,22,0.35)",
+                      opacity: isSubmitting ? 0.7 : 1,
+                      cursor: isSubmitting ? "not-allowed" : "pointer",
                     }}
                   >
-                    Get My EHSWatch Proposal →
+                    {isSubmitting ? "Sending..." : "Get My EHSWatch Proposal →"}
                   </button>
                   <p className="font-[family-name:var(--font-dm-sans)] text-[12px] text-[#9ca3af] text-center text-pretty">
                     No commitment required. We&apos;ll follow up within 1 business day.
@@ -474,7 +492,7 @@ export default function PricingCalculator() {
                     Proposal Request Sent!
                   </h3>
                   <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] leading-[1.75] text-pretty">
-                    Thanks {form.name.split(" ")[0]}! Our team will review your selections and send a tailored proposal to <strong>{form.email}</strong> within 1 business day.
+                    Thanks {getValues("name").split(" ")[0]}! Our team will review your selections and send a tailored proposal to <strong>{getValues("email")}</strong> within 1 business day.
                   </p>
                 </div>
               </div>
