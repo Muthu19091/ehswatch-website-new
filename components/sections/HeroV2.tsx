@@ -36,7 +36,7 @@ export default function HeroV2() {
       <div className="relative z-20">
         <ContainerScroll
           titleComponent={
-            <div className="flex flex-col items-center text-center gap-3 px-4 pb-5 md:pb-8">
+            <div className="flex flex-col items-center text-center gap-3 px-4 pb-16 md:pb-8">
               <h1
                 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[48px] md:text-[62px] lg:text-[72px] xl:text-[77px] leading-[1.1] text-[#0f172a] tracking-[0.2px] lg:tracking-[0.5px] animate-hero-rise"
                 style={{ animationDelay: "60ms" }}

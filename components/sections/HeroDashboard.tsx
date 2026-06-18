@@ -23,7 +23,6 @@ const BAR_DATA = [
 ] as const;
 
 const BAR_MAX     = 20;
-const BAR_MAX_H   = 160; // px — visual max height for a bar
 
 // ─── SVG nav icons ─────────────────────────────────────────────────────────────
 function IconHome({ active }: { active?: boolean }) {
@@ -142,7 +141,7 @@ const METRICS = [
 ] as const;
 
 // ─── Y-axis grid lines for bar chart ──────────────────────────────────────────
-const Y_LABELS = [20, 15, 10, 5, 0];
+const Y_LABELS = [20, 10, 0];
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 export default function HeroDashboard() {
@@ -151,7 +150,7 @@ export default function HeroDashboard() {
   return (
     <div
       ref={ref}
-      className="w-full flex flex-col bg-[#f6f5f5] h-[420px] sm:h-[500px] md:h-[600px] overflow-hidden"
+      className="w-full flex flex-col bg-[#f6f5f5] h-full overflow-hidden"
       style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
     >
       {/* ── Browser Chrome Bar ────────────────────────────────────────────────── */}
@@ -226,52 +225,52 @@ export default function HeroDashboard() {
           </header>
 
           {/* Content Area */}
-          <div className="flex-1 bg-[#f6f5f5] p-3 overflow-hidden flex flex-col gap-3 min-h-0">
+          <div className="flex-1 bg-[#f6f5f5] p-2 sm:p-3 overflow-hidden flex flex-col gap-1.5 sm:gap-3 min-h-0">
 
             {/* Row 1 — Filter widgets */}
-            <div className="grid grid-cols-2 gap-3 flex-shrink-0">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-shrink-0">
               {/* Filter by Date */}
-              <div className="bg-white rounded-xl shadow-sm p-3">
-                <p className="text-[10px] font-semibold text-[#738094] uppercase tracking-wide mb-2">
+              <div className="bg-white rounded-xl shadow-sm p-2 sm:p-3">
+                <p className="text-[9px] sm:text-[10px] font-semibold text-[#738094] uppercase tracking-wide mb-1 sm:mb-2">
                   Filter by Date
                 </p>
-                <div className="h-px bg-gray-100 mb-2" />
+                <div className="h-px bg-gray-100 mb-1 sm:mb-2" />
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-medium text-[#1a1f2e]">12/06/2025</span>
+                  <span className="text-[11px] sm:text-[12px] font-medium text-[#1a1f2e]">12/06/2025</span>
                   <IconCalendar />
                 </div>
               </div>
 
               {/* Filter by Location */}
-              <div className="bg-white rounded-xl shadow-sm p-3">
-                <p className="text-[10px] font-semibold text-[#738094] uppercase tracking-wide mb-2">
+              <div className="bg-white rounded-xl shadow-sm p-2 sm:p-3">
+                <p className="text-[9px] sm:text-[10px] font-semibold text-[#738094] uppercase tracking-wide mb-1 sm:mb-2">
                   Filter by Location
                 </p>
-                <div className="h-px bg-gray-100 mb-2" />
+                <div className="h-px bg-gray-100 mb-1 sm:mb-2" />
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-medium text-[#1a1f2e]">Offshore</span>
+                  <span className="text-[11px] sm:text-[12px] font-medium text-[#1a1f2e]">Offshore</span>
                   <IconPin />
                 </div>
               </div>
             </div>
 
             {/* Row 2 — Metric cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 flex-shrink-0">
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-3 flex-shrink-0">
               {METRICS.map(({ label, value, Icon }, i) => (
                 <div
                   key={label}
-                  className="bg-white rounded-xl shadow-sm p-3 flex items-center gap-2 hover:shadow-md hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+                  className="bg-white rounded-lg sm:rounded-xl shadow-sm p-1.5 sm:p-3 flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 hover:shadow-md hover:scale-[1.02] transition-all duration-200 cursor-pointer"
                 >
                   {/* Icon square */}
-                  <div className="flex-shrink-0 w-[36px] h-[36px] bg-[#e8edf5] rounded-xl flex items-center justify-center">
+                  <div className="flex-shrink-0 w-[24px] h-[24px] sm:w-[36px] sm:h-[36px] bg-[#e8edf5] rounded-lg sm:rounded-xl flex items-center justify-center">
                     <Icon />
                   </div>
                   {/* Text */}
-                  <div className="min-w-0">
-                    <p className="text-[8px] font-semibold text-[#738094] uppercase tracking-wide leading-tight">
+                  <div className="min-w-0 text-center sm:text-left">
+                    <p className="text-[6px] sm:text-[8px] font-semibold text-[#738094] uppercase tracking-wide leading-tight hidden sm:block">
                       {label}
                     </p>
-                    <p className="text-[18px] font-bold text-[#1a4db8] leading-tight mt-0.5">
+                    <p className="text-[12px] sm:text-[18px] font-bold text-[#1a4db8] leading-tight mt-0 sm:mt-0.5">
                       {value}
                     </p>
                   </div>
@@ -280,20 +279,18 @@ export default function HeroDashboard() {
             </div>
 
             {/* Row 3 — Charts */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 flex-1 min-h-0">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-3 flex-1 min-h-0">
 
               {/* Left: Donut chart */}
-              <div className="bg-white rounded-xl shadow-sm p-3 flex flex-col min-h-0">
-                <p className="text-[10px] font-semibold text-[#1a1f2e] uppercase tracking-wide mb-2 flex-shrink-0">
+              <div className="bg-white rounded-xl shadow-sm p-2 sm:p-3 flex flex-col min-h-0">
+                <p className="text-[9px] sm:text-[10px] font-semibold text-[#1a1f2e] uppercase tracking-wide mb-1 sm:mb-2 flex-shrink-0">
                   Incidents by Severity
                 </p>
-                <div className="flex items-center justify-center gap-4 flex-1 min-h-0">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-4 flex-1 min-h-0 overflow-hidden">
                   {/* SVG Donut */}
                   <svg
-                    width="160"
-                    height="160"
                     viewBox="0 0 160 160"
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 w-[90px] h-[90px] sm:w-[130px] sm:h-[130px]"
                     style={{ overflow: "visible" }}
                   >
                     {/* Background ring */}
@@ -330,9 +327,9 @@ export default function HeroDashboard() {
                   </svg>
 
                   {/* Legend */}
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1 sm:gap-2">
                     {DONUT_SEGMENTS.map((seg) => (
-                      <div key={seg.label} className="flex items-center gap-1.5">
+                      <div key={seg.label} className="flex items-center gap-1 sm:gap-1.5">
                         <div
                           className="flex-shrink-0 rounded-[2px]"
                           style={{ width: 10, height: 10, backgroundColor: seg.color }}
@@ -348,19 +345,16 @@ export default function HeroDashboard() {
               </div>
 
               {/* Right: Bar chart */}
-              <div className="bg-white rounded-xl shadow-sm p-3 flex flex-col min-h-0">
-                <p className="text-[10px] font-semibold text-[#1a1f2e] uppercase tracking-wide mb-2 flex-shrink-0">
+              <div className="bg-white rounded-xl shadow-sm p-2 sm:p-3 flex flex-col min-h-0">
+                <p className="text-[9px] sm:text-[10px] font-semibold text-[#1a1f2e] uppercase tracking-wide mb-1 sm:mb-2 flex-shrink-0">
                   Actions by Status
                 </p>
 
-                <div className="flex flex-1 min-h-0 gap-2 pt-2">
+                <div className="flex flex-1 min-h-0 gap-2 pt-1 sm:pt-2">
                   {/* Y-axis labels */}
-                  <div
-                    className="flex flex-col justify-between items-end flex-shrink-0 pb-5"
-                    style={{ height: BAR_MAX_H + 4 }}
-                  >
+                  <div className="flex flex-col justify-between items-end flex-shrink-0 pb-4 self-stretch">
                     {Y_LABELS.map((v) => (
-                      <span key={v} className="text-[8px] text-[#9aa5b8] leading-none">
+                      <span key={v} className="text-[7px] sm:text-[8px] text-[#9aa5b8] leading-none">
                         {v}
                       </span>
                     ))}
@@ -368,11 +362,8 @@ export default function HeroDashboard() {
 
                   {/* Bars area */}
                   <div className="flex-1 flex flex-col min-h-0">
-                    {/* Grid lines */}
-                    <div
-                      className="relative flex-shrink-0"
-                      style={{ height: BAR_MAX_H }}
-                    >
+                    {/* Grid lines + Bars */}
+                    <div className="relative flex-1 min-h-0">
                       {Y_LABELS.map((_, i) => (
                         <div
                           key={i}
@@ -381,17 +372,16 @@ export default function HeroDashboard() {
                         />
                       ))}
 
-                      {/* Bars */}
-                      <div className="absolute inset-0 flex items-end justify-around px-1 gap-2">
+                      {/* Bars — percentage-based heights */}
+                      <div className="absolute inset-0 flex items-end justify-around px-1 gap-1.5 sm:gap-2">
                         {BAR_DATA.map((bar, i) => {
-                          const barH = (bar.value / BAR_MAX) * BAR_MAX_H;
                           const delay = i * 0.12;
                           return (
                             <div
                               key={bar.label}
                               className="flex-1 rounded-t-[3px] cursor-pointer transition-[filter,transform] duration-150 hover:brightness-110 hover:scale-x-[1.04]"
                               style={{
-                                height: barH,
+                                height: `${(bar.value / BAR_MAX) * 100}%`,
                                 backgroundColor: bar.color,
                                 transformOrigin: "bottom",
                                 transform: inView ? "scaleY(1)" : "scaleY(0)",
@@ -404,11 +394,11 @@ export default function HeroDashboard() {
                     </div>
 
                     {/* X-axis labels */}
-                    <div className="flex justify-around px-1 gap-2 mt-1.5 flex-shrink-0">
+                    <div className="flex justify-around px-1 gap-1.5 sm:gap-2 mt-1 flex-shrink-0">
                       {BAR_DATA.map((bar) => (
                         <span
                           key={bar.label}
-                          className="flex-1 text-center text-[8px] text-[#9aa5b8] leading-none"
+                          className="flex-1 text-center text-[7px] sm:text-[8px] text-[#9aa5b8] leading-none"
                         >
                           {bar.label}
                         </span>

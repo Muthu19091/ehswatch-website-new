@@ -37,6 +37,7 @@ export default function Navbar({
   lightHero?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [ctaFill, setCtaFill] = useState({ x: 0, y: 0, on: false });
 
   const headerRef          = useRef<HTMLElement>(null);
@@ -52,15 +53,26 @@ export default function Navbar({
     let lastT = -1;
 
     const apply = () => {
+      const header = headerRef.current;
+      const nav    = navRef.current;
+      if (!header || !nav) { raf = 0; return; }
+
+      // On mobile/tablet, always use a solid white background — skip the scroll animation
+      if (window.innerWidth <= 1024) {
+        nav.style.background     = "rgba(255,255,255,0.97)";
+        nav.style.boxShadow      = "0 2px 12px rgba(0,0,0,0.07)";
+        nav.style.backdropFilter = "blur(12px)";
+        if (hamburgerStrokeRef.current) {
+          hamburgerStrokeRef.current.setAttribute("stroke", "rgb(40,40,40)");
+        }
+        raf = 0; return;
+      }
+
       const raw = Math.min(1, Math.max(0, window.scrollY / SCROLL_END));
       const t   = ease(raw);
 
       if (Math.abs(t - lastT) < 0.001) { raf = 0; return; }
       lastT = t;
-
-      const header = headerRef.current;
-      const nav    = navRef.current;
-      if (!header || !nav) { raf = 0; return; }
 
       // ── Header outer padding ──────────────────────────────────
       header.style.paddingLeft  = `${lerp(0, 20, t)}px`;
@@ -312,9 +324,11 @@ export default function Navbar({
 
         {/* ── Mobile hamburger ──────────────────────────────── */}
         <button
+          type="button"
           onClick={() => setOpen((o) => !o)}
           className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5"
           aria-label="Toggle menu"
+          style={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
         >
           <svg
             ref={hamburgerStrokeRef}
@@ -339,23 +353,31 @@ export default function Navbar({
       >
         {ALL_NAV.map((link) =>
           link.hasDropdown ? (
-            <details key={link.label} className="group/mob">
-              <summary className="px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)] cursor-pointer list-none flex items-center justify-between">
+            <div key={link.label}>
+              <button
+                type="button"
+                onClick={() => setResourcesOpen((o) => !o)}
+                className="w-full px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)] cursor-pointer flex items-center justify-between"
+              >
                 {link.label}
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="group-open/mob:rotate-180 transition-transform">
+                <svg
+                  width="12" height="12" viewBox="0 0 12 12" fill="none"
+                  style={{ transform: resourcesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                >
                   <path d="M2.5 4.5L6 8l3.5-3.5" stroke="#94a3b8" strokeWidth="1.6" strokeLinecap="round"/>
                 </svg>
-              </summary>
-              <div className="pl-4 flex flex-col gap-0.5 mt-1">
-                {RESOURCES_ITEMS.map((item) => (
-                  <Link key={item.label} href={item.href} onClick={() => setOpen(false)}
-                    className="px-4 py-2.5 text-[13.5px] font-medium text-[#64748b] rounded-lg hover:bg-gray-50 hover:text-[#155eef] font-[family-name:var(--font-dm-sans)]">
-                    {item.label}
-                  </Link>
-                ))}
-
-              </div>
-            </details>
+              </button>
+              {resourcesOpen && (
+                <div className="pl-4 flex flex-col gap-0.5 mt-1">
+                  {RESOURCES_ITEMS.map((item) => (
+                    <Link key={item.label} href={item.href} onClick={() => { setOpen(false); setResourcesOpen(false); }}
+                      className="px-4 py-2.5 text-[13.5px] font-medium text-[#64748b] rounded-lg hover:bg-gray-50 hover:text-[#155eef] font-[family-name:var(--font-dm-sans)]">
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
             <Link key={link.label} href={link.href} onClick={() => setOpen(false)}
               className="px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)]">

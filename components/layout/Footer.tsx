@@ -76,7 +76,7 @@ export default function Footer() {
           <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
             COMPANY
           </p>
-          <ul className="flex flex-col gap-2 md:gap-[12px]">
+          <ul className="grid grid-cols-2 md:grid-cols-1 gap-x-6 gap-y-2 md:gap-[12px] w-full">
             {COMPANY.map((link) => (
               <li key={link.label}>
                 <Link

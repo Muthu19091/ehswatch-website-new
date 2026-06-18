@@ -19,8 +19,10 @@ export const ContainerScroll = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
 
-  const [isMobile, setIsMobile] = useState(false);
-  const [isFlat, setIsFlat]     = useState(false);
+  // Start true (mobile-first) so the very first render never applies
+  // desktop rotateX/scale on a mobile screen before useEffect runs
+  const [isMobile, setIsMobile] = useState(true);
+  const [isFlat,   setIsFlat]   = useState(false);
 
   React.useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
