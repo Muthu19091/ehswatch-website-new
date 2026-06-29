@@ -1,4 +1,5 @@
 import type { CmsBlock } from "@/lib/types";
+export type { CmsBlock };
 
 export function findBlock<T = Record<string, unknown>>(blocks: CmsBlock[], type: string): T | null {
   const block = blocks.find(b => b.type === type);
@@ -28,4 +29,3 @@ export function iconFeaturesToArray(
   return normalizeArray<{ icon?: string; title?: string; description?: string; link?: unknown }>(items);
 }
 export const ctaHref = resolveHref;
-export type { CmsBlock } from "@/lib/types";

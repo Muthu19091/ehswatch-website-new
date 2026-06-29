@@ -45,6 +45,8 @@ interface IrisCmsProps {
   cmsTextCta?: {
     heading?: string;
     subheading?: string;
+    title?: string;
+    description?: string;
     cta?: any;
   };
   cmsProblems?: Array<{ title?: string; description?: string; icon?: string }>;
@@ -54,7 +56,7 @@ interface IrisCmsProps {
     eyebrow?: string;
     sub_items?: any[];
   }>;
-  cmsCtaBanner?: { headline?: string; subhead?: string; primary_cta?: any };
+  cmsCtaBanner?: { headline?: string; subhead?: string; primary_cta?: any; button?: { button?: { label?: string; url?: string } } };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -703,7 +705,7 @@ function CapabilityMockup({ cap }: { cap: Capability }) {
 }
 
 /** Sticky-scroll capabilities section: left text changes on scroll, right visual is sticky */
-function CapabilitiesScrollSection() {
+function CapabilitiesScrollSection({ capabilities }: { capabilities: Capability[] }) {
   const [activeIdx, setActiveIdx]   = useState(0);
   const [visIdx,    setVisIdx]      = useState(0);
   const [visualOpacity, setVisualOpacity] = useState(1);
@@ -734,14 +736,14 @@ function CapabilitiesScrollSection() {
     return () => clearTimeout(t);
   }, [activeIdx, visIdx]);
 
-  const activeCap = CAPABILITIES[visIdx];
+  const activeCap = capabilities[visIdx];
 
   return (
     <div className="flex flex-col lg:flex-row gap-0 lg:gap-20">
 
       {/* ── Left: scrollable list ── */}
       <div className="flex-1 min-w-0">
-        {CAPABILITIES.map((cap, i) => (
+        {capabilities.map((cap, i) => (
           <div
             key={cap.num}
             ref={el => { itemRefs.current[i] = el; }}
@@ -823,7 +825,7 @@ function CapabilitiesScrollSection() {
 
           {/* Dot progress indicator */}
           <div className="flex items-center justify-center gap-2">
-            {CAPABILITIES.map((cap, i) => (
+            {capabilities.map((cap, i) => (
               <div
                 key={cap.num}
                 className="rounded-full transition-all duration-300"
@@ -1087,7 +1089,7 @@ function TimelineCard({ cap }: { cap: Capability }) {
 // Vertical timeline section — cards alternate left / right, line fills on scroll
 // ─────────────────────────────────────────────────────────────────────────────
 
-function CapabilitiesTimeline() {
+function CapabilitiesTimeline({ capabilities }: { capabilities: Capability[] }) {
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -1119,7 +1121,7 @@ function CapabilitiesTimeline() {
       />
 
       <div className="flex flex-col gap-12 md:gap-16">
-        {CAPABILITIES.map((cap, i) => {
+        {capabilities.map((cap, i) => {
           const isLeft = i % 2 === 0; // left card on even, right card on odd
 
           return (
@@ -1170,7 +1172,7 @@ function CapabilitiesTimeline() {
                   >
                     {cap.icon}
                   </div>
-                  {i < CAPABILITIES.length - 1 && (
+                  {i < capabilities.length - 1 && (
                     <div className="w-px flex-1 mt-2" style={{ background: "#bfdbfe", minHeight: 24 }} />
                   )}
                 </div>
@@ -1208,7 +1210,7 @@ const CARD_POSITIONS = [
   { top: "72%", right: "6%",  rotate:  "2.5deg",from:"translateX(40px) translateY(30px)"  },
 ] as const;
 
-function ProblemsGrid() {
+function ProblemsGrid({ problems }: { problems: ProblemCard[] }) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [visible, setVisible] = useState(false);
@@ -1253,8 +1255,8 @@ function ProblemsGrid() {
         </div>
       </div>
 
-      {/* ── 6 scattered cards ── */}
-      {PROBLEMS.map((p, i) => {
+      {/* ── Scattered cards ── */}
+      {problems.map((p, i) => {
         const pos = CARD_POSITIONS[i];
         return (
           <div
@@ -1277,6 +1279,127 @@ function ProblemsGrid() {
       })}
     </div>
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CMS prop types
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface CmsHero {
+  title?: string;
+  subtitle?: string;
+  [key: string]: any;
+}
+
+interface CmsTextCta {
+  title?: string;
+  description?: string;
+  button?: { button?: { label?: string; type?: string; url?: string } };
+  [key: string]: any;
+}
+
+interface CmsProblemItem {
+  icon?: string;
+  title?: string;
+  description?: string;
+  link?: any;
+  [key: string]: any;
+}
+
+interface CmsCapabilityStep {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  image?: any;
+  sub_items?: any[];
+  [key: string]: any;
+}
+
+interface CmsCtaBanner {
+  title?: string;
+  description?: string;
+  button?: any;
+  [key: string]: any;
+}
+
+interface IrisPageProps {
+  cmsHero?: CmsHero;
+  cmsTextCta?: CmsTextCta;
+  cmsProblems?: CmsProblemItem[];
+  cmsCapabilities?: CmsCapabilityStep[];
+  cmsCtaBanner?: CmsCtaBanner;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build a ProblemCard array from CMS icon_features items
+// Falls back to the hardcoded PROBLEMS constant if CMS data is absent
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PROBLEM_COLORS = [
+  { color: "#155eef", bg: "#eff4ff" },
+  { color: "#ef4444", bg: "#fff5f5" },
+  { color: "#7c3aed", bg: "#f7f0ff" },
+  { color: "#4f46e5", bg: "#eff0ff" },
+  { color: "#f97316", bg: "#fff7ed" },
+  { color: "#0891b2", bg: "#ecfeff" },
+];
+
+const PROBLEM_ICONS: React.ReactNode[] = [
+  <IconEye key="eye" />,
+  <IconClipboardX key="clipx" />,
+  <IconLayers key="layers" />,
+  <IconScatter key="scatter" />,
+  <IconClock key="clock" />,
+  <IconEyeOff key="eyeoff" />,
+];
+
+function buildProblems(cmsItems?: CmsProblemItem[]): ProblemCard[] {
+  if (!cmsItems || cmsItems.length === 0) return PROBLEMS;
+  return cmsItems.map((item, i) => ({
+    title: item.title ?? "",
+    desc:  item.description ?? "",
+    icon:  PROBLEM_ICONS[i % PROBLEM_ICONS.length],
+    color: PROBLEM_COLORS[i % PROBLEM_COLORS.length].color,
+    bg:    PROBLEM_COLORS[i % PROBLEM_COLORS.length].bg,
+  }));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build a Capability array from CMS number_steps data
+// Falls back to the hardcoded CAPABILITIES constant if CMS data is absent
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CAPABILITY_PALETTE = [
+  { num: "01", color: "#155eef", bg: "#eff4ff", icon: <IconMicrophone key="01" /> },
+  { num: "02", color: "#1d4ed8", bg: "#eef2ff", icon: <IconLightbulb  key="02" /> },
+  { num: "03", color: "#2563eb", bg: "#dbeafe", icon: <IconSearchTree  key="03" /> },
+  { num: "04", color: "#3b82f6", bg: "#dbeafe", icon: <IconNetwork     key="04" /> },
+  { num: "05", color: "#0ea5e9", bg: "#e0f2fe", icon: <IconChartLightning key="05" /> },
+  { num: "06", color: "#0891b2", bg: "#ecfeff", icon: <IconCameraEye  key="06" /> },
+];
+
+function buildCapabilities(cmsSteps?: CmsCapabilityStep[]): Capability[] {
+  if (!cmsSteps || cmsSteps.length === 0) return CAPABILITIES;
+  return cmsSteps.map((step, i) => {
+    const palette = CAPABILITY_PALETTE[i % CAPABILITY_PALETTE.length];
+    // sub_items can serve as features list; benefits come from sub_items too if available
+    const subItems: any[] = step.sub_items ?? [];
+    const features = subItems.slice(0, 3).map((s: any) => s.title ?? s.label ?? String(s));
+    const benefits = subItems.length > 3
+      ? subItems.slice(3).map((s: any) => s.title ?? s.label ?? String(s))
+      : (CAPABILITIES[i]?.benefits ?? []);
+    return {
+      num:      palette.num,
+      color:    palette.color,
+      bg:       palette.bg,
+      title:    step.title ?? CAPABILITIES[i]?.title ?? "",
+      desc:     step.description ?? CAPABILITIES[i]?.desc ?? "",
+      features: features.length > 0 ? features : (CAPABILITIES[i]?.features ?? []),
+      benefits,
+      icon:     palette.icon,
+    };
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1628,15 +1751,22 @@ export default function IrisPage({
       >
         <div className="max-w-[760px] mx-auto text-center flex flex-col gap-5 iris-reveal-target">
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-            About <span style={{ color: "#155eef" }}>IRIS</span>
+            {cmsTextCta?.title
+              ? <span dangerouslySetInnerHTML={{ __html: cmsTextCta.title }} />
+              : <>About <span style={{ color: "#155eef" }}>IRIS</span></>
+            }
           </h2>
 
           <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty">
-            IRIS <span style={{ color: "#727272" }}>(Intelligent Risk &amp; Insight System)</span>{" "}
-            is EHSWatch&apos;s embedded AI layer — built into every workflow your safety team
-            already uses. Six capabilities work together to surface hazards earlier, accelerate
-            incident closure and turn raw safety data into actionable intelligence that used to
-            take days to compile manually.
+            {cmsTextCta?.description ?? (
+              <>
+                IRIS <span style={{ color: "#727272" }}>(Intelligent Risk &amp; Insight System)</span>{" "}
+                is EHSWatch&apos;s embedded AI layer — built into every workflow your safety team
+                already uses. Six capabilities work together to surface hazards earlier, accelerate
+                incident closure and turn raw safety data into actionable intelligence that used to
+                take days to compile manually.
+              </>
+            )}
           </p>
 
           <div className="w-12 border-t border-[#d1d5db] mx-auto" />
@@ -1736,14 +1866,14 @@ export default function IrisPage({
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px]">
             <GlareButton
-              href="#"
+              href={cmsCtaBanner?.button?.button?.url ?? "#"}
               className="flex items-center justify-center px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white whitespace-nowrap"
               style={{
                 backgroundImage:
                   "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
               }}
             >
-              Book Your Free Demo
+              {cmsCtaBanner?.button?.button?.label ?? "Book Your Free Demo"}
             </GlareButton>
             <GlareButton
               fillColor="#FFA660"

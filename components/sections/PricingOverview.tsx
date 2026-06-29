@@ -13,6 +13,7 @@ const DEFAULT_CHECKLIST_ITEMS = [
 ];
 
 interface PricingOverviewProps {
+  cmsEyebrow?: string;
   heading?: string;
   body?: string;
   checklistHeading?: string;
@@ -20,6 +21,7 @@ interface PricingOverviewProps {
 }
 
 export default function PricingOverview({
+  cmsEyebrow,
   heading,
   body,
   checklistHeading,
@@ -62,6 +64,11 @@ export default function PricingOverview({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left: description */}
             <div className="flex flex-col gap-6">
+              {cmsEyebrow && (
+                <p className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.12em] text-[#1d4ed8]">
+                  {cmsEyebrow}
+                </p>
+              )}
               <div>
                 <h2
                   className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]"

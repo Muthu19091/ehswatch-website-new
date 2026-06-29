@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
 import { basePath } from "@/lib/basePath";
+import type { CmsProductModule } from "@/lib/types";
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
 

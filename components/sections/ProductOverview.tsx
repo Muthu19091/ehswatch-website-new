@@ -4,12 +4,14 @@ interface ProductOverviewProps {
   cmsHeading?: string;
   cmsSubheading?: string;
   cmsBody?: string;
+  cmsImage?: { url?: string; alt?: string };
 }
 
 export default function ProductOverview({
   cmsHeading,
   cmsSubheading,
   cmsBody,
+  cmsImage,
 }: ProductOverviewProps = {}) {
   const heading = cmsHeading || "The Platform <span>Built for EHSQ</span>";
   const subheading = cmsSubheading || "No gaps. No silos. No workarounds.";
@@ -66,6 +68,14 @@ export default function ProductOverview({
           <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#9ca3af] leading-relaxed">
             {subheading}
           </p>
+          {cmsImage?.url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={cmsImage.url}
+              alt={cmsImage.alt ?? ""}
+              className="mt-8 w-full rounded-xl object-cover"
+            />
+          )}
         </div>
         {/* Right body */}
         <div className="flex flex-col gap-7">

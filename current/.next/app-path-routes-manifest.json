@@ -1,0 +1,20 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/_global-error/page": "/_global-error",
+  "/favicon.ico/route": "/favicon.ico",
+  "/home-v2/page": "/home-v2",
+  "/blog/[slug]/page": "/blog/[slug]",
+  "/about/page": "/about",
+  "/blog/page": "/blog",
+  "/case-studies/page": "/case-studies",
+  "/contact-us/page": "/contact-us",
+  "/blog/near-miss-reporting-culture/page": "/blog/near-miss-reporting-culture",
+  "/iris/page": "/iris",
+  "/modules/action-tracker/page": "/modules/action-tracker",
+  "/page": "/",
+  "/solutions-v2/page": "/solutions-v2",
+  "/pricing/page": "/pricing",
+  "/product/page": "/product",
+  "/support/page": "/support",
+  "/solutions/page": "/solutions"
+}
