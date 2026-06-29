@@ -12,21 +12,15 @@ const nextConfig: NextConfig = {
   experimental: {
     staleTimes: {
       dynamic: 0,
-      static: 0,
+      static: 30,
     },
   },
   async redirects() {
     return [
-      {
-        source: "/solutions",
-        destination: "/industries",
-        permanent: true,
-      },
-      {
-        source: "/solutions/",
-        destination: "/industries/",
-        permanent: true,
-      },
+      { source: "/solutions", destination: "/industries", permanent: true },
+      { source: "/solutions/", destination: "/industries/", permanent: true },
+      { source: "/solutions-v2", destination: "/industries", permanent: true },
+      { source: "/solutions-v2/", destination: "/industries/", permanent: true },
     ];
   },
   images: {
