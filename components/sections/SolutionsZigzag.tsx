@@ -310,11 +310,38 @@ export default function SolutionsZigzag() {
     setOpenIdx(0);
   }, []);
 
+  const goTo = useCallback((i: number) => {
+    setActive(i);
+    setOpenIdx(0);
+  }, []);
+
   const industry = INDUSTRIES[active];
 
   return (
     <section className="bg-white py-16 md:py-24 px-6">
       <div className="max-w-[1240px] mx-auto">
+
+        {/* ── Pill tabs ── */}
+        <div className="flex flex-wrap gap-2 md:gap-3 mb-10 md:mb-14">
+          {INDUSTRIES.map((ind, i) => {
+            const isActive = active === i;
+            return (
+              <button
+                key={ind.label}
+                onClick={() => goTo(i)}
+                className="font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-medium px-4 py-2 rounded-full transition-all duration-200"
+                style={{
+                  border: `1.5px solid ${isActive ? "#FF6D00" : "#d1d5db"}`,
+                  background: isActive ? "rgba(255,109,0,0.08)" : "transparent",
+                  color: isActive ? "#FF6D00" : "#6b7280",
+                  cursor: "pointer",
+                }}
+              >
+                {ind.label}
+              </button>
+            );
+          })}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 

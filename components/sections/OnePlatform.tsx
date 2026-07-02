@@ -326,12 +326,12 @@ const RINGS = [
     Quality      left=0       top=185.64  w=38.38
 */
 const UNI_ICONS = [
-  { key: "Environment", img: UNI_BASE + "/Property%201=Environment.png", left: "26.7%", top: "8.9%",  floatDur: 4.8, floatDelay: 0    },
-  { key: "Supplier",    img: UNI_BASE + "/Property%201=Suplier.png",     left: "61.3%", top: "23.9%", floatDur: 5.3, floatDelay: 0.55 },
-  { key: "Risk",        img: UNI_BASE + "/Property%201=Risk.png",        left: "89.0%", top: "26.6%", floatDur: 4.2, floatDelay: 1.1  },
-  { key: "Health",      img: UNI_BASE + "/Property%201=HEalth.png",      left: "72.6%", top: "63.0%", floatDur: 5.8, floatDelay: 1.65 },
-  { key: "Safety",      img: UNI_BASE + "/Property%201=Security.png",    left: "27.4%", top: "57.1%", floatDur: 4.5, floatDelay: 2.2  },
-  { key: "Quality",     img: UNI_BASE + "/Property%201=Quality.png",     left: "0%",    top: "39.8%", floatDur: 5.0, floatDelay: 2.75 },
+  { key: "Environment", img: UNI_BASE + "/Property%201%3DEnvironment.png", left: "26.7%", top: "8.9%",  floatDur: 4.8, floatDelay: 0    },
+  { key: "Supplier",    img: UNI_BASE + "/Property%201%3DSuplier.png",     left: "61.3%", top: "23.9%", floatDur: 5.3, floatDelay: 0.55 },
+  { key: "Risk",        img: UNI_BASE + "/Property%201%3DRisk.png",        left: "89.0%", top: "26.6%", floatDur: 4.2, floatDelay: 1.1  },
+  { key: "Health",      img: UNI_BASE + "/Property%201%3DHEalth.png",      left: "72.6%", top: "63.0%", floatDur: 5.8, floatDelay: 1.65 },
+  { key: "Safety",      img: UNI_BASE + "/Property%201%3DSecurity.png",    left: "27.4%", top: "57.1%", floatDur: 4.5, floatDelay: 2.2  },
+  { key: "Quality",     img: UNI_BASE + "/Property%201%3DQuality.png",     left: "0%",    top: "39.8%", floatDur: 5.0, floatDelay: 2.75 },
 ];
 
 function UnifiedMockup() {
@@ -464,7 +464,22 @@ const TAB_DURATION = 4000;
 /* ══════════════════════════════════════════════════════════════════
    MAIN EXPORT
    ══════════════════════════════════════════════════════════════════ */
-export default function OnePlatform() {
+
+interface OnePlatformProps {
+  cmsHeading?: string;
+  cmsSubheading?: string;
+  cmsTabs?: Array<{
+    label: string;
+    title: string;
+    description: string;
+    badge?: string | null;
+    cmsImage?: string | null;
+    ctaLabel: string;
+    ctaUrl: string;
+  }>;
+}
+
+export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OnePlatformProps) {
   const [active, setActive]       = useState(0);
   const [inView, setInView]       = useState(false);
   const [cycleKey, setCycleKey]   = useState(0);
@@ -472,6 +487,21 @@ export default function OnePlatform() {
   const [stylesReady, setStylesReady] = useState(false);
   const sectionRef                = useRef<HTMLElement>(null);
   const MockupPanel               = MOCKUPS[active];
+
+  const sectionHeading = cmsHeading?.trim() || "One Platform for Everyday Safety";
+  const sectionSubheading = cmsSubheading?.trim() || "EHSWatch brings all your EHSQ activities into a single, easy-to-use platform so everyone, from workers in the field to leadership, works from the same, up-to-date information.";
+  const tabs = TABS.map((t, i) => {
+    const cms = cmsTabs?.[i];
+    return {
+      ...t,
+      label: cms?.label?.trim() || t.label,
+      title: cms?.title?.trim() || t.title,
+      desc: cms?.description?.trim() || t.desc,
+      link: cms?.ctaLabel?.trim() || t.link,
+      badge: cms?.badge ?? null,
+      cmsImage: cms?.cmsImage ?? null,
+    };
+  });
 
   // Inject keyframes first, then mark ready — forces a second render with animations available
   useEffect(() => {
@@ -504,11 +534,15 @@ export default function OnePlatform() {
         {/* heading */}
         <div className="text-center mb-10 md:mb-14">
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b]">
-            One Platform for <span className="text-[#155eef]">Everyday Safety</span>
+            {(() => {
+              const HIGHLIGHT = "Everyday Safety";
+              const idx = sectionHeading.indexOf(HIGHLIGHT);
+              if (idx === -1) return <>{sectionHeading}</>;
+              return <>{sectionHeading.slice(0, idx)}<span className="text-[#155eef]">{HIGHLIGHT}</span>{sectionHeading.slice(idx + HIGHLIGHT.length)}</>;
+            })()}
           </h2>
           <p className="mt-3 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] md:text-[16px] lg:text-[18px] leading-relaxed text-[#727272] max-w-[809px] mx-auto">
-            EHSWatch brings all your EHSQ activities into a single, easy-to-use platform so
-            everyone, from workers in the field to leadership, works from the same, up-to-date information.
+            {sectionSubheading}
           </p>
         </div>
 
@@ -521,7 +555,7 @@ export default function OnePlatform() {
             aria-label="Platform features"
             className="flex border-b border-[#dde2eb] overflow-x-auto scrollbar-none"
           >
-            {TABS.map((tab, i) => (
+            {tabs.map((tab, i) => (
               <button
                 key={tab.label}
                 role="tab"
@@ -536,8 +570,13 @@ export default function OnePlatform() {
                   active === i ? "text-[#0a0f1e]" : "text-[#888] hover:text-[#555]",
                 ].join(" ")}
               >
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1.5">
                   {tab.label}
+                  {tab.badge && (
+                    <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-bold bg-[#f97316] text-white leading-none">
+                      {tab.badge}
+                    </span>
+                  )}
                 </span>
                 {inView && active === i && (
                   <span
@@ -563,18 +602,30 @@ export default function OnePlatform() {
             {/* left — text */}
             <div className="flex-none md:flex-[0_0_38%] px-6 md:px-12 py-8 md:py-12 flex flex-col justify-center">
               <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[24px] leading-snug text-[#0a0f1e] mb-3">
-                {TABS[active].title}
+                {tabs[active].title}
               </h3>
               <p className="font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[15px] text-[#555] leading-relaxed">
-                {TABS[active].desc}
+                {tabs[active].desc}
               </p>
               <button className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors cursor-pointer">
-                {TABS[active].link} →
+                {tabs[active].link} →
               </button>
             </div>
             {/* right — mockup, fills remaining space */}
             <div className="flex-1 overflow-hidden">
-              {stylesReady && <MockupPanel key={`${active}-${cycleKey}-${stylesReady}`} />}
+              {tabs[active].cmsImage ? (
+                <div className="flex items-center justify-center h-full p-6">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={tabs[active].cmsImage!}
+                    alt={tabs[active].title}
+                    className="max-h-full max-w-full object-contain rounded-xl"
+                    style={{ maxHeight: "clamp(320px,45vw,520px)" }}
+                  />
+                </div>
+              ) : (
+                stylesReady && <MockupPanel key={`${active}-${cycleKey}-${stylesReady}`} />
+              )}
             </div>
           </div>
         </div>

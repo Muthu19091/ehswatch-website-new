@@ -1,7 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SolutionsHero from "@/components/sections/SolutionsHero";
-import SolutionsIndustries from "@/components/sections/SolutionsIndustries";
+import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
 import SolutionsCTA from "@/components/sections/SolutionsCTA";
 import Testimonials from "@/components/sections/Testimonials";
 import { getPage, getTestimonials } from "@/lib/api";
@@ -49,7 +49,7 @@ export default async function IndustriesPage() {
               : undefined
           }
         />
-        <SolutionsIndustries />
+        <SolutionsZigzag />
         <Testimonials cmsItems={cmsTestimonials.length > 0 ? cmsTestimonials : undefined} />
         <SolutionsCTA />
       </main>

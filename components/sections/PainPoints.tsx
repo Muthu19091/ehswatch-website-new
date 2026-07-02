@@ -1,9 +1,7 @@
 "use client";
 
 import { useInView } from "@/hooks/useInView";
-import { basePath } from "@/lib/basePath";
-
-const ICONS_BASE = basePath + "/images/Manual%20Safety%20Processes%20Are%20%20Slowing%20You%20Down";
+import CmsIcon, { type LucideIconName } from "@/components/ui/CmsIcon";
 
 interface PainPointItem {
   label: string;
@@ -17,27 +15,17 @@ interface PainPointsProps {
   cmsItems?: PainPointItem[];
 }
 
-const FALLBACK_PAIN_POINTS = [
-  {
-    iconSrc: ICONS_BASE + "/Data%20scattered%20across%20platforms.svg",
-    label: "Data scattered across platforms",
-    bobDuration: "3.2s", amplitude: "10px", bobDelay: "0s",
-  },
-  {
-    iconSrc: ICONS_BASE + "/Delayed%20reporting%20and%20follow-up.svg",
-    label: "Delayed reporting and follow-up",
-    bobDuration: "3.8s", amplitude: "8px", bobDelay: "0.5s",
-  },
-  {
-    iconSrc: ICONS_BASE + "/Limited%20visibility%20into%20problems.svg",
-    label: "Limited visibility into problems",
-    bobDuration: "3.5s", amplitude: "12px", bobDelay: "0.3s",
-  },
-  {
-    iconSrc: ICONS_BASE + "/Reactive%20compliance%20checks.svg",
-    label: "Reactive compliance checks",
-    bobDuration: "3.0s", amplitude: "6px", bobDelay: "1.0s",
-  },
+const FALLBACK_PAIN_POINTS: Array<{
+  icon: string;
+  label: string;
+  bobDuration: string;
+  amplitude: string;
+  bobDelay: string;
+}> = [
+  { icon: "layers",       label: "Data scattered across platforms",  bobDuration: "3.2s", amplitude: "10px", bobDelay: "0s" },
+  { icon: "clock-alert",  label: "Delayed reporting and follow-up",  bobDuration: "3.8s", amplitude: "8px",  bobDelay: "0.5s" },
+  { icon: "eye-off",      label: "Limited visibility into problems", bobDuration: "3.5s", amplitude: "12px", bobDelay: "0.3s" },
+  { icon: "shield-alert", label: "Reactive compliance checks",       bobDuration: "3.0s", amplitude: "6px",  bobDelay: "1.0s" },
 ];
 
 // Bob animation values for CMS items (cycle through defaults)
@@ -48,31 +36,27 @@ const BOB_PARAMS = [
   { bobDuration: "3.0s", amplitude: "6px",  bobDelay: "1.0s" },
 ];
 
-// Map CMS icon slugs to local SVG filenames
-const ICON_MAP: Record<string, string> = {
-  "rectangle-stack":    "Data%20scattered%20across%20platforms.svg",
-  "clock":              "Delayed%20reporting%20and%20follow-up.svg",
-  "eye-slash":          "Limited%20visibility%20into%20problems.svg",
-  "shield-exclamation": "Reactive%20compliance%20checks.svg",
-};
+// Default icons per slot when a CMS item has no icon set
+const SLOT_FALLBACK_ICONS: LucideIconName[] = ["layers", "clock-alert", "eye-off", "shield-alert"];
 
 // Concentric ring sizes (px). 4 rings only. Largest first so smaller rings sit on top.
 const RING_SIZES = [1060, 800, 570, 340];
 
 export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: PainPointsProps) {
-  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.2 });
+  const { ref } = useInView<HTMLDivElement>({ threshold: 0.2 });
 
   // Build pain points from CMS or fallback
   const painPoints = (cmsItems && cmsItems.length > 0)
-    ? cmsItems.map((item, i) => {
-        const bob = BOB_PARAMS[i % BOB_PARAMS.length];
-        const iconFile = item.icon ? ICON_MAP[item.icon] : undefined;
-        const iconSrc = iconFile
-          ? `${ICONS_BASE}/${iconFile}`
-          : `${ICONS_BASE}/${encodeURIComponent(item.label)}.svg`;
-        return { iconSrc, label: item.label, ...bob };
-      })
-    : FALLBACK_PAIN_POINTS;
+    ? cmsItems.map((item, i) => ({
+        icon: item.icon,
+        fallbackIcon: SLOT_FALLBACK_ICONS[i % SLOT_FALLBACK_ICONS.length],
+        label: item.label.trim(),
+        ...BOB_PARAMS[i % BOB_PARAMS.length],
+      }))
+    : FALLBACK_PAIN_POINTS.map((p, i) => ({
+        ...p,
+        fallbackIcon: SLOT_FALLBACK_ICONS[i],
+      }));
 
   const [tl, tr, bl, br] = painPoints;
 
@@ -160,13 +144,15 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
 }
 
 function PainPill({
-  iconSrc,
+  icon,
+  fallbackIcon,
   label,
   bobDuration,
   amplitude,
   bobDelay,
 }: {
-  iconSrc: string;
+  icon?: string;
+  fallbackIcon: LucideIconName;
   label: string;
   bobDuration: string;
   amplitude: string;
@@ -181,8 +167,7 @@ function PainPill({
       }}
     >
       <div className="w-9 h-9 sm:w-[40px] sm:h-[40px] rounded-full bg-[#dbeafe] flex items-center justify-center shrink-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconSrc} alt="" className="w-[22px] h-[22px] sm:w-[26px] sm:h-[26px]" style={{ filter: "brightness(0) saturate(100%) invert(20%) sepia(90%) saturate(2000%) hue-rotate(213deg) brightness(85%)" }} />
+        <CmsIcon icon={icon} fallback={fallbackIcon} size={22} strokeWidth={2} color="#1d4ed8" />
       </div>
       <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[11px] sm:text-[12px] lg:text-[14px] leading-normal text-[#0a0f1e] tracking-[-0.2px] lg:tracking-[-0.3px] whitespace-nowrap">
         {label}

@@ -2,7 +2,13 @@
 
 import GlareButton from "@/components/ui/GlareButton";
 
-export default function CaseStudiesHero() {
+interface Props {
+  cmsEyebrow?: string;
+  cmsHeadline?: string;
+  cmsSubheadline?: string;
+}
+
+export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }: Props) {
   return (
     <section
       className="relative overflow-hidden flex items-center justify-center px-6 pt-[148px] pb-[72px]"
@@ -53,14 +59,13 @@ export default function CaseStudiesHero() {
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-[-0.03em] animate-hero-rise"
           style={{ color: "#0a1628", animationDelay: "80ms" }}
         >
-          Proof from the Field,<br />
-          <span style={{ color: "#1d4ed8" }}>Not the Pitch.</span>
+          {cmsHeadline ?? <>Proof from the Field,<br /><span style={{ color: "#1d4ed8" }}>Not the Pitch.</span></>}
         </h1>
         <p
           className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[580px] animate-hero-rise"
           style={{ color: "#6b7280", animationDelay: "200ms", textWrap: "pretty" } as React.CSSProperties}
         >
-          EHSQ teams across construction, energy, manufacturing, logistics and other sectors use EHSWatch to cut reporting time, accelerate audits, close actions faster and gain clear visibility into risk across every site.
+          {cmsSubheadline ?? "EHSQ teams across construction, energy, manufacturing, logistics and other sectors use EHSWatch to cut reporting time, accelerate audits, close actions faster and gain clear visibility into risk across every site."}
         </p>
         <div className="flex flex-wrap gap-3 justify-center animate-hero-rise" style={{ animationDelay: "320ms" }}>
           <GlareButton

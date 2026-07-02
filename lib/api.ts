@@ -1,28 +1,92 @@
+import axios, { type AxiosInstance, type AxiosError } from "axios";
 import type {
   CmsBlogPost, CmsCaseStudy, CmsClientLogo, CmsFooter, CmsForm,
   CmsHeader, CmsPage, CmsProductModule, CmsSettings, CmsTestimonial,
   CollectionResponse, FormSubmitResult, SingletonResponse,
 } from "@/lib/types";
 
-const PUBLIC_API_BASE = "https://stage.odigma.ooo/ehswatch-cms/api/v1";
-const API_BASE =
-  typeof window === "undefined"
-    ? "http://stage.odigma.ooo/ehswatch-cms/api/v1"
-    : "https://stage.odigma.ooo/ehswatch-cms/api/v1";
+// ─── Axios instances ──────────────────────────────────────────────────────────
 
-async function apiFetch<T>(path: string): Promise<T | null> {
+const SSR_BASE    = "http://stage.odigma.ooo/ehswatch-cms/api/v1";
+const PUBLIC_BASE = "https://stage.odigma.ooo/ehswatch-cms/api/v1";
+
+function makeClient(baseURL: string): AxiosInstance {
+  return axios.create({
+    baseURL,
+    timeout: 15_000,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+// Server-side uses internal HTTP (same machine as CMS, avoids Cloudflare hop).
+// Browser uses public HTTPS.
+const ssrClient    = makeClient(SSR_BASE);
+const publicClient = makeClient(PUBLIC_BASE);
+
+const getClient = (): AxiosInstance =>
+  typeof window === "undefined" ? ssrClient : publicClient;
+
+// ─── SSR cache ────────────────────────────────────────────────────────────────
+// Coalesces concurrent server-side renders hitting the same endpoint, preventing
+// burst exhaustion of the CMS rate limit (60 req/min per IP — all SSR looks
+// like one IP since Next.js and the CMS are on the same machine).
+
+const _ssrCache = new Map<string, { data: unknown; expires: number }>();
+const _inflight = new Map<string, Promise<unknown>>();
+
+async function withLocale(path: string): Promise<string> {
+  if (path.includes("locale=")) return path;
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) {
-      console.error(`[CMS] ${res.status} for ${path}`);
-      return null;
+    const { cookies } = await import("next/headers");
+    const store = await cookies();
+    if (store.get("locale")?.value === "ar") {
+      return path + (path.includes("?") ? "&" : "?") + "locale=ar";
     }
-    return res.json() as Promise<T>;
+  } catch { /* outside request context or client */ }
+  return path;
+}
+
+async function apiGet<T>(path: string): Promise<T | null> {
+  if (typeof window !== "undefined") return _doGet<T>(path);
+
+  const resolvedPath = await withLocale(path);
+
+  const now = Date.now();
+  const hit = _ssrCache.get(resolvedPath);
+  if (hit && hit.expires > now) return hit.data as T | null;
+
+  const inflight = _inflight.get(resolvedPath);
+  if (inflight) return inflight as Promise<T | null>;
+
+  const promise = _doGet<T>(resolvedPath)
+    .then((data) => {
+      _ssrCache.set(resolvedPath, { data, expires: Date.now() + 10_000 });
+      _inflight.delete(resolvedPath);
+      return data;
+    })
+    .catch((err) => {
+      _inflight.delete(resolvedPath);
+      throw err;
+    });
+
+  _inflight.set(resolvedPath, promise);
+  return promise;
+}
+
+async function _doGet<T>(path: string): Promise<T | null> {
+  try {
+    const res = await getClient().get<T>(path);
+    return res.data;
   } catch (err) {
-    console.error(`[CMS] fetch failed for ${path}:`, err);
+    const e = err as AxiosError;
+    console.error(
+      `[CMS] GET ${path} →`,
+      e.response?.status ?? "network error",
+      e.response?.data ?? e.message,
+    );
     return null;
   }
 }
@@ -30,79 +94,138 @@ async function apiFetch<T>(path: string): Promise<T | null> {
 // ─── Singletons ───────────────────────────────────────────────────────────────
 
 export async function getSettings() {
-  return apiFetch<SingletonResponse<CmsSettings>>("/settings");
+  return apiGet<SingletonResponse<CmsSettings>>("/settings");
 }
+
 export async function getHeader() {
-  return apiFetch<SingletonResponse<CmsHeader>>("/header");
+  return apiGet<SingletonResponse<CmsHeader>>("/header");
 }
+
 export async function getFooter() {
-  return apiFetch<SingletonResponse<CmsFooter>>("/footer");
+  return apiGet<SingletonResponse<CmsFooter>>("/footer");
 }
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
 export async function getPage(slug: string) {
-  return apiFetch<SingletonResponse<CmsPage>>(`/pages/${slug}`);
+  return apiGet<SingletonResponse<CmsPage>>(`/pages/${slug}`);
 }
+
 export async function getPageList() {
-  return apiFetch<CollectionResponse<{ id: number; type: string; attributes: { slug: string; title: string; status: string; updated_at: string } }>>("/pages");
+  return apiGet<CollectionResponse<{
+    id: number;
+    type: string;
+    attributes: { slug: string; title: string; status: string; updated_at: string };
+  }>>("/pages");
 }
 
 // ─── Blog ─────────────────────────────────────────────────────────────────────
 
 export async function getBlogPosts(category?: string) {
-  const qs = category ? `?category=${encodeURIComponent(category)}` : "";
-  return apiFetch<CollectionResponse<CmsBlogPost>>(`/blog-posts${qs}`);
+  const path = category
+    ? `/blog-posts?category=${encodeURIComponent(category)}`
+    : "/blog-posts";
+  return apiGet<CollectionResponse<CmsBlogPost>>(path);
 }
+
 export async function getBlogPost(slug: string) {
-  return apiFetch<SingletonResponse<CmsBlogPost>>(`/blog-posts/${slug}`);
+  return apiGet<SingletonResponse<CmsBlogPost>>(`/blog-posts/${slug}`);
 }
 
 // ─── Case Studies ─────────────────────────────────────────────────────────────
 
 export async function getCaseStudies() {
-  return apiFetch<CollectionResponse<CmsCaseStudy>>("/case-studies");
-}
-export async function getCaseStudy(slug: string) {
-  return apiFetch<SingletonResponse<CmsCaseStudy>>(`/case-studies/${slug}`);
+  return apiGet<CollectionResponse<CmsCaseStudy>>("/case-studies");
 }
 
-// ─── Other collections ────────────────────────────────────────────────────────
+export async function getCaseStudy(slug: string) {
+  return apiGet<SingletonResponse<CmsCaseStudy>>(`/case-studies/${slug}`);
+}
+
+// ─── Collections ──────────────────────────────────────────────────────────────
 
 export async function getTestimonials() {
-  return apiFetch<CollectionResponse<CmsTestimonial>>("/testimonials");
+  return apiGet<CollectionResponse<CmsTestimonial>>("/testimonials");
 }
+
 export async function getClientLogos() {
-  return apiFetch<CollectionResponse<CmsClientLogo>>("/client-logos");
-}
-
-// ─── Forms ────────────────────────────────────────────────────────────────────
-
-export async function getForm(slug: string) {
-  return apiFetch<SingletonResponse<CmsForm>>(`/forms/${slug}`);
-}
-
-export async function submitForm(slug: string, data: Record<string, unknown>): Promise<FormSubmitResult> {
-  try {
-    const res = await fetch(`${PUBLIC_API_BASE}/forms/${slug}/submit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(data),
-    });
-    const json = await res.json();
-    if (!res.ok) return { ok: false, errors: json.errors };
-    return { ok: true, data: json.data?.attributes };
-  } catch (err) {
-    console.error("[CMS] form submit failed:", err);
-    return { ok: false, errors: [{ status: 500, code: "network_error", title: "Network error", detail: "Could not reach the server.", source: { pointer: "" } }] };
-  }
+  return apiGet<CollectionResponse<CmsClientLogo>>("/client-logos");
 }
 
 // ─── Product Modules ─────────────────────────────────────────────────────────
 
 export async function getProductModules() {
-  return apiFetch<CollectionResponse<CmsProductModule>>("/product-modules");
+  return apiGet<CollectionResponse<CmsProductModule>>("/product-modules");
 }
+
 export async function getProductModule(slug: string) {
-  return apiFetch<SingletonResponse<CmsProductModule>>(`/product-modules/${slug}`);
+  return apiGet<SingletonResponse<CmsProductModule>>(`/product-modules/${slug}`);
+}
+
+// ─── Forms ────────────────────────────────────────────────────────────────────
+
+export async function getForm(slug: string) {
+  return apiGet<SingletonResponse<CmsForm>>(`/forms/${slug}`);
+}
+
+export async function submitForm(
+  slug: string,
+  data: Record<string, unknown>,
+): Promise<FormSubmitResult> {
+  try {
+    const res = await publicClient.post<{ data: { attributes: { id: number; message: string; redirect_url: string | null } } }>(
+      `/forms/${slug}/submit`,
+      data,
+    );
+    return { ok: true, data: res.data.data?.attributes };
+  } catch (err) {
+    const e = err as AxiosError<{ errors: FormSubmitResult["errors"] }>;
+    if (e.response?.data?.errors) {
+      return { ok: false, errors: e.response.data.errors };
+    }
+    console.error("[CMS] form submit failed:", e.message);
+    return {
+      ok: false,
+      errors: [{
+        status: 500,
+        code: "network_error",
+        title: "Network error",
+        detail: "Could not reach the server.",
+        source: { pointer: "" },
+      }],
+    };
+  }
+}
+
+// ─── Preview (draft content, token-gated) ────────────────────────────────────
+
+export async function getPreviewBlogPost(slug: string, token: string, exp: string) {
+  const qs = new URLSearchParams({ token, exp }).toString();
+  return apiGet<SingletonResponse<CmsBlogPost>>(
+    `/preview/blog-post/${encodeURIComponent(slug)}?${qs}`,
+  );
+}
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+
+export interface CmsSearchResult {
+  kind: string;
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  url: string;
+  updated_at: string;
+}
+
+export async function search(query: string) {
+  return apiGet<{ data: CmsSearchResult[]; meta: { request_id: string } }>(
+    `/search?q=${encodeURIComponent(query)}`,
+  );
+}
+
+// ─── Custom API data blocks ───────────────────────────────────────────────────
+
+export async function getCustomApi(slug: string) {
+  return apiGet<SingletonResponse<Record<string, unknown>>>(`/custom/${slug}`);
 }

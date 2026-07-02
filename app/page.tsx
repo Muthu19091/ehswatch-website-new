@@ -72,6 +72,26 @@ export default async function HomePage() {
       }))
     : undefined;
 
+
+  // ── tabs_carousel block (OnePlatform) ──────────────────────────────────────
+  const tabsCarouselBlock = findBlock<{
+    heading?: string;
+    subheading?: string;
+    tabs?: Record<string, { label?: string; title?: string; description?: string; cta?: { label?: string; url?: string } }> | Array<{ label?: string; title?: string; description?: string; cta?: { label?: string; url?: string } }>;
+  }>(blocks, "tabs_carousel");
+
+  const cmsPlatformTabs = tabsCarouselBlock?.tabs
+    ? normalizeArray<{ label?: string; title?: string; description?: string; badge?: string | null; image?: string | null; cta?: { label?: string; url?: string } }>(tabsCarouselBlock.tabs).map(t => ({
+        label:       t.label       || "",
+        title:       t.title       || "",
+        description: t.description || "",
+        badge:       t.badge       || null,
+        cmsImage:    t.image       || null,
+        ctaLabel:    t.cta?.label  || "",
+        ctaUrl:      t.cta?.url    || "#",
+      }))
+    : undefined;
+
   // ── blog_highlights block ───────────────────────────────────────────────────
   const blogBlock = findBlock<{
     heading?: string;
@@ -162,7 +182,11 @@ export default async function HomePage() {
               : undefined
           }
         />
-        <OnePlatform />
+        <OnePlatform
+          cmsHeading={tabsCarouselBlock?.heading || undefined}
+          cmsSubheading={tabsCarouselBlock?.subheading || undefined}
+          cmsTabs={cmsPlatformTabs}
+        />
         <AISection
           cmsHeading={imageTextBlock?.heading || undefined}
           cmsBody={imageTextBlock?.body || undefined}

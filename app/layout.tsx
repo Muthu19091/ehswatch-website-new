@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Gothic_A1, Inter, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
+import { getLocale } from "@/lib/locale";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -39,12 +40,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      suppressHydrationWarning
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
     >
       <body className="antialiased">
