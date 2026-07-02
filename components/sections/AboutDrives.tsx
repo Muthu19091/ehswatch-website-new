@@ -1,14 +1,17 @@
 "use client";
 
 import Reveal from "@/components/ui/Reveal";
+import CmsIcon from "@/components/ui/CmsIcon";
 
 interface DriveItem {
   title: string;
   description: string;
+  icon?: string | null;
 }
 
 interface AboutDrivesCmsProps {
   cmsHeading?: string | undefined;
+  cmsSubheading?: string | undefined;
   cmsItems?: DriveItem[] | undefined;
 }
 
@@ -65,6 +68,7 @@ function TabShape({ label, color }: { label: string; color: string }) {
 
 export default function AboutDrives({
   cmsHeading,
+  cmsSubheading,
   cmsItems,
 }: AboutDrivesCmsProps = {}) {
   const heading = cmsHeading || "Purpose Behind <span class=\"text-[#155eef]\">Every Feature</span>";
@@ -74,11 +78,13 @@ export default function AboutDrives({
           label: item.title || "",
           color: "#155eef",
           body: item.description || "",
+          icon: item.icon ?? null,
         }))
       : DEFAULT_CARDS.map((item) => ({
           label: item.title,
           color: "#155eef",
           body: item.description,
+          icon: null,
         }));
 
   return (
@@ -92,6 +98,11 @@ export default function AboutDrives({
               className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b] tracking-[-0.025em]"
               dangerouslySetInnerHTML={{ __html: heading }}
             />
+            {cmsSubheading && (
+              <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[17px] text-[#6b7280] leading-relaxed max-w-[560px] mx-auto">
+                {cmsSubheading}
+              </p>
+            )}
           </div>
         </Reveal>
 
@@ -110,9 +121,13 @@ export default function AboutDrives({
                     boxShadow: "0 2px 12px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
                   }}
                 >
-                  {/* Icon */}
+                  {/* Icon — CMS Lucide icon when set, original SVGs otherwise */}
                   <div className="mb-5 w-11 h-11 rounded-[12px] bg-[#eff6ff] flex items-center justify-center">
-                    {CARD_ICONS[i % CARD_ICONS.length]}
+                    {card.icon ? (
+                      <CmsIcon icon={card.icon} size={26} strokeWidth={1.8} color="#155eef" />
+                    ) : (
+                      CARD_ICONS[i % CARD_ICONS.length]
+                    )}
                   </div>
 
                   {/* Text */}
