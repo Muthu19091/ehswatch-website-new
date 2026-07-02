@@ -218,10 +218,6 @@ interface ProductModulesProps {
 // Palette cycled across CMS modules (mirrors the hardcoded design colours)
 const MODULE_COLORS = ["#155eef", "#6366f1", "#0891b2", "#ef4444", "#059669", "#f59e0b", "#7c3aed", "#f97316"];
 
-// Module detail routes that exist as pages
-const MODULE_ROUTES: Record<string, string> = {
-  "action-tracker": "/modules/action-tracker",
-};
 
 // ── Main component ─────────────────────────────────────────────────────────
 
@@ -240,7 +236,7 @@ export default function ProductModules({
     cmsModules && cmsModules.length > 0
       ? cmsModules.map((m, i) => ({
           name: m.name,
-          href: MODULE_ROUTES[m.slug] ?? "#",
+          href: `/modules/${m.slug}`,
           desc: m.desc,
           color: MODULE_COLORS[i % MODULE_COLORS.length],
           icon: "check-circle",
