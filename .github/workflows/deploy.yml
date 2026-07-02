@@ -36,7 +36,7 @@ jobs:
           cp -r public .next/standalone/public
 
       - name: Archive build
-        run: tar -czf /tmp/build.tar.gz -C .next/standalone .
+        run: tar -czf build.tar.gz -C .next/standalone .
 
       - name: Upload to server
         uses: appleboy/scp-action@v0.1.7
@@ -44,9 +44,8 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: /tmp/build.tar.gz
+          source: build.tar.gz
           target: /tmp/
-          strip_components: 2
 
       - name: Swap and restart
         uses: appleboy/ssh-action@v1
