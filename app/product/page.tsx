@@ -6,20 +6,39 @@ import ProductHowItWorks from "@/components/sections/ProductHowItWorks";
 import ProductModules from "@/components/sections/ProductModules";
 import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
-import { getPage } from "@/lib/api";
+import { getPage, getProductModules } from "@/lib/api";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Product — EHSWatch",
-  description: "One Platform. Every EHSQ Process. From field incidents to board-level dashboards — all connected, all in real time.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageRes = await getPage("product");
+  const meta = pageRes?.data?.attributes?.meta;
+  return {
+    title: meta?.meta_title || "Product — EHSWatch",
+    description:
+      meta?.meta_description ||
+      "One Platform. Every EHSQ Process. From field incidents to board-level dashboards — all connected, all in real time.",
+  };
+}
 
 export default async function ProductPage() {
-  const pageRes = await getPage("product");
+  const [pageRes, modulesRes] = await Promise.all([
+    getPage("product"),
+    getProductModules(),
+  ]);
   const blocks = pageRes?.data?.attributes?.content ?? [];
+
+  // ── product modules from the dedicated CMS collection ─────────────────────
+  const cmsModules = (modulesRes?.data ?? [])
+    .filter((m) => m.attributes.status === "active")
+    .map((m) => ({
+      name: (m.attributes.name || "").trim(),
+      slug: m.attributes.slug,
+      desc: m.attributes.description || m.attributes.tagline || "",
+      icon: m.attributes.icon ?? null,
+    }));
 
   // ── hero block ─────────────────────────────────────────────────────────────
   const heroBlock = findBlock<{
@@ -58,6 +77,25 @@ export default async function ProductPage() {
     visible_count?: number;
   }>(blocks, "product_modules");
 
+  // ── stats_row block ───────────────────────────────────────────────────────
+  const statsBlock = findBlock<{
+    items?: unknown;
+  }>(blocks, "stats_row");
+
+  const statsRawItems = normalizeArray<{
+    value?: string | null;
+    suffix?: string | null;
+    label?: string | null;
+  }>(statsBlock?.items);
+  const statsItems =
+    statsRawItems.length > 0
+      ? statsRawItems.map((item) => ({
+          value: item.value || "0",
+          suffix: item.suffix || null,
+          label: item.label || "",
+        }))
+      : undefined;
+
   // ── cta_banner block ──────────────────────────────────────────────────────
   const ctaBlock = findBlock<{
     headline?: string;
@@ -93,7 +131,7 @@ export default async function ProductPage() {
           cmsSubheading={imageTextBlock?.subheading || undefined}
           cmsBody={imageTextBlock?.body || undefined}
         />
-        <Stats />
+        <Stats cmsItems={statsItems} />
         <ProductHowItWorks
           cmsHeading={numberStepsBlock?.heading || undefined}
           cmsSubheading={numberStepsBlock?.subheading || undefined}
@@ -102,6 +140,7 @@ export default async function ProductPage() {
         <ProductModules
           cmsHeading={productModulesBlock?.heading || undefined}
           cmsSubheading={productModulesBlock?.subheading || undefined}
+          cmsModules={cmsModules.length > 0 ? cmsModules : undefined}
         />
         <CTABanner
           cmsHeadline={ctaBlock?.headline || undefined}

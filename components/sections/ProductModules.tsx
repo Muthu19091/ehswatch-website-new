@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ReactElement } from "react";
 import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
+import CmsIcon from "@/components/ui/CmsIcon";
 import { basePath } from "@/lib/basePath";
 import type { CmsProductModule } from "@/lib/types";
 
@@ -113,7 +114,16 @@ const Icons: Record<string, ReactElement> = {
 
 // ── Module data ────────────────────────────────────────────────────────────
 
-const MODULES = [
+interface Module {
+  name: string;
+  href: string;
+  desc: string;
+  color: string;
+  icon: string;
+  cmsIcon?: string | null;
+}
+
+const MODULES: Module[] = [
   { name: "Action Tracker",           href: "/modules/action-tracker", desc: "Track corrective and preventive actions to closure with owners, due dates, reminders, and full accountability.", color: "#155eef", icon: "check-circle" },
   { name: "Audit Management",         href: "#", desc: "Plan and run audits with configurable checklists, structured findings, and follow-up workflows that close compliance gaps faster.", color: "#6366f1", icon: "clipboard" },
   { name: "Customer Complaints",      href: "#", desc: "Capture, assign, investigate and resolve customer complaints through a structured workflow with full audit trail.", color: "#0891b2", icon: "chat-warning" },
@@ -138,7 +148,7 @@ const STEP = COLS;
 // ── Module cell ────────────────────────────────────────────────────────────
 
 function ModuleCell({ mod, isLastRow, colIndex }: {
-  mod: typeof MODULES[number];
+  mod: Module;
   isLastRow: boolean;
   colIndex: number;
 }) {
@@ -158,7 +168,11 @@ function ModuleCell({ mod, isLastRow, colIndex }: {
         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
         style={{ backgroundColor: mod.color + "14", color: mod.color }}
       >
-        {Icons[mod.icon]}
+        {mod.cmsIcon ? (
+          <CmsIcon icon={mod.cmsIcon} size={20} strokeWidth={1.5} color={mod.color} fallback="square-check" />
+        ) : (
+          Icons[mod.icon] ?? Icons["check-circle"]
+        )}
       </div>
 
       <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
@@ -193,13 +207,28 @@ function ModuleCell({ mod, isLastRow, colIndex }: {
 interface ProductModulesProps {
   cmsHeading?: string;
   cmsSubheading?: string;
+  cmsModules?: Array<{
+    name: string;
+    slug: string;
+    desc: string;
+    icon?: string | null;
+  }>;
 }
+
+// Palette cycled across CMS modules (mirrors the hardcoded design colours)
+const MODULE_COLORS = ["#155eef", "#6366f1", "#0891b2", "#ef4444", "#059669", "#f59e0b", "#7c3aed", "#f97316"];
+
+// Module detail routes that exist as pages
+const MODULE_ROUTES: Record<string, string> = {
+  "action-tracker": "/modules/action-tracker",
+};
 
 // ── Main component ─────────────────────────────────────────────────────────
 
 export default function ProductModules({
   cmsHeading,
   cmsSubheading,
+  cmsModules,
 }: ProductModulesProps = {}) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_ROWS * COLS);
   const [animatedRows, setAnimatedRows] = useState<Set<number>>(
@@ -207,11 +236,23 @@ export default function ProductModules({
   );
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
 
-  const visibleModules = MODULES.slice(0, visibleCount);
-  const hasMore = visibleCount < MODULES.length;
+  const modules: Module[] =
+    cmsModules && cmsModules.length > 0
+      ? cmsModules.map((m, i) => ({
+          name: m.name,
+          href: MODULE_ROUTES[m.slug] ?? "#",
+          desc: m.desc,
+          color: MODULE_COLORS[i % MODULE_COLORS.length],
+          icon: "check-circle",
+          cmsIcon: m.icon ?? null,
+        }))
+      : MODULES;
+
+  const visibleModules = modules.slice(0, visibleCount);
+  const hasMore = visibleCount < modules.length;
 
   const handleViewMore = () => {
-    const nextCount = Math.min(visibleCount + STEP, MODULES.length);
+    const nextCount = Math.min(visibleCount + STEP, modules.length);
     setVisibleCount(nextCount);
     const newRowIdx = Math.ceil(visibleCount / COLS);
     requestAnimationFrame(() => {
@@ -229,7 +270,7 @@ export default function ProductModules({
     }
   };
 
-  const rows: typeof MODULES[] = [];
+  const rows: Module[][] = [];
   for (let i = 0; i < visibleModules.length; i += COLS) {
     rows.push(visibleModules.slice(i, i + COLS));
   }
