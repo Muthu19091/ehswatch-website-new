@@ -87,6 +87,8 @@ export default async function Footer() {
   const footer = await getFooter();
   const attrs = (footer?.data as any)?.attributes;
 
+  const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? imgEhsWatch;
+  const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
   const tagline     = attrs?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
   const copyright   = attrs?.bottom?.copyright_text || "© 2026 EHSWatch. All rights reserved.";
   const legalLinks  = (attrs?.bottom?.legal_links ?? []) as { label: string; url: string }[];
@@ -99,8 +101,11 @@ export default async function Footer() {
   const socialLinks = rawSocials.length > 0 ? rawSocials : FALLBACK_SOCIALS;
 
   const columns = (attrs?.columns ?? []) as { heading: string; links: { label: string; url: string }[] }[];
-  const companyCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("company"));
-  const modulesCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("module"));
+  // Match columns by heading, fall back to CMS order so renamed columns still render
+  const companyCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("company")) ?? columns[0];
+  const modulesCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("module")) ?? columns[1];
+  const companyHeading = companyCol?.heading || "COMPANY";
+  const modulesHeading = modulesCol?.heading || "MODULES";
 
   const companyLinks = companyCol?.links ?? COMPANY.map(l => ({ label: l.label, url: l.href }));
   const allModules   = modulesCol?.links ?? [...MODULES_COL1, ...MODULES_COL2].map(l => ({ label: l.label, url: l.href }));
@@ -118,7 +123,7 @@ export default async function Footer() {
         <div className="flex flex-col gap-3 md:gap-[14px] items-start">
           <div className="h-[34px] w-[124px] relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imgEhsWatch} alt="EHSWatch" className="h-full w-auto object-contain" />
+            <img src={logoSrc} alt={logoAlt} className="h-full w-auto object-contain" />
           </div>
           <p className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] leading-relaxed md:leading-[24.5px] text-[rgba(255,255,255,0.6)] max-w-[240px]">
             {tagline}
@@ -146,7 +151,7 @@ export default async function Footer() {
         {/* ── Company column ── */}
         <div className="flex flex-col gap-3 md:gap-[20px] items-start">
           <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
-            COMPANY
+            {companyHeading}
           </p>
           <ul className="grid grid-cols-2 md:grid-cols-1 gap-x-6 gap-y-2 md:gap-[12px] w-full">
             {companyLinks.map((link) => (
@@ -165,7 +170,7 @@ export default async function Footer() {
         {/* ── Modules column — 2-column grid ── */}
         <div className="flex flex-col gap-3 md:gap-[20px] items-start">
           <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
-            MODULES
+            {modulesHeading}
           </p>
           <div className="grid grid-cols-2 gap-x-5 gap-y-[10px] w-full">
             <ul className="flex flex-col gap-[10px]">
@@ -217,7 +222,7 @@ export default async function Footer() {
       <div className="relative w-full h-[100px] md:h-[180px] z-[2] overflow-hidden mt-8">
         <div className="absolute bottom-3 md:bottom-[19.5px] left-6 md:left-[128px] w-[280px] md:w-[455px] h-[80px] md:h-[125px] opacity-30 md:opacity-40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={imgEhsWatch} alt="" className="w-full h-full object-contain object-left" />
+          <img src={logoSrc} alt="" className="w-full h-full object-contain object-left" />
         </div>
         <div className="absolute inset-0 top-[40px]" style={{ background: "linear-gradient(to bottom, transparent, #0a1628)" }} />
       </div>
@@ -238,10 +243,14 @@ export default async function Footer() {
                   {link.label}
                 </Link>
               ))
-            : ["Privacy Policy", "Terms of Service", "Cookie Settings"].map((label) => (
+            : ([
+                { label: "Privacy Policy",  href: "/privacy-policy" },
+                { label: "Terms of Service", href: "/terms-of-service" },
+                { label: "Cookie Policy",    href: "/cookie-policy" },
+              ] as { label: string; href: string }[]).map(({ label, href }) => (
                 <Link
                   key={label}
-                  href="#"
+                  href={href}
                   className="font-[family-name:var(--font-inter)] text-[11px] md:text-[12px] text-[rgba(255,255,255,0.3)] hover:text-white/60 transition-colors"
                 >
                   {label}
