@@ -1,4 +1,5 @@
 import DynamicCmsForm from "@/components/ui/DynamicCmsForm";
+import CmsIcon from "@/components/ui/CmsIcon";
 import CmsSlider from "@/components/ui/CmsSlider";
 import type { CmsForm } from "@/lib/types";
 import type { CmsSlideItem } from "@/components/ui/CmsSlider";
@@ -51,35 +52,6 @@ export interface ContactPageProps {
   officeItems?: CmsOfficeItem[] | null;
   sliderData?: CmsSliderData | null;
   galleryData?: CmsGalleryData | null;
-}
-
-/* ── Inline SVG icons keyed to CMS icon slugs ── */
-function OfficeIcon({ name }: { name: string }) {
-  if (name === "mail" || name === "email") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    );
-  }
-  if (name === "phone") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-      </svg>
-    );
-  }
-  /* building-office (default) */
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 21h18" />
-      <path d="M5 21V7l7-4 7 4v14" />
-      <path d="M9 21v-4h6v4" />
-      <rect x="9" y="9" width="2" height="2" />
-      <rect x="13" y="9" width="2" height="2" />
-    </svg>
-  );
 }
 
 const DEFAULT_OFFICE_ITEMS: CmsOfficeItem[] = [
@@ -244,7 +216,7 @@ export default function ContactPage({
                     className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center flex-shrink-0"
                     style={{ background: "#eef4ff" }}
                   >
-                    <OfficeIcon name={item.icon} />
+                    <CmsIcon icon={item.icon} size={18} strokeWidth={1.8} color="#1d4ed8" fallback="building-2" />
                   </div>
 
                   {/* Text */}
