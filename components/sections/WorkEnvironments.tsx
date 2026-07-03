@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { basePath } from "@/lib/basePath";
 
 const panel = (file: string) =>
@@ -23,6 +24,14 @@ interface SolutionCarouselCard {
   title: string;
   subheading?: string;
   description?: string;
+  image?: { url?: string } | string | null;
+}
+
+// CMS image may arrive as a media object ({url}) or a plain URL string
+function cardImageUrl(image: SolutionCarouselCard["image"]): string | undefined {
+  if (!image) return undefined;
+  if (typeof image === "string") return image;
+  return image.url || undefined;
 }
 
 interface WorkEnvironmentsProps {
@@ -100,14 +109,16 @@ function inferPanelImage(title: string): string {
 
 function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
   if (!cmsCards || cmsCards.length === 0) return HARDCODED_CARDS;
-  return cmsCards.slice(0, 6).map((c, i) => {
-    const layout = CARD_LAYOUT[i] || CARD_LAYOUT[0];
-    const hardcoded = HARDCODED_CARDS[i];
+  // All CMS cards render; layout metadata cycles for cards beyond the first six
+  return cmsCards.map((c, i) => {
+    const layout = CARD_LAYOUT[i % CARD_LAYOUT.length];
+    const hardcoded = HARDCODED_CARDS[i % HARDCODED_CARDS.length];
     return {
       ...layout,
-      title: c.title || hardcoded.title,
-      desc:  c.subheading || hardcoded.desc,
-      imgSrc: inferPanelImage(c.title || hardcoded.title),
+      key: `${layout.key}-${i}`,
+      title: c.title || (i < HARDCODED_CARDS.length ? hardcoded.title : ""),
+      desc:  c.subheading || (i < HARDCODED_CARDS.length ? hardcoded.desc : ""),
+      imgSrc: cardImageUrl(c.image) ?? inferPanelImage(c.title || hardcoded.title),
     };
   });
 }
@@ -163,7 +174,17 @@ function IndustryCard({ card }: { card: Card }) {
 
 export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }: WorkEnvironmentsProps) {
   const cards = buildCards(cmsCards);
-  const [construction, manufacturing, oilgas, logistics, utilities, facilities] = cards;
+  const [expanded, setExpanded] = useState(false);
+
+  const INITIAL_COUNT = 6;
+  const hasMore = cards.length > INITIAL_COUNT;
+  const visibleCards = expanded ? cards : cards.slice(0, INITIAL_COUNT);
+
+  // Pair cards into rows; column widths alternate to keep the mosaic rhythm
+  const rows: Card[][] = [];
+  for (let i = 0; i < visibleCards.length; i += 2) {
+    rows.push(visibleCards.slice(i, i + 2));
+  }
 
   const heading    = cmsHeading    || "Built for High‑Risk, High‑Activity Work Environments";
   const subheading = cmsSubheading || "EHSWatch brings all your EHSQ activities into a single, easy‑to‑use platform so everyone, from workers in the field to leadership, works from the same, up‑to‑date information.";
@@ -191,40 +212,53 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }
           </p>
         </div>
 
-        {/* Grid — border-t closes top, each row has border-b */}
+        {/* Grid — border-t closes top, each row has border-b.
+            Column widths alternate 603/665 per row to keep the mosaic rhythm. */}
         <div className="mt-[44px] md:mt-[56px] lg:mt-[68px] border-t border-[#e2e8f0]">
-
-          {/* Row 1: Construction (603) | Manufacturing (665) */}
-          <div className="flex flex-col sm:flex-row border-b border-[#e2e8f0]">
-            <div className="sm:border-r border-[#e2e8f0] sm:[aspect-ratio:603/470]" style={{ flex: "603 603 0%" }}>
-              {construction && <IndustryCard card={construction} />}
-            </div>
-            <div className="sm:[aspect-ratio:665/470]" style={{ flex: "665 665 0%" }}>
-              {manufacturing && <IndustryCard card={manufacturing} />}
-            </div>
-          </div>
-
-          {/* Row 2: Oil Gas (665) | Logistics (603) */}
-          <div className="flex flex-col sm:flex-row border-b border-[#e2e8f0]">
-            <div className="sm:border-r border-[#e2e8f0] sm:[aspect-ratio:665/470]" style={{ flex: "665 665 0%" }}>
-              {oilgas && <IndustryCard card={oilgas} />}
-            </div>
-            <div className="sm:[aspect-ratio:603/470]" style={{ flex: "603 603 0%" }}>
-              {logistics && <IndustryCard card={logistics} />}
-            </div>
-          </div>
-
-          {/* Row 3: Utilities (603) | Facilities (665) */}
-          <div className="flex flex-col sm:flex-row border-b border-[#e2e8f0]">
-            <div className="sm:border-r border-[#e2e8f0] sm:[aspect-ratio:603/470]" style={{ flex: "603 603 0%" }}>
-              {utilities && <IndustryCard card={utilities} />}
-            </div>
-            <div className="sm:[aspect-ratio:665/470]" style={{ flex: "665 665 0%" }}>
-              {facilities && <IndustryCard card={facilities} />}
-            </div>
-          </div>
-
+          {rows.map((row, rowIdx) => {
+            const widths = rowIdx % 2 === 0 ? ([603, 665] as const) : ([665, 603] as const);
+            // Static class strings so Tailwind compiles the arbitrary aspect-ratios
+            const ASPECT: Record<number, string> = {
+              603: "sm:[aspect-ratio:603/470]",
+              665: "sm:[aspect-ratio:665/470]",
+              1268: "sm:[aspect-ratio:1268/470]",
+            };
+            const [left, right] = row;
+            return (
+              <div key={rowIdx} className="flex flex-col sm:flex-row border-b border-[#e2e8f0]">
+                <div
+                  className={`${right ? "sm:border-r border-[#e2e8f0] " + ASPECT[widths[0]] : ASPECT[1268]}`}
+                  style={{ flex: right ? `${widths[0]} ${widths[0]} 0%` : "1 1 100%" }}
+                >
+                  {left && <IndustryCard card={left} />}
+                </div>
+                {right && (
+                  <div className={ASPECT[widths[1]]} style={{ flex: `${widths[1]} ${widths[1]} 0%` }}>
+                    <IndustryCard card={right} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+
+        {/* View more / less — reveals the remaining industry cards */}
+        {hasMore && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => setExpanded((e) => !e)}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#d3ddeb] bg-white font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200 cursor-pointer"
+            >
+              {expanded ? "View less" : "View more"}
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                style={{ transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}
+              >
+                <path d="M7 2v10M2 7l5 5 5-5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

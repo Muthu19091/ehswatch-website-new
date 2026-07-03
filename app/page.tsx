@@ -65,10 +65,11 @@ export default async function HomePage() {
 
   // Normalise solution cards (CMS sends them as a keyed object)
   const solutionCards = solutionBlock?.cards
-    ? normalizeArray<{ title?: string; subheading?: string; description?: string }>(solutionBlock.cards).map(c => ({
+    ? normalizeArray<{ title?: string; subheading?: string; description?: string; image?: { url?: string } | string | null }>(solutionBlock.cards).map(c => ({
         title:      c.title      || "",
         subheading: c.subheading || "",
         description:c.description|| "",
+        image:      c.image      ?? null,
       }))
     : undefined;
 
