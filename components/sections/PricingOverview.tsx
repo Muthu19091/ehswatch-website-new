@@ -1,5 +1,7 @@
 "use client";
 
+import CmsIcon from "@/components/ui/CmsIcon";
+
 const DEFAULT_HEADING = "Designed Around Your <span style=\"color:#1d4ed8\">EHS Needs</span>, Not a Template";
 const DEFAULT_BODY_1 =
   "EHSWatch is built for organisations that cannot afford generic templates or rigid licensing. Our pricing reflects how you actually use EHSQ software — across sites, modules, users, and compliance requirements.";
@@ -12,47 +14,9 @@ const DEFAULT_CHECKLIST_ITEMS: Array<{ icon?: string; text: string }> = [
   { icon: "check-circle", text: "Integration with existing ERP, HRMS or BI systems" },
 ];
 
-// Maps CMS icon names → inline SVG paths rendered inside the blue circle
+// Any CMS icon pick renders inside the blue circle via the shared resolver
 function ItemIcon({ name }: { name?: string }) {
-  if (name === "check-square") {
-    return (
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-        <rect x="1" y="1" width="9" height="9" rx="1.5" stroke="white" strokeWidth="1.4" />
-        <path d="M3 5.5l2 2 3-3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (name === "warning") {
-    return (
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-        <path d="M5.5 2L10 9.5H1L5.5 2z" stroke="white" strokeWidth="1.4" strokeLinejoin="round" />
-        <path d="M5.5 5v2" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
-        <circle cx="5.5" cy="8.2" r="0.5" fill="white" />
-      </svg>
-    );
-  }
-  if (name === "info") {
-    return (
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-        <circle cx="5.5" cy="5.5" r="4.5" stroke="white" strokeWidth="1.4" />
-        <path d="M5.5 5v3" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
-        <circle cx="5.5" cy="3.5" r="0.5" fill="white" />
-      </svg>
-    );
-  }
-  if (name === "star") {
-    return (
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-        <path d="M5.5 1l1.2 3.6H10L7.2 6.8l1.1 3.5L5.5 8.4l-2.8 1.9 1.1-3.5L1 4.6h3.3L5.5 1z" stroke="white" strokeWidth="1.2" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  // default: check-circle
-  return (
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-      <path d="M2 5.5l2.8 2.8L9 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <CmsIcon icon={name} size={11} strokeWidth={2.2} color="white" fallback="check" />;
 }
 
 interface PricingOverviewProps {

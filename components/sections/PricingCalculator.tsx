@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import TurnstileField from "@/components/ui/TurnstileField";
-import * as LucideIcons from "lucide-react";
+import CmsIcon from "@/components/ui/CmsIcon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fully CMS-driven pricing wizard.
@@ -86,61 +86,9 @@ const DEFAULT_STEPS: CmsFormStep[] = [
   },
 ];
 
-// ── Dynamic Lucide icon renderer ──────────────────────────────────────────────
-const ICON_ALIASES: Record<string, string> = {
-  "magnifying-glass":               "search",
-  "exclamation-triangle":           "alert-triangle",
-  "exclamation-circle":             "alert-circle",
-  "arrow-path":                     "refresh-cw",
-  "lock-closed":                    "lock",
-  "chart-bar":                      "bar-chart-2",
-  "calendar-days":                  "calendar",
-  "clipboard-document-list":        "clipboard-list",
-  "clipboard-document-check":       "clipboard-check",
-  "academic-cap":                   "graduation-cap",
-  "user-group":                     "users",
-  "chat-bubble-bottom-center-text": "message-circle",
-  "chat-bubble-left-right":         "message-square",
-  "chat-warning":                   "message-circle",
-  "alarm":                          "alarm-clock",
-  "arrows-cycle":                   "refresh-cw",
-  "chart":                          "bar-chart-2",
-  "graduation":                     "graduation-cap",
-  "warning":                        "alert-triangle",
-  "sparkle":                        "sparkles",
-  "document-text":                  "file-text",
-  "building-office":                "building-2",
-  "building-office-2":              "building-2",
-  "shield-exclamation":             "shield-alert",
-  "information-circle":             "info",
-  "question-mark-circle":           "help-circle",
-  "globe-alt":                      "globe",
-  "fire":                           "flame",
-  "beaker":                         "flask-conical",
-  "paper-airplane":                 "send",
-  "device-phone-mobile":            "smartphone",
-  "computer-desktop":               "monitor",
-  "cpu-chip":                       "cpu",
-  "currency-dollar":                "dollar-sign",
-  "banknotes":                      "banknote",
-  "arrow-trending-up":              "trending-up",
-  "chart-pie":                      "pie-chart",
-  "squares-2x2":                    "grid-2x2",
-  "list-bullet":                    "list",
-  "adjustments-horizontal":         "sliders-horizontal",
-  "funnel":                         "filter",
-  "wrench-screwdriver":             "wrench",
-  "cog-6-tooth":                    "settings-2",
-  "cog-8-tooth":                    "settings",
-};
-
+// ── Icon renderer — shared sitewide resolver (Lucide + heroicon-o-* slugs) ──
 function LucideIcon({ name, size = 18 }: { name?: string; size?: number }) {
-  if (!name) return null;
-  const resolved = ICON_ALIASES[name] ?? name;
-  const pascal = resolved.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("");
-  const Icon = (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascal];
-  if (!Icon) return null;
-  return <Icon size={size} strokeWidth={1.5} />;
+  return <CmsIcon icon={name} size={size} strokeWidth={1.5} color="currentColor" fallback="square-check" />;
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────

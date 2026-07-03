@@ -1,5 +1,7 @@
 "use client";
 
+import CmsIcon from "@/components/ui/CmsIcon";
+
 import React, { useEffect, useRef, useState } from "react";
 import { basePath } from "@/lib/basePath";
 
@@ -508,6 +510,7 @@ function Visual5({
     subItems && subItems.length > 0
       ? subItems.map((si, i) => ({
           img: DEFAULT_INSIGHT_STEPS[i]?.img ?? `${S5}/Right/Step/Surface%20Patterns.svg`,
+          icon: si.icon || undefined,
           title: si.title || DEFAULT_INSIGHT_STEPS[i]?.title || "",
           desc: si.description || DEFAULT_INSIGHT_STEPS[i]?.desc || "",
         }))
@@ -534,8 +537,12 @@ function Visual5({
               }}
             >
               <div style={{ width: 54, height: 54, borderRadius: 14, background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={step.img} alt={step.title} style={{ width: 32, height: 32, objectFit: "contain" }} />
+                {(step as { icon?: string }).icon ? (
+                  <CmsIcon icon={(step as { icon?: string }).icon} size={28} strokeWidth={1.6} color="#155eef" fallback="sparkles" />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={step.img} alt={step.title} style={{ width: 32, height: 32, objectFit: "contain" }} />
+                )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
