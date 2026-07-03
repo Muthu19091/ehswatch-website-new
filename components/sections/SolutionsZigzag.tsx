@@ -1,9 +1,15 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { basePath } from "@/lib/basePath";
 
 const VID = basePath + "/images/Solutions_/Videos/";
+
+function resolveVideoUrl(video: unknown): string | null {
+  if (!video || typeof video !== "string") return null;
+  if (video.startsWith("/")) return `https://stage.odigma.ooo${video}`;
+  return video;
+}
 
 interface Solution {
   heading: string;
@@ -152,9 +158,7 @@ const INDUSTRIES: Industry[] = [
   },
 ];
 
-const N = INDUSTRIES.length;
-
-/* ── Placeholder visual (for industries without video yet) ── */
+/* ── Placeholder visual ── */
 function MediaPlaceholder({ label }: { label: string }) {
   return (
     <div
@@ -175,7 +179,7 @@ function MediaPlaceholder({ label }: { label: string }) {
   );
 }
 
-/* ── Media panel (video or placeholder) ── */
+/* ── Media panel ── */
 function MediaBlock({ industry }: { industry: Industry }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
@@ -199,7 +203,6 @@ function MediaBlock({ industry }: { industry: Industry }) {
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* Spinner while buffering */}
       {!videoReady && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="w-8 h-8 rounded-full border-2 border-[#e2e8f0] border-t-[#155eef] animate-spin" />
@@ -246,95 +249,66 @@ function MediaBlock({ industry }: { industry: Industry }) {
   );
 }
 
-/* ── Arrow button with orange cursor-fill hover ── */
-function ArrowBtn({ dir, onClick }: { dir: "left" | "right"; onClick: () => void }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const [fill, setFill] = useState({ x: 23, y: 23, on: false });
+export interface CmsIndustryCard {
+  title: string;
+  subheading?: string;
+  video?: string | null;
+  accordion_items?: Record<string, { title?: string; description?: string }>;
+}
 
-  const setFromEvent = (e: React.MouseEvent, on: boolean) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    setFill({ x: e.clientX - rect.left, y: e.clientY - rect.top, on });
+function cmsCardToIndustry(card: CmsIndustryCard): Industry {
+  const solutions: Solution[] = card.accordion_items
+    ? Object.values(card.accordion_items)
+        .filter((a) => a.title)
+        .map((a) => ({ heading: a.title!, body: a.description || "" }))
+    : [];
+  return {
+    label:     card.title,
+    subcopy:   card.subheading || "",
+    video:     resolveVideoUrl(card.video ?? null),
+    gif:       null,
+    solutions: solutions.length > 0 ? solutions : [],
   };
-
-  return (
-    <button
-      ref={ref}
-      onClick={onClick}
-      onMouseEnter={(e) => setFromEvent(e, true)}
-      onMouseLeave={(e) => setFromEvent(e, false)}
-      aria-label={dir === "left" ? "Previous industry" : "Next industry"}
-      className="relative flex items-center justify-center overflow-hidden"
-      style={{
-        width: 48,
-        height: 48,
-        borderRadius: "9999px",
-        border: "1.5px solid #FF6D00",
-        background: "white",
-      }}
-    >
-      {/* Expanding orange fill from cursor */}
-      <span
-        className="absolute pointer-events-none"
-        style={{
-          left: fill.x,
-          top: fill.y,
-          width: 120,
-          height: 120,
-          marginLeft: -60,
-          marginTop: -60,
-          borderRadius: "9999px",
-          background: "#FF6D00",
-          transform: `scale(${fill.on ? 1 : 0})`,
-          transition: "transform 0.45s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
-      <svg
-        width="16" height="16" viewBox="0 0 20 20" fill="none"
-        className="relative z-10"
-        style={{ transform: dir === "left" ? "scaleX(-1)" : "none" }}
-      >
-        <path d="M4 10h11M10 5l5 5-5 5" stroke={fill.on ? "#ffffff" : "#FF6D00"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </button>
-  );
 }
 
 /* ── Main ── */
-export default function SolutionsZigzag() {
-  const [active, setActive] = useState(0);
+export default function SolutionsZigzag({ cmsCards }: { cmsCards?: CmsIndustryCard[] }) {
+  if (!cmsCards || cmsCards.length === 0) return null;
+
+  const ACTIVE = cmsCards.map(cmsCardToIndustry);
+
+  const [activeIdx, setActiveIdx] = useState(0);
   const [openIdx, setOpenIdx] = useState(0);
 
-  const go = useCallback((dir: number) => {
-    setActive((prev) => (prev + dir + N) % N);
-    setOpenIdx(0);
-  }, []);
+  const industry = ACTIVE[activeIdx];
 
-  const goTo = useCallback((i: number) => {
-    setActive(i);
+  function handleTab(i: number) {
+    setActiveIdx(i);
     setOpenIdx(0);
-  }, []);
-
-  const industry = INDUSTRIES[active];
+  }
 
   return (
-    <section className="bg-white py-16 md:py-24 px-6">
+    <section className="bg-white py-12 md:py-20 px-6">
       <div className="max-w-[1240px] mx-auto">
 
-        {/* ── Pill tabs ── */}
-        <div className="flex flex-wrap gap-2 md:gap-3 mb-10 md:mb-14">
-          {INDUSTRIES.map((ind, i) => {
-            const isActive = active === i;
+        {/* Tab bar — wraps on desktop, scrolls on mobile */}
+        <div className="hidden md:flex flex-wrap gap-2 justify-center mb-8">
+          {ACTIVE.map((ind, i) => {
+            const isActive = activeIdx === i;
             return (
               <button
-                key={ind.label}
-                onClick={() => goTo(i)}
-                className="font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-medium px-4 py-2 rounded-full transition-all duration-200"
-                style={{
-                  border: `1.5px solid ${isActive ? "#FF6D00" : "#d1d5db"}`,
-                  background: isActive ? "rgba(255,109,0,0.08)" : "transparent",
-                  color: isActive ? "#FF6D00" : "#6b7280",
-                  cursor: "pointer",
+                key={i}
+                onClick={() => handleTab(i)}
+                className="px-[15px] py-[7px] rounded-full text-[13px] font-medium transition-all duration-200"
+                style={isActive ? {
+                  background: "#FFF3EC",
+                  color: "#FF6D00",
+                  border: "1.5px solid #FF9A5C",
+                  fontWeight: 600,
+                } : {
+                  background: "white",
+                  color: "#374151",
+                  border: "1.5px solid #e5e7eb",
                 }}
               >
                 {ind.label}
@@ -343,6 +317,43 @@ export default function SolutionsZigzag() {
           })}
         </div>
 
+        {/* Mobile — horizontally scrollable tab row */}
+        <div className="md:hidden overflow-x-auto pb-2 mb-6 -mx-6 px-6">
+          <div className="flex gap-2 w-max">
+            {ACTIVE.map((ind, i) => {
+              const isActive = activeIdx === i;
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleTab(i)}
+                  className="flex-shrink-0 px-[14px] py-[7px] rounded-full text-[12.5px] font-medium whitespace-nowrap transition-all duration-200"
+                  style={isActive ? {
+                    background: "#FFF3EC",
+                    color: "#FF6D00",
+                    border: "1.5px solid #FF9A5C",
+                    fontWeight: 600,
+                  } : {
+                    background: "white",
+                    color: "#374151",
+                    border: "1.5px solid #e5e7eb",
+                  }}
+                >
+                  {ind.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Orange dot separator */}
+        <div className="flex justify-center mb-8 md:mb-10">
+          <span
+            className="rounded-full"
+            style={{ width: 10, height: 10, background: "#FF6D00", display: "block" }}
+          />
+        </div>
+
+        {/* Content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left — media */}
@@ -401,12 +412,6 @@ export default function SolutionsZigzag() {
                   </div>
                 );
               })}
-            </div>
-
-            {/* Navigation — arrows only */}
-            <div className="flex items-center gap-3 mt-9">
-              <ArrowBtn dir="left" onClick={() => go(-1)} />
-              <ArrowBtn dir="right" onClick={() => go(1)} />
             </div>
           </div>
 

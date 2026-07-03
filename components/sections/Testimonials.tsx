@@ -58,7 +58,7 @@ export default function Testimonials({ title, cmsItems }: { title?: React.ReactN
   const items = [...TESTIMONIALS, ...TESTIMONIALS];
 
   return (
-    <section className="bg-white py-12 md:py-[80px] overflow-hidden">
+    <section translate="no" className="bg-white py-12 md:py-[80px] overflow-hidden">
       {/* Heading */}
       <div className="px-4 md:px-6 text-center mb-8 md:mb-12">
         <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] leading-tight text-[#1b1b1b]">
