@@ -1,33 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import TurnstileField from "@/components/ui/TurnstileField";
-import { z } from "zod";
 import * as LucideIcons from "lucide-react";
 
-/* ── Proposal form schema ── */
-const proposalSchema = z.object({
-  name:       z.string().min(2, "Full name must be at least 2 characters"),
-  email:      z.string().email("Enter a valid work email"),
-  phone:      z.string().min(7, "Enter a valid phone number"),
-  company:    z.string().min(1, "Company name is required"),
-  messagebox: z.string().optional(),
-});
+// ─────────────────────────────────────────────────────────────────────────────
+// Fully CMS-driven pricing wizard.
+// Steps and fields render from the CMS form schema (build-ehswatch-package):
+// add / remove / reorder fields in the CMS form editor and they appear here.
+// Validation is derived from each field's `required` flag and `field_type`.
+// ─────────────────────────────────────────────────────────────────────────────
 
-type ProposalData = z.infer<typeof proposalSchema>;
-
-type ProposalField = { label: string; key: keyof ProposalData; type: string; placeholder: string };
-const PROPOSAL_FIELDS: ProposalField[] = [
-  { label: "Full Name",          key: "name",       type: "text",     placeholder: "Jane Smith" },
-  { label: "Work Email",         key: "email",      type: "email",    placeholder: "jane@company.com" },
-  { label: "Phone Number",       key: "phone",      type: "tel",      placeholder: "+1 000 000 0000" },
-  { label: "Company",            key: "company",    type: "text",     placeholder: "Your organisation name" },
-  { label: "Message (optional)", key: "messagebox", type: "textarea", placeholder: "Anything specific you'd like us to know?" },
-];
-
-// ── App data ──────────────────────────────────────────────────────────────────
+// ── Fallback data (used only when the CMS form schema is unavailable) ────────
 
 const APPS = [
   { id: "action",         name: "Action Tracker",             desc: "Track corrective actions to closure with accountability.",  color: "#155eef", icon: "check-circle" },
@@ -68,11 +52,41 @@ const INDUSTRIES = [
   "Healthcare", "Facilities Management", "Retail", "Other",
 ];
 
-const STEPS = ["Applications", "Add-Ons", "Organisation", "Get Proposal"];
+// Fallback schema — mirrors the CMS default so both render paths are identical
+const DEFAULT_STEPS: CmsFormStep[] = [
+  {
+    key: "applications", title: "Applications",
+    description: "Select the applications you need in your organisation",
+    fields: [{ key: "selected_applications", label: "Applications", field_type: "application_picker", required: true, full_width: true }],
+  },
+  {
+    key: "addons", title: "Add-Ons",
+    description: "Enhance your EHSWatch experience (optional)",
+    fields: [{ key: "selected_addons", label: "Advanced features", field_type: "addon_picker", required: false, full_width: true }],
+  },
+  {
+    key: "organisation", title: "Organisation",
+    description: "Tell us about your organisation so we can size the proposal",
+    fields: [
+      { key: "employees", label: "Number of Employees", field_type: "select", options: ["< 50", "50–200", "201–1,000", "1,001–5,000", "5,000+"], required: true, full_width: true },
+      { key: "sites",     label: "Number of Sites",     field_type: "select", options: ["1", "2–5", "6–20", "21–50", "50+"], required: true, full_width: true },
+      { key: "industry",  label: "Industry",            field_type: "select", options: INDUSTRIES, required: true, full_width: true },
+    ],
+  },
+  {
+    key: "contact", title: "Get Proposal",
+    description: "Where should we send your tailored proposal?",
+    fields: [
+      { key: "name",       label: "Full Name",          field_type: "text",     placeholder: "Jane Smith", required: true, full_width: true },
+      { key: "email",      label: "Work Email",         field_type: "email",    placeholder: "jane@company.com", required: true },
+      { key: "phone",      label: "Phone Number",       field_type: "phone",    placeholder: "+1 000 000 0000", required: false },
+      { key: "company",    label: "Company",            field_type: "text",     placeholder: "Your organisation name", required: true },
+      { key: "messagebox", label: "Message (optional)", field_type: "textarea", placeholder: "Anything specific you'd like us to know?", required: false, full_width: true },
+    ],
+  },
+];
 
 // ── Dynamic Lucide icon renderer ──────────────────────────────────────────────
-// CMS may return Heroicons-style names (Filament's default icon set).
-// This map converts them to their Lucide equivalents so rendering never breaks.
 const ICON_ALIASES: Record<string, string> = {
   "magnifying-glass":               "search",
   "exclamation-triangle":           "alert-triangle",
@@ -84,11 +98,6 @@ const ICON_ALIASES: Record<string, string> = {
   "clipboard-document-list":        "clipboard-list",
   "clipboard-document-check":       "clipboard-check",
   "academic-cap":                   "graduation-cap",
-  "rocket-launch":                  "rocket",
-  "arrow-down-tray":                "arrow-down-to-line",
-  "arrow-up-tray":                  "arrow-up-from-line",
-  "code-bracket":                   "code-2",
-  "code-bracket-square":            "code",
   "user-group":                     "users",
   "chat-bubble-bottom-center-text": "message-circle",
   "chat-bubble-left-right":         "message-square",
@@ -98,41 +107,28 @@ const ICON_ALIASES: Record<string, string> = {
   "chart":                          "bar-chart-2",
   "graduation":                     "graduation-cap",
   "warning":                        "alert-triangle",
-  "minus-circle":                   "minus-circle",
   "sparkle":                        "sparkles",
   "document-text":                  "file-text",
-  "document-check":                 "file-check",
   "building-office":                "building-2",
   "building-office-2":              "building-2",
   "shield-exclamation":             "shield-alert",
   "information-circle":             "info",
   "question-mark-circle":           "help-circle",
-  "hand-raised":                    "hand",
   "globe-alt":                      "globe",
-  "sun":                            "sun",
-  "moon":                           "moon",
   "fire":                           "flame",
   "beaker":                         "flask-conical",
-  "identification":                 "id-card",
   "paper-airplane":                 "send",
-  "printer":                        "printer",
   "device-phone-mobile":            "smartphone",
   "computer-desktop":               "monitor",
-  "server":                         "server",
   "cpu-chip":                       "cpu",
   "currency-dollar":                "dollar-sign",
   "banknotes":                      "banknote",
-  "receipt-percent":                "receipt",
   "arrow-trending-up":              "trending-up",
-  "arrow-trending-down":            "trending-down",
   "chart-pie":                      "pie-chart",
   "squares-2x2":                    "grid-2x2",
   "list-bullet":                    "list",
-  "bars-3":                         "menu",
   "adjustments-horizontal":         "sliders-horizontal",
-  "adjustments-vertical":           "sliders-vertical",
   "funnel":                         "filter",
-  "tag":                            "tag",
   "wrench-screwdriver":             "wrench",
   "cog-6-tooth":                    "settings-2",
   "cog-8-tooth":                    "settings",
@@ -147,14 +143,27 @@ function LucideIcon({ name, size = 18 }: { name?: string; size?: number }) {
   return <Icon size={size} strokeWidth={1.5} />;
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 
-interface CmsFormStep {
+export interface CmsFormField {
+  key: string;
+  label: string;
+  field_type: string;
+  options?: string[] | null;
+  required?: boolean;
+  placeholder?: string | null;
+  help_text?: string | null;
+  full_width?: boolean;
+}
+
+export interface CmsFormStep {
   key: string;
   title: string;
   description: string;
-  fields: Array<{ key: string; label: string; field_type: string; options?: string[] | null }>;
+  fields: CmsFormField[];
 }
+
+interface PickerItem { id: string; name: string; desc: string; icon?: string; color: string }
 
 interface PricingCalculatorProps {
   cmsHeading?: string;
@@ -169,6 +178,54 @@ interface PricingCalculatorProps {
   cmsSuccessHeading?: string;
   cmsSuccessBody?: string;
 }
+
+// ── Field-level validation, driven by the CMS schema ─────────────────────────
+
+const PICKER_TYPES = new Set(["application_picker", "addon_picker"]);
+const MULTI_TYPES  = new Set(["application_picker", "addon_picker", "checkboxes"]);
+
+function validateField(
+  field: CmsFormField,
+  values: Record<string, string>,
+  picks: Record<string, string[]>,
+): string | null {
+  const label = field.label || field.key;
+
+  if (MULTI_TYPES.has(field.field_type)) {
+    if (field.required && (picks[field.key]?.length ?? 0) === 0) {
+      return `Select at least one option for ${label}.`;
+    }
+    return null;
+  }
+
+  if (field.field_type === "consent") {
+    if (field.required && values[field.key] !== "true") {
+      return `You must accept ${label} to continue.`;
+    }
+    return null;
+  }
+
+  const val = (values[field.key] ?? "").trim();
+
+  if (field.required && !val) return `${label} is required.`;
+  if (!val) return null; // optional and empty — nothing more to check
+
+  if (field.field_type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) {
+    return "Enter a valid email address.";
+  }
+  if ((field.field_type === "phone" || field.field_type === "tel") && val.replace(/\D/g, "").length < 7) {
+    return "Enter a valid phone number.";
+  }
+  if (field.field_type === "url" && !/^https?:\/\/.+\..+/.test(val)) {
+    return "Enter a valid URL (starting with http:// or https://).";
+  }
+  if (field.field_type === "number" && Number.isNaN(Number(val))) {
+    return `${label} must be a number.`;
+  }
+  return null;
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export default function PricingCalculator({
   cmsHeading,
@@ -187,170 +244,364 @@ export default function PricingCalculator({
   const heading    = cmsHeading    || "Build Your EHSWatch Package";
   const subheading = cmsSubheading || "Select what you need and we’ll put together a tailored proposal.";
 
-  // Derive step labels from CMS form steps (form schema titles)
-  const WIZARD_KEYS = ["applications", "addons", "organisation", "contact"] as const;
-  const getStep = (key: string) => cmsFormSteps?.find(s => s.key === key);
-  const formStepLabels = cmsFormSteps
-    ? WIZARD_KEYS.map(k => getStep(k)?.title).filter(Boolean) as string[]
-    : [];
-  // pricing_calculator.step_labels takes precedence, then form step titles, then hardcoded
-  const steps = (cmsStepLabels && cmsStepLabels.length === 4)
-    ? cmsStepLabels
-    : formStepLabels.length === 4 ? formStepLabels : STEPS;
+  // The wizard is the CMS schema; hardcoded steps only when CMS is unreachable
+  const wizardSteps: CmsFormStep[] =
+    cmsFormSteps && cmsFormSteps.length > 0 ? cmsFormSteps : DEFAULT_STEPS;
 
-  // Per-step title/description from CMS form schema
-  const appsStepTitle    = getStep("applications")?.title       || "Step 1 — Application Selection";
-  const appsStepDesc     = getStep("applications")?.description || "Select the applications you need in your organisation";
-  const addonsStepTitle  = getStep("addons")?.title             || "Step 2 — Advanced Features";
-  const addonsStepDesc   = getStep("addons")?.description       || "Enhance your EHSWatch experience";
-  const orgStepTitle     = getStep("organisation")?.title       || "Step 3 — Organisation Details";
-  const orgStepDesc      = getStep("organisation")?.description || "Tell us about your organisation";
-  const contactStepTitle = getStep("contact")?.title            || "Step 4 — Get Your Proposal";
-  const contactStepDesc  = getStep("contact")?.description      || "We'll send you a detailed proposal based on your selections";
+  const stepLabels =
+    cmsStepLabels && cmsStepLabels.length === wizardSteps.length
+      ? cmsStepLabels
+      : wizardSteps.map((s) => s.title);
 
-  // Contact step fields — labels from CMS, structure covers all 5 fields including messagebox
-  const cmsContactFields = getStep("contact")?.fields ?? [];
-  const getCmsLabel = (key: string, fallback: string) =>
-    cmsContactFields.find((f) => f.key === key)?.label || fallback;
-  const contactProposalFields: ProposalField[] = [
-    { label: getCmsLabel("name",       "Full Name"),          key: "name",       type: "text",     placeholder: "Jane Smith" },
-    { label: getCmsLabel("email",      "Work Email"),         key: "email",      type: "email",    placeholder: "jane@company.com" },
-    { label: getCmsLabel("phone",      "Phone Number"),       key: "phone",      type: "tel",      placeholder: "+1 000 000 0000" },
-    { label: getCmsLabel("company",    "Company"),            key: "company",    type: "text",     placeholder: "Your organisation name" },
-    { label: getCmsLabel("messagebox", "Message (optional)"), key: "messagebox", type: "textarea", placeholder: "Anything specific you'd like us to know?" },
-  ];
-
-  // Organisation field options: form schema options (always present)
-  const orgFields = getStep("organisation")?.fields ?? [];
-  const getOpts = (key: string, fallback: string[]) => {
-    const f = orgFields.find(f => f.key === key);
-    return f?.options && f.options.length > 0 ? f.options : fallback;
-  };
-  const employeeOptions = getOpts("employees", ["< 50", "50–200", "201–1,000", "1,001–5,000", "5,000+"]);
-  const siteOptions     = getOpts("sites",     ["1", "2–5", "6–20", "21–50", "50+"]);
-  // Industries: pricing_calculator block overrides form schema options
-  const industryOptions = (cmsIndustries && cmsIndustries.length > 0)
-    ? cmsIndustries
-    : getOpts("industry", INDUSTRIES);
-
-  // Apps: pricing_calculator block drives the list; falls back to hardcoded APPS
-  const apps = (cmsApplications && cmsApplications.length > 0)
+  // Picker catalogues (apps / addons)
+  const apps: PickerItem[] = (cmsApplications && cmsApplications.length > 0)
     ? cmsApplications.map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon || "check-circle", color: a.color || "#155eef" }))
     : APPS;
-
-  // Addons: pricing_calculator block drives the list; falls back to hardcoded ADDONS
-  const addons = (cmsAddons && cmsAddons.length > 0)
-    ? cmsAddons.map(a => ({ id: a.id, name: a.name, desc: a.description, color: a.color || "#6366f1", icon: a.icon }))
+  const addons: PickerItem[] = (cmsAddons && cmsAddons.length > 0)
+    ? cmsAddons.map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon, color: a.color || "#6366f1" }))
     : ADDONS;
+
+  // Industry override from the pricing_calculator block
+  const fieldOptions = (field: CmsFormField): string[] => {
+    if (field.key === "industry" && cmsIndustries && cmsIndustries.length > 0) return cmsIndustries;
+    return field.options ?? [];
+  };
 
   const submitLabel    = cmsSubmitLabel    || "Get My EHSWatch Proposal →";
   const successHeading = cmsSuccessHeading || "Proposal Request Sent!";
 
-  const [step, setStep] = useState(0);
-  const [selectedApps, setSelectedApps] = useState<Set<string>>(new Set());
-  const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
-  const [org, setOrg] = useState({ employees: "", sites: "", industry: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep]               = useState(0);
+  const [values, setValues]           = useState<Record<string, string>>({});
+  const [picks, setPicks]             = useState<Record<string, string[]>>({});
+  const [errors, setErrors]           = useState<Record<string, string>>({});
+  const [submitted, setSubmitted]     = useState(false);
+  const [submitting, setSubmitting]   = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<ProposalData>({ resolver: zodResolver(proposalSchema) });
+  const isLastStep = step === wizardSteps.length - 1;
+  const current = wizardSteps[step];
 
-  const toggleApp = (id: string) =>
-    setSelectedApps((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
-
-  const toggleAddon = (id: string) =>
-    setSelectedAddons((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
-
-  const canNext = () => {
-    if (step === 0) return selectedApps.size > 0;
-    if (step === 2) return org.employees && org.sites && org.industry;
-    return true;
+  const setValue = (key: string, v: string) => {
+    setValues((prev) => ({ ...prev, [key]: v }));
+    setErrors((prev) => { const e = { ...prev }; delete e[key]; return e; });
   };
 
-  const onSubmit = async (data: ProposalData) => {
+  const togglePick = (key: string, id: string) => {
+    setPicks((prev) => {
+      const list = prev[key] ?? [];
+      return { ...prev, [key]: list.includes(id) ? list.filter((x) => x !== id) : [...list, id] };
+    });
+    setErrors((prev) => { const e = { ...prev }; delete e[key]; return e; });
+  };
+
+  const validateStep = (idx: number): boolean => {
+    const stepErrors: Record<string, string> = {};
+    for (const field of wizardSteps[idx].fields) {
+      if (field.field_type === "hidden") continue;
+      const err = validateField(field, values, picks);
+      if (err) stepErrors[field.key] = err;
+    }
+    setErrors(stepErrors);
+    return Object.keys(stepErrors).length === 0;
+  };
+
+  const goNext = () => {
+    if (!validateStep(step)) return;
+    setStep((s) => Math.min(wizardSteps.length - 1, s + 1));
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setSubmitError(null);
+    if (!validateStep(step)) return;
+    if (!captchaToken) {
+      setSubmitError("Please complete the CAPTCHA verification.");
+      return;
+    }
+
+    // Build payload from every schema field across all steps
+    const payload: Record<string, unknown> = { captcha_token: captchaToken };
+    for (const s of wizardSteps) {
+      for (const f of s.fields) {
+        if (MULTI_TYPES.has(f.field_type)) payload[f.key] = picks[f.key] ?? [];
+        else payload[f.key] = values[f.key] ?? "";
+      }
+    }
+
+    setSubmitting(true);
     try {
       const { submitForm } = await import("@/lib/api");
-      const result = await submitForm(formSlug, {
-        ...data,
-        selected_applications: Array.from(selectedApps),
-        selected_addons: Array.from(selectedAddons),
-        employees: org.employees,
-        sites: org.sites,
-        industry: org.industry,
-        captcha_token: captchaToken ?? "",
-      });
+      const result = await submitForm(formSlug, payload);
 
       if (!result.ok) {
-        // Map CMS field errors back to their input fields where possible
-        const fieldKeys = new Set(Object.keys(proposalSchema.shape));
-        let mappedAny = false;
+        const allKeys = new Set(wizardSteps.flatMap((s) => s.fields.map((f) => f.key)));
+        const fieldErrors: Record<string, string> = {};
+        const unmapped: string[] = [];
         for (const err of result.errors ?? []) {
-          const field = err.source?.pointer?.split("/").pop() as keyof ProposalData | undefined;
-          if (field && fieldKeys.has(field)) {
-            setError(field, { type: "server", message: err.detail });
-            mappedAny = true;
-          }
+          const key = err.source?.pointer?.split("/").pop() ?? "";
+          if (key && allKeys.has(key)) fieldErrors[key] = err.detail ?? err.title ?? "Invalid value.";
+          else unmapped.push(err.detail ?? err.title ?? "");
         }
-        // Unmapped errors (e.g. selected_applications, captcha) shown as banner
-        const unmapped = (result.errors ?? []).filter(
-          (e) => !fieldKeys.has((e.source?.pointer?.split("/").pop() ?? "") as keyof ProposalData)
-        );
-        if (unmapped.length > 0) {
-          setSubmitError(unmapped.map((e) => e.detail).join(" "));
-        } else if (!mappedAny) {
-          setSubmitError("Submission failed. Please check your details and try again.");
-        }
+        if (Object.keys(fieldErrors).length > 0) setErrors(fieldErrors);
+        if (unmapped.filter(Boolean).length > 0) setSubmitError(unmapped.filter(Boolean).join(" "));
+        else if (Object.keys(fieldErrors).length === 0) setSubmitError("Submission failed. Please check your details and try again.");
         return;
       }
 
       setSubmitted(true);
     } catch {
       setSubmitError("Network error. Please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
+
+  // ── Widgets ────────────────────────────────────────────────────────────────
+
+  const inputClass =
+    "calc-input w-full rounded-xl border px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] placeholder:text-[#9ca3af] transition-all duration-200";
+
+  function FieldError({ msg }: { msg?: string }) {
+    if (!msg) return null;
+    return <p className="text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">{msg}</p>;
+  }
+
+  function renderPickerGrid(field: CmsFormField) {
+    const isAddon = field.field_type === "addon_picker";
+    const items = isAddon ? addons : apps;
+    const selected = new Set(picks[field.key] ?? []);
+    return (
+      <div key={field.key}>
+        {field.help_text && (
+          <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af] mb-4">{field.help_text}</p>
+        )}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 ${isAddon ? "gap-4" : "gap-3"}`}>
+          {items.map((item) => {
+            const sel = selected.has(item.id);
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => togglePick(field.key, item.id)}
+                className={`${isAddon ? "addon-card" : "calc-card"} text-left rounded-xl border transition-all duration-200 flex flex-col ${isAddon ? "p-5 gap-3" : "p-4 gap-2.5"} ${sel ? (isAddon ? "addon-card-sel" : "calc-card-sel") : ""}`}
+                style={{
+                  borderColor: sel ? "#1d4ed8" : "#e5e7eb",
+                  background: sel ? "#eff6ff" : "white",
+                  cursor: "pointer",
+                }}
+              >
+                <div className={`flex ${isAddon ? "items-start" : "items-center"} justify-between gap-2`}>
+                  <div
+                    className={`${isAddon ? "w-10 h-10 rounded-xl" : "w-8 h-8 rounded-lg"} flex items-center justify-center shrink-0`}
+                    style={{ background: item.color + "14", color: item.color }}
+                  >
+                    <LucideIcon name={item.icon} size={isAddon ? 20 : 16} />
+                  </div>
+                  <div
+                    className="w-4 h-4 rounded flex items-center justify-center shrink-0 border transition-all duration-200"
+                    style={{
+                      borderColor: sel ? "#1d4ed8" : "#d1d5db",
+                      background: sel ? "#1d4ed8" : "white",
+                    }}
+                  >
+                    {sel && (
+                      <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                        <path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <p className={`font-[family-name:var(--font-gothic-a1)] font-semibold ${isAddon ? "text-[15px]" : "text-[13px]"} text-[#0a0f1e] leading-snug`}>
+                    {item.name}
+                  </p>
+                  <p className={`${isAddon ? "" : "calc-desc"} font-[family-name:var(--font-dm-sans)] ${isAddon ? "text-[13px]" : "text-[11px]"} text-[#6b7280] leading-[1.5] mt-1 text-pretty`}>
+                    {item.desc}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-3"><FieldError msg={errors[field.key]} /></div>
+      </div>
+    );
+  }
+
+  function renderField(field: CmsFormField) {
+    if (field.field_type === "hidden") return null;
+    if (PICKER_TYPES.has(field.field_type)) return renderPickerGrid(field);
+
+    const err = errors[field.key];
+    const label = (
+      <label className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#374151]">
+        {field.label}
+        {field.required && <span style={{ color: "#ef4444" }}> *</span>}
+      </label>
+    );
+    const help = field.help_text ? (
+      <p className="font-[family-name:var(--font-dm-sans)] text-[12px] text-[#9ca3af]">{field.help_text}</p>
+    ) : null;
+    const borderColor = err ? "#f87171" : "#e5e7eb";
+
+    if (field.field_type === "select") {
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          {label}
+          <select
+            className={inputClass + " appearance-none bg-white"}
+            style={{ borderColor }}
+            value={values[field.key] ?? ""}
+            onChange={(e) => setValue(field.key, e.target.value)}
+          >
+            <option value="">{field.placeholder || `Select ${field.label}`}</option>
+            {fieldOptions(field).map((o) => (
+              <option key={o} value={o}>{o}</option>
+            ))}
+          </select>
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    if (field.field_type === "textarea") {
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          {label}
+          <textarea
+            rows={4}
+            placeholder={field.placeholder ?? ""}
+            className={inputClass + " resize-none"}
+            style={{ borderColor }}
+            value={values[field.key] ?? ""}
+            onChange={(e) => setValue(field.key, e.target.value)}
+          />
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    if (field.field_type === "radio") {
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          {label}
+          <div className="flex flex-wrap gap-4">
+            {fieldOptions(field).map((o) => (
+              <label key={o} className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#374151] cursor-pointer">
+                <input
+                  type="radio"
+                  name={field.key}
+                  checked={values[field.key] === o}
+                  onChange={() => setValue(field.key, o)}
+                  className="accent-[#1d4ed8]"
+                />
+                {o}
+              </label>
+            ))}
+          </div>
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    if (field.field_type === "checkboxes") {
+      const selected = new Set(picks[field.key] ?? []);
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          {label}
+          <div className="flex flex-col gap-2">
+            {fieldOptions(field).map((o) => (
+              <label key={o} className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#374151] cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selected.has(o)}
+                  onChange={() => togglePick(field.key, o)}
+                  className="accent-[#1d4ed8]"
+                />
+                {o}
+              </label>
+            ))}
+          </div>
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    if (field.field_type === "consent") {
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={values[field.key] === "true"}
+              onChange={(e) => setValue(field.key, e.target.checked ? "true" : "")}
+              className="mt-0.5 accent-[#1d4ed8]"
+            />
+            <span className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#374151] leading-[1.6]">
+              {field.label}
+              {field.required && <span style={{ color: "#ef4444" }}> *</span>}
+            </span>
+          </label>
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    // text / email / phone / tel / url / number
+    const htmlType =
+      field.field_type === "email"  ? "email"
+      : field.field_type === "phone" || field.field_type === "tel" ? "tel"
+      : field.field_type === "url"    ? "url"
+      : field.field_type === "number" ? "number"
+      : "text";
+
+    return (
+      <div key={field.key} className="flex flex-col gap-2">
+        {label}
+        <input
+          type={htmlType}
+          placeholder={field.placeholder ?? ""}
+          className={inputClass}
+          style={{ borderColor }}
+          value={values[field.key] ?? ""}
+          onChange={(e) => setValue(field.key, e.target.value)}
+        />
+        {help}
+        <FieldError msg={err} />
+      </div>
+    );
+  }
+
+  // ── Sidebar summary data ───────────────────────────────────────────────────
+  const appPickerKey   = wizardSteps.flatMap((s) => s.fields).find((f) => f.field_type === "application_picker")?.key;
+  const addonPickerKey = wizardSteps.flatMap((s) => s.fields).find((f) => f.field_type === "addon_picker")?.key;
+  const selectedAppIds   = new Set(appPickerKey ? picks[appPickerKey] ?? [] : []);
+  const selectedAddonIds = new Set(addonPickerKey ? picks[addonPickerKey] ?? [] : []);
+  const summarySelects = wizardSteps
+    .flatMap((s) => s.fields)
+    .filter((f) => f.field_type === "select" && (values[f.key] ?? "").trim());
+
+  const firstName = (values["name"] ?? "").split(" ")[0] || "there";
+  const emailVal  = values["email"] ?? "";
+
+  const stepHasPicker = current.fields.some((f) => PICKER_TYPES.has(f.field_type));
 
   return (
     <section id="calculator" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
       <style>{`
-        .calc-card-sel {
-          border-color: #1d4ed8 !important;
-          background: #eff6ff !important;
-        }
-        .calc-card:hover:not(.calc-card-sel) {
-          border-color: #93c5fd !important;
-          box-shadow: 0 4px 16px rgba(59,130,246,0.10) !important;
-        }
-        .addon-card-sel {
-          border-color: #1d4ed8 !important;
-          background: #eff6ff !important;
-        }
-        .addon-card:hover:not(.addon-card-sel) {
-          border-color: #93c5fd !important;
-        }
-        .calc-input:focus {
-          outline: none;
-          border-color: #1d4ed8 !important;
-          box-shadow: 0 0 0 3px rgba(29,78,216,0.10);
-        }
-        .calc-desc {
-          max-height: 0;
-          overflow: hidden;
-          opacity: 0;
-          transition: max-height 0.28s ease, opacity 0.22s ease;
-        }
-        .calc-card:hover .calc-desc,
-        .calc-card-sel .calc-desc {
-          max-height: 60px;
-          opacity: 1;
-        }
+        .calc-card-sel { border-color: #1d4ed8 !important; background: #eff6ff !important; }
+        .calc-card:hover:not(.calc-card-sel) { border-color: #93c5fd !important; box-shadow: 0 4px 16px rgba(59,130,246,0.10) !important; }
+        .addon-card-sel { border-color: #1d4ed8 !important; background: #eff6ff !important; }
+        .addon-card:hover:not(.addon-card-sel) { border-color: #93c5fd !important; }
+        .calc-input:focus { outline: none; border-color: #1d4ed8 !important; box-shadow: 0 0 0 3px rgba(29,78,216,0.10); }
+        .calc-desc { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.28s ease, opacity 0.22s ease; }
+        .calc-card:hover .calc-desc, .calc-card-sel .calc-desc { max-height: 60px; opacity: 1; }
       `}</style>
 
       <div className="max-w-[1160px] mx-auto">
@@ -368,19 +619,17 @@ export default function PricingCalculator({
         {/* Step indicator */}
         <div className="w-full max-w-[640px] mx-auto mb-10 md:mb-14">
           <div className="flex items-center">
-            {steps.map((label, i) => {
+            {stepLabels.map((label, i) => {
               const done   = i < step;
               const active = i === step;
               return (
                 <div key={i} className="flex items-center flex-1 last:flex-none">
-                  {/* Step node */}
                   <div className="flex flex-col items-center gap-1 relative">
-                    {/* Circle */}
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center font-[family-name:var(--font-dm-sans)] font-bold text-[14px] border-2 transition-all duration-300 shrink-0"
                       style={{
-                        borderColor: done ? "#1d4ed8" : active ? "#1d4ed8" : "#d1d5db",
-                        background:  done ? "#1d4ed8" : active ? "#1d4ed8" : "white",
+                        borderColor: done || active ? "#1d4ed8" : "#d1d5db",
+                        background:  done || active ? "#1d4ed8" : "white",
                         color:       done || active ? "white" : "#9ca3af",
                       }}
                     >
@@ -392,7 +641,6 @@ export default function PricingCalculator({
                         i + 1
                       )}
                     </div>
-                    {/* Label */}
                     <span
                       className="font-[family-name:var(--font-dm-sans)] text-[11px] sm:text-[12px] font-medium mt-1 whitespace-nowrap transition-colors duration-300"
                       style={{
@@ -403,16 +651,11 @@ export default function PricingCalculator({
                       {label}
                     </span>
                   </div>
-
-                  {/* Connector line between circles */}
-                  {i < steps.length - 1 && (
+                  {i < stepLabels.length - 1 && (
                     <div className="flex-1 h-[2px] mx-1 relative" style={{ background: "#e5e7eb", marginBottom: "20px" }}>
                       <div
                         className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
-                        style={{
-                          width: i < step ? "100%" : "0%",
-                          background: "#1d4ed8",
-                        }}
+                        style={{ width: i < step ? "100%" : "0%", background: "#1d4ed8" }}
                       />
                     </div>
                   )}
@@ -427,241 +670,54 @@ export default function PricingCalculator({
 
           {/* ── Content area ── */}
           <div className="flex-1 min-w-0">
-
-            {/* STEP 0 — Applications */}
-            {step === 0 && (
-              <div>
+            {!submitted ? (
+              <div className={stepHasPicker ? "" : "max-w-[560px]"}>
                 <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] text-[#0a0f1e] mb-2">
-                  {appsStepTitle}
+                  {current.title}
                 </h3>
                 <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#6b7280] mb-7">
-                  {appsStepDesc}
+                  {current.description}
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                  {apps.map((app) => {
-                    const sel = selectedApps.has(app.id);
-                    return (
-                      <button
-                        key={app.id}
-                        onClick={() => toggleApp(app.id)}
-                        className={`calc-card text-left rounded-xl p-4 border transition-all duration-200 flex flex-col gap-2.5 ${sel ? "calc-card-sel" : ""}`}
-                        style={{
-                          borderColor: sel ? "#1d4ed8" : "#e5e7eb",
-                          background: sel ? "#eff6ff" : "white",
-                          cursor: "pointer",
-                        }}
+
+                {isLastStep ? (
+                  <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+                    {current.fields.map(renderField)}
+                    <TurnstileField onToken={setCaptchaToken} onExpire={() => setCaptchaToken(null)} />
+                    {submitError && (
+                      <div
+                        className="rounded-xl px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-[1.6]"
+                        style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c" }}
                       >
-                        <div className="flex items-center justify-between">
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                            style={{ background: app.color + "14", color: app.color }}
-                          >
-                            <LucideIcon name={app.icon} size={16} />
-                          </div>
-                          {/* Square checkbox */}
-                          <div
-                            className="w-4 h-4 rounded flex items-center justify-center shrink-0 border transition-all duration-200"
-                            style={{
-                              borderColor: sel ? "#1d4ed8" : "#d1d5db",
-                              background: sel ? "#1d4ed8" : "white",
-                            }}
-                          >
-                            {sel && (
-                              <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                                <path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <p className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[13px] text-[#0a0f1e] leading-snug">
-                            {app.name}
-                          </p>
-                          <p className="calc-desc font-[family-name:var(--font-dm-sans)] text-[11px] text-[#6b7280] leading-[1.5] mt-1 text-pretty">
-                            {app.desc}
-                          </p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* STEP 1 — Add-Ons */}
-            {step === 1 && (
-              <div>
-                <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] text-[#0a0f1e] mb-2">
-                  {addonsStepTitle}
-                </h3>
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#6b7280] mb-7">
-                  {addonsStepDesc} <span className="text-[#9ca3af]">(optional)</span>
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {addons.map((addon) => {
-                    const sel = selectedAddons.has(addon.id);
-                    return (
-                      <button
-                        key={addon.id}
-                        onClick={() => toggleAddon(addon.id)}
-                        className={`addon-card text-left rounded-xl p-5 border transition-all duration-200 flex flex-col gap-3 ${sel ? "addon-card-sel" : ""}`}
-                        style={{
-                          borderColor: sel ? "#1d4ed8" : "#e5e7eb",
-                          background: sel ? "#eff6ff" : "white",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                            style={{ background: addon.color + "14", color: addon.color }}
-                          >
-                            <LucideIcon name={addon.icon} size={20} />
-                          </div>
-                          <div
-                            className="w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5 border transition-all duration-200"
-                            style={{
-                              borderColor: sel ? "#1d4ed8" : "#d1d5db",
-                              background: sel ? "#1d4ed8" : "white",
-                            }}
-                          >
-                            {sel && (
-                              <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                                <path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <p className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
-                            {addon.name}
-                          </p>
-                          <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] mt-1 text-pretty">
-                            {addon.desc}
-                          </p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* STEP 2 — Organisation */}
-            {step === 2 && (
-              <div className="max-w-[560px]">
-                <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] text-[#0a0f1e] mb-2">
-                  {orgStepTitle}
-                </h3>
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#6b7280] mb-7">
-                  {orgStepDesc}
-                </p>
-                <div className="flex flex-col gap-5">
-                  {[
-                    { label: "Number of Employees", key: "employees", options: employeeOptions },
-                    { label: "Number of Sites",     key: "sites",     options: siteOptions },
-                    { label: "Industry",            key: "industry",  options: industryOptions },
-                  ].map(({ label, key, options }) => (
-                    <div key={key} className="flex flex-col gap-2">
-                      <label className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#374151]">
-                        {label}
-                      </label>
-                      <select
-                        className="calc-input w-full rounded-xl border px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] appearance-none bg-white transition-all duration-200"
-                        style={{ borderColor: "#e5e7eb" }}
-                        value={org[key as keyof typeof org]}
-                        onChange={(e) => setOrg((prev) => ({ ...prev, [key]: e.target.value }))}
-                      >
-                        <option value="">Select {label}</option>
-                        {options.map((o) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* STEP 3 — Submit */}
-            {step === 3 && !submitted && (
-              <div className="max-w-[560px]">
-                <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] text-[#0a0f1e] mb-2">
-                  {contactStepTitle}
-                </h3>
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] text-[#6b7280] mb-7">
-                  {contactStepDesc}
-                </p>
-                <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
-                  {contactProposalFields.map(({ label, key, type, placeholder }) => {
-                    const isOptional = key === "messagebox";
-                    return (
-                      <div key={key} className="flex flex-col gap-2">
-                        <label className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#374151]">
-                          {label}{!isOptional && <span style={{ color: "#ef4444" }}> *</span>}
-                        </label>
-                        {type === "textarea" ? (
-                          <textarea
-                            rows={4}
-                            placeholder={placeholder}
-                            className="calc-input w-full rounded-xl border px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] placeholder:text-[#9ca3af] transition-all duration-200 resize-none"
-                            style={{ borderColor: errors[key] ? "#f87171" : "#e5e7eb" }}
-                            {...register(key)}
-                          />
-                        ) : (
-                          <input
-                            type={type}
-                            placeholder={placeholder}
-                            className="calc-input w-full rounded-xl border px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] placeholder:text-[#9ca3af] transition-all duration-200"
-                            style={{ borderColor: errors[key] ? "#f87171" : "#e5e7eb" }}
-                            {...register(key)}
-                          />
-                        )}
-                        {errors[key] && (
-                          <p className="text-[12px] text-red-500 font-[family-name:var(--font-dm-sans)]">
-                            {errors[key]?.message}
-                          </p>
-                        )}
+                        {submitError}
                       </div>
-                    );
-                  })}
-                  <TurnstileField onToken={setCaptchaToken} onExpire={() => setCaptchaToken(null)} />
-
-                  {submitError && (
-                    <div
-                      className="rounded-xl px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-[1.6]"
-                      style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c" }}
+                    )}
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="mt-2 w-full py-[13px] rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[15px] text-white transition-all duration-300"
+                      style={{
+                        backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
+                        boxShadow: "0 4px 20px rgba(249,115,22,0.35)",
+                        opacity: submitting ? 0.7 : 1,
+                        cursor: submitting ? "not-allowed" : "pointer",
+                      }}
                     >
-                      {submitError}
-                    </div>
-                  )}
-
-                  <button type="submit"
-                    disabled={isSubmitting || !captchaToken}
-                    className="mt-2 w-full py-[13px] rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[15px] text-white transition-all duration-300"
-                    style={{
-                      backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
-                      boxShadow: "0 4px 20px rgba(249,115,22,0.35)",
-                      opacity: (isSubmitting || !captchaToken) ? 0.7 : 1,
-                      cursor: (isSubmitting || !captchaToken) ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    {isSubmitting ? "Sending..." : submitLabel}
-                  </button>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[12px] text-[#9ca3af] text-center text-pretty">
-                    No commitment required. We&apos;ll follow up within 1 business day.
-                  </p>
-                </form>
+                      {submitting ? "Sending..." : submitLabel}
+                    </button>
+                    <p className="font-[family-name:var(--font-dm-sans)] text-[12px] text-[#9ca3af] text-center text-pretty">
+                      No commitment required. We&apos;ll follow up within 1 business day.
+                    </p>
+                  </form>
+                ) : (
+                  <div className="flex flex-col gap-5">
+                    {current.fields.map(renderField)}
+                  </div>
+                )}
               </div>
-            )}
-
-            {/* Success state */}
-            {step === 3 && submitted && (
+            ) : (
+              /* Success state */
               <div className="max-w-[560px] text-center py-12 flex flex-col items-center gap-5">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center"
-                  style={{ background: "#ecfdf5" }}
-                >
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "#ecfdf5" }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <path d="M5 14l6 6 12-12" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -672,10 +728,8 @@ export default function PricingCalculator({
                   </h3>
                   <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] leading-[1.75] text-pretty">
                     {cmsSuccessBody
-                      ? cmsSuccessBody
-                          .replace(/{name}/g, getValues("name").split(" ")[0])
-                          .replace(/{email}/g, getValues("email"))
-                      : <>Thanks {getValues("name").split(" ")[0]}! Our team will review your selections and send a tailored proposal to <strong>{getValues("email")}</strong> within 1 business day.</>
+                      ? cmsSuccessBody.replace(/{name}/g, firstName).replace(/{email}/g, emailVal)
+                      : <>Thanks {firstName}! Our team will review your selections and send a tailored proposal to <strong>{emailVal}</strong> within 1 business day.</>
                     }
                   </p>
                 </div>
@@ -683,7 +737,7 @@ export default function PricingCalculator({
             )}
 
             {/* Navigation buttons */}
-            {!(step === 3 && submitted) && (
+            {!submitted && (
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#f0f0f0]">
                 <button
                   onClick={() => setStep((s) => Math.max(0, s - 1))}
@@ -697,16 +751,15 @@ export default function PricingCalculator({
                   Back
                 </button>
 
-                {step < 3 && (
+                {!isLastStep && (
                   <button
-                    onClick={() => setStep((s) => Math.min(3, s + 1))}
-                    disabled={!canNext()}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:enabled:opacity-90"
+                    onClick={goNext}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200 hover:opacity-90"
                     style={{
                       backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
                     }}
                   >
-                    {step === 1 ? "Continue" : step === 2 ? "Continue to Proposal" : "Continue"}
+                    Continue
                     <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -722,27 +775,25 @@ export default function PricingCalculator({
               className="sticky top-[100px] rounded-2xl p-6 flex flex-col gap-5"
               style={{ background: "#F8FBFF", border: "1px solid #dbeafe" }}
             >
-              {/* Package header */}
               <div className="flex items-center justify-between">
                 <span className="font-[family-name:var(--font-gothic-a1)] font-bold text-[15px] text-[#0a0f1e]">Your Package</span>
-                {selectedApps.size > 0 && (
+                {selectedAppIds.size > 0 && (
                   <span
                     className="font-[family-name:var(--font-dm-sans)] text-[12px] font-bold px-2.5 py-1 rounded-full"
                     style={{ background: "#1d4ed8", color: "white" }}
                   >
-                    {selectedApps.size} app{selectedApps.size !== 1 ? "s" : ""}
+                    {selectedAppIds.size} app{selectedAppIds.size !== 1 ? "s" : ""}
                   </span>
                 )}
               </div>
 
-              {/* Selected apps list */}
-              {selectedApps.size === 0 ? (
+              {selectedAppIds.size === 0 ? (
                 <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af] text-center py-4">
                   No applications selected yet
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2 max-h-[260px] overflow-y-auto pr-1">
-                  {apps.filter((a) => selectedApps.has(a.id)).map((a) => (
+                  {apps.filter((a) => selectedAppIds.has(a.id)).map((a) => (
                     <li key={a.id} className="flex items-center gap-2.5">
                       <div
                         className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
@@ -756,14 +807,13 @@ export default function PricingCalculator({
                 </ul>
               )}
 
-              {/* Add-ons */}
-              {selectedAddons.size > 0 && (
+              {selectedAddonIds.size > 0 && (
                 <>
                   <div className="border-t border-[#dbeafe]" />
                   <div>
                     <p className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9ca3af] mb-2">Add-Ons</p>
                     <ul className="flex flex-col gap-2">
-                      {addons.filter((a) => selectedAddons.has(a.id)).map((a) => (
+                      {addons.filter((a) => selectedAddonIds.has(a.id)).map((a) => (
                         <li key={a.id} className="flex items-center gap-2.5">
                           <div
                             className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
@@ -779,15 +829,16 @@ export default function PricingCalculator({
                 </>
               )}
 
-              {/* Org details */}
-              {(org.employees || org.sites || org.industry) && (
+              {summarySelects.length > 0 && (
                 <>
                   <div className="border-t border-[#dbeafe]" />
                   <div className="flex flex-col gap-2">
                     <p className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9ca3af] mb-1">Organisation</p>
-                    {org.employees && <p className="font-[family-name:var(--font-dm-sans)] text-[12.5px] text-[#374151]">Employees: {org.employees}</p>}
-                    {org.sites && <p className="font-[family-name:var(--font-dm-sans)] text-[12.5px] text-[#374151]">Sites: {org.sites}</p>}
-                    {org.industry && <p className="font-[family-name:var(--font-dm-sans)] text-[12.5px] text-[#374151]">Industry: {org.industry}</p>}
+                    {summarySelects.map((f) => (
+                      <p key={f.key} className="font-[family-name:var(--font-dm-sans)] text-[12.5px] text-[#374151]">
+                        {f.label}: {values[f.key]}
+                      </p>
+                    ))}
                   </div>
                 </>
               )}

@@ -89,7 +89,16 @@ export default async function PricingPage() {
       key: string;
       title: string;
       description: string;
-      fields: Array<{ key: string; label: string; field_type: string; options?: string[] | null }>;
+      fields: Array<{
+        key: string;
+        label: string;
+        field_type: string;
+        options?: string[] | null;
+        required?: boolean;
+        placeholder?: string | null;
+        help_text?: string | null;
+        full_width?: boolean;
+      }>;
     }>;
     submit_label?: string;
     success_heading?: string;
@@ -180,12 +189,15 @@ export default async function PricingPage() {
           checklistHeading={overviewChecklistHeading}
           checklistItems={overviewChecklistItems.length > 0 ? overviewChecklistItems : undefined}
         />
+        {/* Calculator renders only while the CMS form is active — toggling
+            "Is active" off in the form admin hides the whole section. */}
+        {calcFormAttrs && (
         <PricingCalculator
           cmsHeading={calcBlock?.heading || formEmbedBlock?.heading || undefined}
           cmsSubheading={calcBlock?.subheading || formEmbedBlock?.description || undefined}
           cmsFormSlug={calcFormSlug}
           cmsFormSteps={calcFormAttrs?.steps}
-          cmsStepLabels={cmsCalcStepLabels && cmsCalcStepLabels.length === 4 ? cmsCalcStepLabels : undefined}
+          cmsStepLabels={cmsCalcStepLabels && cmsCalcStepLabels.length > 0 ? cmsCalcStepLabels : undefined}
           cmsApplications={
             (cmsCalcApplications && cmsCalcApplications.length > 0)
               ? cmsCalcApplications
@@ -205,6 +217,7 @@ export default async function PricingPage() {
           cmsSuccessHeading={calcBlock?.success_heading || calcFormAttrs?.success_heading || undefined}
           cmsSuccessBody={calcBlock?.success_body || calcFormAttrs?.success_message || undefined}
         />
+        )}
         <PricingFAQ
           heading={faqHeading}
           items={faqItems.length > 0 ? faqItems : undefined}
