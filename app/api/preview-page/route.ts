@@ -37,7 +37,14 @@ export async function GET(request: NextRequest) {
     return fail("Could not reach the CMS to verify the preview link. Try again.");
   }
 
-  const target = new URL(BASE_PATH + pagePath(slug), request.url);
+  // Build the redirect from forwarded headers so the host matches what the
+  // visitor's browser is on (behind nginx, request.url is the bind address).
+  const proto = request.headers.get("x-forwarded-proto") ?? "https";
+  const host =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const target = host
+    ? `${proto}://${host}${BASE_PATH}${pagePath(slug)}`
+    : new URL(BASE_PATH + pagePath(slug), request.url);
   const response = NextResponse.redirect(target);
   response.cookies.set("page_preview", JSON.stringify({ slug, token, exp }), {
     httpOnly: true,
