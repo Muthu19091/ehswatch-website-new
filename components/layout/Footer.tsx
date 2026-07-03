@@ -1,6 +1,7 @@
 import { getFooter } from "@/lib/api";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
+import CmsIcon from "@/components/ui/CmsIcon";
 
 const imgEhsWatch = basePath + "/images/EHS%20logo.svg";
 
@@ -97,8 +98,11 @@ export default async function Footer() {
   const ctaPrimaryLabel = (attrs?.cta?.primary?.label) || (attrs?.cta?.primary_cta?.label) || "Book a Demo";
   const ctaPrimaryHref  = (attrs?.cta?.primary?.url) || (attrs?.cta?.primary_cta?.url) || "#";
 
-  const rawSocials = (attrs?.social_links ?? []) as { platform: string; url: string }[];
-  const socialLinks = rawSocials.length > 0 ? rawSocials : FALLBACK_SOCIALS;
+  // Empty list in CMS = admin removed them all; hardcoded fallback only when
+  // the footer API itself is unreachable.
+  const socialLinks: { platform: string; url: string; icon?: string | null }[] = attrs
+    ? ((attrs.social_links ?? []) as { platform: string; url: string; icon?: string | null }[])
+    : FALLBACK_SOCIALS;
 
   const columns = (attrs?.columns ?? []) as { heading: string; links: { label: string; url: string }[] }[];
   // Match columns by heading, fall back to CMS order so renamed columns still render
@@ -129,9 +133,8 @@ export default async function Footer() {
             {tagline}
           </p>
           <div className="flex gap-[10px] pt-2 md:pt-[10px]">
-            {socialLinks.map(({ platform, url }) => {
-              const icon = SOCIAL_ICONS[platform.toLowerCase()];
-              if (!icon) return null;
+            {socialLinks.map(({ platform, url, icon: iconSlug }) => {
+              const brandIcon = SOCIAL_ICONS[platform.toLowerCase()];
               return (
                 <Link
                   key={platform}
@@ -141,7 +144,9 @@ export default async function Footer() {
                   className="w-[30px] h-[30px] rounded-full border border-[rgba(255,255,255,0.8)] flex items-center justify-center hover:bg-white/10 transition-colors"
                   aria-label={platform}
                 >
-                  {icon}
+                  {brandIcon ?? (
+                    <CmsIcon icon={iconSlug || platform} size={13} strokeWidth={2} color="white" fallback="link" />
+                  )}
                 </Link>
               );
             })}
