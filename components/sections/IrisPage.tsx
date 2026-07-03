@@ -7,6 +7,7 @@ import { basePath } from "@/lib/basePath";
 import IRISChatShowcase from "@/components/sections/IRISChatShowcase";
 import Orb from "@/components/ui/Orb";
 import GlareButton from "@/components/ui/GlareButton";
+import CmsIcon from "@/components/ui/CmsIcon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -41,6 +42,7 @@ interface IrisCmsProps {
     headline?: string;
     subheadline?: string;
     primary_cta?: any;
+    secondary_cta?: any;
   };
   cmsTextCta?: {
     heading?: string;
@@ -50,13 +52,36 @@ interface IrisCmsProps {
     cta?: any;
   };
   cmsProblems?: Array<{ title?: string; description?: string; icon?: string }>;
+  cmsProblemsHeading?: string;
+  cmsProblemsSubheading?: string;
   cmsCapabilities?: Array<{
     title?: string;
     description?: string;
     eyebrow?: string;
     sub_items?: any[];
   }>;
-  cmsCtaBanner?: { headline?: string; subhead?: string; primary_cta?: any; button?: { button?: { label?: string; url?: string } } };
+  cmsStepsHeading?: string;
+  cmsStepsSubheading?: string;
+  cmsCtaBanner?: { headline?: string; subhead?: string; primary_cta?: any; secondary_cta?: any; button?: { button?: { label?: string; url?: string } } };
+}
+
+// Resolve a CMS link object ({label,url,anchor,type} possibly nested under .cta)
+// to a {label, href} pair; undefined when no label is set.
+function resolveCmsCta(raw: any): { label: string; href: string } | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const cta = raw.cta?.label ? raw.cta : raw;
+  const label = typeof cta.label === "string" ? cta.label.trim() : "";
+  if (!label) return undefined;
+  const href =
+    (cta.type === "anchor" ? cta.anchor : cta.url) || cta.url || cta.anchor || "#";
+  return { label, href };
+}
+
+// Split a heading so its last `words` words render in the accent colour
+function splitTail(text: string, words = 2): [string, string] {
+  const parts = text.trim().split(/\s+/);
+  if (parts.length <= words) return ["", text.trim()];
+  return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1410,26 +1435,45 @@ export default function IrisPage({
   cmsHero,
   cmsTextCta,
   cmsProblems,
+  cmsProblemsHeading,
+  cmsProblemsSubheading,
   cmsCapabilities,
+  cmsStepsHeading,
+  cmsStepsSubheading,
   cmsCtaBanner,
 }: IrisCmsProps = {}) {
   // ── Derived CMS values with hardcoded fallbacks ──────────────────────────
   const heroHeadline    = cmsHero?.headline    || "Meet IRIS";
   const heroSubheadline = cmsHero?.subheadline || undefined;
+  const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta)   ?? { label: "Book AI Demo", href: "/contact-us" };
+  const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta) ?? { label: "See Pricing", href: "/pricing" };
   const ctaBannerHeadline = cmsCtaBanner?.headline || "Put IRIS to work on your safety data";
   const ctaBannerSubhead  = cmsCtaBanner?.subhead  || "See what you’ve been missing. Book a demo and explore every AI capability live.";
+  const ctaBannerPrimary =
+    resolveCmsCta(cmsCtaBanner?.primary_cta) ??
+    (cmsCtaBanner?.button?.button?.label
+      ? { label: cmsCtaBanner.button.button.label, href: cmsCtaBanner.button.button.url || "#" }
+      : { label: "Book Your Free Demo", href: "/contact-us" });
+  const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta) ?? { label: "View Pricing", href: "/pricing" };
+  const [problemsHeadStart, problemsHeadTail] = splitTail(
+    cmsProblemsHeading?.trim() || "Why Traditional EHS Systems Fall Short",
+  );
+  const problemsSubheading =
+    cmsProblemsSubheading?.trim() ||
+    "Human attention, manual processes and scattered data create dangerous gaps.";
 
   // ACTIVE_PROBLEMS: prefer CMS items, fall back to module-level PROBLEMS constant.
   // Icons are preserved from the hardcoded array by index (CMS supplies icon name strings,
   // not React nodes — the existing SVG icon components are reused as fallbacks).
-  const ACTIVE_PROBLEMS: ProblemCard[] =
+  const ACTIVE_PROBLEMS: Array<ProblemCard & { cmsIcon?: string | null }> =
     cmsProblems && cmsProblems.length > 0
       ? cmsProblems.map((item, i) => ({
           title: item.title || PROBLEMS[i]?.title || "",
           desc:  item.description || PROBLEMS[i]?.desc || "",
           icon:  PROBLEMS[i]?.icon ?? null,
-          color: PROBLEMS[i]?.color || "#155eef",
-          bg:    PROBLEMS[i]?.bg    || "#eff4ff",
+          cmsIcon: item.icon ?? null,
+          color: PROBLEMS[i % PROBLEMS.length]?.color || "#155eef",
+          bg:    PROBLEMS[i % PROBLEMS.length]?.bg    || "#eff4ff",
         }))
       : PROBLEMS;
 
@@ -1590,26 +1634,26 @@ export default function IrisPage({
         {/* ── CTAs ── */}
         <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3 mt-2 mb-8 animate-hero-rise" style={{ animationDelay: "200ms" }}>
           <GlareButton
-            href="#"
+            href={heroPrimaryCta.href}
             className="inline-flex items-center gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white duration-200 hover:shadow-lg"
             style={{
               backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
               boxShadow: "0 4px 20px rgba(249,115,22,0.35)",
             }}
           >
-            Book AI Demo
+            {heroPrimaryCta.label}
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </GlareButton>
           <GlareButton
-            href="#"
+            href={heroSecondaryCta.href}
             fillColor="#FFA660"
             hoverTextColor="#ffffff"
             className="px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] border"
             style={{ borderColor: "#d1d5db", color: "#374151" }}
           >
-            See Pricing
+            {heroSecondaryCta.label}
           </GlareButton>
         </div>
 
@@ -1790,11 +1834,11 @@ export default function IrisPage({
           {/* Heading */}
           <div className="text-center mb-10 md:mb-14" ref={problemsHeadRef}>
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b] iris-reveal-target">
-              Why Traditional EHS Systems{" "}
-              <span style={{ color: "#155eef" }}>Fall Short</span>
+              {problemsHeadStart}
+              <span style={{ color: "#155eef" }}>{problemsHeadTail}</span>
             </h2>
             <p className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#727272] mt-3 max-w-[520px] mx-auto text-pretty iris-reveal-target" style={{ transitionDelay: "80ms" }}>
-              Human attention, manual processes and scattered data create dangerous gaps.
+              {problemsSubheading}
             </p>
           </div>
 
@@ -1814,12 +1858,16 @@ export default function IrisPage({
                         borderRight: colIdx < 2 ? "1px solid #e5e7eb" : "none",
                       }}
                     >
-                      {/* Icon */}
+                      {/* Icon — CMS Lucide icon when set, hardcoded SVG otherwise */}
                       <div
                         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
                         style={{ backgroundColor: p.color + "14", color: p.color }}
                       >
-                        {p.icon}
+                        {p.cmsIcon ? (
+                          <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
+                        ) : (
+                          p.icon
+                        )}
                       </div>
 
                       {/* Title */}
@@ -1843,7 +1891,11 @@ export default function IrisPage({
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 4+5 — AI CHAT SHOWCASE (scroll-driven)                      */}
       {/* ─────────────────────────────────────────────────────────────────── */}
-      <IRISChatShowcase />
+      <IRISChatShowcase
+        cmsHeading={cmsStepsHeading}
+        cmsSubheading={cmsStepsSubheading}
+        cmsSteps={cmsCapabilities}
+      />
 
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 6 — CTA (orange gradient)                                   */}
@@ -1866,23 +1918,23 @@ export default function IrisPage({
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px]">
             <GlareButton
-              href={cmsCtaBanner?.button?.button?.url ?? "#"}
+              href={ctaBannerPrimary.href}
               className="flex items-center justify-center px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white whitespace-nowrap"
               style={{
                 backgroundImage:
                   "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
               }}
             >
-              {cmsCtaBanner?.button?.button?.label ?? "Book Your Free Demo"}
+              {ctaBannerPrimary.label}
             </GlareButton>
             <GlareButton
               fillColor="#FFA660"
               hoverTextColor="#ffffff"
-              href="#"
+              href={ctaBannerSecondary.href}
               className="flex items-center justify-center px-7 md:px-[31.5px] py-3 md:py-[10px] rounded-full border font-[family-name:var(--font-dm-sans)] text-[14px] text-[#ff6d00]"
               style={{ background: "rgba(255,120,44,0.1)", borderColor: "rgba(255,120,44,0.2)" }}
             >
-              View Pricing
+              {ctaBannerSecondary.label}
             </GlareButton>
           </div>
         </div>

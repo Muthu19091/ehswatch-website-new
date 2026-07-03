@@ -460,7 +460,14 @@ function ChatMockup({
 }
 
 // ─── Feature callout ──────────────────────────────────────────────────────────
-function FeatureCallout({ feat, active }: { feat: typeof FEATURES[number]; active: boolean }) {
+interface FeatureItem {
+  side: "left" | "right";
+  num: string;
+  title: string;
+  desc: string;
+}
+
+function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }) {
   return (
     <div style={{
       display:"flex", gap:14, maxWidth:300,
@@ -494,11 +501,46 @@ function FeatureCallout({ feat, active }: { feat: typeof FEATURES[number]; activ
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export default function IRISChatShowcase() {
+interface IRISChatShowcaseProps {
+  cmsHeading?: string;
+  cmsSubheading?: string;
+  cmsSteps?: Array<{ title?: string; description?: string }>;
+}
+
+// Split heading at the first comma so the tail renders in blue; falls back to
+// highlighting the last three words when there is no comma.
+function splitShowcaseHeading(text: string): [string, string] {
+  const t = text.trim();
+  const commaIdx = t.indexOf(",");
+  if (commaIdx > 0 && commaIdx < t.length - 1) {
+    return [t.slice(0, commaIdx + 1) + " ", t.slice(commaIdx + 1).trim()];
+  }
+  const parts = t.split(/\s+/);
+  if (parts.length <= 3) return ["", t];
+  return [parts.slice(0, -3).join(" ") + " ", parts.slice(-3).join(" ")];
+}
+
+export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }: IRISChatShowcaseProps = {}) {
   const outerRef     = useRef<HTMLDivElement>(null);
   const [step,       setStep]       = useState(0);
   const [showIris,   setShowIris]   = useState(false);
   const [voicePhase, setVoicePhase] = useState<0|1|2>(0);
+
+  // Overlay CMS step titles/descriptions onto the hardcoded feature callouts;
+  // the chat scenes themselves stay design-owned.
+  const features: FeatureItem[] = FEATURES.map((f, i) => ({
+    side: f.side,
+    num: f.num,
+    title: cmsSteps?.[i]?.title?.trim() || f.title,
+    desc: cmsSteps?.[i]?.description?.trim() || f.desc,
+  }));
+
+  const [headingStart, headingTail] = splitShowcaseHeading(
+    cmsHeading?.trim() || "AI agents available today, more on the way.",
+  );
+  const subheading =
+    cmsSubheading?.trim() ||
+    "Each capability targets a real EHS gap. Scroll to see IRIS at work across all six.";
 
   // Refs to avoid stale closures and prevent re-triggering on every scroll tick
   const prevStepRef        = useRef<number>(-1);   // currently displayed step
@@ -608,12 +650,11 @@ export default function IRISChatShowcase() {
       <section className="pt-[80px] md:pt-[100px] pb-0 px-6 bg-white">
         <div className="max-w-[1160px] mx-auto flex flex-col items-center text-center gap-3">
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-            AI agents available today,{" "}
-            <span style={{ color:"#155eef" }}>more on the way.</span>
+            {headingStart}
+            <span style={{ color:"#155eef" }}>{headingTail}</span>
           </h2>
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] text-[#727272]"
-            style={{ whiteSpace:"nowrap" }}>
-            Each capability targets a real EHS gap. Scroll to see IRIS at work across all six.
+          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] text-[#727272] max-w-[640px]">
+            {subheading}
           </p>
         </div>
       </section>
@@ -628,7 +669,7 @@ export default function IRISChatShowcase() {
 
             {/* Left callouts */}
             <div className="relative flex items-center justify-end" style={{ minHeight:240 }}>
-              {FEATURES.map((f, i) =>
+              {features.map((f, i) =>
                 f.side === "left" ? (
                   <div key={i} className="absolute right-0" style={{ zIndex:step===i?1:0 }}>
                     <FeatureCallout feat={f} active={step===i} />
@@ -644,7 +685,7 @@ export default function IRISChatShowcase() {
 
             {/* Right callouts + progress dots */}
             <div className="relative flex items-center justify-start" style={{ minHeight:240 }}>
-              {FEATURES.map((f, i) =>
+              {features.map((f, i) =>
                 f.side === "right" ? (
                   <div key={i} className="absolute left-0" style={{ zIndex:step===i?1:0 }}>
                     <FeatureCallout feat={f} active={step===i} />
@@ -652,7 +693,7 @@ export default function IRISChatShowcase() {
                 ) : null
               )}
               <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-2.5">
-                {FEATURES.map((_, i) => (
+                {features.map((_, i) => (
                   <div key={i} className="rounded-full transition-all duration-500"
                     style={{ width:6, height:step===i?24:6,
                       background:step===i?"#ff6d00":"#E2E8F0" }} />
@@ -668,11 +709,11 @@ export default function IRISChatShowcase() {
               <div>
                 <span style={{ fontSize:10, fontWeight:600, textTransform:"uppercase",
                   letterSpacing:"0.16em", color:"#ff6d00", fontFamily:"var(--font-dm-sans,sans-serif)" }}>
-                  FEATURE {FEATURES[step].num}
+                  FEATURE {features[step].num}
                 </span>
                 <p style={{ fontSize:15, fontWeight:700, color:"#1e293b",
                   fontFamily:"var(--font-gothic-a1,sans-serif)" }}>
-                  {FEATURES[step].title}
+                  {features[step].title}
                 </p>
               </div>
             </div>
@@ -681,7 +722,7 @@ export default function IRISChatShowcase() {
               <ChatMockup step={step} showIris={showIris} voicePhase={voicePhase} />
             </div>
             <div className="flex gap-2 shrink-0 pb-2">
-              {FEATURES.map((_, i) => (
+              {features.map((_, i) => (
                 <div key={i} className="rounded-full transition-all duration-500"
                   style={{ height:6, width:step===i?24:6,
                     background:step===i?"#ff6d00":"#E2E8F0" }} />
