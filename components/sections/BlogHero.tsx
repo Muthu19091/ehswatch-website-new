@@ -66,6 +66,10 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
           className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
           style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.9) 60%, #FFFFFF 100%)" }}
         />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 75% 75% at 50% 45%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 50%, transparent 100%)" }}
+        />
       </div>
 
       <div className="relative z-20 max-w-[700px] w-full mx-auto text-center flex flex-col items-center gap-4">

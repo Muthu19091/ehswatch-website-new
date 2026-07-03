@@ -8,15 +8,18 @@ import Reveal from "@/components/ui/Reveal";
 import GlareButton from "@/components/ui/GlareButton";
 import { basePath } from "@/lib/basePath";
 import type { Metadata } from "next";
-import { getBlogPosts, getPage } from "@/lib/api";
+import { getBlogPosts, getPage, getForm } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Blog — EHSWatch",
-  description:
-    "Practical guidance, regulatory updates and operational insights for EHSQ professionals. Written by safety practitioners, for safety practitioners.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPage("blog").catch(() => null);
+  const attrs = (pageData?.data as any)?.attributes ?? {};
+  return {
+    title: attrs.meta?.meta_title || "Blog — EHSWatch",
+    description: attrs.meta?.meta_description || "Practical guidance, regulatory updates and operational insights for EHSQ professionals. Written by safety practitioners, for safety practitioners.",
+  };
+}
 
 interface CtaBannerProps {
   headline?: string;
@@ -88,12 +91,12 @@ function BlogCTA({
 }
 
 export default async function BlogPage() {
-  // Fetch blog posts (keep existing behaviour)
-  const res = await getBlogPosts();
+  const [res, pageRes] = await Promise.all([
+    getBlogPosts(),
+    getPage("blog"),
+  ]);
   const cmsPosts = res?.data ?? [];
 
-  // Fetch page CMS data for hero + cta_banner
-  const pageRes = await getPage("blog");
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =
     (pageRes?.data?.attributes?.content as Array<{ type: string; data: Record<string, unknown> }>) ?? [];
 
@@ -102,6 +105,12 @@ export default async function BlogPage() {
   const heroHeadline = (heroBlock.headline as string | undefined) || undefined;
   const heroSubheadline = (heroBlock.subheadline as string | undefined) || undefined;
   const heroEyebrow = (heroBlock.eyebrow as string | undefined) || undefined;
+
+  // Extract form_embed block — read form_slug dynamically
+  const formEmbedBlock = blocks.find((b) => b.type === "form_embed")?.data ?? {};
+  const newsletterFormSlug = (formEmbedBlock.form_slug as string | undefined) || "newsletter";
+  const newsletterFormRes = await getForm(newsletterFormSlug).catch(() => null);
+  const newsletterFormAttrs = newsletterFormRes?.data?.attributes ?? null;
 
   // Extract cta_banner block
   const ctaBlock = blocks.find((b) => b.type === "cta_banner")?.data ?? {};
@@ -128,7 +137,7 @@ export default async function BlogPage() {
           eyebrow={heroEyebrow}
         />
         <BlogGrid cmsPosts={cmsPosts.length > 0 ? cmsPosts : undefined} />
-        <BlogNewsletter />
+        <BlogNewsletter formAttrs={newsletterFormAttrs} />
         <BlogCTA
           headline={ctaHeadline}
           subhead={ctaSubhead}

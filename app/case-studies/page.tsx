@@ -50,7 +50,6 @@ export default async function CaseStudiesPage() {
       <Navbar lightHero={true} />
       <main>
         <CaseStudiesHero
-          cmsEyebrow={heroBlock?.eyebrow || undefined}
           cmsHeadline={heroBlock?.headline || undefined}
           cmsSubheadline={heroBlock?.subheadline || undefined}
         />

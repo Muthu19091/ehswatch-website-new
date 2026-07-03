@@ -2,19 +2,44 @@
 
 import { useState } from "react";
 import { basePath } from "@/lib/basePath";
+import TurnstileField from "@/components/ui/TurnstileField";
+import type { CmsForm } from "@/lib/types";
 
 const DARK = "#1B1B1B";
 const DARK_MID = "rgba(27,27,27,0.8)";
 
-export default function BlogNewsletter() {
-  const [email,     setEmail]     = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [hovered,   setHovered]   = useState(false);
+interface BlogNewsletterProps {
+  formAttrs?: CmsForm["attributes"] | null;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) {
+  const [email,        setEmail]        = useState("");
+  const [consent,      setConsent]      = useState(false);
+  const [submitted,    setSubmitted]    = useState(false);
+  const [hovered,      setHovered]      = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  const siteKey    = formAttrs?.captcha?.site_key ?? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
+  const submitLabel = formAttrs?.submit_label ?? "Subscribe";
+  const successMsg  = formAttrs?.success_message ?? "Check your inbox for a confirmation.";
+
+  /* find the consent checkboxes field, if the CMS has one */
+  const consentField = formAttrs?.fields?.find(
+    (f) => f.field_type === "checkboxes" && f.key === "consent"
+  ) ?? null;
+  const needsConsent = consentField?.required && !consent;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    setSubmitted(true);
+    if (!email || !captchaToken || needsConsent) return;
+    try {
+      const { submitForm } = await import("@/lib/api");
+      const data: Record<string, unknown> = { email, captcha_token: captchaToken };
+      if (consentField) data.consent = consent ? ["Yes"] : [];
+      await submitForm("newsletter", data);
+    } finally {
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -25,7 +50,7 @@ export default function BlogNewsletter() {
       `}</style>
 
       <div
-        className="max-w-[1320px] mx-auto px-20 md:px-36 py-14 md:py-16 flex items-center relative overflow-hidden"
+        className="max-w-[1320px] mx-auto px-10 md:px-20 py-14 md:py-16 flex items-center relative overflow-hidden"
         style={{
           borderRadius: "16px",
           backgroundImage: `url(${basePath}/images/blogs/Newsletter%20Background%203.png)`,
@@ -34,7 +59,7 @@ export default function BlogNewsletter() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {/* Right-edge fade — blends into white like the left side */}
+        {/* right-edge fade */}
         <div
           className="absolute inset-y-0 right-0 pointer-events-none"
           style={{
@@ -54,7 +79,7 @@ export default function BlogNewsletter() {
                 style={{ background: "rgba(10,15,30,0.12)" }}
               >
                 <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
-                  <path d="M5 11l4.5 4.5L17 7" stroke={DARK} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 11l4.5 4.5L17 7" stroke={DARK} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <div>
@@ -62,15 +87,15 @@ export default function BlogNewsletter() {
                   You&apos;re subscribed!
                 </p>
                 <p className="font-[family-name:var(--font-dm-sans)] text-[14px] mt-1" style={{ color: DARK_MID }}>
-                  Check your inbox for a confirmation.
+                  {successMsg}
                 </p>
               </div>
             </div>
           ) : (
-            /* ── Default layout ── */
+            /* ── Form ── */
             <form
               onSubmit={handleSubmit}
-              className="flex items-center justify-center w-full gap-8 md:gap-16"
+              className="flex flex-wrap items-center justify-center w-full gap-8 md:gap-12"
             >
               {/* Heading */}
               <h2
@@ -82,7 +107,7 @@ export default function BlogNewsletter() {
                 <span className="block whitespace-nowrap">and regulatory signals.</span>
               </h2>
 
-              {/* Email input + privacy */}
+              {/* Email + consent */}
               <div className="flex flex-col gap-3 w-full max-w-[340px]">
                 <div className="pb-1" style={{ borderBottom: `1px solid rgba(27,27,27,0.35)` }}>
                   <input
@@ -95,15 +120,37 @@ export default function BlogNewsletter() {
                     style={{ color: DARK }}
                   />
                 </div>
+
+                {/* CMS consent checkbox — shown only when the CMS field is present */}
+                {consentField && (
+                  <label
+                    className="flex items-start gap-2 cursor-pointer font-[family-name:var(--font-dm-sans)] text-[12px] leading-[1.5]"
+                    style={{ color: DARK_MID }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      required={consentField.required}
+                      className="mt-[2px] shrink-0 accent-[#ff7812]"
+                    />
+                    <span>{consentField.label}</span>
+                  </label>
+                )}
+
                 <p className="font-[family-name:var(--font-dm-sans)] text-[12px]" style={{ color: DARK_MID }}>
                   Read more about how we protect your data.{" "}
                   <a href="#" className="font-semibold underline" style={{ color: DARK }}>Learn More</a>
                 </p>
               </div>
 
+              {/* Turnstile */}
+              <TurnstileField siteKey={siteKey} onToken={setCaptchaToken} onExpire={() => setCaptchaToken(null)} />
+
               {/* Subscribe button */}
               <button
                 type="submit"
+                disabled={!captchaToken || needsConsent}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 className="shrink-0 flex items-center gap-2 px-6 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] transition-all duration-200"
@@ -115,11 +162,12 @@ export default function BlogNewsletter() {
                     ? "linear-gradient(102.8deg, #ff8e37 0%, #ff6d00 100%)"
                     : "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
                   color: "#ffffff",
+                  opacity: (!captchaToken || needsConsent) ? 0.7 : 1,
                 }}
               >
-                Subscribe
+                {submitLabel}
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </form>
