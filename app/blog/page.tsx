@@ -10,6 +10,7 @@ import GlareButton from "@/components/ui/GlareButton";
 import { basePath } from "@/lib/basePath";
 import type { Metadata } from "next";
 import { getBlogPosts, getPage, getForm } from "@/lib/api";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("blog").catch(() => null);
   const attrs = (pageData?.data as any)?.attributes ?? {};
   return {
+    robots: robotsFrom(attrs.meta?.robots),
     title: attrs.meta?.meta_title || "Blog — EHSWatch",
     description: attrs.meta?.meta_description || "Practical guidance, regulatory updates and operational insights for EHSQ professionals. Written by safety practitioners, for safety practitioners.",
   };

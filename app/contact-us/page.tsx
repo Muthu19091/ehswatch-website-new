@@ -5,6 +5,7 @@ import ContactPage from "@/components/sections/ContactPage";
 import { getForm, getPage } from "@/lib/api";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 import type { Metadata } from "next";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   return {
+    robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "Contact Us — EHSWatch",
     description:
       meta?.meta_description ||

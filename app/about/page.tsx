@@ -9,6 +9,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import type { Metadata } from "next";
 import { getPage } from "@/lib/api";
 import { findBlock, findBlocks, normalizeArray, ctaHref } from "@/lib/blocks";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   return {
+    robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "About Us — EHSWatch",
     description:
       meta?.meta_description ||

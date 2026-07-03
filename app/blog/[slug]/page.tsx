@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BlogPost from "@/components/sections/BlogPost";
 import { getBlogPost, getBlogPosts } from "@/lib/api";
 import { notFound } from "next/navigation";
+import { robotsFrom } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -16,6 +17,7 @@ export async function generateMetadata({
   const res = await getBlogPost(slug);
   const post = res?.data;
   return {
+    robots: robotsFrom(post?.attributes.meta?.robots),
     title: post ? `${post.attributes.title} | EHSWatch` : `Blog | EHSWatch`,
     description: post?.attributes.excerpt ?? `EHSWatch EHS insights — ${slug.replace(/-/g, " ")}.`,
   };

@@ -7,6 +7,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getCaseStudies } from "@/lib/api";
 import { findBlock, resolveHref } from "@/lib/blocks";
 import type { Metadata } from "next";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   return {
+    robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "Case Studies — EHSWatch",
     description:
       meta?.meta_description ||

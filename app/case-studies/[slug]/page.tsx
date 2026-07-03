@@ -7,6 +7,7 @@ import CaseStudyDetail from "@/components/sections/CaseStudyDetail";
 import CTABanner from "@/components/sections/CTABanner";
 import { getCaseStudy, getCaseStudies } from "@/lib/api";
 import { notFound } from "next/navigation";
+import { robotsFrom } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -17,6 +18,7 @@ export async function generateMetadata({
   const res = await getCaseStudy(slug);
   const study = res?.data;
   return {
+    robots: robotsFrom(study?.attributes.meta?.robots),
     title: study
       ? `${study.attributes.title} | EHSWatch`
       : "Case Study | EHSWatch",

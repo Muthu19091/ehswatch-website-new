@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import IrisPage from "@/components/sections/IrisPage";
 import { getPage } from "@/lib/api";
 import { findBlock, iconFeaturesToArray } from "@/lib/blocks";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   return {
+    robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "IRIS — AI-Powered EHSQ | EHSWatch",
     description:
       meta?.meta_description ||

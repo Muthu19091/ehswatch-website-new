@@ -9,6 +9,7 @@ import { getPage, getTestimonials } from "@/lib/api";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 import type { CmsIndustryCard } from "@/components/sections/SolutionsZigzag";
 import type { Metadata } from "next";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("industries").catch(() => null);
   const attrs = (pageData?.data as any)?.attributes ?? {};
   return {
+    robots: robotsFrom(attrs.meta?.robots),
     title: attrs.meta?.meta_title || "Industries — EHSWatch",
     description: attrs.meta?.meta_description || "Every industry has different risks. EHSWatch is configured to the compliance requirements, workflows and hazard profiles of your sector.",
   };

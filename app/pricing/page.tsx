@@ -9,6 +9,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getForm } from "@/lib/api";
 import { findBlock, normalizeArray } from "@/lib/blocks";
 import type { Metadata } from "next";
+import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   return {
+    robots: robotsFrom(attrs.meta?.robots),
     title: attrs.meta?.meta_title || "Pricing — EHSWatch",
     description: attrs.meta?.meta_description || "Simple, flexible pricing for enterprise-grade EHS management. Pay only for the modules you need.",
   };
