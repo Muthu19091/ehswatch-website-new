@@ -116,7 +116,10 @@ export async function getPage(slug: string) {
       const { cookies } = await import("next/headers");
       const raw = (await cookies()).get("page_preview")?.value;
       if (raw) {
-        const p = JSON.parse(raw) as { slug?: string; token?: string; exp?: string | number };
+        // Cookie value is URL-encoded by NextResponse.cookies.set
+        let decoded = raw;
+        try { decoded = decodeURIComponent(raw); } catch { /* already decoded */ }
+        const p = JSON.parse(decoded) as { slug?: string; token?: string; exp?: string | number };
         if (p?.slug === slug && p?.token && p?.exp) {
           const prev = await apiGet<SingletonResponse<CmsPage>>(
             `/preview/page/${encodeURIComponent(slug)}?token=${encodeURIComponent(p.token)}&exp=${encodeURIComponent(String(p.exp))}`,
