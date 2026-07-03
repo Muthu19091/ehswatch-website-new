@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import PricingHero from "@/components/sections/PricingHero";
 import PricingOverview from "@/components/sections/PricingOverview";
@@ -14,6 +15,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("pricing").catch(() => null);
   const attrs = (pageData?.data as any)?.attributes ?? {};
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageData?.data) notFound();
   return {
     title: attrs.meta?.meta_title || "Pricing — EHSWatch",
     description: attrs.meta?.meta_description || "Simple, flexible pricing for enterprise-grade EHS management. Pay only for the modules you need.",

@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/HeroV2";
 import TrustedLogos from "@/components/sections/TrustedLogos";
@@ -21,6 +22,8 @@ export default async function HomePage() {
     getClientLogos(),
     getPage("home"),
   ]);
+  // CMS page record must be published — drafts and missing records 404
+  if (!homePageRes?.data) notFound();
   const cmsTestimonials = testimonialsRes?.data ?? [];
   const cmsLogos = logosRes?.data ?? [];
   const blocks = homePageRes?.data?.attributes?.content ?? [];

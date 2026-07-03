@@ -108,6 +108,24 @@ export async function getFooter() {
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
 export async function getPage(slug: string) {
+  // Draft preview: a valid page_preview cookie (set by /api/preview-page after
+  // token verification) switches this fetch to the token-gated preview endpoint,
+  // so every bespoke page route renders draft content with zero changes.
+  if (typeof window === "undefined") {
+    try {
+      const { cookies } = await import("next/headers");
+      const raw = (await cookies()).get("page_preview")?.value;
+      if (raw) {
+        const p = JSON.parse(raw) as { slug?: string; token?: string; exp?: string | number };
+        if (p?.slug === slug && p?.token && p?.exp) {
+          const prev = await apiGet<SingletonResponse<CmsPage>>(
+            `/preview/page/${encodeURIComponent(slug)}?token=${encodeURIComponent(p.token)}&exp=${encodeURIComponent(String(p.exp))}`,
+          );
+          if (prev) return prev;
+        }
+      }
+    } catch { /* outside request context */ }
+  }
   return apiGet<SingletonResponse<CmsPage>>(`/pages/${slug}`);
 }
 

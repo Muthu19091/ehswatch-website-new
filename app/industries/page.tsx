@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import SolutionsHero from "@/components/sections/SolutionsHero";
 import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
@@ -25,6 +26,8 @@ export default async function IndustriesPage() {
     getPage("industries"),
     getTestimonials(),
   ]);
+  // CMS page record must be published — drafts and missing records 404
+  if (!industriesData?.data) notFound();
 
   const industryBlocks: any[] = (industriesData?.data as any)?.attributes?.content ?? [];
   const cmsTestimonials = testimonialsRes?.data ?? [];

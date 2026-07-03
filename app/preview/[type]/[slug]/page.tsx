@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BlogPost from "@/components/sections/BlogPost";
@@ -49,6 +50,14 @@ export default async function PreviewPage({
 }) {
   const { type, slug } = await params;
   const { token, exp } = await searchParams;
+
+  // Bespoke pages render through their real routes: the preview-page handler
+  // verifies the token, sets the preview cookie, and redirects to the page.
+  if (type === "page" && token && exp) {
+    redirect(
+      `/api/preview-page?slug=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}&exp=${encodeURIComponent(exp)}`,
+    );
+  }
 
   let body: React.ReactNode;
 

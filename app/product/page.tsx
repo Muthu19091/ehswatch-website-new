@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import ProductHero from "@/components/sections/ProductHero";
 import ProductOverview from "@/components/sections/ProductOverview";
@@ -15,6 +16,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await getPage("product");
   const meta = pageRes?.data?.attributes?.meta;
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   return {
     title: meta?.meta_title || "Product — EHSWatch",
     description:

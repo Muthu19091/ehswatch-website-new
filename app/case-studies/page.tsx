@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import CaseStudiesHero from "@/components/sections/CaseStudiesHero";
 import CaseStudiesGrid from "@/components/sections/CaseStudiesGrid";
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await getPage("case-studies");
   const meta = (pageRes?.data as any)?.attributes?.meta;
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   return {
     title: meta?.meta_title || "Case Studies — EHSWatch",
     description:

@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import BlogHero from "@/components/sections/BlogHero";
 import BlogGrid from "@/components/sections/BlogGrid";
@@ -95,6 +96,8 @@ export default async function BlogPage() {
     getBlogPosts(),
     getPage("blog"),
   ]);
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   const cmsPosts = res?.data ?? [];
 
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import IrisPage from "@/components/sections/IrisPage";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("iris");
   const meta = pageData?.data?.attributes?.meta;
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageData?.data) notFound();
   return {
     title: meta?.meta_title || "IRIS — AI-Powered EHSQ | EHSWatch",
     description:

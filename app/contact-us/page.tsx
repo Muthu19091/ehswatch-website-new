@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import ContactPage from "@/components/sections/ContactPage";
 import { getForm, getPage } from "@/lib/api";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const pageRes = await getPage("contact-us").catch(() => null);
   const meta = (pageRes?.data as any)?.attributes?.meta;
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   return {
     title: meta?.meta_title || "Contact Us — EHSWatch",
     description:
