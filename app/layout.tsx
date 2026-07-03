@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Gothic_A1, Inter, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
+import PagePreviewBanner from "@/components/layout/PagePreviewBanner";
 import { getLocale } from "@/lib/locale";
 
 const dmSans = DM_Sans({
@@ -53,6 +54,7 @@ export default async function RootLayout({
     >
       <body className="antialiased">
         <CustomCursor />
+        <PagePreviewBanner />
         {children}
       </body>
     </html>
