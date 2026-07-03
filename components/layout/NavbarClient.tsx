@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { basePath } from "@/lib/basePath";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 /* ── Nav config ────────────────────────────────────────────────────
    hideOnScroll: true  → fades out when navbar collapses to pill
@@ -43,14 +44,19 @@ export default function NavbarClient({
   lightHero = false,
   cmsNav,
   cmsCta,
+  cmsLogo,
 }: {
   lightHero?: boolean;
   cmsNav?: CmsNavItem[];
   cmsCta?: { label: string; href: string };
+  cmsLogo?: { url: string; alt?: string; href?: string };
 }) {
   const navItems = cmsNav && cmsNav.length > 0 ? cmsNav : ALL_NAV;
   const ctaLabel = cmsCta?.label || "Book Demo";
   const ctaHref  = cmsCta?.href  || "#";
+  const logoSrc  = cmsLogo?.url  || basePath + "/images/hero/logo.png";
+  const logoAlt  = cmsLogo?.alt  || "EHSWatch";
+  const logoHref = cmsLogo?.href || "/";
   const [open, setOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [ctaFill, setCtaFill] = useState({ x: 0, y: 0, on: false });
@@ -197,19 +203,19 @@ export default function NavbarClient({
           willChange: "padding, max-width, border-radius, background",
         }}
       >
-        {/* ── Logo ──────────────────────────────────────────── */}
-        <Link href="/" className="shrink-0 relative w-[90px] h-[26px] lg:w-[110px] lg:h-[30px]">
+        {/* ── Logo — CMS header logo with hardcoded fallback ── */}
+        <Link href={logoHref} className="shrink-0 relative w-[90px] h-[26px] lg:w-[110px] lg:h-[30px]">
           <Image
             ref={logoWhiteRef as React.RefObject<HTMLImageElement>}
-            src={basePath + "/images/hero/logo.png"}
-            alt="EHSWatch" fill sizes="110px"
+            src={logoSrc}
+            alt={logoAlt} fill sizes="110px"
             className="object-contain object-left"
             style={{ opacity: lightHero ? 0 : 1 }}
             priority
           />
           <Image
             ref={logoDarkRef as React.RefObject<HTMLImageElement>}
-            src={basePath + "/images/hero/logo.png"}
+            src={logoSrc}
             alt="" fill sizes="110px"
             className="object-contain object-left"
             style={{ opacity: lightHero ? 1 : 0 }}
@@ -257,7 +263,7 @@ export default function NavbarClient({
                           {item.img ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
-                              src={basePath + item.img}
+                              src={item.img.startsWith("http") ? item.img : basePath + item.img}
                               alt={item.label}
                               className="w-full h-full object-cover group-hover/card:scale-[1.03] transition-transform duration-300"
                             />
@@ -303,7 +309,11 @@ export default function NavbarClient({
 
         <div className="flex-1 lg:hidden" />
 
-        {/* ── Desktop CTA ───────────────────────────────────── */}
+        {/* ── Right cluster: Language Switcher + CTA ───────── */}
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
+          <LanguageSwitcher lightHero={lightHero} />
+
+        {/* ── Desktop CTA ─────────────────────────────────── */}
         <Link
           href={ctaHref}
           ref={ctaRef}
@@ -315,7 +325,7 @@ export default function NavbarClient({
             const r = ctaRef.current?.getBoundingClientRect();
             if (r) setCtaFill({ x: e.clientX - r.left, y: e.clientY - r.top, on: false });
           }}
-          className="hidden sm:inline-flex shrink-0 items-center relative overflow-hidden font-medium tracking-[-0.24px] rounded-full whitespace-nowrap font-[family-name:var(--font-dm-sans)] border-[1.5px]"
+          className="inline-flex shrink-0 items-center relative overflow-hidden font-medium tracking-[-0.24px] rounded-full whitespace-nowrap font-[family-name:var(--font-dm-sans)] border-[1.5px]"
           style={{
             background: "rgba(255,109,0,0)",
             color: "rgb(255,109,0)",
@@ -343,6 +353,7 @@ export default function NavbarClient({
             {ctaLabel}
           </span>
         </Link>
+        </div>{/* end right cluster */}
 
         {/* ── Mobile hamburger ──────────────────────────────── */}
         <button
@@ -407,6 +418,9 @@ export default function NavbarClient({
             </Link>
           )
         )}
+        <div className="mt-1 px-4">
+          <LanguageSwitcher lightHero={true} />
+        </div>
         <Link href="#" onClick={() => setOpen(false)}
           className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[#ff6d00] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}
