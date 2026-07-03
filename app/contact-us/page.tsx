@@ -59,7 +59,7 @@ export default async function ContactUsPage() {
     icon?: string;
     title?: string;
     description?: string | null;
-    link?: { link?: { label?: string; url?: string; type?: string } };
+    link?: { label?: string; url?: string; type?: string; link?: { label?: string; url?: string; type?: string } };
   }>(officesBlock?.items);
 
   const officeItems = rawItems.length > 0
@@ -67,9 +67,10 @@ export default async function ContactUsPage() {
         icon:        item.icon        ?? "building-office",
         title:       item.title       ?? "",
         description: item.description ?? null,
-        linkLabel:   item.link?.link?.label ?? null,
-        linkUrl:     item.link?.link?.url   ?? null,
-        linkType:    item.link?.link?.type  ?? null,
+        // API may serialize the link flat (link.label) or nested (link.link.label)
+        linkLabel:   item.link?.link?.label ?? item.link?.label ?? null,
+        linkUrl:     item.link?.link?.url   ?? item.link?.url   ?? null,
+        linkType:    item.link?.link?.type  ?? item.link?.type  ?? null,
       }))
     : null;
 
