@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import CaseStudyDetail from "@/components/sections/CaseStudyDetail";
 import CTABanner from "@/components/sections/CTABanner";
 import { getCaseStudy, getCaseStudies } from "@/lib/api";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -38,6 +39,8 @@ export default async function CaseStudyPage({
   ]);
 
   const cmsStudy = res?.data;
+  // Drafts and unknown slugs 404 — the public API only serves published studies
+  if (!cmsStudy) notFound();
   const allSlugs = (allRes?.data ?? [])
     .sort(
       (a, b) =>

@@ -229,3 +229,10 @@ export async function search(query: string) {
 export async function getCustomApi(slug: string) {
   return apiGet<SingletonResponse<Record<string, unknown>>>(`/custom/${slug}`);
 }
+
+// ─── Draft preview (signed token from the CMS "Copy preview link" action) ────
+
+export async function getPreview<T>(type: string, slug: string, token: string, exp: string) {
+  const qs = `token=${encodeURIComponent(token)}&exp=${encodeURIComponent(exp)}`;
+  return apiGet<SingletonResponse<T>>(`/preview/${encodeURIComponent(type)}/${encodeURIComponent(slug)}?${qs}`);
+}

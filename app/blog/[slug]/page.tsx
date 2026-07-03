@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BlogPost from "@/components/sections/BlogPost";
 import { getBlogPost, getBlogPosts } from "@/lib/api";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -31,6 +32,8 @@ export default async function BlogPostPage({
     getBlogPosts(),
   ]);
   const cmsPost = res?.data;
+  // Drafts and unknown slugs 404 — the public API only serves published posts
+  if (!cmsPost) notFound();
   // Sort all CMS posts newest-first so prev/next are chronologically adjacent
   const cmsSlugs = (allRes?.data ?? [])
     .sort((a, b) => new Date(b.attributes.published_at).getTime() - new Date(a.attributes.published_at).getTime())
