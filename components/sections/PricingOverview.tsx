@@ -6,18 +6,61 @@ const DEFAULT_BODY_1 =
 const DEFAULT_BODY_2 =
   "Implementation support, configuration, and role-based access are built into the way pricing is structured, so you can focus on improving safety and compliance instead of deciphering licence tiers.";
 const DEFAULT_CHECKLIST_HEADING = "Available for organisations that require:";
-const DEFAULT_CHECKLIST_ITEMS = [
-  "Specific module combinations across different business units",
-  "Multi-site or multi-country deployments with regional configuration",
-  "Integration with existing ERP, HRMS or BI systems",
+const DEFAULT_CHECKLIST_ITEMS: Array<{ icon?: string; text: string }> = [
+  { icon: "check-circle", text: "Specific module combinations across different business units" },
+  { icon: "check-circle", text: "Multi-site or multi-country deployments with regional configuration" },
+  { icon: "check-circle", text: "Integration with existing ERP, HRMS or BI systems" },
 ];
+
+// Maps CMS icon names → inline SVG paths rendered inside the blue circle
+function ItemIcon({ name }: { name?: string }) {
+  if (name === "check-square") {
+    return (
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <rect x="1" y="1" width="9" height="9" rx="1.5" stroke="white" strokeWidth="1.4" />
+        <path d="M3 5.5l2 2 3-3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (name === "warning") {
+    return (
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <path d="M5.5 2L10 9.5H1L5.5 2z" stroke="white" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M5.5 5v2" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="5.5" cy="8.2" r="0.5" fill="white" />
+      </svg>
+    );
+  }
+  if (name === "info") {
+    return (
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <circle cx="5.5" cy="5.5" r="4.5" stroke="white" strokeWidth="1.4" />
+        <path d="M5.5 5v3" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="5.5" cy="3.5" r="0.5" fill="white" />
+      </svg>
+    );
+  }
+  if (name === "star") {
+    return (
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <path d="M5.5 1l1.2 3.6H10L7.2 6.8l1.1 3.5L5.5 8.4l-2.8 1.9 1.1-3.5L1 4.6h3.3L5.5 1z" stroke="white" strokeWidth="1.2" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  // default: check-circle
+  return (
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+      <path d="M2 5.5l2.8 2.8L9 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 interface PricingOverviewProps {
   cmsEyebrow?: string;
   heading?: string;
   body?: string;
   checklistHeading?: string;
-  checklistItems?: string[];
+  checklistItems?: Array<{ icon?: string; text: string }>;
 }
 
 export default function PricingOverview({
@@ -28,7 +71,7 @@ export default function PricingOverview({
   checklistItems,
 }: PricingOverviewProps = {}) {
   const displayHeading = heading || DEFAULT_HEADING;
-  const checklistNeedsArr =
+  const checklistNeedsArr: Array<{ icon?: string; text: string }> =
     checklistItems && checklistItems.length > 0 ? checklistItems : DEFAULT_CHECKLIST_ITEMS;
   const checklistLabel = checklistHeading || DEFAULT_CHECKLIST_HEADING;
 
@@ -94,7 +137,7 @@ export default function PricingOverview({
 
               {/* Step-progress bullet list */}
               <div className="flex flex-col max-w-[400px] w-full text-left">
-                {checklistNeedsArr.map((need, i) => (
+                {checklistNeedsArr.map((item, i) => (
                   <div key={i}>
                     <div
                       className="needs-item flex items-center gap-3 px-4 py-3 rounded-full"
@@ -108,12 +151,10 @@ export default function PricingOverview({
                         className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
                         style={{ background: "#1d4ed8" }}
                       >
-                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                          <path d="M2 5.5l2.8 2.8L9 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                        <ItemIcon name={item.icon} />
                       </div>
                       <span className="font-[family-name:var(--font-dm-sans)] text-[13px] sm:text-[14px] leading-[1.6] text-[#374151] text-pretty">
-                        {need}
+                        {item.text}
                       </span>
                     </div>
 

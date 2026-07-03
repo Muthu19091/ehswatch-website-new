@@ -75,6 +75,10 @@ export default function PricingHero({
           className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
           style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.8) 70%, white 100%)" }}
         />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 75% 75% at 50% 45%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 50%, transparent 100%)" }}
+        />
       </div>
 
       {/* Content */}
