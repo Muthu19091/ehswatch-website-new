@@ -28,6 +28,8 @@ export default async function CaseStudiesPage() {
     getPage("case-studies"),
     getCaseStudies(),
   ]);
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
 
   const blocks = (pageRes?.data as any)?.attributes?.content ?? [];
 

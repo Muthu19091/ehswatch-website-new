@@ -25,6 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactUsPage() {
   /* Step 1: fetch the page to read the CMS-configured form slug */
   const pageRes = await getPage("contact-us").catch(() => null);
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   const blocks: any[] = (pageRes?.data as any)?.attributes?.content ?? [];
 
   /* ── hero block ── */

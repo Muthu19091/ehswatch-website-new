@@ -25,6 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PricingPage() {
   const pageData = await getPage("pricing");
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageData?.data) notFound();
   const blocks: any[] = pageData?.data?.attributes?.content ?? [];
 
   // ── hero block ──────────────────────────────────────────────────────────────

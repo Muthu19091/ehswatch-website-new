@@ -31,6 +31,8 @@ export default async function ProductPage() {
     getPage("product"),
     getProductModules(),
   ]);
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageRes?.data) notFound();
   const blocks = pageRes?.data?.attributes?.content ?? [];
 
   // ── product modules from the dedicated CMS collection ─────────────────────

@@ -23,6 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function IrisPageRoute() {
   const pageData = await getPage("iris");
+  // CMS page record must be published — drafts and missing records 404
+  if (!pageData?.data) notFound();
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =
     (pageData?.data?.attributes?.content as Array<{ type: string; data: Record<string, unknown> }>) ?? [];
 
