@@ -1802,7 +1802,13 @@ export default function IrisPage({
           </h2>
 
           <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty">
-            {cmsTextCta?.description ?? (
+            {cmsTextCta?.description ? (
+              /* CMS rich-text HTML — render it, don't print the tags */
+              <span
+                className="[&_p+p]:mt-4 [&_p]:inline-block"
+                dangerouslySetInnerHTML={{ __html: cmsTextCta.description }}
+              />
+            ) : (
               <>
                 IRIS <span style={{ color: "#727272" }}>(Intelligent Risk &amp; Insight System)</span>{" "}
                 is EHSWatch&apos;s embedded AI layer — built into every workflow your safety team
