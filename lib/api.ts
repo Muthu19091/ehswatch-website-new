@@ -38,14 +38,9 @@ const _ssrCache = new Map<string, { data: unknown; expires: number }>();
 const _inflight = new Map<string, Promise<unknown>>();
 
 async function withLocale(path: string): Promise<string> {
-  if (path.includes("locale=")) return path;
-  try {
-    const { cookies } = await import("next/headers");
-    const store = await cookies();
-    if (store.get("locale")?.value === "ar") {
-      return path + (path.includes("?") ? "&" : "?") + "locale=ar";
-    }
-  } catch { /* outside request context or client */ }
+  // Translation is handled client-side by Google Translate (googtrans cookie);
+  // the API is always fetched in English. The CMS ?locale=ar layer stays
+  // available server-side if authored translations are ever re-enabled.
   return path;
 }
 

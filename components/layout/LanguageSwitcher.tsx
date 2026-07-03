@@ -21,7 +21,18 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
 
   const toggle = () => {
     const next: "en" | "ar" = lang === "en" ? "ar" : "en";
+    // locale cookie only drives lang= / dir=rtl on <html>; the translation
+    // itself is done client-side by Google Translate via the googtrans cookie.
     setLocaleCookie(next);
+    const host = window.location.hostname;
+    if (next === "ar") {
+      document.cookie = "googtrans=/en/ar; path=/; SameSite=Lax";
+      document.cookie = `googtrans=/en/ar; path=/; domain=${host}; SameSite=Lax`;
+    } else {
+      for (const domain of ["", `; domain=${host}`, `; domain=.${host}`]) {
+        document.cookie = `googtrans=; path=/; max-age=0${domain}`;
+      }
+    }
     window.location.reload();
   };
 
