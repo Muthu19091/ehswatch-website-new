@@ -3,8 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CaseStudyDetail from "@/components/sections/CaseStudyDetail";
-import CTABanner from "@/components/sections/CTABanner";
+import CaseStudyTemplate from "@/components/sections/CaseStudyTemplate";
 import { getCaseStudy, getCaseStudies } from "@/lib/api";
 import { notFound } from "next/navigation";
 import { robotsFrom } from "@/lib/seo";
@@ -55,12 +54,11 @@ export default async function CaseStudyPage({
     <>
       <Navbar lightHero />
       <main>
-        <CaseStudyDetail
+        <CaseStudyTemplate
           slug={slug}
           cmsStudy={cmsStudy}
           allSlugs={allSlugs.length > 0 ? allSlugs : undefined}
         />
-        <CTABanner />
       </main>
       <Footer />
     </>

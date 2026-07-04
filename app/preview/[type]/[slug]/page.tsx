@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BlogPost from "@/components/sections/BlogPost";
-import CaseStudyDetail from "@/components/sections/CaseStudyDetail";
+import CaseStudyTemplate from "@/components/sections/CaseStudyTemplate";
 import ModuleTemplate from "@/components/sections/ModuleTemplate";
 import { getPreview, getProductModules } from "@/lib/api";
 import { buildModuleTemplateProps } from "@/lib/moduleContent";
@@ -73,7 +73,7 @@ export default async function PreviewPage({
   } else if (type === "case-study") {
     const res = await getPreview<CmsCaseStudy>(type, slug, token, exp);
     body = res?.data ? (
-      <CaseStudyDetail slug={slug} cmsStudy={res.data} />
+      <CaseStudyTemplate slug={slug} cmsStudy={res.data} />
     ) : (
       <PreviewError message="This preview link is invalid or has expired. Generate a fresh link from the CMS edit page." />
     );
