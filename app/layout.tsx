@@ -49,7 +49,10 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      dir={locale === "ar" ? "rtl" : "ltr"}
+      /* Layout stays LTR — the design's sliders/marquees are LTR-built.
+         Arabic text from Google Translate still renders RTL within its own
+         lines via the Unicode bidi algorithm. */
+      dir="ltr"
       suppressHydrationWarning
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
     >

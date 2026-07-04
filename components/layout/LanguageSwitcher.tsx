@@ -44,9 +44,9 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
       }
     }
 
-    // Flip direction/lang immediately for a live RTL switch
+    // Update lang live; document direction stays LTR (design is LTR-built,
+    // Arabic text runs render RTL on their own via bidi)
     document.documentElement.lang = next;
-    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
 
     if (applyLive(next)) {
       setLang(next);
