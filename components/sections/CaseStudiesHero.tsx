@@ -59,7 +59,16 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-[-0.03em] animate-hero-rise"
           style={{ color: "#0a1628", animationDelay: "80ms" }}
         >
-          {cmsHeadline ?? <>Proof from the Field,<br /><span style={{ color: "#1d4ed8" }}>Not the Pitch.</span></>}
+          {cmsHeadline ? (
+            /* CMS headline may carry a <span> for the blue highlight — render it, restyled */
+            <span
+              dangerouslySetInnerHTML={{
+                __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+              }}
+            />
+          ) : (
+            <>Proof from the Field,<br /><span style={{ color: "#1d4ed8" }}>Not the Pitch.</span></>
+          )}
         </h1>
         <p
           className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[580px] animate-hero-rise"
