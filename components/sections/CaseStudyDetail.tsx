@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 import type { CmsCaseStudy } from "@/lib/types";
@@ -53,7 +54,7 @@ export default function CaseStudyDetail({
   allSlugs?: string[];
 }) {
   const attrs = cmsStudy?.attributes ?? FALLBACK;
-  const coverUrl = attrs.cover?.url ?? `${basePath}/images/blogs/blog-1.png`;
+  const coverUrl = mediaUrl(attrs.cover) ?? `${basePath}/images/blogs/blog-1.png`;
 
   const publishDate = new Date(attrs.published_at).toLocaleDateString("en-GB", {
     day: "numeric",

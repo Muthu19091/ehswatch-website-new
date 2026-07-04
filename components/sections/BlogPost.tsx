@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 import type { CmsBlogPost } from "@/lib/types";
@@ -127,7 +128,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
         readTime: `${cmsPost.attributes.read_time_minutes} min read`,
         author: cmsPost.attributes.author?.name ?? "EHSWatch Team",
         authorRole: "EHS Editorial",
-        coverImg: cmsPost.attributes.cover?.url ?? `${basePath}/images/blogs/blog-1.png`,
+        coverImg: mediaUrl(cmsPost.attributes.cover) ?? `${basePath}/images/blogs/blog-1.png`,
       }
     : getPost(slug);
   const { prev, next } = getPrevNext(slug, cmsSlugs);

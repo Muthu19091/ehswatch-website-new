@@ -29,3 +29,13 @@ export function iconFeaturesToArray(
   return normalizeArray<{ icon?: string; title?: string; description?: string; link?: unknown }>(items);
 }
 export const ctaHref = resolveHref;
+
+// Resolve a CMS media/image value to its URL. The API serializes covers as
+// MediaResource objects ({ attributes: { url } }); some older fields are flat
+// ({ url }) or plain strings — handle all three.
+export function mediaUrl(media: unknown): string | undefined {
+  if (!media) return undefined;
+  if (typeof media === "string") return media;
+  const m = media as { url?: string; attributes?: { url?: string } };
+  return m.attributes?.url ?? m.url ?? undefined;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { mediaUrl } from "@/lib/blocks";
 import type { CmsCaseStudy } from "@/lib/types";
 
 /* ═══════════════════════════════════════════════════════
@@ -50,7 +51,7 @@ function cmsToCard(cs: CmsCaseStudy): Card {
     slug: cs.attributes.slug,
     title: cs.attributes.title,
     body: cs.attributes.summary || "",
-    img: cs.attributes.cover?.url ?? null,
+    img: mediaUrl(cs.attributes.cover) ?? null,
   };
 }
 
