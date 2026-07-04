@@ -30,7 +30,7 @@ export default function TrustedLogos({ cmsLogos }: { cmsLogos?: CmsClientLogo[] 
     : FALLBACK_LOGOS;
   const TRACK = [...CLIENT_LOGOS, ...CLIENT_LOGOS, ...CLIENT_LOGOS];
   return (
-    <section className="bg-white pt-16 md:pt-[80px] pb-10 md:pb-[60px]">
+    <section translate="no" className="bg-white pt-16 md:pt-[80px] pb-10 md:pb-[60px]">
       <div className="flex flex-col gap-6 md:gap-[42px]">
         <Reveal variant="fade-in" duration={1100}>
           <p className="font-[family-name:var(--font-inter)] font-normal text-[14px] md:text-[18px] leading-normal text-[rgba(15,23,42,0.45)] tracking-[-0.18px] text-center px-4">

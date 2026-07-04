@@ -612,7 +612,7 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
               </button>
             </div>
             {/* right — mockup, fills remaining space */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-hidden" translate="no">
               {tabs[active].cmsImage ? (
                 <div className="flex items-center justify-center h-full p-6">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

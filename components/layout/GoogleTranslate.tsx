@@ -28,6 +28,24 @@ export default function GoogleTranslate() {
   useEffect(() => {
     if (document.getElementById("gt-script")) return;
 
+    // Google Translate re-parents text nodes into <font> wrappers, which
+    // makes React's removeChild/insertBefore throw during re-renders
+    // (animated sections re-render constantly). These guards make those
+    // operations no-ops when the node has been moved, instead of crashing.
+    if (!(window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard) {
+      (window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard = true;
+      const origRemoveChild = Node.prototype.removeChild;
+      Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
+        if (child.parentNode !== this) return child;
+        return origRemoveChild.call(this, child) as T;
+      };
+      const origInsertBefore = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function <T extends Node>(this: Node, node: T, ref: Node | null): T {
+        if (ref && ref.parentNode !== this) return node;
+        return origInsertBefore.call(this, node, ref) as T;
+      };
+    }
+
     // Suppress every piece of Google Translate chrome
     const style = document.createElement("style");
     style.id = "gt-style";
