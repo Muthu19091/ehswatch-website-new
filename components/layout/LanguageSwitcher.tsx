@@ -19,10 +19,20 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
     setLang(readLocaleCookie());
   }, []);
 
+  // Drive Google Translate's hidden language selector directly so the page
+  // translates live, without a reload.
+  const applyLive = (next: "en" | "ar"): boolean => {
+    const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
+    if (!combo) return false;
+    combo.value = next;
+    combo.dispatchEvent(new Event("change"));
+    return true;
+  };
+
   const toggle = () => {
     const next: "en" | "ar" = lang === "en" ? "ar" : "en";
-    // locale cookie only drives lang= / dir=rtl on <html>; the translation
-    // itself is done client-side by Google Translate via the googtrans cookie.
+    // locale cookie only drives lang= / dir=rtl; googtrans persists the
+    // choice so the next page load translates automatically.
     setLocaleCookie(next);
     const host = window.location.hostname;
     if (next === "ar") {
@@ -33,7 +43,17 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
         document.cookie = `googtrans=; path=/; max-age=0${domain}`;
       }
     }
-    window.location.reload();
+
+    // Flip direction/lang immediately for a live RTL switch
+    document.documentElement.lang = next;
+    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+
+    if (applyLive(next)) {
+      setLang(next);
+    } else {
+      // Widget not ready yet — fall back to a reload, which translates on load
+      window.location.reload();
+    }
   };
 
   return (
