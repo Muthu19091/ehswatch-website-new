@@ -59,6 +59,8 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
   return (
     <button
       type="button"
+      translate="no"
+      className="notranslate"
       onClick={toggle}
       aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
       title={lang === "en" ? "Switch to Arabic" : "Switch to English"}
