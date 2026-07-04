@@ -12,6 +12,9 @@ interface Card {
   title: string;
   body: string;
   img: string | null;
+  industry?: string;
+  metricValue?: string;
+  metricLabel?: string;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -47,12 +50,52 @@ const FALLBACK_CARDS: Card[] = [
 ];
 
 function cmsToCard(cs: CmsCaseStudy): Card {
+  const r = cs.attributes.results?.[0];
   return {
     slug: cs.attributes.slug,
     title: cs.attributes.title,
     body: cs.attributes.summary || "",
     img: mediaUrl(cs.attributes.cover) ?? null,
+    industry: cs.attributes.industry || undefined,
+    metricValue: r?.value ?? r?.after ?? undefined,
+    metricLabel: r?.label ?? r?.metric ?? undefined,
   };
+}
+
+/* Branded cover panel shown when a study has no uploaded image — surfaces the
+   industry + headline result so the card still reads as complete. */
+function CoverPanel({ card, index }: { card: Card; index: number }) {
+  const grads = [
+    "linear-gradient(135deg,#0a1628 0%,#12325f 100%)",
+    "linear-gradient(135deg,#064e3b 0%,#059669 100%)",
+    "linear-gradient(135deg,#0c4a6e 0%,#0284c7 100%)",
+    "linear-gradient(135deg,#1e293b 0%,#334155 100%)",
+  ];
+  return (
+    <div
+      className="w-full h-full flex flex-col items-center justify-center gap-2 px-6 text-center"
+      style={{ background: grads[index % grads.length], minHeight: 180 }}
+    >
+      {card.industry && (
+        <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.14em] text-white/70">
+          {card.industry}
+        </span>
+      )}
+      {card.metricValue && (
+        <span
+          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[46px] leading-none tracking-[-0.03em] text-white"
+          style={{ fontVariantNumeric: "tabular-nums" }}
+        >
+          {card.metricValue}
+        </span>
+      )}
+      {card.metricLabel && (
+        <span className="font-[family-name:var(--font-dm-sans)] text-[12px] text-white/60 max-w-[220px] leading-[1.4]">
+          {card.metricLabel}
+        </span>
+      )}
+    </div>
+  );
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -135,16 +178,7 @@ function WideCard({ card, index }: { card: Card; index: number }) {
             }}
           />
         ) : (
-          <div
-            style={{ width: "100%", height: "100%", minHeight: 220 }}
-            className="flex items-center justify-center"
-          >
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" opacity="0.25">
-              <rect x="6" y="10" width="36" height="28" rx="4" stroke="#1d4ed8" strokeWidth="2"/>
-              <circle cx="17" cy="20" r="4" stroke="#1d4ed8" strokeWidth="2"/>
-              <path d="M6 32l10-8 8 6 6-5 12 9" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <CoverPanel card={card} index={index} />
         )}
       </div>
     </a>
@@ -193,13 +227,7 @@ function SquareCard({ card, index }: { card: Card; index: number }) {
             }}
           />
         ) : (
-          <div style={{ width: "100%", height: "100%" }} className="flex items-center justify-center">
-            <svg width="40" height="40" viewBox="0 0 48 48" fill="none" opacity="0.25">
-              <rect x="6" y="10" width="36" height="28" rx="4" stroke="#1d4ed8" strokeWidth="2"/>
-              <circle cx="17" cy="20" r="4" stroke="#1d4ed8" strokeWidth="2"/>
-              <path d="M6 32l10-8 8 6 6-5 12 9" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <CoverPanel card={card} index={index} />
         )}
       </div>
 
