@@ -66,8 +66,9 @@ export default function Testimonials({ title, cmsItems }: { title?: React.ReactN
         </h2>
       </div>
 
-      {/* Scrolling track */}
+      {/* Scrolling track — internally LTR so the transform math is direction-stable */}
       <div
+        dir="ltr"
         className="relative"
         style={{
           maskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",

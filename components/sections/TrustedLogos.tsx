@@ -40,6 +40,7 @@ export default function TrustedLogos({ cmsLogos }: { cmsLogos?: CmsClientLogo[] 
 
         <Reveal variant="fade-in" duration={1400} delay={200}>
         <div
+          dir="ltr"
           className="relative overflow-hidden"
           style={{
             maskImage:
