@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 declare global {
   interface Window {
@@ -25,6 +26,23 @@ declare global {
  * is suppressed so the site design stays untouched.
  */
 export default function GoogleTranslate() {
+  const pathname = usePathname();
+
+  // Re-translate after client-side navigation: Next swaps the page content
+  // without a reload, so newly rendered pages arrive in English. When the
+  // googtrans cookie says Arabic, nudge the widget once the new DOM settles.
+  useEffect(() => {
+    if (!/(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie)) return;
+    const timer = setTimeout(() => {
+      const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
+      if (combo) {
+        combo.value = "ar";
+        combo.dispatchEvent(new Event("change"));
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
   useEffect(() => {
     if (document.getElementById("gt-script")) return;
 
