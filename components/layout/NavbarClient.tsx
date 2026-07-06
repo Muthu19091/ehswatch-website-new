@@ -51,7 +51,14 @@ export default function NavbarClient({
   cmsCta?: { label: string; href: string };
   cmsLogo?: { url: string; alt?: string; href?: string };
 }) {
-  const navItems = cmsNav && cmsNav.length > 0 ? cmsNav : ALL_NAV;
+  const allNavItems = cmsNav && cmsNav.length > 0 ? cmsNav : ALL_NAV;
+  // Keep the row from overflowing the logo/CTA: show a safe number of items
+  // inline and collapse the rest into a "More" dropdown. Beyond this the header
+  // would overlap regardless of viewport.
+  const MAX_INLINE = 7;
+  const collapse = allNavItems.length > MAX_INLINE;
+  const navItems = collapse ? allNavItems.slice(0, MAX_INLINE - 1) : allNavItems;
+  const overflowItems = collapse ? allNavItems.slice(MAX_INLINE - 1) : [];
   const ctaLabel = cmsCta?.label || "Book Demo";
   const ctaHref  = cmsCta?.href  || "#";
   const logoSrc  = cmsLogo?.url  || basePath + "/images/hero/logo.png";
@@ -120,8 +127,9 @@ export default function NavbarClient({
       const lc      = Math.round(lerp(linkStart, 30, t));
       const lColor  = `rgb(${lc},${lc},${lc})`;
       const lShadow = (!lightHero && t < 0.3) ? "0 1px 4px rgba(0,0,0,0.4)" : "none";
-      // Link padding stays fixed — only hideOnScroll items collapse
-      const LINK_PX = 14;
+      // Link padding stays fixed — only hideOnScroll items collapse.
+      // Matches the static per-link padding so it doesn't jump on scroll.
+      const LINK_PX = 9;
 
       linkRefs.current.forEach((el, i) => {
         if (!el) return;
@@ -224,7 +232,7 @@ export default function NavbarClient({
         </Link>
 
         {/* ── Desktop links ─────────────────────────────────── */}
-        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-x-0.5">
+        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0">
           {navItems.map((link, i) =>
             link.hasDropdown ? (
               /* Resources — hover dropdown */
@@ -305,6 +313,37 @@ export default function NavbarClient({
               </Link>
             )
           )}
+
+          {/* Overflow "More" dropdown — absorbs items beyond MAX_INLINE so the
+              row never overlaps the logo/CTA no matter how many nav items exist */}
+          {overflowItems.length > 0 && (
+            <div
+              className="relative group shrink-0 pointer-events-auto pb-[10px] -mb-[10px]"
+              style={{ color: initColor, textShadow: initShadow, fontSize: "14px", paddingLeft: "9px", paddingRight: "9px" }}
+            >
+              <button
+                className="flex items-center gap-[5px] py-2 font-medium tracking-[-0.24px] rounded-[40px] whitespace-nowrap font-[family-name:var(--font-dm-sans)] hover:opacity-75 transition-opacity cursor-pointer"
+                style={{ color: "inherit", fontSize: "inherit", background: "none", border: "none" }}
+              >
+                More
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="group-hover:rotate-180 transition-transform duration-200">
+                  <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+
+              <div className="absolute top-full right-0 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-2 min-w-[200px] opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-50">
+                {overflowItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href || "#"}
+                    className="block px-3 py-2 rounded-lg font-[family-name:var(--font-dm-sans)] text-[14px] font-medium text-[#0f172a] hover:bg-[#f1f5f9] transition-colors whitespace-nowrap"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 lg:hidden" />
@@ -384,7 +423,7 @@ export default function NavbarClient({
           open ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
         }`}
       >
-        {navItems.map((link) =>
+        {allNavItems.map((link) =>
           link.hasDropdown ? (
             <div key={link.label}>
               <button
