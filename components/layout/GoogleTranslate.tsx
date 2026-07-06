@@ -80,8 +80,8 @@ export default function GoogleTranslate() {
     const style = document.createElement("style");
     style.id = "gt-style";
     style.textContent = `
-      .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame,
-      .goog-te-spinner-pos { display: none !important; }
+      .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.skiptranslate,
+      #goog-gt-tt, .goog-te-balloon-frame, .goog-te-spinner-pos { display: none !important; visibility: hidden !important; }
       body { top: 0 !important; position: static !important; }
       .goog-text-highlight { background: none !important; box-shadow: none !important; }
       font { background: none !important; box-shadow: none !important; }
