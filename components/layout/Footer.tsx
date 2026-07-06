@@ -1,4 +1,4 @@
-import { getFooter } from "@/lib/api";
+import { getFooter, getProductModules } from "@/lib/api";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 import CmsIcon from "@/components/ui/CmsIcon";
@@ -105,8 +105,14 @@ const FALLBACK_SOCIALS = [
 ];
 
 export default async function Footer() {
-  const footer = await getFooter();
+  const [footer, modulesRes] = await Promise.all([getFooter(), getProductModules()]);
   const attrs = (footer?.data as any)?.attributes;
+
+  // Real module detail links, straight from the product-modules collection,
+  // so the footer Modules column always points at /modules/<slug>.
+  const moduleLinks = (modulesRes?.data ?? [])
+    .filter((m) => m.attributes.status === "active")
+    .map((m) => ({ label: m.attributes.name.trim(), url: `/modules/${m.attributes.slug}` }));
 
   const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? imgEhsWatch;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
@@ -132,7 +138,10 @@ export default async function Footer() {
   const modulesHeading = modulesCol?.heading || "MODULES";
 
   const companyLinks = companyCol?.links ?? COMPANY.map(l => ({ label: l.label, url: l.href }));
-  const allModules   = modulesCol?.links ?? [...MODULES_COL1, ...MODULES_COL2].map(l => ({ label: l.label, url: l.href }));
+  // Prefer live module pages; fall back to CMS-authored links, then hardcoded.
+  const allModules   = moduleLinks.length > 0
+    ? moduleLinks
+    : (modulesCol?.links ?? [...MODULES_COL1, ...MODULES_COL2].map(l => ({ label: l.label, url: l.href })));
   const mid          = Math.ceil(allModules.length / 2);
   const modCol1      = allModules.slice(0, mid);
   const modCol2      = allModules.slice(mid);
