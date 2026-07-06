@@ -17,39 +17,51 @@ declare global {
   }
 }
 
+const wantsArabic = () => /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie);
+
+/**
+ * Poll for Google's hidden language <select> (it appears a beat after the
+ * widget script initialises) and apply the given language. Retries for a few
+ * seconds so a fresh page load reliably translates even on a slow script load.
+ */
+function applyLanguage(lang: "en" | "ar", attempts = 20) {
+  const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
+  if (combo) {
+    if (combo.value !== lang) {
+      combo.value = lang;
+      combo.dispatchEvent(new Event("change"));
+    }
+    return;
+  }
+  if (attempts > 0) setTimeout(() => applyLanguage(lang, attempts - 1), 250);
+}
+
 /**
  * Headless Google Translate integration.
  *
- * Loads the translate element into a hidden container; the actual language
- * choice is driven by the `googtrans` cookie, which LanguageSwitcher sets
- * before reloading. All of Google's own UI (top banner, tooltips, balloon)
- * is suppressed so the site design stays untouched.
+ * The widget element is rendered OFF-SCREEN (not display:none) — Google's
+ * combo will not initialise or operate inside a display:none host, which was
+ * why translation silently failed after load. All of Google's visible chrome
+ * (banner, tooltip, balloon) is suppressed via CSS instead.
  */
 export default function GoogleTranslate() {
   const pathname = usePathname();
 
-  // Re-translate after client-side navigation: Next swaps the page content
-  // without a reload, so newly rendered pages arrive in English. When the
-  // googtrans cookie says Arabic, nudge the widget once the new DOM settles.
+  // Re-apply the chosen language after client-side navigation (Next swaps page
+  // content without a reload, so new pages arrive untranslated).
   useEffect(() => {
-    if (!/(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie)) return;
-    const timer = setTimeout(() => {
-      const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
-      if (combo) {
-        combo.value = "ar";
-        combo.dispatchEvent(new Event("change"));
-      }
-    }, 500);
-    return () => clearTimeout(timer);
+    if (wantsArabic()) applyLanguage("ar");
   }, [pathname]);
 
   useEffect(() => {
-    if (document.getElementById("gt-script")) return;
+    if (document.getElementById("gt-script")) {
+      if (wantsArabic()) applyLanguage("ar");
+      return;
+    }
 
-    // Google Translate re-parents text nodes into <font> wrappers, which
-    // makes React's removeChild/insertBefore throw during re-renders
-    // (animated sections re-render constantly). These guards make those
-    // operations no-ops when the node has been moved, instead of crashing.
+    // Google Translate re-parents text nodes into <font> wrappers, which makes
+    // React's removeChild/insertBefore throw during re-renders. These guards
+    // turn the mismatched-parent case into a no-op instead of a crash.
     if (!(window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard) {
       (window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard = true;
       const origRemoveChild = Node.prototype.removeChild;
@@ -64,13 +76,13 @@ export default function GoogleTranslate() {
       };
     }
 
-    // Suppress every piece of Google Translate chrome
+    // Suppress Google's visible chrome (but NOT the combo/host element itself)
     const style = document.createElement("style");
     style.id = "gt-style";
     style.textContent = `
       .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame,
-      iframe.skiptranslate, .goog-te-spinner-pos { display: none !important; }
-      body { top: 0 !important; }
+      .goog-te-spinner-pos { display: none !important; }
+      body { top: 0 !important; position: static !important; }
       .goog-text-highlight { background: none !important; box-shadow: none !important; }
       font { background: none !important; box-shadow: none !important; }
     `;
@@ -84,6 +96,8 @@ export default function GoogleTranslate() {
             { pageLanguage: "en", includedLanguages: "en,ar", autoDisplay: false },
             "google_translate_element",
           );
+          // Apply the persisted choice once the combo is ready
+          if (wantsArabic()) applyLanguage("ar");
         }
       } catch {
         /* network-blocked or script race — site simply stays untranslated */
@@ -97,5 +111,19 @@ export default function GoogleTranslate() {
     document.body.appendChild(s);
   }, []);
 
-  return <div id="google_translate_element" style={{ display: "none" }} aria-hidden />;
+  // Off-screen but rendered — the widget needs a laid-out host to initialise.
+  return (
+    <div
+      id="google_translate_element"
+      aria-hidden
+      style={{
+        position: "absolute",
+        left: "-9999px",
+        top: "-9999px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+      }}
+    />
+  );
 }
