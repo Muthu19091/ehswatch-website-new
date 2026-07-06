@@ -224,7 +224,7 @@ export default function NavbarClient({
         </Link>
 
         {/* ── Desktop links ─────────────────────────────────── */}
-        <div className="hidden lg:flex items-center justify-center flex-1">
+        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-x-0.5">
           {navItems.map((link, i) =>
             link.hasDropdown ? (
               /* Resources — hover dropdown */
@@ -234,7 +234,7 @@ export default function NavbarClient({
                 className="relative group shrink-0 pointer-events-auto pb-[10px] -mb-[10px]"
                 style={{
                   color: initColor, textShadow: initShadow,
-                  fontSize: "15px", paddingLeft: "14px", paddingRight: "14px",
+                  fontSize: "14px", paddingLeft: "9px", paddingRight: "9px",
                 }}
               >
                 <button
@@ -297,7 +297,7 @@ export default function NavbarClient({
                 className="py-2 font-medium tracking-[-0.24px] rounded-[40px] whitespace-nowrap font-[family-name:var(--font-dm-sans)] hover:opacity-75 transition-opacity shrink-0"
                 style={{
                   color: initColor, textShadow: initShadow,
-                  paddingLeft: "14px", paddingRight: "14px", fontSize: "15px",
+                  paddingLeft: "9px", paddingRight: "9px", fontSize: "14px",
                   overflow: link.hideOnScroll ? "hidden" : undefined,
                 }}
               >
