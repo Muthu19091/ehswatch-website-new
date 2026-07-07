@@ -1914,11 +1914,11 @@ export default function IrisPage({
         }}
       >
         <div className="max-w-[800px] mx-auto flex flex-col gap-3 md:gap-[16px] items-center text-center">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] whitespace-nowrap">
+          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e]">
             {ctaBannerHeadline}
           </h2>
 
-          <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-relaxed text-[#6b7280] max-w-[500px] whitespace-nowrap">
+          <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-relaxed text-[#6b7280] max-w-[500px]">
             {ctaBannerSubhead}
           </p>
 

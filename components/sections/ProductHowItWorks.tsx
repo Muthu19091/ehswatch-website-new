@@ -659,9 +659,46 @@ export default function ProductHowItWorks({
   const fillH = activeStep === 0 ? 0 : (activeStep / (steps.length - 1)) * TRACK;
 
   return (
+    <>
+    {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
+        stepper and visuals under md, which left 7 near-empty screens of scroll */}
+    <section className="md:hidden bg-[#f1f7ff] px-6 py-14">
+      <div className="text-center mb-10">
+        <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] leading-tight text-[#1b1b1b] tracking-[-0.025em]">
+          {headingBefore}
+          <span className="text-[#155eef]">{headingSpanText}</span>
+          {headingAfter}
+        </h2>
+        <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#4b5563] leading-[1.7] mx-auto max-w-[700px]">
+          {subheading}
+        </p>
+      </div>
+      <div className="flex flex-col max-w-[480px] mx-auto">
+        {steps.map((step, i) => (
+          <div key={i} className="relative pl-12 pb-10 last:pb-0">
+            {i < steps.length - 1 && (
+              <div className="absolute left-[13px] top-[30px] bottom-0 w-[2px] rounded-full bg-[#dde8f8]" />
+            )}
+            <div className="absolute left-0 top-0 z-10 flex items-center justify-center rounded-full w-7 h-7 text-[11px] font-bold bg-[#155eef] text-white">
+              {step.n}
+            </div>
+            <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
+              Step {step.n}
+            </span>
+            <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] leading-snug mt-2 mb-2 text-[#0a0f1e]">
+              {step.title}
+            </h3>
+            <p className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.82] text-[#4b5563]">
+              {step.body}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
     <section
       ref={sectionRef}
-      className="bg-[#f1f7ff]"
+      className="hidden md:block bg-[#f1f7ff]"
       style={{ height: `${steps.length * 100}vh` }}
     >
       {/* Sticky viewport */}
@@ -771,5 +808,6 @@ export default function ProductHowItWorks({
         </div>
       </div>
     </section>
+    </>
   );
 }

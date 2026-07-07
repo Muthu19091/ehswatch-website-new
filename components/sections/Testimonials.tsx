@@ -27,7 +27,14 @@ function StarRow() {
 
 export default function Testimonials({ title, cmsItems }: { title?: React.ReactNode; cmsItems?: CmsTestimonial[] }) {
   const TESTIMONIALS: TestimonialItem[] = cmsItems && cmsItems.length > 0
-    ? cmsItems.map((t) => ({ quote: t.attributes.quote, author: `${t.attributes.author_role}, ${t.attributes.author_company}` }))
+    ? cmsItems.map((t) => ({
+        quote: t.attributes.quote,
+        // company/role can be null or the literal string "null" in the CMS —
+        // drop empty parts instead of rendering "Manufacturing, null"
+        author: [t.attributes.author_role, t.attributes.author_company]
+          .filter((p) => p && String(p).toLowerCase() !== "null")
+          .join(", "),
+      }))
     : FALLBACK_TESTIMONIALS;
   const trackRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);

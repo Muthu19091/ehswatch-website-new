@@ -108,7 +108,7 @@ const COMPLIANCE_ROWS = [
 
 function ComplianceMockup() {
   return (
-    <div className="flex items-center justify-center h-full px-6 py-6">
+    <div className="flex items-center justify-center h-full px-3 sm:px-6 py-6">
       <div
         className="w-full max-w-[540px] rounded-2xl overflow-hidden"
         style={{
@@ -119,7 +119,7 @@ function ComplianceMockup() {
         }}
       >
         {/* header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#eef1f6]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#eef1f6]">
           <span className="font-semibold text-[#141f38] text-[15px]">Compliance Standards</span>
           <span className="text-[#2e75f2] font-semibold text-[12px] cursor-pointer">View All  ›</span>
         </div>
@@ -129,13 +129,13 @@ function ComplianceMockup() {
           {COMPLIANCE_ROWS.map((row, i) => (
             <div
               key={row.name}
-              className="flex items-center gap-3 px-5 py-3.5"
+              className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3.5"
               style={{ opacity: 0, animation: `op-fade-up 0.4s ease-out ${0.1 + i * 0.1}s forwards` }}
             >
               {/* icon circle — exact Figma bg colour */}
               <div
-                className="shrink-0 rounded-full flex items-center justify-center"
-                style={{ width: 40, height: 40, padding: 8, background: row.iconBg, flexShrink: 0 }}
+                className="shrink-0 rounded-full flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 p-1.5 sm:p-2"
+                style={{ background: row.iconBg, flexShrink: 0 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -149,7 +149,7 @@ function ComplianceMockup() {
               </div>
 
               {/* name + sub */}
-              <div className="min-w-0" style={{ flex: "0 0 clamp(110px,13vw,165px)" }}>
+              <div className="min-w-0 flex-[0_0_88px] sm:flex-[0_0_clamp(110px,13vw,165px)]">
                 <p className="font-semibold text-[#141f38] text-[13px] leading-tight truncate">{row.name}</p>
                 <p className="text-[#808ca6] text-[10px] leading-tight mt-0.5 truncate">{row.sub}</p>
               </div>
@@ -183,14 +183,14 @@ function ComplianceMockup() {
               {/* badge */}
               <div className="shrink-0 flex flex-col items-end gap-0.5">
                 <span
-                  className="font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-[10px]"
+                  className="font-semibold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap text-[9px] sm:text-[10px]"
                   style={{ background: row.badgeBg, color: row.badgeColor }}
                 >
                   {row.badge}
                 </span>
-                {row.due && <span className="text-[#808ca6] text-[9px]">{row.due}</span>}
+                {row.due && <span className="text-[#808ca6] text-[9px] whitespace-nowrap">{row.due}</span>}
               </div>
-              <span className="text-[#bbb] ml-1 text-[16px]">›</span>
+              <span className="hidden sm:inline text-[#bbb] ml-1 text-[16px]">›</span>
             </div>
           ))}
         </div>
@@ -486,6 +486,7 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
   // stylesReady gates mockup rendering so animations always have keyframes available
   const [stylesReady, setStylesReady] = useState(false);
   const sectionRef                = useRef<HTMLElement>(null);
+  const tablistRef                = useRef<HTMLDivElement>(null);
   const MockupPanel               = MOCKUPS[active];
 
   const sectionHeading = cmsHeading?.trim() || "One Platform for Everyday Safety";
@@ -527,6 +528,15 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
   // Tab auto-advance is driven by onAnimationEnd on the progress bar span.
   // No setInterval needed — the bar completing IS the signal to switch tabs.
 
+  // On narrow screens the tab bar scrolls horizontally — keep the active tab centered
+  useEffect(() => {
+    const list = tablistRef.current;
+    if (!list || list.scrollWidth <= list.clientWidth) return;
+    const btn = list.children[active] as HTMLElement | undefined;
+    if (!btn) return;
+    list.scrollTo({ left: btn.offsetLeft - (list.clientWidth - btn.offsetWidth) / 2, behavior: "smooth" });
+  }, [active]);
+
   return (
     <section ref={sectionRef} className="bg-[#f8fbff] py-12 md:py-20 px-4 md:px-6">
       <div className="max-w-[1200px] mx-auto">
@@ -551,6 +561,7 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
 
           {/* tab bar */}
           <div
+            ref={tablistRef}
             role="tablist"
             aria-label="Platform features"
             className="flex border-b border-[#dde2eb] overflow-x-auto scrollbar-none"
@@ -563,9 +574,9 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
                 tabIndex={active === i ? 0 : -1}
                 onClick={() => { setActive(i); setCycleKey((k) => k + 1); }}
                 className={[
-                  "flex-1 flex flex-col items-center justify-center px-2 md:px-3 py-[14px] md:py-[17px] min-h-[48px] md:min-h-[56px]",
-                  "text-[11px] sm:text-[12px] md:text-[15px] font-medium cursor-pointer",
-                  "transition-colors min-w-0 relative overflow-hidden whitespace-nowrap",
+                  "flex-none md:flex-1 flex flex-col items-center justify-center px-4 md:px-3 py-[14px] md:py-[17px] min-h-[48px] md:min-h-[56px]",
+                  "text-[12px] md:text-[15px] font-medium cursor-pointer",
+                  "transition-colors min-w-max md:min-w-0 relative overflow-hidden whitespace-nowrap",
                   i < TABS.length - 1 ? "border-r border-r-[#dde2eb]" : "",
                   active === i ? "text-[#0a0f1e]" : "text-[#888] hover:text-[#555]",
                 ].join(" ")}

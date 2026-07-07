@@ -71,6 +71,17 @@ export default function CaseStudyDetail({
     <>
       <style>{`
         .cs-body p + p { margin-top: 1.6rem; }
+        .cs-body h2, .cs-body h3, .cs-body h4 {
+          font-weight: 700; color: #111827; line-height: 1.3;
+          margin: 2.2rem 0 0.8rem;
+        }
+        .cs-body h2 { font-size: 1.4rem; }
+        .cs-body h3 { font-size: 1.15rem; }
+        .cs-body h4 { font-size: 1.02rem; }
+        .cs-body ul, .cs-body ol { margin: 1rem 0 1.4rem; padding-left: 1.5rem; }
+        .cs-body ul { list-style: disc; }
+        .cs-body ol { list-style: decimal; }
+        .cs-body li { margin: 0.4rem 0; }
         .cs-grid {
           background-image:
             linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),

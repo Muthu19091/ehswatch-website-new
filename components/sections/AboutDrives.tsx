@@ -57,10 +57,13 @@ function TabShape({ label, color }: { label: string; color: string }) {
         />
       </svg>
       <span
-        className="absolute font-[family-name:var(--font-dm-sans)] text-[14px] font-medium text-white"
-        style={{ top: 0, left: "32px", height: "36px", display: "flex", alignItems: "center", paddingLeft: "8px" }}
+        className="absolute font-[family-name:var(--font-dm-sans)] text-[13px] leading-[1.15] font-medium text-white"
+        style={{ top: 0, left: "32px", right: "6px", height: "36px", display: "flex", alignItems: "center", paddingLeft: "8px" }}
       >
-        {label}
+        {/* CMS labels can be long — clamp to two lines so they never spill out of the tab shape */}
+        <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          {label}
+        </span>
       </span>
     </div>
   );

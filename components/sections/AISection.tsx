@@ -193,13 +193,26 @@ const FALLBACK_FEATURES = [
 ];
 
 // ─── Parse <li><strong>X</strong> — rest</li> from CMS body HTML ─────────────
+// CMS body arrives as HTML — after stripping tags, entities like &amp; and
+// &nbsp; would otherwise render literally in JSX text.
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&amp;/g, "&")
+    .trim();
+}
+
 function parseFeatures(html: string): Array<{ label: string; color: string }> {
   const colors = ["#155eef", "#7c3aed", "#0891b2", "#f97316"];
   const liMatches = html.match(/<li>[\s\S]*?<\/li>/g) || [];
   return liMatches.slice(0, 4).map((li, i) => {
     const strongMatch = li.match(/<strong>(.*?)<\/strong>/);
     const label = strongMatch ? strongMatch[1] : li.replace(/<[^>]+>/g, "").trim();
-    return { label, color: colors[i % colors.length] };
+    return { label: decodeEntities(label), color: colors[i % colors.length] };
   });
 }
 
@@ -234,7 +247,7 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
   // Intro paragraph: first <p> tag content from CMS body, or fallback
   const introMatch = cmsBody ? cmsBody.match(/<p>(.*?)<\/p>/) : null;
   const introParagraph = introMatch
-    ? introMatch[1].replace(/<[^>]+>/g, "")
+    ? decodeEntities(introMatch[1].replace(/<[^>]+>/g, ""))
     : "Leverage IRIS, our built-in Intelligent Risk & Insight System, to transform raw data into proactive safety leadership. IRIS automates the heavy lifting of data analysis, allowing your team to focus on intervention rather than administration.";
 
   const ctaLabel = cmsCtaLabel || "Explore AI Modules →";
