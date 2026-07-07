@@ -17,6 +17,9 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
 
   useEffect(() => {
     setLang(readLocaleCookie());
+    // Signals the pre-hydration click fallback (inline script in layout.tsx)
+    // that React handlers are live and it should stand down.
+    (window as unknown as { __lsHydrated?: boolean }).__lsHydrated = true;
   }, []);
 
   // Drive Google Translate's hidden language selector directly so the page
@@ -61,6 +64,7 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
       type="button"
       translate="no"
       className="notranslate"
+      data-lang-switch=""
       onClick={toggle}
       aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
       title={lang === "en" ? "Switch to Arabic" : "Switch to English"}

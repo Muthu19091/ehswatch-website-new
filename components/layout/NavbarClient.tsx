@@ -394,6 +394,11 @@ export default function NavbarClient({
         </Link>
         </div>{/* end right cluster */}
 
+        {/* ── Mobile language switcher (in-bar, <sm only) ───── */}
+        <div className="sm:hidden mr-1 shrink-0">
+          <LanguageSwitcher lightHero={lightHero} />
+        </div>
+
         {/* ── Mobile hamburger ──────────────────────────────── */}
         <button
           type="button"
@@ -457,9 +462,6 @@ export default function NavbarClient({
             </Link>
           )
         )}
-        <div className="mt-1 px-4">
-          <LanguageSwitcher lightHero={true} />
-        </div>
         <Link href="#" onClick={() => setOpen(false)}
           className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[#ff6d00] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}

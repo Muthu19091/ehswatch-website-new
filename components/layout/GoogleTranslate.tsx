@@ -53,6 +53,25 @@ export default function GoogleTranslate() {
     if (wantsArabic()) applyLanguage("ar");
   }, [pathname]);
 
+  // Persistent cookie↔combo sync. Bounded polling elsewhere gives up after a
+  // few seconds, which loses the user's choice when Google's script loads
+  // slowly (throttled networks) or the switch is clicked mid-load. This keeps
+  // the widget matched to the googtrans cookie for the whole page lifetime.
+  useEffect(() => {
+    const iv = setInterval(() => {
+      const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
+      if (!combo) return;
+      const want = wantsArabic() ? "ar" : "en";
+      // combo.value is "" until Google finishes initialising — treat as "en"
+      const current = combo.value || "en";
+      if (current !== want) {
+        combo.value = want;
+        combo.dispatchEvent(new Event("change"));
+      }
+    }, 1500);
+    return () => clearInterval(iv);
+  }, []);
+
   useEffect(() => {
     if (document.getElementById("gt-script")) {
       if (wantsArabic()) applyLanguage("ar");
