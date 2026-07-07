@@ -60,9 +60,13 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
 
   const [tl, tr, bl, br] = painPoints;
 
-  // Heading: CMS heading + subheading concatenation, or fallback split
-  const headingLine1 = cmsHeading || "Manual Safety Processes Are";
-  const headingLine2 = cmsSubheading || "Slowing You Down";
+  // Heading: the CMS follows the "<span>highlight</span>" convention inside a
+  // single heading string — split it into the dark line and the blue line.
+  // Without a span, fall back to heading + subheading as two lines.
+  const spanMatch = cmsHeading?.match(/^([\s\S]*?)<span[^>]*>([\s\S]*?)<\/span>/i);
+  const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").trim();
+  const headingLine1 = (spanMatch ? stripTags(spanMatch[1]) : cmsHeading && stripTags(cmsHeading)) || "Manual Safety Processes Are";
+  const headingLine2 = (spanMatch ? stripTags(spanMatch[2]) : cmsSubheading) || "Slowing You Down";
 
   return (
     <section
