@@ -49,6 +49,7 @@ export default async function ProductPage() {
 
   // ── hero block ─────────────────────────────────────────────────────────────
   const heroBlock = findBlock<{
+    eyebrow?: string;
     headline?: string;
     subheadline?: string;
     primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
@@ -125,6 +126,7 @@ export default async function ProductPage() {
       <Navbar lightHero={true} />
       <main>
         <ProductHero
+          cmsEyebrow={heroBlock?.eyebrow || undefined}
           cmsHeadline={heroBlock?.headline || undefined}
           cmsSubheadline={heroBlock?.subheadline || undefined}
           cmsPrimaryCta={

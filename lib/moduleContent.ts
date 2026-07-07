@@ -42,6 +42,7 @@ export function buildModuleTemplateProps(
   const name = mod.name.trim();
 
   const heroBlock = findBlock<{
+    eyebrow?: string;
     headline?: string;
     subheadline?: string;
     primary_cta?: CtaShape;
@@ -49,6 +50,7 @@ export function buildModuleTemplateProps(
   }>(blocks, "hero");
 
   const hero: ModuleTemplateProps["hero"] = {
+    eyebrow: heroBlock?.eyebrow?.trim() || undefined,
     headline: heroBlock?.headline?.trim() || name,
     subheadline: heroBlock?.subheadline?.trim() || mod.tagline || undefined,
     primaryCta: resolveCta(heroBlock?.primary_cta) ?? { label: "Book a Demo", href: "/contact-us" },

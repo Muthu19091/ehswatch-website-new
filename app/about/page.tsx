@@ -35,11 +35,13 @@ export default async function AboutPage() {
 
   // ── hero block ──────────────────────────────────────────────────────────────
   const heroData = findBlock<{
+    eyebrow?: string | null;
     headline?: string | null;
     subheadline?: string | null;
     primary_cta?: { label?: string | null; url?: string | null; anchor?: string | null; type?: string | null } | null;
   }>(blocks, "hero");
 
+  const heroEyebrow = heroData?.eyebrow || undefined;
   const heroHeadline = heroData?.headline || undefined;
   const heroSubheadline = heroData?.subheadline || undefined;
   const heroCtaRaw = heroData?.primary_cta;
@@ -132,6 +134,7 @@ export default async function AboutPage() {
       <Navbar lightHero={true} />
       <main>
         <AboutHero
+          cmsEyebrow={heroEyebrow}
           cmsHeadline={heroHeadline}
           cmsSubheadline={heroSubheadline}
           cmsPrimaryCtaLabel={heroCtaLabel}

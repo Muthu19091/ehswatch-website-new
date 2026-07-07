@@ -4,12 +4,14 @@ import { basePath } from "@/lib/basePath";
 import GlareButton from "@/components/ui/GlareButton";
 
 interface ProductHeroProps {
+  cmsEyebrow?: string;
   cmsHeadline?: string;
   cmsSubheadline?: string;
   cmsPrimaryCta?: { label: string; url: string };
 }
 
 export default function ProductHero({
+  cmsEyebrow,
   cmsHeadline,
   cmsSubheadline,
   cmsPrimaryCta,
@@ -101,6 +103,11 @@ export default function ProductHero({
 
       {/* Content */}
       <div className="relative z-20 max-w-[760px] w-full mx-auto text-center flex flex-col items-center gap-5 md:gap-6">
+        {cmsEyebrow && (
+          <span className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8] animate-hero-rise">
+            {cmsEyebrow}
+          </span>
+        )}
         <h1
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[60px] leading-[1.06] text-gray-900 tracking-[-0.03em] animate-hero-rise"
           style={{ animationDelay: "80ms" }}

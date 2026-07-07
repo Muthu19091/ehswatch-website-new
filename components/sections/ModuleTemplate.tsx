@@ -19,6 +19,7 @@ export interface ModuleCta {
 export interface ModuleTemplateProps {
   moduleName: string;
   hero: {
+    eyebrow?: string;
     headline: string;
     subheadline?: string;
     primaryCta?: ModuleCta;
@@ -282,6 +283,11 @@ export default function ModuleTemplate({
         </div>
 
         <div className="relative z-20 max-w-[800px] w-full mx-auto text-center flex flex-col items-center gap-5 md:gap-6">
+          {hero.eyebrow && (
+            <span className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8] animate-hero-rise">
+              {hero.eyebrow}
+            </span>
+          )}
           <h1
             className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[50px] md:text-[58px] leading-[1.06] text-[#0a0f1e] tracking-[-0.03em] animate-hero-rise"
             style={{ animationDelay: "80ms" }}
