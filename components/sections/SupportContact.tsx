@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import GlareButton from "@/components/ui/GlareButton";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 /* ── shared input style ── */
 const inputClass =
@@ -79,16 +80,20 @@ function ContactForm() {
           <input type="text" placeholder="Acme Corp" className={inputClass} />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold text-[#374151] tracking-wide uppercase">Topic <span className="text-[#e53e3e]">*</span></label>
-          <select required defaultValue="" className={inputClass}>
-            <option value="" disabled>Select a topic</option>
-            <option>Technical Issue</option>
-            <option>Billing & Pricing</option>
-            <option>Feature Request</option>
-            <option>Documentation</option>
-            <option>General Enquiry</option>
-          </select>
+          <label className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold text-[#374151] tracking-wide uppercase">Phone Number</label>
+          <PhoneInput name="phone" variant="support" placeholder="98765 43210" />
         </div>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <label className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold text-[#374151] tracking-wide uppercase">Topic <span className="text-[#e53e3e]">*</span></label>
+        <select required defaultValue="" className={inputClass}>
+          <option value="" disabled>Select a topic</option>
+          <option>Technical Issue</option>
+          <option>Billing & Pricing</option>
+          <option>Feature Request</option>
+          <option>Documentation</option>
+          <option>General Enquiry</option>
+        </select>
       </div>
       <div className="flex flex-col gap-1.5">
         <label className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold text-[#374151] tracking-wide uppercase">Message <span className="text-[#e53e3e]">*</span></label>
