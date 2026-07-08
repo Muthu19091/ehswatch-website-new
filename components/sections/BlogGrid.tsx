@@ -129,27 +129,20 @@ function FeaturedCard({ post }: { post: Post }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Square image — left ~47% */}
+      {/* Image — left ~47%. Covers upload at 3:2 or 16:9; an 8:5 box sits
+          between them so object-cover fills fully with only edge-sliver crop */}
       <div
         className="relative flex-shrink-0 overflow-hidden"
-        style={{ width: "47%", aspectRatio: "1/1", borderRadius: "7px 0 0 7px" }}
+        style={{ width: "47%", aspectRatio: "8/5", borderRadius: "7px 0 0 7px" }}
       >
-        {/* Covers are landscape; contain the full image and fill the gap with a blurred copy */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={post.img}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "blur(20px)", transform: "scale(1.2)", opacity: 0.6 }}
-        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.img}
           alt={post.title}
-          className="relative w-full h-full object-contain"
+          className="w-full h-full object-cover"
           style={{
             display: "block",
+            objectPosition: "left center",
             transform: hovered ? "scale(1.04)" : "scale(1)",
             transition: "transform 0.5s ease",
           }}
@@ -205,27 +198,20 @@ function StandardCard({ post }: { post: Post }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* 4:3 image */}
+      {/* Image. Covers upload at 3:2 or 16:9; an 8:5 box sits between them
+          so object-cover fills fully with only edge-sliver crop */}
       <div
         className="relative overflow-hidden flex-shrink-0"
-        style={{ aspectRatio: "4/3", borderRadius: "7px 7px 0 0" }}
+        style={{ aspectRatio: "8/5", borderRadius: "7px 7px 0 0" }}
       >
-        {/* Covers are landscape; contain the full image and fill the gap with a blurred copy */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={post.img}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "blur(20px)", transform: "scale(1.2)", opacity: 0.6 }}
-        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.img}
           alt={post.title}
-          className="relative w-full h-full object-contain"
+          className="w-full h-full object-cover"
           style={{
             display: "block",
+            objectPosition: "left center",
             transform: hovered ? "scale(1.04)" : "scale(1)",
             transition: "transform 0.5s ease",
           }}
