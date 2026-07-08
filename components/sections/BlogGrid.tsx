@@ -130,14 +130,25 @@ function FeaturedCard({ post }: { post: Post }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Square image — left ~47% */}
-      <div className="relative flex-shrink-0 overflow-hidden" style={{ width: "47%", aspectRatio: "1/1" }}>
+      <div
+        className="relative flex-shrink-0 overflow-hidden"
+        style={{ width: "47%", aspectRatio: "1/1", borderRadius: "7px 0 0 7px" }}
+      >
+        {/* Covers are landscape; contain the full image and fill the gap with a blurred copy */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={post.img}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "blur(20px)", transform: "scale(1.2)", opacity: 0.6 }}
+        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.img}
           alt={post.title}
-          className="w-full h-full object-cover"
+          className="relative w-full h-full object-contain"
           style={{
-            borderRadius: "7px 0 0 7px",
             display: "block",
             transform: hovered ? "scale(1.04)" : "scale(1)",
             transition: "transform 0.5s ease",
@@ -195,14 +206,25 @@ function StandardCard({ post }: { post: Post }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* 4:3 image */}
-      <div className="relative overflow-hidden flex-shrink-0" style={{ aspectRatio: "4/3" }}>
+      <div
+        className="relative overflow-hidden flex-shrink-0"
+        style={{ aspectRatio: "4/3", borderRadius: "7px 7px 0 0" }}
+      >
+        {/* Covers are landscape; contain the full image and fill the gap with a blurred copy */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={post.img}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "blur(20px)", transform: "scale(1.2)", opacity: 0.6 }}
+        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.img}
           alt={post.title}
-          className="w-full h-full object-cover"
+          className="relative w-full h-full object-contain"
           style={{
-            borderRadius: "7px 7px 0 0",
             display: "block",
             transform: hovered ? "scale(1.04)" : "scale(1)",
             transition: "transform 0.5s ease",
