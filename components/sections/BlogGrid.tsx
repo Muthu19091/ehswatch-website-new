@@ -110,8 +110,8 @@ const FALLBACK_POSTS: Post[] = [
 ];
 
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
-const TOPIC_OPTIONS    = ["Topic: All topics", "Incident Management", "Compliance", "Risk Management", "Operations", "Contractor Management"];
-const FORMAT_OPTIONS   = ["Format: All formats", "Article", "Guide", "Case Study"];
+// Topic/Format options are derived from the actual posts (CMS categories) so
+// the dropdowns always match what editors set in the dashboard.
 
 /* ── Featured Card (Row 1): image left, text right ───────────── */
 function FeaturedCard({ post }: { post: Post }) {
@@ -280,17 +280,29 @@ function FilterSelect({ value, onChange, options }: { value: string; onChange: (
 export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
   const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : FALLBACK_POSTS;
 
+  const topicOptions = [
+    "Topic: All topics",
+    ...Array.from(new Set(POSTS.map((p) => p.topic).filter(Boolean))).sort(),
+  ];
+  const formatOptions = [
+    "Format: All formats",
+    ...Array.from(new Set(POSTS.map((p) => p.format).filter(Boolean))).sort(),
+  ];
+  // A dropdown with a single value filters nothing — hide it
+  const showFormat = formatOptions.length > 2;
+
   const [search,   setSearch]   = useState("");
   const [timeline, setTimeline] = useState(TIMELINE_OPTIONS[0]);
-  const [topic,    setTopic]    = useState(TOPIC_OPTIONS[0]);
-  const [format,   setFormat]   = useState(FORMAT_OPTIONS[0]);
+  const [topic,    setTopic]    = useState("Topic: All topics");
+  const [format,   setFormat]   = useState("Format: All formats");
 
   const filtered = useMemo(() => {
     const now = Date.now();
     return POSTS.filter((p) => {
       if (search) {
         const q = search.toLowerCase();
-        if (!p.title.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q)) return false;
+        const haystack = `${p.title} ${p.category} ${p.excerpt}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
       }
       if (timeline === "Last month"    && now - p.dateSort > 30  * 86400000) return false;
       if (timeline === "Last 3 months" && now - p.dateSort > 90  * 86400000) return false;
@@ -330,8 +342,10 @@ export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
           {/* Filter pills — full-width 3-col grid */}
           <div className="grid grid-cols-3 gap-3">
             <FilterSelect value={timeline} onChange={setTimeline} options={TIMELINE_OPTIONS} />
-            <FilterSelect value={topic}    onChange={setTopic}    options={TOPIC_OPTIONS} />
-            <FilterSelect value={format}   onChange={setFormat}   options={FORMAT_OPTIONS} />
+            <FilterSelect value={topic}    onChange={setTopic}    options={topicOptions} />
+            {showFormat && (
+              <FilterSelect value={format} onChange={setFormat} options={formatOptions} />
+            )}
           </div>
         </div>
 
