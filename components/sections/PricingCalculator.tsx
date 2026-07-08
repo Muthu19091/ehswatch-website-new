@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TurnstileField from "@/components/ui/TurnstileField";
 import CmsIcon from "@/components/ui/CmsIcon";
 
@@ -258,6 +258,16 @@ export default function PricingCalculator({
     if (!validateStep(step)) return;
     setStep((s) => Math.min(wizardSteps.length - 1, s + 1));
   };
+
+  // Step contents differ wildly in height (the Applications checklist is ~10×
+  // taller than Add-Ons). The browser keeps the old scroll offset across the
+  // swap, which dumped the viewport into the FAQ section — snap back to the
+  // top of the wizard whenever the step changes.
+  const stepChangedOnce = useRef(false);
+  useEffect(() => {
+    if (!stepChangedOnce.current) { stepChangedOnce.current = true; return; }
+    document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -541,7 +551,7 @@ export default function PricingCalculator({
   const stepHasPicker = current.fields.some((f) => PICKER_TYPES.has(f.field_type));
 
   return (
-    <section id="calculator" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
+    <section id="calculator" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white scroll-mt-20">
       <style>{`
         .calc-card-sel { border-color: #1d4ed8 !important; background: #eff6ff !important; }
         .calc-card:hover:not(.calc-card-sel) { border-color: #93c5fd !important; box-shadow: 0 4px 16px rgba(59,130,246,0.10) !important; }
