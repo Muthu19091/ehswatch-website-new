@@ -316,11 +316,51 @@ export default function DynamicCmsForm({
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
+  const [stepIdx, setStepIdx] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const visibleFields = (formAttrs.fields ?? []).filter(
-    (f) => f.field_type !== "hidden",
-  );
+  // Multi-step: the API sends steps[] (each with its own fields) instead of
+  // fields[]. All steps stay mounted (hidden with CSS) so a single FormData
+  // read at submit time captures every step's inputs.
+  const steps =
+    formAttrs.use_multi_step && (formAttrs.steps?.length ?? 0) > 0
+      ? formAttrs.steps!
+      : null;
+  const allFields = steps
+    ? steps.flatMap((s) => s.fields ?? [])
+    : (formAttrs.fields ?? []);
+  const visibleFields = allFields.filter((f) => f.field_type !== "hidden");
+  const isLastStep = !steps || stepIdx === steps.length - 1;
+
+  const stepOfField = (key: string): number => {
+    if (!steps) return 0;
+    return Math.max(0, steps.findIndex((s) => (s.fields ?? []).some((f) => f.key === key)));
+  };
+
+  const scrollToField = (key: string) => {
+    const el = formRef.current?.querySelector(`[name="${key}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const goBack = () => {
+    setServerError(null);
+    setStepIdx((i) => Math.max(0, i - 1));
+  };
+
+  const goNext = () => {
+    if (!steps || !formRef.current) return;
+    setServerError(null);
+    const fd = new FormData(formRef.current);
+    const stepFields = (steps[stepIdx].fields ?? []).filter((f) => f.field_type !== "hidden");
+    const stepErrors = validateFields(stepFields, fd);
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      scrollToField(Object.keys(stepErrors)[0]);
+      return;
+    }
+    setErrors({});
+    setStepIdx((i) => Math.min(steps.length - 1, i + 1));
+  };
   const successHeading = formAttrs.success_heading || "Message Received";
   const successMessage =
     formAttrs.success_message || "Thank you! We'll be in touch shortly.";
@@ -340,10 +380,10 @@ export default function DynamicCmsForm({
     const fieldErrors = validateFields(visibleFields, fd);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
-      /* Scroll first error into view */
+      /* Jump to the step holding the first error, then scroll to it */
       const firstKey = Object.keys(fieldErrors)[0];
-      const el = formRef.current?.querySelector(`[name="${firstKey}"]`);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (steps) setStepIdx(stepOfField(firstKey));
+      scrollToField(firstKey);
       return;
     }
     setErrors({});
@@ -354,7 +394,6 @@ export default function DynamicCmsForm({
     }
 
     /* Build payload */
-    const allFields = formAttrs.fields ?? [];
     const data: Record<string, unknown> = { captcha_token: captchaToken };
     for (const field of allFields) {
       if (field.field_type === "checkboxes") {
@@ -378,7 +417,12 @@ export default function DynamicCmsForm({
           if (pointer) serverFieldErrors[pointer] = err.detail ?? err.title;
           else setServerError(err.detail ?? err.title ?? "Submission failed.");
         }
-        if (Object.keys(serverFieldErrors).length > 0) setErrors(serverFieldErrors);
+        if (Object.keys(serverFieldErrors).length > 0) {
+          setErrors(serverFieldErrors);
+          const firstKey = Object.keys(serverFieldErrors)[0];
+          if (steps) setStepIdx(stepOfField(firstKey));
+          scrollToField(firstKey);
+        }
         return;
       }
 
@@ -411,6 +455,7 @@ export default function DynamicCmsForm({
             formRef.current?.reset();
             setCaptchaToken(null);
             setErrors({});
+            setStepIdx(0);
           }}
           className="font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#1d4ed8] hover:underline cursor-pointer"
         >
@@ -420,32 +465,80 @@ export default function DynamicCmsForm({
     );
   }
 
-  const rows = buildRows(visibleFields);
   const gapClass = variant === "contact" ? "gap-10" : "gap-4";
+
+  const renderRows = (fields: CmsFormField[]) =>
+    buildRows(fields.filter((f) => f.field_type !== "hidden")).map((row, ri) => (
+      <div
+        key={ri}
+        className={row.length === 2 ? "grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12" : ""}
+      >
+        {row.map((field) => (
+          <FieldWidget
+            key={field.key}
+            field={field}
+            variant={variant}
+            error={errors[field.key]}
+          />
+        ))}
+      </div>
+    ));
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} noValidate className={`flex flex-col ${gapClass}`}>
-      {rows.map((row, ri) => (
-        <div
-          key={ri}
-          className={row.length === 2 ? "grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12" : ""}
-        >
-          {row.map((field) => (
-            <FieldWidget
-              key={field.key}
-              field={field}
-              variant={variant}
-              error={errors[field.key]}
-            />
-          ))}
-        </div>
-      ))}
+      {steps ? (
+        <>
+          {/* Step indicator */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {steps.map((s, i) => (
+              <div key={s.key ?? i} className="flex items-center gap-2">
+                {i > 0 && <span className="w-6 h-[1.5px] bg-[#e5e7eb] inline-block" />}
+                <span
+                  className="flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold font-[family-name:var(--font-dm-sans)]"
+                  style={{
+                    background: i <= stepIdx ? "#1d4ed8" : "#eef2f7",
+                    color: i <= stepIdx ? "#fff" : "#94a3b8",
+                    transition: "background 0.25s ease",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold hidden sm:inline"
+                  style={{ color: i === stepIdx ? "#0a0f1e" : "#94a3b8" }}
+                >
+                  {s.title || `Step ${i + 1}`}
+                </span>
+              </div>
+            ))}
+          </div>
 
-      <TurnstileField
-        siteKey={siteKey}
-        onToken={setCaptchaToken}
-        onExpire={() => setCaptchaToken(null)}
-      />
+          {/* Step description */}
+          {steps[stepIdx].description && (
+            <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] -mt-4">
+              {steps[stepIdx].description}
+            </p>
+          )}
+
+          {/* All steps stay mounted so FormData sees every input; only the
+              active one is visible */}
+          {steps.map((s, i) => (
+            <div key={s.key ?? i} className={i === stepIdx ? `flex flex-col ${gapClass}` : "hidden"}>
+              {renderRows(s.fields ?? [])}
+            </div>
+          ))}
+        </>
+      ) : (
+        renderRows(visibleFields)
+      )}
+
+      <div className={isLastStep ? "" : "hidden"}>
+        <TurnstileField
+          siteKey={siteKey}
+          onToken={setCaptchaToken}
+          onExpire={() => setCaptchaToken(null)}
+        />
+      </div>
 
       {serverError && (
         <p className="text-[13px] text-red-500 font-[family-name:var(--font-dm-sans)]">
@@ -453,24 +546,53 @@ export default function DynamicCmsForm({
         </p>
       )}
 
-      <div>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200"
-          style={{
-            backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
-            opacity: submitting ? 0.7 : 1,
-            cursor: submitting ? "not-allowed" : "pointer",
-          }}
-        >
-          {submitting ? "Sending…" : submitLabel}
-          {!submitting && (
+      <div className="flex items-center gap-3">
+        {steps && stepIdx > 0 && (
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-[#374151] border border-[#e5e7eb] hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+          >
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back
+          </button>
+        )}
+
+        {!isLastStep ? (
+          <button
+            type="button"
+            onClick={goNext}
+            className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200 cursor-pointer"
+            style={{
+              backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
+            }}
+          >
+            Continue
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
               <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          )}
-        </button>
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white transition-all duration-200"
+            style={{
+              backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
+              opacity: submitting ? 0.7 : 1,
+              cursor: submitting ? "not-allowed" : "pointer",
+            }}
+          >
+            {submitting ? "Sending…" : submitLabel}
+            {!submitting && (
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </button>
+        )}
       </div>
     </form>
   );
