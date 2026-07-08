@@ -100,6 +100,16 @@ const POSTS: Record<string, BlogPostData> = {
 
 const SLUGS = Object.keys(POSTS);
 
+// Editors sometimes author headings as whole-bold paragraphs instead of using
+// the editor's H2 button. Normalise those at render time so every post — past
+// and future — gets real, styled headings regardless of authoring habit.
+function normalizeBody(html: string): string {
+  return html.replace(
+    /<p>\s*<strong>([^<]{1,90}?)<\/strong>(?:&nbsp;|\s)*<\/p>/g,
+    (_, t: string) => `<h2>${t.trim()}</h2>`,
+  );
+}
+
 function getPost(slug: string): BlogPostData {
   return POSTS[slug] ?? POSTS["near-miss-reporting-culture"];
 }
@@ -272,7 +282,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                 {/* CMS body HTML */}
                 <div
                   className="blog-body prose prose-lg max-w-none font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
-                  dangerouslySetInnerHTML={{ __html: cmsPost.attributes.body }}
+                  dangerouslySetInnerHTML={{ __html: normalizeBody(cmsPost.attributes.body) }}
                 />
               </>
             ) : (
