@@ -25,7 +25,18 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
     import("intl-tel-input").then(({ default: intlTelInput }) => {
       if (!inputRef.current) return;
       iti = intlTelInput(inputRef.current, {
-        initialCountry: "us",
+        // Detect the visitor's country from Cloudflare's same-origin trace
+        // endpoint (site is CF-fronted); fall back to India when unavailable.
+        initialCountry: "",
+        initialCountryLookup: async () => {
+          try {
+            const t = await fetch(`${window.location.origin}/cdn-cgi/trace`).then((r) => r.text());
+            const loc = t.match(/^loc=([A-Z]{2})$/m)?.[1];
+            return (loc && loc !== "XX" ? loc.toLowerCase() : "in") as never;
+          } catch {
+            return "in" as never;
+          }
+        },
         separateDialCode: true,
         loadUtils: () => import("intl-tel-input/utils"),
       });
