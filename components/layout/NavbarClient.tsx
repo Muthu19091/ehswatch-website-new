@@ -66,6 +66,23 @@ export default function NavbarClient({
   const logoHref = cmsLogo?.href || "/";
   const [open, setOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  // Desktop dropdowns open on hover (CSS) — this adds click/tap toggling so
+  // they also work on touch screens, where hover never fires
+  const [deskOpen, setDeskOpen] = useState<number | "more" | null>(null);
+
+  useEffect(() => {
+    if (deskOpen === null) return;
+    const close = (e: MouseEvent) => {
+      if (!(e.target as Element | null)?.closest?.("[data-desk-dropdown]")) setDeskOpen(null);
+    };
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [deskOpen]);
+
+  const deskPanelClass = (isOpen: boolean) =>
+    isOpen
+      ? "opacity-100 visible pointer-events-auto translate-y-0"
+      : "opacity-0 invisible pointer-events-none translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-hover:translate-y-0";
   const [ctaFill, setCtaFill] = useState({ x: 0, y: 0, on: false });
 
   const headerRef          = useRef<HTMLElement>(null);
@@ -239,6 +256,7 @@ export default function NavbarClient({
               <div
                 key={link.label}
                 ref={(el) => { linkRefs.current[i] = el; }}
+                data-desk-dropdown
                 className="relative group shrink-0 pointer-events-auto pb-[10px] -mb-[10px]"
                 style={{
                   color: initColor, textShadow: initShadow,
@@ -246,17 +264,19 @@ export default function NavbarClient({
                 }}
               >
                 <button
+                  onClick={() => setDeskOpen(deskOpen === i ? null : i)}
+                  aria-expanded={deskOpen === i}
                   className="flex items-center gap-[5px] py-2 font-medium tracking-[-0.24px] rounded-[40px] whitespace-nowrap font-[family-name:var(--font-dm-sans)] hover:opacity-75 transition-opacity cursor-pointer"
                   style={{ color: "inherit", fontSize: "inherit", background: "none", border: "none" }}
                 >
                   {link.label}
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="group-hover:rotate-180 transition-transform duration-200">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className={`group-hover:rotate-180 transition-transform duration-200 ${deskOpen === i ? "rotate-180" : ""}`}>
                     <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
 
                 {/* Dropdown panel — 2-column */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-4 w-[480px] opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-50">
+                <div className={`absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-4 w-[480px] transition-all duration-200 z-50 ${deskPanelClass(deskOpen === i)}`}>
                   {/* caret */}
                   <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-[#f0f2f5] rotate-45" />
                   <div className="grid grid-cols-2 gap-3">
@@ -264,6 +284,7 @@ export default function NavbarClient({
                       <Link
                         key={item.label}
                         href={item.href}
+                        onClick={() => setDeskOpen(null)}
                         className="group/card flex flex-col gap-2.5 rounded-xl overflow-hidden transition-all duration-200"
                       >
                         {/* Thumbnail — show image if available, gradient placeholder otherwise */}
@@ -318,24 +339,28 @@ export default function NavbarClient({
               row never overlaps the logo/CTA no matter how many nav items exist */}
           {overflowItems.length > 0 && (
             <div
+              data-desk-dropdown
               className="relative group shrink-0 pointer-events-auto pb-[10px] -mb-[10px]"
               style={{ color: initColor, textShadow: initShadow, fontSize: "14px", paddingLeft: "9px", paddingRight: "9px" }}
             >
               <button
+                onClick={() => setDeskOpen(deskOpen === "more" ? null : "more")}
+                aria-expanded={deskOpen === "more"}
                 className="flex items-center gap-[5px] py-2 font-medium tracking-[-0.24px] rounded-[40px] whitespace-nowrap font-[family-name:var(--font-dm-sans)] hover:opacity-75 transition-opacity cursor-pointer"
                 style={{ color: "inherit", fontSize: "inherit", background: "none", border: "none" }}
               >
                 More
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="group-hover:rotate-180 transition-transform duration-200">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className={`group-hover:rotate-180 transition-transform duration-200 ${deskOpen === "more" ? "rotate-180" : ""}`}>
                   <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
 
-              <div className="absolute top-full right-0 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-2 min-w-[200px] opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-50">
+              <div className={`absolute top-full right-0 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-2 min-w-[200px] transition-all duration-200 z-50 ${deskPanelClass(deskOpen === "more")}`}>
                 {overflowItems.map((item) => (
                   <Link
                     key={item.label}
                     href={item.href || "#"}
+                    onClick={() => setDeskOpen(null)}
                     className="block px-3 py-2 rounded-lg font-[family-name:var(--font-dm-sans)] text-[14px] font-medium text-[#0f172a] hover:bg-[#f1f5f9] transition-colors whitespace-nowrap"
                   >
                     {item.label}
