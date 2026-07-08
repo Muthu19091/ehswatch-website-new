@@ -280,14 +280,18 @@ function FilterSelect({ value, onChange, options }: { value: string; onChange: (
 export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
   const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : FALLBACK_POSTS;
 
-  const topicOptions = [
-    "Topic: All topics",
-    ...Array.from(new Set(POSTS.map((p) => p.topic).filter(Boolean))).sort(),
-  ];
-  const formatOptions = [
-    "Format: All formats",
-    ...Array.from(new Set(POSTS.map((p) => p.format).filter(Boolean))).sort(),
-  ];
+  // Dedupe case-insensitively (categories are free text in the CMS) —
+  // first-seen casing wins as the display value
+  const uniqueCI = (values: string[]): string[] => {
+    const seen = new Map<string, string>();
+    for (const v of values) {
+      const k = v.trim().toLowerCase();
+      if (k && !seen.has(k)) seen.set(k, v.trim());
+    }
+    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  };
+  const topicOptions = ["Topic: All topics", ...uniqueCI(POSTS.map((p) => p.topic).filter(Boolean))];
+  const formatOptions = ["Format: All formats", ...uniqueCI(POSTS.map((p) => p.format).filter(Boolean))];
   // A dropdown with a single value filters nothing — hide it
   const showFormat = formatOptions.length > 2;
 
@@ -307,8 +311,8 @@ export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
       if (timeline === "Last month"    && now - p.dateSort > 30  * 86400000) return false;
       if (timeline === "Last 3 months" && now - p.dateSort > 90  * 86400000) return false;
       if (timeline === "This year"     && now - p.dateSort > 365 * 86400000) return false;
-      if (!topic.startsWith("Topic:")   && p.topic  !== topic)  return false;
-      if (!format.startsWith("Format:") && p.format !== format) return false;
+      if (!topic.startsWith("Topic:") && p.topic.trim().toLowerCase() !== topic.trim().toLowerCase()) return false;
+      if (!format.startsWith("Format:") && p.format.trim().toLowerCase() !== format.trim().toLowerCase()) return false;
       return true;
     });
   }, [search, timeline, topic, format]);
