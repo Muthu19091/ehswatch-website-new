@@ -219,6 +219,7 @@ export interface CmsForm {
     slug: string;
     name: string;
     form_type: string;
+    description?: string | null;
     use_multi_step: boolean;
     submit_label: string;
     success_heading: string;

@@ -12,33 +12,63 @@ interface BlogNewsletterProps {
   formAttrs?: CmsForm["attributes"] | null;
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) {
   const [email,        setEmail]        = useState("");
   const [consent,      setConsent]      = useState(false);
   const [submitted,    setSubmitted]    = useState(false);
+  const [submitting,   setSubmitting]   = useState(false);
   const [hovered,      setHovered]      = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [error,        setError]        = useState<string | null>(null);
 
-  const siteKey    = formAttrs?.captcha?.site_key ?? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
+  const siteKey     = formAttrs?.captcha?.site_key ?? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
   const submitLabel = formAttrs?.submit_label ?? "Subscribe";
+  const successHeading = formAttrs?.success_heading || "You're subscribed!";
   const successMsg  = formAttrs?.success_message ?? "Check your inbox for a confirmation.";
+  // CMS-editable heading via the form's description; falls back to design copy
+  const heading = formAttrs?.description?.trim() || null;
 
-  /* find the consent checkboxes field, if the CMS has one */
+  /* CMS email field drives placeholder/label */
+  const emailField = formAttrs?.fields?.find((f) => f.field_type === "email") ?? null;
+  const emailPlaceholder = emailField?.placeholder || emailField?.label || "Your Email Address";
+  const emailKey = emailField?.key ?? "email";
+
+  /* consent: any consent/checkboxes field, whatever its key */
   const consentField = formAttrs?.fields?.find(
-    (f) => f.field_type === "checkboxes" && f.key === "consent"
+    (f) => f.field_type === "consent" || f.field_type === "checkboxes",
   ) ?? null;
-  const needsConsent = consentField?.required && !consent;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !captchaToken || needsConsent) return;
+    setError(null);
+
+    /* Client-side validation with visible messages */
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    if (!EMAIL_RE.test(email.trim())) { setError("Please enter a valid email address."); return; }
+    if (consentField?.required && !consent) { setError("Please accept the consent checkbox to subscribe."); return; }
+    if (!captchaToken) { setError("Please complete the CAPTCHA verification."); return; }
+
+    setSubmitting(true);
     try {
       const { submitForm } = await import("@/lib/api");
-      const data: Record<string, unknown> = { email, captcha_token: captchaToken };
-      if (consentField) data.consent = consent ? ["Yes"] : [];
-      await submitForm("newsletter", data);
-    } finally {
+      const data: Record<string, unknown> = { [emailKey]: email.trim(), captcha_token: captchaToken };
+      if (consentField) {
+        data[consentField.key] =
+          consentField.field_type === "checkboxes" ? (consent ? ["Yes"] : []) : consent;
+      }
+      const result = await submitForm("newsletter", data);
+      if (!result.ok) {
+        const first = result.errors?.[0];
+        setError(first?.detail ?? first?.title ?? "Subscription failed. Please try again.");
+        return;
+      }
       setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -84,7 +114,7 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
               </div>
               <div>
                 <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px]" style={{ color: DARK }}>
-                  You&apos;re subscribed!
+                  {successHeading}
                 </p>
                 <p className="font-[family-name:var(--font-dm-sans)] text-[14px] mt-1" style={{ color: DARK_MID }}>
                   {successMsg}
@@ -95,31 +125,44 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
             /* ── Form ── */
             <form
               onSubmit={handleSubmit}
+              noValidate
               className="flex flex-wrap items-center justify-center w-full gap-8 md:gap-12"
             >
-              {/* Heading */}
+              {/* Heading — CMS form description when set, design copy otherwise */}
               <h2
                 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[18px] sm:text-[19px] md:text-[20px] leading-[1.6] tracking-[-0.01em] shrink-0"
-                style={{ color: DARK }}
+                style={{ color: DARK, maxWidth: heading ? 340 : undefined }}
               >
-                <span className="block whitespace-nowrap">Get the latest EHSQ insights,</span>
-                <span className="block whitespace-nowrap">product updates,</span>
-                <span className="block whitespace-nowrap">and regulatory signals.</span>
+                {heading ?? (
+                  <>
+                    <span className="block whitespace-nowrap">Get the latest EHSQ insights,</span>
+                    <span className="block whitespace-nowrap">product updates,</span>
+                    <span className="block whitespace-nowrap">and regulatory signals.</span>
+                  </>
+                )}
               </h2>
 
               {/* Email + consent */}
               <div className="flex flex-col gap-3 w-full max-w-[340px]">
-                <div className="pb-1" style={{ borderBottom: `1px solid rgba(27,27,27,0.35)` }}>
+                <div
+                  className="pb-1"
+                  style={{ borderBottom: `1px solid ${error ? "rgba(220,38,38,0.7)" : "rgba(27,27,27,0.35)"}` }}
+                >
                   <input
                     type="email"
-                    required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your Email Address"
+                    onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }}
+                    placeholder={emailPlaceholder}
                     className="nl-input-dark w-full bg-transparent font-[family-name:var(--font-dm-sans)] text-[15px]"
                     style={{ color: DARK }}
                   />
                 </div>
+
+                {error && (
+                  <p className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold text-red-600">
+                    {error}
+                  </p>
+                )}
 
                 {/* CMS consent checkbox — shown only when the CMS field is present */}
                 {consentField && (
@@ -131,16 +174,18 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
                       type="checkbox"
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      required={consentField.required}
                       className="mt-[2px] shrink-0 accent-[#ff7812]"
                     />
-                    <span>{consentField.label}</span>
+                    <span>
+                      {consentField.label}
+                      {consentField.required && <span style={{ color: "#dc2626" }}> *</span>}
+                    </span>
                   </label>
                 )}
 
                 <p className="font-[family-name:var(--font-dm-sans)] text-[12px]" style={{ color: DARK_MID }}>
                   Read more about how we protect your data.{" "}
-                  <a href="#" className="font-semibold underline" style={{ color: DARK }}>Learn More</a>
+                  <a href={`${basePath}/privacy-policy/`} className="font-semibold underline" style={{ color: DARK }}>Learn More</a>
                 </p>
               </div>
 
@@ -150,7 +195,7 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
               {/* Subscribe button */}
               <button
                 type="submit"
-                disabled={!captchaToken || needsConsent}
+                disabled={submitting}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 className="shrink-0 flex items-center gap-2 px-6 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] transition-all duration-200"
@@ -162,13 +207,16 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
                     ? "linear-gradient(102.8deg, #ff8e37 0%, #ff6d00 100%)"
                     : "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
                   color: "#ffffff",
-                  opacity: (!captchaToken || needsConsent) ? 0.7 : 1,
+                  opacity: submitting ? 0.7 : 1,
+                  cursor: submitting ? "not-allowed" : "pointer",
                 }}
               >
-                {submitLabel}
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                {submitting ? "Sending…" : submitLabel}
+                {!submitting && (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
               </button>
             </form>
           )}
