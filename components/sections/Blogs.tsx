@@ -120,7 +120,9 @@ function BlogCard({ blog }: { blog: typeof FALLBACK_BLOGS[0] }) {
         alt={blog.title}
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        className="object-cover object-center"
+        // Covers are landscape with left-anchored titles; a portrait card crops
+        // ~half the width, so anchor left to keep the text side visible
+        className="object-cover object-left"
         style={{
           transform: hovered ? "scale(1.07)" : "scale(1)",
           transition: "transform 700ms cubic-bezier(.22,1,.36,1)",
