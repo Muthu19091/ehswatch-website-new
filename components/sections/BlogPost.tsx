@@ -137,6 +137,21 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
     <>
       <style>{`
         .blog-body p + p { margin-top: 1.6rem; }
+        .blog-body h2 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.5rem; color: #0a0f1e; margin: 2.4rem 0 0.9rem; letter-spacing: -0.02em; line-height: 1.3; }
+        .blog-body h3 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.2rem; color: #0a0f1e; margin: 2rem 0 0.7rem; line-height: 1.3; }
+        .blog-body h4 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.05rem; color: #0a0f1e; margin: 1.7rem 0 0.6rem; }
+        .blog-body ul, .blog-body ol { margin: 1.1rem 0 1.4rem; padding-left: 1.4rem; }
+        .blog-body ul { list-style: disc; }
+        .blog-body ol { list-style: decimal; }
+        .blog-body li { margin-top: 0.5rem; }
+        .blog-body li::marker { color: #155eef; }
+        .blog-body a { color: #FF6D00; text-decoration: underline; text-underline-offset: 2px; }
+        .blog-body strong { color: #111827; }
+        .blog-body img { border-radius: 12px; margin: 1.5rem 0; max-width: 100%; height: auto; }
+        .blog-body blockquote { border-left: 3px solid #155eef; padding-left: 1rem; font-style: italic; color: #4b5563; margin: 1.5rem 0; }
+        .blog-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
+        .blog-body th, .blog-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
+        .blog-body th { background: #f9fafb; font-weight: 600; color: #111827; }
         .blog-divider {
           display: flex;
           align-items: center;
