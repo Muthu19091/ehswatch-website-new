@@ -28,3 +28,14 @@ export function stripHtmlOpt(value: string | null | undefined): string | undefin
   const s = stripHtml(value);
   return s || undefined;
 }
+
+/**
+ * Rich editors escape tags an editor TYPES into them (&lt;p&gt;…), so typed
+ * markup would display literally. For rich-text renders we decode escape
+ * sequences that look like real HTML tags — so hand-typed markup behaves
+ * like HTML — while leaving other escaped text (e.g. "5 &lt; 10") alone.
+ */
+export function unescapeTypedTags(value: string | null | undefined): string {
+  if (!value) return "";
+  return value.replace(/&lt;(\/?[a-zA-Z][a-zA-Z0-9]*(?:\s[^&<>]*?)?\/?)&gt;/g, "<$1>");
+}
