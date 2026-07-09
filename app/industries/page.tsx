@@ -6,6 +6,7 @@ import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
 import CTABanner from "@/components/sections/CTABanner";
 import Testimonials from "@/components/sections/Testimonials";
 import { getPage, getTestimonials } from "@/lib/api";
+import { stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 import type { CmsIndustryCard } from "@/components/sections/SolutionsZigzag";
 import type { Metadata } from "next";
@@ -58,7 +59,13 @@ export default async function IndustriesPage() {
     cards?: Record<string, CmsIndustryCard> | CmsIndustryCard[];
   }>(industryBlocks, "solution_carousel");
   const cmsZigzagCards: CmsIndustryCard[] | undefined = solutionCarousel?.cards
-    ? normalizeArray<CmsIndustryCard>(solutionCarousel.cards).filter((c) => c.title)
+    ? normalizeArray<CmsIndustryCard>(solutionCarousel.cards)
+        .filter((c) => c.title)
+        .map((c) => ({
+          ...c,
+          title: stripHtml(c.title),
+          subheading: stripHtmlOpt(c.subheading),
+        }))
     : undefined;
 
   return (
@@ -66,9 +73,9 @@ export default async function IndustriesPage() {
       <Navbar lightHero={true} />
       <main>
         <SolutionsHero
-          cmsEyebrow={cmsHero?.eyebrow || undefined}
+          cmsEyebrow={stripHtmlOpt(cmsHero?.eyebrow)}
           cmsHeadline={cmsHero?.headline || undefined}
-          cmsSubheadline={cmsHero?.subheadline || undefined}
+          cmsSubheadline={stripHtmlOpt(cmsHero?.subheadline)}
           cmsPrimaryCta={
             cmsHero?.primary_cta?.label
               ? { label: cmsHero.primary_cta.label, url: ctaHref(cmsHero.primary_cta) }

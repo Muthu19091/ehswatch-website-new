@@ -7,6 +7,7 @@ import PricingCalculator from "@/components/sections/PricingCalculator";
 import PricingFAQ from "@/components/sections/PricingFAQ";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getForm } from "@/lib/api";
+import { stripHtml } from "@/lib/text";
 import { findBlock, normalizeArray } from "@/lib/blocks";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
@@ -72,12 +73,12 @@ export default async function PricingPage() {
     items?: Record<string, { question?: string; answer?: string }> | Array<{ question?: string; answer?: string }>;
   }>(blocks, "faq_accordion");
 
-  const faqHeading  = faqBlock?.heading || undefined;
+  const faqHeading  = stripHtml(faqBlock?.heading) || undefined;
   const rawFaqItems = faqBlock?.items;
   const faqItems: Array<{ question: string; answer: string }> = rawFaqItems
     ? normalizeArray<{ question?: string; answer?: string }>(rawFaqItems)
         .filter((item) => item?.question)
-        .map((item) => ({ question: item.question!, answer: item.answer || "" }))
+        .map((item) => ({ question: stripHtml(item.question), answer: item.answer || "" }))
     : [];
 
   // ── form_embed block (pricing wizard) ────────────────────────────────────────

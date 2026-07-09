@@ -1,5 +1,6 @@
 import type { ModuleTemplateProps, ModuleCta } from "@/components/sections/ModuleTemplate";
 import type { CmsProductModule } from "@/lib/types";
+import { stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ export function buildModuleTemplateProps(
   allModules: CmsProductModule[],
 ): ModuleTemplateProps {
   const blocks = mod.content ?? [];
-  const name = mod.name.trim();
+  const name = stripHtml(mod.name);
 
   const heroBlock = findBlock<{
     eyebrow?: string;
@@ -50,9 +51,9 @@ export function buildModuleTemplateProps(
   }>(blocks, "hero");
 
   const hero: ModuleTemplateProps["hero"] = {
-    eyebrow: heroBlock?.eyebrow?.trim() || undefined,
-    headline: heroBlock?.headline?.trim() || name,
-    subheadline: heroBlock?.subheadline?.trim() || mod.tagline || undefined,
+    eyebrow: stripHtmlOpt(heroBlock?.eyebrow),
+    headline: stripHtml(heroBlock?.headline) || name,
+    subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
     primaryCta: resolveCta(heroBlock?.primary_cta) ?? { label: "Book a Demo", href: "/contact-us" },
     secondaryCta: resolveCta(heroBlock?.secondary_cta),
   };
@@ -67,7 +68,7 @@ export function buildModuleTemplateProps(
   const why: ModuleTemplateProps["why"] | undefined =
     imageTextBlock?.heading && imageTextBlock?.body
       ? {
-          heading: imageTextBlock.heading.trim(),
+          heading: stripHtml(imageTextBlock.heading),
           bodyHtml: imageTextBlock.body,
           imageUrl: imageTextBlock.image?.url || undefined,
           cta: resolveCta(imageTextBlock.cta),
@@ -88,15 +89,15 @@ export function buildModuleTemplateProps(
     .filter((i) => !!i.title)
     .map((i) => ({
       icon: i.icon ?? null,
-      title: i.title!,
-      description: i.description || "",
+      title: stripHtml(i.title),
+      description: stripHtml(i.description),
     }));
 
   const features: ModuleTemplateProps["features"] | undefined =
     featureItems.length > 0
       ? {
-          heading: iconFeaturesBlock?.heading?.trim() || `Key Features of ${name}`,
-          subheading: iconFeaturesBlock?.subheading?.trim() || undefined,
+          heading: stripHtml(iconFeaturesBlock?.heading) || `Key Features of ${name}`,
+          subheading: stripHtmlOpt(iconFeaturesBlock?.subheading),
           items: featureItems,
         }
       : undefined;
@@ -110,7 +111,7 @@ export function buildModuleTemplateProps(
   const apart: ModuleTemplateProps["apart"] | undefined =
     apartItems.length > 0
       ? {
-          heading: richTextBlock?.heading?.trim() || `What Sets EHSWatch ${name} Apart`,
+          heading: stripHtml(richTextBlock?.heading) || `What Sets EHSWatch ${name} Apart`,
           items: apartItems,
         }
       : undefined;
@@ -122,11 +123,11 @@ export function buildModuleTemplateProps(
 
   const faqItems = normalizeArray<{ question?: string; answer?: string }>(faqBlock?.items)
     .filter((f) => !!f.question && !!f.answer)
-    .map((f) => ({ question: f.question!, answer: f.answer! }));
+    .map((f) => ({ question: stripHtml(f.question), answer: f.answer! }));
 
   const faqs: ModuleTemplateProps["faqs"] | undefined =
     faqItems.length > 0
-      ? { heading: faqBlock?.heading?.trim() || "Frequently Asked Questions", items: faqItems }
+      ? { heading: stripHtml(faqBlock?.heading) || "Frequently Asked Questions", items: faqItems }
       : undefined;
 
   const ctaBlock = findBlock<{
@@ -137,8 +138,8 @@ export function buildModuleTemplateProps(
 
   const finalCta: ModuleTemplateProps["finalCta"] | undefined = ctaBlock?.headline
     ? {
-        headline: ctaBlock.headline.trim(),
-        subhead: ctaBlock.subhead?.trim() || undefined,
+        headline: stripHtml(ctaBlock.headline),
+        subhead: stripHtmlOpt(ctaBlock.subhead),
         cta: resolveCta(ctaBlock.primary_cta) ?? { label: "Book a Demo", href: "/contact-us" },
       }
     : undefined;
@@ -152,16 +153,16 @@ export function buildModuleTemplateProps(
     .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
     .slice(0, modulesBlock?.visible_count || 5)
     .map((m) => ({
-      name: m.attributes.name.trim(),
+      name: stripHtml(m.attributes.name),
       slug: m.attributes.slug,
-      desc: m.attributes.description || m.attributes.tagline || "",
+      desc: stripHtml(m.attributes.description) || stripHtml(m.attributes.tagline),
       icon: m.attributes.icon ?? null,
     }));
 
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
       ? {
-          heading: modulesBlock?.heading?.trim() || "Explore More EHSWatch Modules",
+          heading: stripHtml(modulesBlock?.heading) || "Explore More EHSWatch Modules",
           modules: otherModules,
         }
       : undefined;

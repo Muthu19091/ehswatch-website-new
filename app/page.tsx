@@ -12,6 +12,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import Blogs from "@/components/sections/Blogs";
 import CTABanner from "@/components/sections/CTABanner";
 import { getTestimonials, getClientLogos, getPage } from "@/lib/api";
+import { stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
 
 export const dynamic = "force-dynamic";
@@ -69,9 +70,9 @@ export default async function HomePage() {
   // Normalise solution cards (CMS sends them as a keyed object)
   const solutionCards = solutionBlock?.cards
     ? normalizeArray<{ title?: string; subheading?: string; description?: string; image?: { url?: string } | string | null }>(solutionBlock.cards).map(c => ({
-        title:      c.title      || "",
-        subheading: c.subheading || "",
-        description:c.description|| "",
+        title:      stripHtml(c.title),
+        subheading: stripHtml(c.subheading),
+        description: stripHtml(c.description),
         image:      c.image      ?? null,
       }))
     : undefined;
@@ -115,8 +116,8 @@ export default async function HomePage() {
         .filter((i) => !!i.slug && !!i.title)
         .map((i) => ({
           slug:              i.slug!,
-          title:             i.title!,
-          excerpt:           i.excerpt,
+          title:             stripHtml(i.title),
+          excerpt:           stripHtmlOpt(i.excerpt),
           category:          i.category,
           published_at:      i.published_at,
           featured_image_url:i.featured_image_url,
@@ -148,8 +149,8 @@ export default async function HomePage() {
       <main>
         <Hero
           cmsHeadline={heroBlock?.headline || undefined}
-          cmsSubheadline={heroBlock?.subheadline || undefined}
-          cmsEyebrow={heroBlock?.eyebrow || undefined}
+          cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
+          cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
           cmsPrimaryCta={
             heroBlock?.primary_cta?.label
               ? { label: heroBlock.primary_cta.label, url: ctaHref(heroBlock.primary_cta) }
@@ -166,8 +167,8 @@ export default async function HomePage() {
           cmsItems={
             statsBlock?.items && statsBlock.items.length > 0
               ? statsBlock.items.map((item) => ({
-                  label:  item.label  || "",
-                  value:  item.value  || "0",
+                  label:  stripHtml(item.label),
+                  value:  stripHtml(item.value) || "0",
                   suffix: item.suffix ?? null,
                 }))
               : undefined
@@ -179,8 +180,8 @@ export default async function HomePage() {
           cmsItems={
             painBlock?.items && painBlock.items.length > 0
               ? painBlock.items.map((item) => ({
-                  label:       item.label       || "",
-                  description: item.description || "",
+                  label:       stripHtml(item.label),
+                  description: stripHtml(item.description),
                   icon:        item.icon        || "",
                 }))
               : undefined

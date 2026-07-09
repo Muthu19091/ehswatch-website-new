@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import type { CmsTestimonial } from "@/lib/types";
+import { stripHtml } from "@/lib/text";
 
 interface TestimonialItem { quote: string; author: string }
 
@@ -28,11 +29,12 @@ function StarRow() {
 export default function Testimonials({ title, cmsItems }: { title?: React.ReactNode; cmsItems?: CmsTestimonial[] }) {
   const TESTIMONIALS: TestimonialItem[] = cmsItems && cmsItems.length > 0
     ? cmsItems.map((t) => ({
-        quote: t.attributes.quote,
+        quote: stripHtml(t.attributes.quote),
         // company/role can be null or the literal string "null" in the CMS —
         // drop empty parts instead of rendering "Manufacturing, null"
         author: [t.attributes.author_role, t.attributes.author_company]
           .filter((p) => p && String(p).toLowerCase() !== "null")
+          .map((p) => stripHtml(String(p)))
           .join(", "),
       }))
     : FALLBACK_TESTIMONIALS;
