@@ -4,8 +4,9 @@ import Footer from "@/components/layout/Footer";
 import CaseStudiesHero from "@/components/sections/CaseStudiesHero";
 import CaseStudiesGrid from "@/components/sections/CaseStudiesGrid";
 import CTABanner from "@/components/sections/CTABanner";
-import { getPage, getCaseStudies } from "@/lib/api";
-import { findBlock, resolveHref } from "@/lib/blocks";
+import { getPage, getCaseStudies, getPageList } from "@/lib/api";
+import { findBlock, buildPageMap, resolveCta } from "@/lib/blocks";
+import { stripHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -26,14 +27,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CaseStudiesPage() {
-  const [pageRes, caseStudiesRes] = await Promise.all([
+  const [pageRes, caseStudiesRes, pageListRes] = await Promise.all([
     getPage("case-studies"),
     getCaseStudies(),
+    getPageList(),
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
 
   const blocks = (pageRes?.data as any)?.attributes?.content ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   const heroBlock = findBlock<{
     eyebrow?: string;
@@ -45,30 +48,29 @@ export default async function CaseStudiesPage() {
   const ctaBlock = findBlock<{
     headline?: string;
     subhead?: string;
-    primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
   const cmsItems = caseStudiesRes?.data ?? [];
 
-  const ctaPrimaryHref = ctaBlock?.primary_cta ? resolveHref(ctaBlock.primary_cta) : undefined;
+  const ctaPrimary   = resolveCta(ctaBlock?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);
 
   return (
     <>
       <Navbar lightHero={true} />
       <main>
         <CaseStudiesHero
-          cmsHeadline={heroBlock?.headline || undefined}
-          cmsSubheadline={heroBlock?.subheadline || undefined}
+          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
+          cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
         />
         <CaseStudiesGrid cmsStudies={cmsItems.length > 0 ? cmsItems : undefined} />
         <CTABanner
-          cmsHeadline={ctaBlock?.headline || undefined}
-          cmsSubhead={ctaBlock?.subhead || undefined}
-          cmsPrimaryCta={
-            ctaBlock?.primary_cta?.label
-              ? { label: ctaBlock.primary_cta.label, url: ctaPrimaryHref || "#" }
-              : undefined
-          }
+          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsSubhead={stripHtmlOpt(ctaBlock?.subhead)}
+          cmsPrimaryCta={ctaPrimary ?? undefined}
+          cmsSecondaryCta={ctaSecondary ?? undefined}
         />
       </main>
       <Footer />

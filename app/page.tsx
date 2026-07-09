@@ -11,18 +11,20 @@ import WorkEnvironments from "@/components/sections/WorkEnvironments";
 import Testimonials from "@/components/sections/Testimonials";
 import Blogs from "@/components/sections/Blogs";
 import CTABanner from "@/components/sections/CTABanner";
-import { getTestimonials, getClientLogos, getPage } from "@/lib/api";
+import { getTestimonials, getClientLogos, getPage, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt } from "@/lib/text";
-import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
+import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [testimonialsRes, logosRes, homePageRes] = await Promise.all([
+  const [testimonialsRes, logosRes, homePageRes, pageListRes] = await Promise.all([
     getTestimonials(),
     getClientLogos(),
     getPage("home"),
+    getPageList(),
   ]);
+  const pageMap = buildPageMap(pageListRes?.data);
   // CMS page record must be published — drafts and missing records 404
   if (!homePageRes?.data) notFound();
   const cmsTestimonials = testimonialsRes?.data ?? [];
@@ -129,38 +131,23 @@ export default async function HomePage() {
     headline?: string;
     subheadline?: string;
     subhead?: string;
-    primary_cta?: {
-      label?: string; url?: string; type?: string; anchor?: string;
-      cta?: { label?: string; url?: string; type?: string; anchor?: string };
-    };
-    secondary_cta?: {
-      label?: string; url?: string; type?: string; anchor?: string;
-      cta?: { label?: string; url?: string; type?: string; anchor?: string };
-    };
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
-  // CTA banner uses a nested .cta shape in the API response
-  const ctaPrimary   = ctaBlock?.primary_cta?.cta   ?? ctaBlock?.primary_cta;
-  const ctaSecondary = ctaBlock?.secondary_cta?.cta  ?? ctaBlock?.secondary_cta;
+  const ctaPrimary   = resolveCta(ctaBlock?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);
 
   return (
     <>
       <Navbar lightHero />
       <main>
         <Hero
-          cmsHeadline={heroBlock?.headline || undefined}
+          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
           cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
           cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
-          cmsPrimaryCta={
-            heroBlock?.primary_cta?.label
-              ? { label: heroBlock.primary_cta.label, url: ctaHref(heroBlock.primary_cta) }
-              : undefined
-          }
-          cmsSecondaryCta={
-            heroBlock?.secondary_cta?.label
-              ? { label: heroBlock.secondary_cta.label, url: ctaHref(heroBlock.secondary_cta) }
-              : undefined
-          }
+          cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
+          cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
         />
         <TrustedLogos cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined} />
         <Stats
@@ -210,18 +197,10 @@ export default async function HomePage() {
           cmsPosts={cmsBlogPosts}
         />
         <CTABanner
-          cmsHeadline={ctaBlock?.headline || undefined}
-          cmsSubhead={ctaBlock?.subheadline || ctaBlock?.subhead || undefined}
-          cmsPrimaryCta={
-            ctaPrimary?.label
-              ? { label: ctaPrimary.label, url: ctaHref(ctaPrimary) }
-              : undefined
-          }
-          cmsSecondaryCta={
-            ctaSecondary?.label
-              ? { label: ctaSecondary.label, url: ctaHref(ctaSecondary) }
-              : undefined
-          }
+          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsSubhead={stripHtmlOpt(ctaBlock?.subheadline || ctaBlock?.subhead)}
+          cmsPrimaryCta={ctaPrimary ?? undefined}
+          cmsSecondaryCta={ctaSecondary ?? undefined}
         />
       </main>
       <Footer />

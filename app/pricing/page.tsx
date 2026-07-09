@@ -6,9 +6,9 @@ import PricingOverview from "@/components/sections/PricingOverview";
 import PricingCalculator from "@/components/sections/PricingCalculator";
 import PricingFAQ from "@/components/sections/PricingFAQ";
 import CTABanner from "@/components/sections/CTABanner";
-import { getPage, getForm } from "@/lib/api";
-import { stripHtml } from "@/lib/text";
-import { findBlock, normalizeArray } from "@/lib/blocks";
+import { getPage, getForm, getPageList } from "@/lib/api";
+import { stripHtml, stripHtmlOpt } from "@/lib/text";
+import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -27,10 +27,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PricingPage() {
-  const pageData = await getPage("pricing");
+  const [pageData, pageListRes] = await Promise.all([getPage("pricing"), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   const blocks: any[] = pageData?.data?.attributes?.content ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   // ── hero block ──────────────────────────────────────────────────────────────
   const heroBlock = findBlock<{
@@ -167,16 +168,14 @@ export default async function PricingPage() {
   const ctaBlock = findBlock<{
     headline?: string;
     subhead?: string;
-    primary_cta?: { cta?: { label?: string; url?: string } };
-    secondary_cta?: { cta?: { label?: string; url?: string } };
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
-  const ctaHeadline       = ctaBlock?.headline || undefined;
-  const ctaSubhead        = ctaBlock?.subhead || undefined;
-  const ctaPrimaryLabel   = ctaBlock?.primary_cta?.cta?.label || undefined;
-  const ctaPrimaryUrl     = ctaBlock?.primary_cta?.cta?.url || undefined;
-  const ctaSecondaryLabel = ctaBlock?.secondary_cta?.cta?.label || undefined;
-  const ctaSecondaryUrl   = ctaBlock?.secondary_cta?.cta?.url || undefined;
+  const ctaHeadline  = stripHtmlOpt(ctaBlock?.headline);
+  const ctaSubhead   = stripHtmlOpt(ctaBlock?.subhead);
+  const ctaPrimary   = resolveCta(ctaBlock?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);
 
   return (
     <>
@@ -233,8 +232,8 @@ export default async function PricingPage() {
         <CTABanner
           cmsHeadline={ctaHeadline}
           cmsSubhead={ctaSubhead}
-          cmsPrimaryCta={ctaPrimaryLabel ? { label: ctaPrimaryLabel, url: ctaPrimaryUrl || "#" } : undefined}
-          cmsSecondaryCta={ctaSecondaryLabel ? { label: ctaSecondaryLabel, url: ctaSecondaryUrl || "#" } : undefined}
+          cmsPrimaryCta={ctaPrimary ?? undefined}
+          cmsSecondaryCta={ctaSecondary ?? undefined}
         />
       </main>
       <Footer />

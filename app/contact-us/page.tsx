@@ -2,8 +2,9 @@ import Navbar from "@/components/layout/Navbar";
 import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import ContactPage from "@/components/sections/ContactPage";
-import { getForm, getPage } from "@/lib/api";
-import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
+import { getForm, getPage, getPageList } from "@/lib/api";
+import { findBlock, normalizeArray, resolveHref, resolveCta, buildPageMap } from "@/lib/blocks";
+import { stripHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -26,10 +27,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactUsPage() {
   /* Step 1: fetch the page to read the CMS-configured form slug */
-  const pageRes = await getPage("contact-us").catch(() => null);
+  const [pageRes, pageListRes] = await Promise.all([
+    getPage("contact-us").catch(() => null),
+    getPageList().catch(() => null),
+  ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   const blocks: any[] = (pageRes?.data as any)?.attributes?.content ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   /* ── hero block ── */
   const heroBlock = findBlock<{
@@ -39,8 +44,9 @@ export default async function ContactUsPage() {
     primary_cta?: unknown;
   }>(blocks, "hero");
 
-  const heroPrimaryCtaLabel = (heroBlock?.primary_cta as any)?.label as string | undefined;
-  const heroPrimaryCtaHref  = heroBlock?.primary_cta ? ctaHref(heroBlock.primary_cta) : undefined;
+  const heroCta = resolveCta(heroBlock?.primary_cta, pageMap);
+  const heroPrimaryCtaLabel = heroCta?.label;
+  const heroPrimaryCtaHref  = heroCta?.url;
 
   /* ── form_embed block — contains the form_slug the CMS admin chose ── */
   const formEmbed = findBlock<{
@@ -106,8 +112,8 @@ export default async function ContactUsPage() {
       imageUrl:  s.image!.url!,
       title:     s.title ?? null,
       caption:   s.caption ?? null,
-      ctaLabel:  s.cta?.cta?.label ?? null,
-      ctaUrl:    s.cta?.cta ? ctaHref(s.cta.cta) : null,
+      ctaLabel:  stripHtmlOpt(s.cta?.cta?.label) ?? null,
+      ctaUrl:    s.cta?.cta ? resolveHref(s.cta.cta, pageMap) : null,
     }));
 
   const sliderData = sliderSlides.length > 0

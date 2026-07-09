@@ -7,8 +7,9 @@ import Footer from "@/components/layout/Footer";
 import BlogPost from "@/components/sections/BlogPost";
 import CaseStudyTemplate from "@/components/sections/CaseStudyTemplate";
 import ModuleTemplate from "@/components/sections/ModuleTemplate";
-import { getPreview, getProductModules } from "@/lib/api";
+import { getPreview, getProductModules, getPageList } from "@/lib/api";
 import { buildModuleTemplateProps } from "@/lib/moduleContent";
+import { buildPageMap } from "@/lib/blocks";
 import type { CmsBlogPost, CmsCaseStudy, CmsProductModule } from "@/lib/types";
 
 // Draft previews must never be indexed
@@ -78,12 +79,13 @@ export default async function PreviewPage({
       <PreviewError message="This preview link is invalid or has expired. Generate a fresh link from the CMS edit page." />
     );
   } else if (type === "product-module") {
-    const [res, allRes] = await Promise.all([
+    const [res, allRes, pageListRes] = await Promise.all([
       getPreview<CmsProductModule>(type, slug, token, exp),
       getProductModules(),
+      getPageList(),
     ]);
     body = res?.data?.attributes ? (
-      <ModuleTemplate {...buildModuleTemplateProps(res.data.attributes, slug, allRes?.data ?? [])} />
+      <ModuleTemplate {...buildModuleTemplateProps(res.data.attributes, slug, allRes?.data ?? [], buildPageMap(pageListRes?.data))} />
     ) : (
       <PreviewError message="This preview link is invalid or has expired. Generate a fresh link from the CMS edit page." />
     );

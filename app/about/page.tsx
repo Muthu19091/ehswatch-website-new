@@ -7,8 +7,9 @@ import AboutDrives from "@/components/sections/AboutDrives";
 import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
 import type { Metadata } from "next";
-import { getPage } from "@/lib/api";
-import { findBlock, findBlocks, normalizeArray, ctaHref } from "@/lib/blocks";
+import { getPage, getPageList } from "@/lib/api";
+import { findBlock, findBlocks, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
+import { stripHtmlOpt } from "@/lib/text";
 import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -28,10 +29,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const pageData = await getPage("about");
+  const [pageData, pageListRes] = await Promise.all([getPage("about"), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   const blocks = pageData?.data?.attributes?.content ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   // ── hero block ──────────────────────────────────────────────────────────────
   const heroData = findBlock<{
@@ -116,18 +118,12 @@ export default async function AboutPage() {
     headline?: string | null;
     subheadline?: string | null;
     subhead?: string | null;
-    primary_cta?: {
-      label?: string | null; url?: string | null; type?: string | null; anchor?: string | null;
-      cta?: { label?: string | null; url?: string | null; type?: string | null; anchor?: string | null };
-    } | null;
-    secondary_cta?: {
-      label?: string | null; url?: string | null; type?: string | null; anchor?: string | null;
-      cta?: { label?: string | null; url?: string | null; type?: string | null; anchor?: string | null };
-    } | null;
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
-  const ctaPrimary = ctaBlock?.primary_cta?.cta ?? ctaBlock?.primary_cta;
-  const ctaSecondary = ctaBlock?.secondary_cta?.cta ?? ctaBlock?.secondary_cta;
+  const ctaPrimary = resolveCta(ctaBlock?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);
 
   return (
     <>
@@ -158,18 +154,10 @@ export default async function AboutPage() {
           />
         )}
         <CTABanner
-          cmsHeadline={ctaBlock?.headline || undefined}
-          cmsSubhead={ctaBlock?.subheadline || ctaBlock?.subhead || undefined}
-          cmsPrimaryCta={
-            ctaPrimary?.label
-              ? { label: ctaPrimary.label, url: ctaHref(ctaPrimary) }
-              : undefined
-          }
-          cmsSecondaryCta={
-            ctaSecondary?.label
-              ? { label: ctaSecondary.label, url: ctaHref(ctaSecondary) }
-              : undefined
-          }
+          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsSubhead={stripHtmlOpt(ctaBlock?.subheadline || ctaBlock?.subhead)}
+          cmsPrimaryCta={ctaPrimary ?? undefined}
+          cmsSecondaryCta={ctaSecondary ?? undefined}
         />
       </main>
       <Footer />

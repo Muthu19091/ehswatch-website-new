@@ -7,8 +7,9 @@ import ProductHowItWorks from "@/components/sections/ProductHowItWorks";
 import ProductModules from "@/components/sections/ProductModules";
 import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
-import { getPage, getProductModules } from "@/lib/api";
-import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
+import { getPage, getProductModules, getPageList } from "@/lib/api";
+import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
+import { stripHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -29,13 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ProductPage() {
-  const [pageRes, modulesRes] = await Promise.all([
+  const [pageRes, modulesRes, pageListRes] = await Promise.all([
     getPage("product"),
     getProductModules(),
+    getPageList(),
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   const blocks = pageRes?.data?.attributes?.content ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   // ── product modules from the dedicated CMS collection ─────────────────────
   const cmsModules = (modulesRes?.data ?? [])
@@ -108,32 +111,22 @@ export default async function ProductPage() {
   const ctaBlock = findBlock<{
     headline?: string;
     subhead?: string;
-    primary_cta?: Record<string, unknown>;
-    secondary_cta?: Record<string, unknown>;
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
-  // Resolve nested CTA structure from CMS (primary_cta.cta or primary_cta directly)
-  const ctaPrimaryRaw = ctaBlock?.primary_cta as Record<string, unknown> | undefined;
-  const ctaPrimaryResolved =
-    (ctaPrimaryRaw?.cta as Record<string, unknown> | undefined) || ctaPrimaryRaw;
-
-  const ctaSecondaryRaw = ctaBlock?.secondary_cta as Record<string, unknown> | undefined;
-  const ctaSecondaryResolved =
-    (ctaSecondaryRaw?.secondary_cta as Record<string, unknown> | undefined) || ctaSecondaryRaw;
+  const ctaPrimary = resolveCta(ctaBlock?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);
 
   return (
     <>
       <Navbar lightHero={true} />
       <main>
         <ProductHero
-          cmsEyebrow={heroBlock?.eyebrow || undefined}
-          cmsHeadline={heroBlock?.headline || undefined}
-          cmsSubheadline={heroBlock?.subheadline || undefined}
-          cmsPrimaryCta={
-            heroBlock?.primary_cta?.label
-              ? { label: heroBlock.primary_cta.label, url: ctaHref(heroBlock.primary_cta) }
-              : undefined
-          }
+          cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
+          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
+          cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
+          cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
         />
         <ProductOverview
           cmsHeading={imageTextBlock?.heading || undefined}
@@ -152,18 +145,10 @@ export default async function ProductPage() {
           cmsModules={cmsModules.length > 0 ? cmsModules : undefined}
         />
         <CTABanner
-          cmsHeadline={ctaBlock?.headline || undefined}
-          cmsSubhead={ctaBlock?.subhead || undefined}
-          cmsPrimaryCta={
-            ctaPrimaryResolved && (ctaPrimaryResolved.label as string)
-              ? { label: ctaPrimaryResolved.label as string, url: ctaHref(ctaPrimaryResolved) }
-              : undefined
-          }
-          cmsSecondaryCta={
-            ctaSecondaryResolved && (ctaSecondaryResolved.label as string)
-              ? { label: ctaSecondaryResolved.label as string, url: ctaHref(ctaSecondaryResolved) }
-              : undefined
-          }
+          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsSubhead={stripHtmlOpt(ctaBlock?.subhead)}
+          cmsPrimaryCta={ctaPrimary ?? undefined}
+          cmsSecondaryCta={ctaSecondary ?? undefined}
         />
       </main>
       <Footer />

@@ -1,7 +1,7 @@
 import type { ModuleTemplateProps, ModuleCta } from "@/components/sections/ModuleTemplate";
 import type { CmsProductModule } from "@/lib/types";
 import { stripHtml, stripHtmlOpt } from "@/lib/text";
-import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
+import { findBlock, normalizeArray, resolveCta as resolveCtaBlock, type PageMap } from "@/lib/blocks";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared parser: CMS product-module content blocks → ModuleTemplate props.
@@ -16,10 +16,9 @@ interface CtaShape {
   cta?: { label?: string | null; url?: string | null; type?: string | null; anchor?: string | null };
 }
 
-function resolveCta(raw?: CtaShape | null): ModuleCta | undefined {
-  const cta = raw?.cta?.label ? raw.cta : raw;
-  if (!cta?.label) return undefined;
-  return { label: cta.label, href: ctaHref(cta) };
+function resolveCta(raw?: CtaShape | null, pageMap?: PageMap): ModuleCta | undefined {
+  const c = resolveCtaBlock(raw, pageMap);
+  return c ? { label: c.label, href: c.url } : undefined;
 }
 
 // Pull the text of each <li> out of a rich_text body
@@ -38,6 +37,7 @@ export function buildModuleTemplateProps(
   mod: CmsProductModule["attributes"],
   slug: string,
   allModules: CmsProductModule[],
+  pageMap?: PageMap,
 ): ModuleTemplateProps {
   const blocks = mod.content ?? [];
   const name = stripHtml(mod.name);
@@ -54,8 +54,8 @@ export function buildModuleTemplateProps(
     eyebrow: stripHtmlOpt(heroBlock?.eyebrow),
     headline: stripHtml(heroBlock?.headline) || name,
     subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
-    primaryCta: resolveCta(heroBlock?.primary_cta) ?? { label: "Book a Demo", href: "/contact-us" },
-    secondaryCta: resolveCta(heroBlock?.secondary_cta),
+    primaryCta: resolveCta(heroBlock?.primary_cta, pageMap) ?? { label: "Book a Demo", href: "/contact-us" },
+    secondaryCta: resolveCta(heroBlock?.secondary_cta, pageMap),
   };
 
   const imageTextBlock = findBlock<{
@@ -71,7 +71,7 @@ export function buildModuleTemplateProps(
           heading: stripHtml(imageTextBlock.heading),
           bodyHtml: imageTextBlock.body,
           imageUrl: imageTextBlock.image?.url || undefined,
-          cta: resolveCta(imageTextBlock.cta),
+          cta: resolveCta(imageTextBlock.cta, pageMap),
         }
       : undefined;
 
@@ -140,7 +140,7 @@ export function buildModuleTemplateProps(
     ? {
         headline: stripHtml(ctaBlock.headline),
         subhead: stripHtmlOpt(ctaBlock.subhead),
-        cta: resolveCta(ctaBlock.primary_cta) ?? { label: "Book a Demo", href: "/contact-us" },
+        cta: resolveCta(ctaBlock.primary_cta, pageMap) ?? { label: "Book a Demo", href: "/contact-us" },
       }
     : undefined;
 

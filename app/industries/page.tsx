@@ -5,9 +5,9 @@ import SolutionsHero from "@/components/sections/SolutionsHero";
 import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
 import CTABanner from "@/components/sections/CTABanner";
 import Testimonials from "@/components/sections/Testimonials";
-import { getPage, getTestimonials } from "@/lib/api";
+import { getPage, getTestimonials, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt } from "@/lib/text";
-import { findBlock, normalizeArray, ctaHref } from "@/lib/blocks";
+import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { CmsIndustryCard } from "@/components/sections/SolutionsZigzag";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
@@ -25,15 +25,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function IndustriesPage() {
-  const [industriesData, testimonialsRes] = await Promise.all([
+  const [industriesData, testimonialsRes, pageListRes] = await Promise.all([
     getPage("industries"),
     getTestimonials(),
+    getPageList(),
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!industriesData?.data) notFound();
 
   const industryBlocks: any[] = (industriesData?.data as any)?.attributes?.content ?? [];
   const cmsTestimonials = testimonialsRes?.data ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   /* Hero — from industries CMS page */
   const cmsHero = findBlock<{
@@ -48,11 +50,11 @@ export default async function IndustriesPage() {
   const ctaData = findBlock<{
     headline?: string;
     subhead?: string;
-    primary_cta?: { label?: string; url?: string; type?: string; anchor?: string; cta?: { label?: string; url?: string; type?: string; anchor?: string } };
-    secondary_cta?: { label?: string; url?: string; type?: string; anchor?: string; cta?: { label?: string; url?: string; type?: string; anchor?: string } };
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(industryBlocks, "cta_banner");
-  const ctaPrimary   = ctaData?.primary_cta?.cta   ?? ctaData?.primary_cta;
-  const ctaSecondary = ctaData?.secondary_cta?.cta  ?? ctaData?.secondary_cta;
+  const ctaPrimary   = resolveCta(ctaData?.primary_cta, pageMap);
+  const ctaSecondary = resolveCta(ctaData?.secondary_cta, pageMap);
 
   // ── solution_carousel block → SolutionsZigzag ─────────────────────────────
   const solutionCarousel = findBlock<{
@@ -74,18 +76,10 @@ export default async function IndustriesPage() {
       <main>
         <SolutionsHero
           cmsEyebrow={stripHtmlOpt(cmsHero?.eyebrow)}
-          cmsHeadline={cmsHero?.headline || undefined}
+          cmsHeadline={stripHtmlOpt(cmsHero?.headline)}
           cmsSubheadline={stripHtmlOpt(cmsHero?.subheadline)}
-          cmsPrimaryCta={
-            cmsHero?.primary_cta?.label
-              ? { label: cmsHero.primary_cta.label, url: ctaHref(cmsHero.primary_cta) }
-              : undefined
-          }
-          cmsSecondaryCta={
-            cmsHero?.secondary_cta?.label
-              ? { label: cmsHero.secondary_cta.label, url: ctaHref(cmsHero.secondary_cta) }
-              : undefined
-          }
+          cmsPrimaryCta={resolveCta(cmsHero?.primary_cta, pageMap) ?? undefined}
+          cmsSecondaryCta={resolveCta(cmsHero?.secondary_cta, pageMap) ?? undefined}
         />
         <SolutionsZigzag cmsCards={cmsZigzagCards} />
         {cmsTestimonials.length > 0 && (
@@ -93,10 +87,10 @@ export default async function IndustriesPage() {
         )}
         {ctaData?.headline && (
           <CTABanner
-            cmsHeadline={ctaData.headline}
-            cmsSubhead={ctaData?.subhead || undefined}
-            cmsPrimaryCta={ctaPrimary?.label ? { label: ctaPrimary.label, url: ctaHref(ctaPrimary) } : undefined}
-            cmsSecondaryCta={ctaSecondary?.label ? { label: ctaSecondary.label, url: ctaHref(ctaSecondary) } : undefined}
+            cmsHeadline={stripHtmlOpt(ctaData.headline)}
+            cmsSubhead={stripHtmlOpt(ctaData?.subhead)}
+            cmsPrimaryCta={ctaPrimary ?? undefined}
+            cmsSecondaryCta={ctaSecondary ?? undefined}
           />
         )}
       </main>

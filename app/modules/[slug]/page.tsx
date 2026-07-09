@@ -5,8 +5,9 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ModuleTemplate from "@/components/sections/ModuleTemplate";
-import { getProductModule, getProductModules } from "@/lib/api";
+import { getProductModule, getProductModules, getPageList } from "@/lib/api";
 import { buildModuleTemplateProps } from "@/lib/moduleContent";
+import { buildPageMap } from "@/lib/blocks";
 import { robotsFrom } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -31,15 +32,16 @@ export default async function ModulePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [res, allRes] = await Promise.all([
+  const [res, allRes, pageListRes] = await Promise.all([
     getProductModule(slug),
     getProductModules(),
+    getPageList(),
   ]);
 
   const mod = res?.data?.attributes;
   if (!mod || mod.status !== "active") notFound();
 
-  const templateProps = buildModuleTemplateProps(mod, slug, allRes?.data ?? []);
+  const templateProps = buildModuleTemplateProps(mod, slug, allRes?.data ?? [], buildPageMap(pageListRes?.data));
 
   return (
     <>
