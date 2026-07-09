@@ -69,9 +69,11 @@ export default function PricingFAQ({
                 </div>
               </button>
               {openIdx === i && (
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#6b7280] mt-3 text-pretty">
-                  {faq.answer}
-                </p>
+                /* CMS answers may contain HTML (paragraphs, lists, links) */
+                <div
+                  className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#6b7280] mt-3 text-pretty [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-[#FF6D00] [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: faq.answer }}
+                />
               )}
             </div>
           ))}
