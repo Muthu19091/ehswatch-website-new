@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
@@ -248,21 +249,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                 <span style={{ color: "#e5e7eb" }}>·</span>
                 <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{post.readTime}</span>
               </div>
-              <div className="flex items-center gap-4">
-                <button className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                    <path d="M4 12v-1a4 4 0 0 1 4-4h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-                    <path d="M14 4l2 3-2 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Share
-                </button>
-                <button className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                    <path d="M5 3h6a1 1 0 0 1 1 1v10l-4-2.5L4 14V4a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-                  </svg>
-                  Bookmark
-                </button>
-              </div>
+              <PostActions slug={slug} title={post.title} />
             </div>
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
           </div>
@@ -414,3 +401,65 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 }
 
 export { POSTS as BLOG_POSTS };
+
+/* ── Share + Bookmark actions ─────────────────────────────────────────────
+   Share: Web Share API on supported devices, clipboard copy as fallback.
+   Bookmark: persisted per-slug in localStorage (no account needed).        */
+function PostActions({ slug, title }: { slug: string; title: string }) {
+  const [copied, setCopied] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  const KEY = "ehswatch_bookmarks";
+  const readMarks = (): string[] => {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; }
+  };
+
+  useEffect(() => {
+    setBookmarked(readMarks().includes(slug));
+  }, [slug]);
+
+  const onShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); return; } catch { /* cancelled → fall through */ }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard blocked — no-op */ }
+  };
+
+  const onBookmark = () => {
+    const marks = readMarks();
+    const next = marks.includes(slug) ? marks.filter((s) => s !== slug) : [...marks, slug];
+    try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* storage full/blocked */ }
+    setBookmarked(next.includes(slug));
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <button
+        onClick={onShare}
+        className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5 cursor-pointer"
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path d="M4 12v-1a4 4 0 0 1 4-4h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          <path d="M14 4l2 3-2 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        {copied ? "Link copied" : "Share"}
+      </button>
+      <button
+        onClick={onBookmark}
+        aria-pressed={bookmarked}
+        className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+        style={{ color: bookmarked ? "#1d4ed8" : "#6b7280" }}
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill={bookmarked ? "currentColor" : "none"}>
+          <path d="M5 3h6a1 1 0 0 1 1 1v10l-4-2.5L4 14V4a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+        </svg>
+        {bookmarked ? "Bookmarked" : "Bookmark"}
+      </button>
+    </div>
+  );
+}

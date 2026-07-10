@@ -111,6 +111,19 @@ export default async function BlogPage() {
   const heroSubheadline = (heroBlock.subheadline as string | undefined) || undefined;
   const heroEyebrow = (heroBlock.eyebrow as string | undefined) || undefined;
 
+  // Extract blog_highlights block — controls the listing's search/filters
+  const highlightsBlock = blocks.find((b) => b.type === "blog_highlights")?.data ?? {};
+  // Toggles default to ON when the field is absent (older content)
+  const asBool = (v: unknown, dflt = true) => (v === undefined || v === null ? dflt : !!v);
+  const listingControls = {
+    heading:      (highlightsBlock.heading as string | undefined) || undefined,
+    subheading:   (highlightsBlock.subheading as string | undefined) || undefined,
+    showSearch:   asBool(highlightsBlock.show_search),
+    showTimeline: asBool(highlightsBlock.show_timeline_filter),
+    showTopic:    asBool(highlightsBlock.show_topic_filter),
+    showFormat:   asBool(highlightsBlock.show_format_filter),
+  };
+
   // Extract form_embed block — read form_slug dynamically
   const formEmbedBlock = blocks.find((b) => b.type === "form_embed")?.data ?? {};
   const newsletterFormSlug = (formEmbedBlock.form_slug as string | undefined) || "newsletter";
@@ -141,7 +154,13 @@ export default async function BlogPage() {
           subheadline={heroSubheadline}
           eyebrow={heroEyebrow}
         />
-        <BlogGrid cmsPosts={cmsPosts.length > 0 ? cmsPosts : undefined} />
+        <BlogGrid
+          cmsPosts={cmsPosts.length > 0 ? cmsPosts : undefined}
+          showSearch={listingControls.showSearch}
+          showTimeline={listingControls.showTimeline}
+          showTopic={listingControls.showTopic}
+          showFormat={listingControls.showFormat}
+        />
         <BlogNewsletter formAttrs={newsletterFormAttrs} />
         <BlogCTA
           headline={ctaHeadline}

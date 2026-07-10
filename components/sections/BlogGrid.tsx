@@ -277,7 +277,19 @@ function FilterSelect({ value, onChange, options }: { value: string; onChange: (
 }
 
 /* ── Section ─────────────────────────────────────────────────── */
-export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
+export default function BlogGrid({
+  cmsPosts,
+  showSearch = true,
+  showTimeline = true,
+  showTopic = true,
+  showFormat = true,
+}: {
+  cmsPosts?: CmsBlogPost[];
+  showSearch?: boolean;
+  showTimeline?: boolean;
+  showTopic?: boolean;
+  showFormat?: boolean;
+}) {
   const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : FALLBACK_POSTS;
 
   // Dedupe case-insensitively (categories are free text in the CMS) —
@@ -292,8 +304,11 @@ export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
   };
   const topicOptions = ["Topic: All topics", ...uniqueCI(POSTS.map((p) => p.topic).filter(Boolean))];
   const formatOptions = ["Format: All formats", ...uniqueCI(POSTS.map((p) => p.format).filter(Boolean))];
-  // A dropdown with a single value filters nothing — hide it
-  const showFormat = formatOptions.length > 2;
+  // CMS toggles control visibility; format also needs >1 real value to be useful.
+  const topicEnabled = showTopic;
+  const formatEnabled = showFormat && formatOptions.length > 2;
+  const anyControl = showSearch || showTimeline || topicEnabled || formatEnabled;
+  const anyFilter = showTimeline || topicEnabled || formatEnabled;
 
   const [search,   setSearch]   = useState("");
   const [timeline, setTimeline] = useState(TIMELINE_OPTIONS[0]);
@@ -324,34 +339,37 @@ export default function BlogGrid({ cmsPosts }: { cmsPosts?: CmsBlogPost[] }) {
     <section className="pt-[48px] pb-[80px] px-8" style={{ background: "#FFFFFF" }}>
       <div className="max-w-[1280px] mx-auto">
 
-        {/* ── Search + Filters — centred, max 720px ─────────────── */}
-        <div className="flex flex-col gap-5 mb-12 max-w-[720px] mx-auto">
-          {/* Search */}
-          <div className="relative">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" width="15" height="15" viewBox="0 0 16 16" fill="none">
-              <circle cx="7" cy="7" r="5" stroke="#9ca3af" strokeWidth="1.5"/>
-              <path d="M11 11l2.5 2.5" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by keyword, topic, regulation, site issue..."
-              autoComplete="off"
-              className="w-full font-[family-name:var(--font-dm-sans)] text-[14px] placeholder-[#9ca3af] bg-[#f9fafb] rounded-full pl-10 pr-5 py-[12px] border border-[#E5E7EB] focus:outline-none focus:border-[#111827] transition-colors"
-              style={{ color: "#111827" }}
-            />
-          </div>
+        {/* ── Search + Filters — centred, max 720px. Each control is
+            CMS-toggleable; the whole block hides when all are off. ── */}
+        {anyControl && (
+          <div className="flex flex-col gap-5 mb-12 max-w-[720px] mx-auto">
+            {showSearch && (
+              <div className="relative">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" width="15" height="15" viewBox="0 0 16 16" fill="none">
+                  <circle cx="7" cy="7" r="5" stroke="#9ca3af" strokeWidth="1.5"/>
+                  <path d="M11 11l2.5 2.5" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by keyword, topic, regulation, site issue..."
+                  autoComplete="off"
+                  className="w-full font-[family-name:var(--font-dm-sans)] text-[14px] placeholder-[#9ca3af] bg-[#f9fafb] rounded-full pl-10 pr-5 py-[12px] border border-[#E5E7EB] focus:outline-none focus:border-[#111827] transition-colors"
+                  style={{ color: "#111827" }}
+                />
+              </div>
+            )}
 
-          {/* Filter pills — full-width 3-col grid */}
-          <div className="grid grid-cols-3 gap-3">
-            <FilterSelect value={timeline} onChange={setTimeline} options={TIMELINE_OPTIONS} />
-            <FilterSelect value={topic}    onChange={setTopic}    options={topicOptions} />
-            {showFormat && (
-              <FilterSelect value={format} onChange={setFormat} options={formatOptions} />
+            {anyFilter && (
+              <div className="flex flex-wrap gap-3 [&>*]:flex-1 [&>*]:min-w-[180px]">
+                {showTimeline && <FilterSelect value={timeline} onChange={setTimeline} options={TIMELINE_OPTIONS} />}
+                {topicEnabled && <FilterSelect value={topic} onChange={setTopic} options={topicOptions} />}
+                {formatEnabled && <FilterSelect value={format} onChange={setFormat} options={formatOptions} />}
+              </div>
             )}
           </div>
-        </div>
+        )}
 
         {/* ── Grid ────────────────────────────────────────────────── */}
         {filtered.length === 0 ? (
