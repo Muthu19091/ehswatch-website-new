@@ -17,10 +17,8 @@ export default function CTABanner({
 }: CTABannerProps = {}) {
   const headline = cmsHeadline || "Ready to See EHSWatch in Action?";
   const subhead = cmsSubhead || "Give your teams a simple way to report, respond, and prevent incidents — all from one platform.";
-  const primaryLabel = cmsPrimaryCta?.label || "Book Your Free Demo";
-  const primaryHref = cmsPrimaryCta?.url || "#";
-  const secondaryLabel = cmsSecondaryCta?.label || "View Pricing";
-  const secondaryHref = cmsSecondaryCta?.url || "#";
+  // Buttons render only when the CMS provides a configured CTA (label + link).
+  const hasButtons = !!(cmsPrimaryCta || cmsSecondaryCta);
 
   return (
     <section
@@ -46,26 +44,32 @@ export default function CTABanner({
           </p>
         </Reveal>
 
-        <Reveal variant="fade-up" duration={700} delay={240} className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px] w-full sm:w-auto">
-          <GlareButton
-            href={primaryHref}
-            className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-inter)] font-medium text-[14px] text-white whitespace-nowrap"
-            style={{
-              backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
-            }}
-          >
-            {primaryLabel}
-          </GlareButton>
+        {hasButtons && (
+          <Reveal variant="fade-up" duration={700} delay={240} className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px] w-full sm:w-auto">
+            {cmsPrimaryCta && (
+              <GlareButton
+                href={cmsPrimaryCta.url}
+                className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-inter)] font-medium text-[14px] text-white whitespace-nowrap"
+                style={{
+                  backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
+                }}
+              >
+                {cmsPrimaryCta.label}
+              </GlareButton>
+            )}
 
-          <GlareButton
-            href={secondaryHref}
-            fillColor="#FFA660"
-            hoverTextColor="#ffffff"
-            className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] font-medium text-[14px] text-[#ff6d00] whitespace-nowrap"
-          >
-            {secondaryLabel}
-          </GlareButton>
-        </Reveal>
+            {cmsSecondaryCta && (
+              <GlareButton
+                href={cmsSecondaryCta.url}
+                fillColor="#FFA660"
+                hoverTextColor="#ffffff"
+                className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] font-medium text-[14px] text-[#ff6d00] whitespace-nowrap"
+              >
+                {cmsSecondaryCta.label}
+              </GlareButton>
+            )}
+          </Reveal>
+        )}
       </div>
     </section>
   );

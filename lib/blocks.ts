@@ -96,7 +96,10 @@ export function isExternalUrl(href: string): boolean {
 }
 
 /**
- * Resolve any CTA shape to { label, url }, or null when there's no label.
+ * Resolve any CTA shape to { label, url }, or null when the button is not
+ * usefully configured. A CTA counts as "enabled" only when it has BOTH a
+ * label AND a real destination — so an empty/half-set CTA in the dashboard
+ * renders no button (instead of a hardcoded fallback that links nowhere).
  * Labels are stripped of stray HTML like every other short CMS text field.
  */
 export function resolveCta(cta: unknown, pageMap?: PageMap): { label: string; url: string } | null {
@@ -104,7 +107,9 @@ export function resolveCta(cta: unknown, pageMap?: PageMap): { label: string; ur
   if (!c) return null;
   const label = stripHtml(c.label as string | null | undefined);
   if (!label) return null;
-  return { label, url: resolveHref(c, pageMap) };
+  const url = resolveHref(c, pageMap);
+  if (!url || url === "#") return null; // no real destination → treat as disabled
+  return { label, url };
 }
 
 // Aliases used by page routes

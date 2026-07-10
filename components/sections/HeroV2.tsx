@@ -24,8 +24,9 @@ export default function HeroV2({
   const headline = cmsHeadline || "From Manual Chaos to Smart Safety.";
   const subheadline =
     cmsSubheadline || "AI-powered EHS platform to streamline reporting everywhere.";
-  const primaryCta = cmsPrimaryCta || { label: "Book a Demo", url: "#" };
-  const secondaryCta = cmsSecondaryCta || { label: "Watch Demo", url: "#" };
+  // Buttons render only when configured in the CMS (label + link).
+  const primaryCta = cmsPrimaryCta;
+  const secondaryCta = cmsSecondaryCta;
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
@@ -90,12 +91,14 @@ export default function HeroV2({
                 {subheadline}
               </p>
 
+              {(primaryCta || secondaryCta) && (
               <div
                 className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 justify-center mt-2 animate-hero-rise"
                 style={{ animationDelay: "300ms" }}
               >
+                {primaryCta && (
                 <GlareButton
-                  href={primaryCta.url || "#"}
+                  href={primaryCta.url}
                   className="px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[16px] sm:text-[18px] text-white whitespace-nowrap"
                   style={{
                     background: "linear-gradient(102deg, #ffa964 0%, #ff8e37 34%, #ff7812 50%, #ff6d00 120%)",
@@ -103,9 +106,11 @@ export default function HeroV2({
                 >
                   {primaryCta.label}
                 </GlareButton>
+                )}
 
+                {secondaryCta && (
                 <Link
-                  href={secondaryCta.url || "#"}
+                  href={secondaryCta.url}
                   className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a] whitespace-nowrap group"
                 >
                   <span className="flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] rounded-full border border-[#0f172a]/25 group-hover:bg-[#0f172a]/5 transition-colors">
@@ -115,7 +120,9 @@ export default function HeroV2({
                   </span>
                   {secondaryCta.label}
                 </Link>
+                )}
               </div>
+              )}
             </div>
           }
         >

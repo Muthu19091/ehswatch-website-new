@@ -86,14 +86,6 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
           >
             Explore Case Studies
           </GlareButton>
-          <GlareButton
-            fillColor="#FFA660"
-            hoverTextColor="#ffffff"
-            href="#"
-            className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#1b1b1b] border border-[#d1d5db]"
-          >
-            Talk to Experts
-          </GlareButton>
         </div>
       </div>
     </section>

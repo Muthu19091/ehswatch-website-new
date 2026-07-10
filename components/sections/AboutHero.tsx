@@ -21,8 +21,10 @@ export default function AboutHero({
   const subheadline =
     cmsSubheadline ||
     "The intelligent EHSQ platform trusted by 25K+ teams — making safety faster, simpler and more visible.";
-  const ctaLabel = cmsPrimaryCtaLabel || "Book a Free Demo";
-  const ctaHref = cmsPrimaryCtaUrl || "#";
+  // Button renders only when configured in the CMS (label + real link).
+  const ctaLabel = cmsPrimaryCtaLabel?.trim();
+  const ctaHref = cmsPrimaryCtaUrl?.trim();
+  const showCta = !!ctaLabel && !!ctaHref && ctaHref !== "#";
 
   return (
     <section
@@ -108,6 +110,7 @@ export default function AboutHero({
           {subheadline}
         </p>
 
+        {showCta && (
         <GlareButton
           href={ctaHref}
           className="gap-2 px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white animate-hero-rise hover:shadow-lg"
@@ -122,6 +125,7 @@ export default function AboutHero({
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </GlareButton>
+        )}
       </div>
     </section>
   );

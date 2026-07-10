@@ -21,8 +21,10 @@ export default function ProductHero({
   const subheadline =
     cmsSubheadline ||
     "From field incidents to board‑level dashboards — all connected, all in real time.";
-  const ctaLabel = cmsPrimaryCta?.label || "Book a Demo";
-  const ctaHref = cmsPrimaryCta?.url || "#";
+  // Button renders only when configured in the CMS (label + real link).
+  const ctaLabel = cmsPrimaryCta?.label?.trim();
+  const ctaHref = cmsPrimaryCta?.url?.trim();
+  const showCta = !!ctaLabel && !!ctaHref && ctaHref !== "#";
 
   // Split headline on first period so we can render line break + styled span
   // If CMS provides a <span> tag we strip it and apply styling ourselves
@@ -126,6 +128,7 @@ export default function ProductHero({
         >
           {subheadline}
         </p>
+        {showCta && (
         <GlareButton
           href={ctaHref}
           className="inline-flex items-center gap-2 px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white transition-all duration-200 animate-hero-rise hover:shadow-lg"
@@ -147,6 +150,7 @@ export default function ProductHero({
             />
           </svg>
         </GlareButton>
+        )}
       </div>
     </section>
   );
