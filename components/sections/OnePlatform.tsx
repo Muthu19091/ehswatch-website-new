@@ -459,7 +459,7 @@ const TABS = [
 ];
 
 const MOCKUPS    = [ComplianceMockup, MobileMockup, UsersMockup, UnifiedMockup];
-const TAB_DURATION = 4000;
+const TAB_DURATION = 8000;
 
 /* ══════════════════════════════════════════════════════════════════
    MAIN EXPORT

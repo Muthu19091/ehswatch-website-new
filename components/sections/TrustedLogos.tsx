@@ -34,7 +34,7 @@ export default function TrustedLogos({ cmsLogos }: { cmsLogos?: CmsClientLogo[] 
       <div className="flex flex-col gap-6 md:gap-[42px]">
         <Reveal variant="fade-in" duration={1100}>
           <p className="font-[family-name:var(--font-inter)] font-normal text-[14px] md:text-[18px] leading-normal text-[rgba(15,23,42,0.45)] tracking-[-0.18px] text-center px-4">
-            Trusted by EHS Leaders Worldwide
+            Trusted by Teams Across Industries
           </p>
         </Reveal>
 

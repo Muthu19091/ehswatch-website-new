@@ -187,7 +187,9 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }
   }
 
   const heading    = cmsHeading    || "Built for High‑Risk, High‑Activity Work Environments";
-  const subheading = cmsSubheading || "EHSWatch brings all your EHSQ activities into a single, easy‑to‑use platform so everyone, from workers in the field to leadership, works from the same, up‑to‑date information.";
+  // Subheading is optional — renders only when the CMS provides one, so it
+  // can be removed by clearing the field (no forced default duplicate copy).
+  const subheading = cmsSubheading?.trim() || "";
 
   // Split heading to apply blue highlight to last two words
   const headingWords = heading.split(" ");
@@ -204,12 +206,14 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }
             {headingMain}{" "}
             <span className="text-[#155eef]">{headingBlue}</span>
           </h2>
-          <p
-            className="mt-[16px] font-[family-name:var(--font-dm-sans)] font-medium text-[13px] md:text-[15px] lg:text-[16px] text-[#727272] leading-[1.64] tracking-[-0.18px] max-w-[640px] mx-auto text-pretty"
-            style={{ fontVariationSettings: "'opsz' 14" }}
-          >
-            {subheading}
-          </p>
+          {subheading && (
+            <p
+              className="mt-[16px] font-[family-name:var(--font-dm-sans)] font-medium text-[13px] md:text-[15px] lg:text-[16px] text-[#727272] leading-[1.64] tracking-[-0.18px] max-w-[640px] mx-auto text-pretty"
+              style={{ fontVariationSettings: "'opsz' 14" }}
+            >
+              {subheading}
+            </p>
+          )}
         </div>
 
         {/* Grid — border-t closes top, each row has border-b.

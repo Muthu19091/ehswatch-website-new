@@ -26,15 +26,21 @@ function StarRow() {
   );
 }
 
-export default function Testimonials({ title, cmsItems }: { title?: React.ReactNode; cmsItems?: CmsTestimonial[] }) {
+export default function Testimonials({
+  title,
+  subtitle = "Real stories from safety leaders who've transformed their operations with EHSWatch.",
+  cmsItems,
+}: { title?: React.ReactNode; subtitle?: string; cmsItems?: CmsTestimonial[] }) {
+  const clean = (v: unknown) =>
+    v && String(v).toLowerCase() !== "null" ? stripHtml(String(v)) : "";
   const TESTIMONIALS: TestimonialItem[] = cmsItems && cmsItems.length > 0
     ? cmsItems.map((t) => ({
         quote: stripHtml(t.attributes.quote),
-        // company/role can be null or the literal string "null" in the CMS —
-        // drop empty parts instead of rendering "Manufacturing, null"
-        author: [t.attributes.author_role, t.attributes.author_company]
-          .filter((p) => p && String(p).toLowerCase() !== "null")
-          .map((p) => stripHtml(String(p)))
+        // Lead with the client's name (author_name), then role, then company;
+        // drop empty/"null" parts so we never render "Manufacturing, null".
+        author: [t.attributes.author_name, t.attributes.author_role, t.attributes.author_company]
+          .map(clean)
+          .filter(Boolean)
           .join(", "),
       }))
     : FALLBACK_TESTIMONIALS;
@@ -73,6 +79,11 @@ export default function Testimonials({ title, cmsItems }: { title?: React.ReactN
         <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] leading-tight text-[#1b1b1b]">
           {title ?? <>What <span className="text-[#155eef]">Our Customers</span> Say</>}
         </h2>
+        {subtitle && (
+          <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] text-[#727272] max-w-[560px] mx-auto leading-relaxed">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {/* Scrolling track — internally LTR so the transform math is direction-stable */}

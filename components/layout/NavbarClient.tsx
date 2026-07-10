@@ -11,7 +11,7 @@ import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
    hasDropdown: true   → renders a hover-dropdown
    ─────────────────────────────────────────────────────────────── */
 const ALL_NAV = [
-  { label: "About Us",  href: "/about",        hideOnScroll: true,  hasDropdown: false },
+  { label: "About Us",  href: "/about",        hideOnScroll: false, hasDropdown: false },
   { label: "Products",  href: "/product",      hideOnScroll: false, hasDropdown: false },
   { label: "IRIS",      href: "/iris",         hideOnScroll: false, hasDropdown: false },
   { label: "Industries", href: "/industries",   hideOnScroll: false, hasDropdown: false },

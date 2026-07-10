@@ -24,7 +24,8 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   const linkIndices = (mainNav as any[])
     .map((item: any, i: number) => (item.type !== "dropdown" ? i : -1))
     .filter((i: number) => i !== -1);
-  const firstLinkIdx = linkIndices[0] ?? -1;
+  // Only the last inline link fades out when the navbar collapses on scroll;
+  // About Us (first link) must stay visible (design feedback).
   const lastLinkIdx  = linkIndices[linkIndices.length - 1] ?? -1;
 
   const cmsNav = (mainNav as any[]).map((item: any, idx: number) => {
@@ -67,7 +68,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       label:        item.label as string,
       href:         item.type === "dropdown" ? "#" : (item.url ? normalizeUrl(item.url as string) : "#"),
       hasDropdown:  item.type === "dropdown",
-      hideOnScroll: idx === firstLinkIdx || idx === lastLinkIdx,
+      hideOnScroll: idx === lastLinkIdx,
       children,
     };
   });
