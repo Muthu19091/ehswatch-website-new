@@ -54,10 +54,12 @@ export default async function AboutPage() {
   // ── image_text block (AboutStory) ───────────────────────────────────────────
   const imageTextData = findBlock<{
     heading?: string | null;
+    subheading?: string | null;
     body?: string | null;
   }>(blocks, "image_text");
 
   const storyHeading = imageTextData?.heading || undefined;
+  const storySubheading = stripHtmlOpt(imageTextData?.subheading);
   const storyBody = imageTextData?.body || undefined;
 
   // ── icon_features blocks ────────────────────────────────────────────────────
@@ -138,6 +140,7 @@ export default async function AboutPage() {
         />
         <AboutStory
           cmsHeading={storyHeading}
+          cmsSubheading={storySubheading}
           cmsBody={storyBody}
         />
         <AboutDrives

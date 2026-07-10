@@ -4,16 +4,19 @@ import { useEffect, useRef } from "react";
 
 interface AboutStoryCmsProps {
   cmsHeading?: string | undefined;
+  cmsSubheading?: string | undefined;
   cmsBody?: string | undefined;
 }
 
 export default function AboutStory({
   cmsHeading,
+  cmsSubheading,
   cmsBody,
 }: AboutStoryCmsProps = {}) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   const heading = cmsHeading || "About <span class=\"text-[#155eef]\">EHSWatch</span>";
+  const subheading = cmsSubheading || "Two decades of building better safety.";
   const bodyHtml =
     cmsBody ||
     `<p>EHSWatch was built to <strong class="font-semibold text-[#1b1b1b]">eliminate the delays and errors</strong> caused by spreadsheets, paper forms, and disconnected systems — with a single platform that makes safety easier to manage. Designed for real-world EHSQ teams, it brings reporting, actions, visibility and compliance into one streamlined experience.</p>
@@ -84,7 +87,7 @@ export default function AboutStory({
             dangerouslySetInnerHTML={{ __html: heading }}
           />
           <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#9ca3af] leading-relaxed max-w-[260px]">
-            Two decades of building better safety.
+            {subheading}
           </p>
         </div>
 
