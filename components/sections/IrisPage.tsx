@@ -1848,11 +1848,13 @@ export default function IrisPage({
             </p>
           </div>
 
-          {/* Grid — no outer border, internal dividers only (matches modules style) */}
+          {/* Grid — no outer border, internal dividers only (matches modules style).
+              Rows are derived from the item count so any number of CMS cards
+              renders (was hard-capped at 2 rows / 6 items). */}
           <div ref={problemsGridRef}>
-            {[0, 1].map((rowIdx) => {
+            {Array.from({ length: Math.ceil(ACTIVE_PROBLEMS.length / 3) }, (_, rowIdx) => {
               const row = ACTIVE_PROBLEMS.slice(rowIdx * 3, rowIdx * 3 + 3);
-              const isLastRow = rowIdx === 1;
+              const isLastRow = rowIdx === Math.ceil(ACTIVE_PROBLEMS.length / 3) - 1;
               return (
                 <div key={rowIdx} className="problems-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 iris-stagger iris-reveal-target" style={{ transitionDelay: `${rowIdx * 120}ms` }}>
                   {row.map((p, colIdx) => (
