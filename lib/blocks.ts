@@ -55,8 +55,28 @@ function unwrapCta(raw: unknown): Record<string, unknown> | null {
 }
 
 /**
+ * Normalise a user-entered URL so it actually redirects.
+ * Editors often type "google.com" or "www.site.com/x" without a scheme —
+ * a bare <a href="google.com"> is treated as a RELATIVE path and never
+ * leaves the site. Anything that looks like an external host gets https://.
+ * Internal paths (/…, #…), mailto:, tel:, and full URLs are left alone.
+ */
+export function normalizeUrl(url: string): string {
+  const u = url.trim();
+  if (!u || u === "#") return u || "#";
+  // protocol-relative //host → https:
+  if (u.startsWith("//")) return `https:${u}`;
+  // already absolute / special scheme / in-site path / anchor
+  if (/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(u)) return u;
+  // looks like a domain (has a dot before any slash) → external, add https
+  if (/^[^/\s]+\.[^/\s]/.test(u)) return `https://${u}`;
+  // otherwise treat as an in-site path
+  return `/${u.replace(/^\/+/, "")}`;
+}
+
+/**
  * Resolve any CTA shape to an href. Handles anchor links, internal page_id
- * references (via pageMap), and plain URLs.
+ * references (via pageMap), and plain URLs (scheme-normalised).
  */
 export function resolveHref(cta: unknown, pageMap?: PageMap): string {
   const c = unwrapCta(cta);
@@ -66,7 +86,13 @@ export function resolveHref(cta: unknown, pageMap?: PageMap): string {
     const slug = pageMap?.[String(c.page_id)];
     if (slug) return slugToPath(slug);
   }
-  return (c.url as string) || "#";
+  const url = (c.url as string) || "";
+  return url ? normalizeUrl(url) : "#";
+}
+
+/** True for links that should open in a new tab (off-site absolute URLs). */
+export function isExternalUrl(href: string): boolean {
+  return /^(https?:)?\/\//i.test(href);
 }
 
 /**

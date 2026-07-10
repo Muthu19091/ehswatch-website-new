@@ -79,8 +79,16 @@ export default function GlareButton({
     );
   }
 
+  // Off-site links open in a new tab; in-site links navigate normally.
+  const external = !!href && /^(https?:)?\/\//i.test(href);
+
   return (
-    <a {...shared} href={href ?? "#"} onClick={onClick}>
+    <a
+      {...shared}
+      href={href ?? "#"}
+      onClick={onClick}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
       {inner}
     </a>
   );
