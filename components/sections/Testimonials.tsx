@@ -4,21 +4,29 @@ import React, { useEffect, useRef, useState } from "react";
 import type { CmsTestimonial } from "@/lib/types";
 import { stripHtml } from "@/lib/text";
 
-interface TestimonialItem { quote: string; author: string }
+interface TestimonialItem { quote: string; author: string; rating: number }
 
 const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
-  { quote: "Everything. Our field teams report incidents in minutes, not days.", author: "EHS Director, Construction Firm" },
-  { quote: "EHSWatch transformed how we manage compliance — what used to take weeks now takes hours.", author: "Safety Manager, Oil & Gas" },
-  { quote: "The mobile-first approach means our site workers actually use it. Adoption went through the roof.", author: "HSE Lead, Manufacturing" },
-  { quote: "Real-time visibility across all our sites. We caught three potential incidents before they escalated.", author: "EHSQ Director, Logistics" },
-  { quote: "Finally, a platform that speaks the language of safety professionals, not just developers.", author: "Compliance Officer, Utilities" },
+  { quote: "Everything. Our field teams report incidents in minutes, not days.", author: "EHS Director, Construction Firm", rating: 5 },
+  { quote: "EHSWatch transformed how we manage compliance — what used to take weeks now takes hours.", author: "Safety Manager, Oil & Gas", rating: 5 },
+  { quote: "The mobile-first approach means our site workers actually use it. Adoption went through the roof.", author: "HSE Lead, Manufacturing", rating: 5 },
+  { quote: "Real-time visibility across all our sites. We caught three potential incidents before they escalated.", author: "EHSQ Director, Logistics", rating: 5 },
+  { quote: "Finally, a platform that speaks the language of safety professionals, not just developers.", author: "Compliance Officer, Utilities", rating: 5 },
 ];
 
-function StarRow() {
+function StarRow({ rating }: { rating: number }) {
+  // Clamp to 0–5; fill up to `rating`, outline the rest.
+  const filled = Math.max(0, Math.min(5, Math.round(rating || 0)));
   return (
     <div className="flex gap-1">
       {[...Array(5)].map((_, i) => (
-        <svg key={i} width="20" height="20" viewBox="0 0 24 24" fill="#f4a261">
+        <svg
+          key={i}
+          width="20" height="20" viewBox="0 0 24 24"
+          fill={i < filled ? "#f4a261" : "none"}
+          stroke="#f4a261"
+          strokeWidth={i < filled ? 0 : 1.5}
+        >
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       ))}
@@ -42,6 +50,7 @@ export default function Testimonials({
           .map(clean)
           .filter(Boolean)
           .join(", "),
+        rating: typeof t.attributes.rating === "number" ? t.attributes.rating : 5,
       }))
     : FALLBACK_TESTIMONIALS;
   const trackRef = useRef<HTMLDivElement>(null);
@@ -107,7 +116,7 @@ export default function Testimonials({
               }}
             >
               <div className="relative z-10 flex flex-col gap-4">
-                <StarRow />
+                <StarRow rating={t.rating} />
                 <p className="font-[family-name:var(--font-dm-sans)] font-medium text-[14px] md:text-[15px] leading-[1.55] text-[#0a1628]">
                   {t.quote}
                 </p>
