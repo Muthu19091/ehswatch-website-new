@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import { useInView } from "@/hooks/useInView";
 import { basePath } from "@/lib/basePath";
+import { normalizeUrl, isExternalUrl } from "@/lib/blocks";
 
 // ─── Chat script ──────────────────────────────────────────────────────────────
 const CHAT = [
@@ -251,7 +252,7 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
     : "Leverage IRIS, our built-in Intelligent Risk & Insight System, to transform raw data into proactive safety leadership. IRIS automates the heavy lifting of data analysis, allowing your team to focus on intervention rather than administration.";
 
   const ctaLabel = cmsCtaLabel || "Explore AI Modules →";
-  const ctaUrl   = cmsCtaUrl   || "#";
+  const ctaUrl   = cmsCtaUrl ? normalizeUrl(cmsCtaUrl) : "#";
 
   return (
     <section ref={ref} className="bg-white py-12 md:py-[80px] px-4 md:px-6 overflow-hidden">
@@ -290,6 +291,7 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
             </div>
             <a
               href={ctaUrl}
+              {...(isExternalUrl(ctaUrl) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="self-start mt-1 font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
             >
               {ctaLabel}

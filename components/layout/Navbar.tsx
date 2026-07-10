@@ -1,4 +1,5 @@
 import { getHeader, getBlogPosts, getCaseStudies } from "@/lib/api";
+import { normalizeUrl } from "@/lib/blocks";
 import NavbarClient from "./NavbarClient";
 
 function extractCover(item: any): string | undefined {
@@ -31,7 +32,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
 
     if (item.type === "dropdown" && Array.isArray(item.children)) {
       children = (item.children as any[]).map((c: any) => {
-        const rawHref = (c.url as string) || "#";
+        const rawHref = c.url ? normalizeUrl(c.url as string) : "#";
 
         /* Blog child — force link to listing page, show latest blog cover */
         if (/^\/blog(\/|$)/.test(rawHref)) {
@@ -64,7 +65,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
 
     return {
       label:        item.label as string,
-      href:         item.type === "dropdown" ? "#" : (item.url as string) || "#",
+      href:         item.type === "dropdown" ? "#" : (item.url ? normalizeUrl(item.url as string) : "#"),
       hasDropdown:  item.type === "dropdown",
       hideOnScroll: idx === firstLinkIdx || idx === lastLinkIdx,
       children,
@@ -73,7 +74,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
 
   const firstCta = (ctas as any[])[0];
   const cmsCta = firstCta
-    ? { label: firstCta.label as string, href: (firstCta.url as string) || "#" }
+    ? { label: firstCta.label as string, href: firstCta.url ? normalizeUrl(firstCta.url as string) : "#" }
     : undefined;
 
   /* Logo from the CMS header editor (media url + alt + link) */
