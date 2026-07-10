@@ -37,6 +37,16 @@ const getClient = (): AxiosInstance =>
 const _ssrCache = new Map<string, { data: unknown; expires: number }>();
 const _inflight = new Map<string, Promise<unknown>>();
 
+const DEFAULT_TTL = 10_000;
+// Reference data that changes rarely — cache longer to cut request volume
+// against the CMS's 60 req/min limit (all SSR shares one IP).
+function ttlFor(path: string): number {
+  if (path === "/pages" || path === "/header" || path === "/footer" || path === "/settings") {
+    return 60_000;
+  }
+  return DEFAULT_TTL;
+}
+
 async function withLocale(path: string): Promise<string> {
   // Translation is handled client-side by Google Translate (googtrans cookie);
   // the API is always fetched in English. The CMS ?locale=ar layer stays
@@ -58,8 +68,12 @@ async function apiGet<T>(path: string): Promise<T | null> {
 
   const promise = _doGet<T>(resolvedPath)
     .then((data) => {
-      _ssrCache.set(resolvedPath, { data, expires: Date.now() + 10_000 });
       _inflight.delete(resolvedPath);
+      // Never cache failures (null): a transient 429/network error must not
+      // poison the cache and 404 the page for the whole TTL window.
+      if (data !== null) {
+        _ssrCache.set(resolvedPath, { data, expires: Date.now() + ttlFor(resolvedPath) });
+      }
       return data;
     })
     .catch((err) => {
@@ -71,15 +85,23 @@ async function apiGet<T>(path: string): Promise<T | null> {
   return promise;
 }
 
-async function _doGet<T>(path: string): Promise<T | null> {
+async function _doGet<T>(path: string, attempt = 0): Promise<T | null> {
   try {
     const res = await getClient().get<T>(path);
     return res.data;
   } catch (err) {
     const e = err as AxiosError;
+    const status = e.response?.status;
+    // Retry transient rate-limits (429) and 503s with short backoff so a burst
+    // against the CMS's 60 req/min limit doesn't 404 an otherwise-valid page.
+    if ((status === 429 || status === 503) && attempt < 3) {
+      const wait = 250 * (attempt + 1) + Math.floor(Math.random() * 150);
+      await new Promise((r) => setTimeout(r, wait));
+      return _doGet<T>(path, attempt + 1);
+    }
     console.error(
       `[CMS] GET ${path} →`,
-      e.response?.status ?? "network error",
+      status ?? "network error",
       e.response?.data ?? e.message,
     );
     return null;
