@@ -60,6 +60,13 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
 
   const [tl, tr, bl, br] = painPoints;
 
+  // Desktop keeps the original 2-above / 2-below spread for the common 4-item
+  // case; with more than four, split them into two centered wrapping rows so
+  // any number of pills renders (was silently capped at 4).
+  const many = painPoints.length > 4;
+  const topRow = painPoints.slice(0, Math.ceil(painPoints.length / 2));
+  const bottomRow = painPoints.slice(Math.ceil(painPoints.length / 2));
+
   // Heading: the CMS follows the "<span>highlight</span>" convention inside a
   // single heading string — split it into the dark line and the blue line.
   // Without a span, fall back to heading + subheading as two lines.
@@ -106,9 +113,10 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
       <div className="relative max-w-[1100px] mx-auto z-10">
         {/* Desktop layout */}
         <div className="hidden md:flex flex-col gap-5 lg:gap-[24px] items-center py-3 lg:py-6">
-          <div className="flex justify-between w-full max-w-[850px]">
-            {tl && <PainPill {...tl} />}
-            {tr && <PainPill {...tr} />}
+          <div className={`flex w-full max-w-[850px] ${many ? "flex-wrap justify-center gap-4 lg:gap-6" : "justify-between"}`}>
+            {many
+              ? topRow.map((p, i) => <PainPill key={`t-${i}`} {...p} />)
+              : <>{tl && <PainPill {...tl} />}{tr && <PainPill {...tr} />}</>}
           </div>
 
           <div className="text-center">
@@ -120,9 +128,10 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
             </p>
           </div>
 
-          <div className="flex justify-between w-full max-w-[850px]">
-            {bl && <PainPill {...bl} />}
-            {br && <PainPill {...br} />}
+          <div className={`flex w-full max-w-[850px] ${many ? "flex-wrap justify-center gap-4 lg:gap-6" : "justify-between"}`}>
+            {many
+              ? bottomRow.map((p, i) => <PainPill key={`b-${i}`} {...p} />)
+              : <>{bl && <PainPill {...bl} />}{br && <PainPill {...br} />}</>}
           </div>
         </div>
 
@@ -137,8 +146,8 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
             </p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-[400px]">
-            {painPoints.map((p) => (
-              <PainPill key={p.label} {...p} />
+            {painPoints.map((p, i) => (
+              <PainPill key={`m-${i}`} {...p} />
             ))}
           </div>
         </div>
