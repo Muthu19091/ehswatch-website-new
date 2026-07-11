@@ -16,14 +16,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const res = await getCaseStudy(slug);
   const study = res?.data;
+  // Prefer the CMS SEO meta fields; fall back to title/summary.
+  const meta = study?.attributes.meta;
   return {
-    robots: robotsFrom(study?.attributes.meta?.robots),
-    title: study
-      ? `${study.attributes.title} | EHSWatch`
-      : "Case Study | EHSWatch",
+    robots: robotsFrom(meta?.robots),
+    title:
+      meta?.meta_title ||
+      (study ? `${study.attributes.title} | EHSWatch` : "Case Study | EHSWatch"),
     description:
-      study?.attributes.meta?.meta_description ??
-      study?.attributes.summary ??
+      meta?.meta_description ||
+      study?.attributes.summary ||
       `EHSWatch case study — ${slug.replace(/-/g, " ")}.`,
   };
 }
