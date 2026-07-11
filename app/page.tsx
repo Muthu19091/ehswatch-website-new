@@ -14,8 +14,22 @@ import CTABanner from "@/components/sections/CTABanner";
 import { getTestimonials, getClientLogos, getPage, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
+import { robotsFrom } from "@/lib/seo";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPage("home");
+  const meta = pageData?.data?.attributes?.meta;
+  return {
+    robots: robotsFrom(meta?.robots),
+    title: meta?.meta_title || "EHSWatch — From Manual Chaos to Smart Safety",
+    description:
+      meta?.meta_description ||
+      "AI-powered EHS platform to streamline reporting everywhere.",
+  };
+}
 
 export default async function HomePage() {
   const [testimonialsRes, logosRes, homePageRes, pageListRes] = await Promise.all([
