@@ -16,10 +16,17 @@ export async function generateMetadata({
   const { slug } = await params;
   const res = await getBlogPost(slug);
   const post = res?.data;
+  // Prefer the post's SEO meta fields; fall back to title/excerpt.
+  const meta = post?.attributes.meta;
   return {
-    robots: robotsFrom(post?.attributes.meta?.robots),
-    title: post ? `${post.attributes.title} | EHSWatch` : `Blog | EHSWatch`,
-    description: post?.attributes.excerpt ?? `EHSWatch EHS insights — ${slug.replace(/-/g, " ")}.`,
+    robots: robotsFrom(meta?.robots),
+    title:
+      meta?.meta_title ||
+      (post ? `${post.attributes.title} | EHSWatch` : `Blog | EHSWatch`),
+    description:
+      meta?.meta_description ||
+      post?.attributes.excerpt ||
+      `EHSWatch EHS insights — ${slug.replace(/-/g, " ")}.`,
   };
 }
 
