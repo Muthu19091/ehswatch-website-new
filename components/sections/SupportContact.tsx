@@ -133,8 +133,20 @@ function LoginForm() {
 }
 
 /* ── Main export ── */
-export default function SupportContact() {
+export default function SupportContact({
+  contactEmail,
+  contactPhone,
+  contactAddress,
+}: { contactEmail?: string | null; contactPhone?: string | null; contactAddress?: string | null } = {}) {
   const [active, setActive] = useState<"contact" | "portal">("contact");
+
+  // Override the static contact values with CMS Settings → Contact when present
+  const contactInfo = CONTACT_INFO.map((item) => {
+    if (item.label === "Email ID" && contactEmail) return { ...item, value: contactEmail };
+    if (item.label === "Phone Number" && contactPhone) return { ...item, value: contactPhone };
+    if (item.label === "Address" && contactAddress) return { ...item, value: contactAddress };
+    return item;
+  });
 
   return (
     <section className="bg-white py-12 md:py-20 px-4 md:px-6">
@@ -179,7 +191,7 @@ export default function SupportContact() {
               {active === "contact" ? (
                 /* Contact info items */
                 <div className="flex flex-col gap-5">
-                  {CONTACT_INFO.map((item) => (
+                  {contactInfo.map((item) => (
                     <div key={item.label} className="flex items-start gap-4">
                       <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "#eef4ff" }}>
                         {item.icon}

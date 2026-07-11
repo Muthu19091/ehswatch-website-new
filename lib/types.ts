@@ -37,6 +37,7 @@ export interface CmsSettings {
     header_logo: CmsImage | null;
     name: string;
   };
+  contact?: { email?: string | null; phone?: string | null; address?: string | null };
   tracking: { ga4_id: string | null; gtm_id: string | null };
   seo: {
     default_og_image: CmsImage | null;

@@ -1,4 +1,4 @@
-import { getFooter, getProductModules } from "@/lib/api";
+import { getFooter, getProductModules, getSettings } from "@/lib/api";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 import CmsIcon from "@/components/ui/CmsIcon";
@@ -105,8 +105,11 @@ const FALLBACK_SOCIALS = [
 ];
 
 export default async function Footer() {
-  const [footer, modulesRes] = await Promise.all([getFooter(), getProductModules()]);
+  const [footer, modulesRes, settingsRes] = await Promise.all([getFooter(), getProductModules(), getSettings()]);
   const attrs = (footer?.data as any)?.attributes;
+  // Contact details come from Settings → Contact (single source of truth)
+  const contactEmail = (settingsRes?.data as any)?.contact?.email || null;
+  const contactPhone = (settingsRes?.data as any)?.contact?.phone || null;
 
   // Real module detail links, straight from the product-modules collection,
   // so the footer Modules column always points at /modules/<slug>.
@@ -161,6 +164,20 @@ export default async function Footer() {
           <p className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] leading-relaxed md:leading-[24.5px] text-[rgba(255,255,255,0.6)] max-w-[240px]">
             {tagline}
           </p>
+          {(contactEmail || contactPhone) && (
+            <div className="flex flex-col gap-1 pt-1 font-[family-name:var(--font-inter)] text-[13px] md:text-[14px]">
+              {contactEmail && (
+                <a href={`mailto:${contactEmail}`} className="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors">
+                  {contactEmail}
+                </a>
+              )}
+              {contactPhone && (
+                <a href={`tel:${contactPhone.replace(/[^+\d]/g, "")}`} className="text-[rgba(255,255,255,0.7)] hover:text-white transition-colors">
+                  {contactPhone}
+                </a>
+              )}
+            </div>
+          )}
           <div className="flex gap-[10px] pt-2 md:pt-[10px]">
             {socialLinks.map(({ platform, url, icon: iconSlug }) => {
               const brandIcon = SOCIAL_ICONS[platform.toLowerCase()];
