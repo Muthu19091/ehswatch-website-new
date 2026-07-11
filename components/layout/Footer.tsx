@@ -133,14 +133,21 @@ export default async function Footer() {
     ? ((attrs.social_links ?? []) as { platform: string; url: string; icon?: string | null }[])
     : FALLBACK_SOCIALS;
 
-  const columns = (attrs?.columns ?? []) as { heading: string; links: { label: string; url: string }[] }[];
-  // Match columns by heading, fall back to CMS order so renamed columns still render
-  const companyCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("company")) ?? columns[0];
-  const modulesCol = columns.find((c) => (c.heading || (c as any).title || "").toLowerCase().includes("module")) ?? columns[1];
-  const companyHeading = companyCol?.heading || "COMPANY";
-  const modulesHeading = modulesCol?.heading || "MODULES";
+  const columns = (attrs?.columns ?? []) as { heading?: string; title?: string; links: { label: string; url: string }[] }[];
+  const colHeading = (c?: { heading?: string; title?: string }) => (c?.heading || c?.title || "").trim();
+  const isModulesCol = (c?: { heading?: string; title?: string }) => colHeading(c).toLowerCase().includes("module");
 
-  const companyLinks = companyCol?.links ?? COMPANY.map(l => ({ label: l.label, url: l.href }));
+  const modulesCol = columns.find(isModulesCol);
+  const modulesHeading = colHeading(modulesCol) || "MODULES";
+
+  // Every non-Modules column renders generically, so a newly-added CMS column
+  // appears automatically (was hard-limited to a single "Company" column).
+  const genericColumns = (
+    columns.filter((c) => !isModulesCol(c)).length > 0
+      ? columns.filter((c) => !isModulesCol(c)).map((c) => ({ heading: colHeading(c) || "COMPANY", links: c.links ?? [] }))
+      : [{ heading: "COMPANY", links: COMPANY.map((l) => ({ label: l.label, url: l.href })) }]
+  );
+
   // Prefer live module pages; fall back to CMS-authored links, then hardcoded.
   const allModules   = moduleLinks.length > 0
     ? moduleLinks
@@ -149,11 +156,18 @@ export default async function Footer() {
   const modCol1      = allModules.slice(0, mid);
   const modCol2      = allModules.slice(mid);
 
+  // Dynamic lg grid template: Brand | (generic columns…) | Modules | CTA
+  const footerGridCols = `1.1fr ${genericColumns.map(() => "0.9fr").join(" ")} 1.6fr 1.1fr`;
+
   return (
     <footer className="bg-[#0a1628] flex flex-col items-center pt-12 md:pt-[72px] relative isolate overflow-hidden">
 
-      {/* Main grid: Brand | Company | Modules | CTA */}
-      <div className="relative z-[3] w-full max-w-[1216px] px-6 md:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr_1.6fr_1.1fr] gap-8 md:gap-10">
+      {/* Main grid: Brand | (generic columns…) | Modules | CTA.
+          lg template is dynamic so extra CMS columns render. */}
+      <div
+        className="relative z-[3] w-full max-w-[1216px] px-6 md:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[var(--footer-cols)] gap-8 md:gap-10"
+        style={{ ["--footer-cols" as string]: footerGridCols }}
+      >
 
         {/* ── Brand column ── */}
         <div className="flex flex-col gap-3 md:gap-[14px] items-start">
@@ -199,24 +213,26 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* ── Company column ── */}
-        <div className="flex flex-col gap-3 md:gap-[20px] items-start">
-          <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
-            {companyHeading}
-          </p>
-          <ul className="grid grid-cols-2 md:grid-cols-1 gap-x-6 gap-y-2 md:gap-[12px] w-full">
-            {companyLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.url || "#"}
-                  className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] text-white/70 hover:text-white transition-colors"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* ── Generic link columns (Company + any extra CMS columns) ── */}
+        {genericColumns.map((col, ci) => (
+          <div key={`${col.heading}-${ci}`} className="flex flex-col gap-3 md:gap-[20px] items-start">
+            <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
+              {col.heading}
+            </p>
+            <ul className="grid grid-cols-2 md:grid-cols-1 gap-x-6 gap-y-2 md:gap-[12px] w-full">
+              {col.links.map((link, li) => (
+                <li key={`${link.label}-${li}`}>
+                  <Link
+                    href={link.url || "#"}
+                    className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] text-white/70 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
 
         {/* ── Modules column — 2-column grid ── */}
         <div className="flex flex-col gap-3 md:gap-[20px] items-start">
