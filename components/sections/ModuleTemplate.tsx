@@ -40,6 +40,7 @@ export interface ModuleTemplateProps {
   apart?: {
     heading: string;
     items: string[];
+    bodyHtml?: string;
   };
   faqs?: {
     heading: string;
@@ -251,6 +252,13 @@ export default function ModuleTemplate({
           animation: mtDiffFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         .mt-why-body p + p { margin-top: 1.25rem; }
+        /* Rich text from the CMS (links, bold, lists) inside module sections */
+        .mt-rich a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 2px; }
+        .mt-rich strong { color: #0a0f1e; }
+        .mt-rich ul { list-style: disc; padding-left: 1.4rem; margin: 0.6rem 0; }
+        .mt-rich ol { list-style: decimal; padding-left: 1.4rem; margin: 0.6rem 0; }
+        .mt-rich li { margin-top: 0.35rem; }
+        .mt-rich h2, .mt-rich h3, .mt-rich h4 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; color: #0a0f1e; margin: 1.2rem 0 0.5rem; }
       `}</style>
 
       {/* ── HERO ── */}
@@ -404,30 +412,38 @@ export default function ModuleTemplate({
       )}
 
       {/* ── WHAT SETS IT APART ── */}
-      {apart && apart.items.length > 0 && (
+      {apart && (apart.items.length > 0 || apart.bodyHtml) && (
         <section className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
               {apartStart}
               <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
             </h2>
-            <div className="flex flex-col gap-4">
-              {apart.items.map((item, i) => (
-                <div key={i} className="mt-diff-item flex items-start gap-3" style={{ animationDelay: `${i * 150}ms` }}>
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: "#93c5fd" }}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                      <path d="M2 5.5l2.8 2.8L9 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+            {apart.items.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {apart.items.map((item, i) => (
+                  <div key={i} className="mt-diff-item flex items-start gap-3" style={{ animationDelay: `${i * 150}ms` }}>
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ background: "#93c5fd" }}
+                    >
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                        <path d="M2 5.5l2.8 2.8L9 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    <p
+                      className="mt-rich font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#374151] text-pretty"
+                      dangerouslySetInnerHTML={{ __html: item }}
+                    />
                   </div>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#374151] text-pretty">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div
+                className="mt-rich mt-why-body font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.8] text-[#4b5563] text-pretty"
+                dangerouslySetInnerHTML={{ __html: apart.bodyHtml! }}
+              />
+            )}
           </div>
         </section>
       )}

@@ -393,8 +393,10 @@ export default function DynamicCmsForm({
       return;
     }
 
-    /* Build payload */
-    const data: Record<string, unknown> = { captcha_token: captchaToken };
+    /* Build payload — seed with captured first-touch UTM/attribution so the
+       CMS records lead source (extractUtm reads these top-level keys). */
+    const { getStoredUtm } = await import("@/lib/utm");
+    const data: Record<string, unknown> = { captcha_token: captchaToken, ...getStoredUtm() };
     for (const field of allFields) {
       if (field.field_type === "checkboxes") {
         data[field.key] = fd.getAll(field.key);

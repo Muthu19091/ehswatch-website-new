@@ -224,18 +224,33 @@ export default function ContactPage({
                     <p className="font-[family-name:var(--font-dm-sans)] text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9ca3af] mb-1.5">
                       {item.title}
                     </p>
-                    {item.description ? (
+                    {/* Description text (e.g. a postal address) … */}
+                    {item.description && (
                       <p className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.8] text-[#374151] whitespace-pre-line">
                         {item.description}
                       </p>
-                    ) : item.linkLabel ? (
-                      <a
-                        href={item.linkType === "email" ? `mailto:${item.linkUrl}` : item.linkUrl ?? "#"}
-                        className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.8] text-[#1d4ed8] hover:underline"
-                      >
-                        {item.linkLabel}
-                      </a>
-                    ) : null}
+                    )}
+                    {/* … plus its own hyperlink when the CMS link field is set.
+                        These are additive: a description no longer swallows the
+                        link, so an address can show text AND a working link. */}
+                    {item.linkLabel && item.linkUrl && (() => {
+                      const url = item.linkUrl as string;
+                      const href =
+                        item.linkType === "email" ? `mailto:${url}`
+                        : item.linkType === "phone" || item.linkType === "tel" ? `tel:${url.replace(/\s+/g, "")}`
+                        : /^https?:\/\//i.test(url) || /^(mailto:|tel:|\/|#)/.test(url) ? url
+                        : `https://${url}`;
+                      const external = /^https?:\/\//i.test(href);
+                      return (
+                        <a
+                          href={href}
+                          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className={`font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.8] text-[#1d4ed8] hover:underline ${item.description ? "mt-1 inline-block" : ""}`}
+                        >
+                          {item.linkLabel}
+                        </a>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}

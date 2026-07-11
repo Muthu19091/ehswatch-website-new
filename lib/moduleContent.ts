@@ -21,14 +21,21 @@ function resolveCta(raw?: CtaShape | null, pageMap?: PageMap): ModuleCta | undef
   return c ? { label: c.label, href: c.url } : undefined;
 }
 
-// Pull the text of each <li> out of a rich_text body
+// Pull each <li> out of a rich_text body, keeping inline formatting
+// (links, bold, emphasis) so hyperlinks entered in the CMS survive.
+// Block-level wrappers (Tiptap nests <p> inside <li>) are unwrapped so
+// the item renders correctly inside a <p>.
 function parseListItems(html: string): string[] {
   const items: string[] = [];
   const re = /<li[^>]*>([\s\S]*?)<\/li>/gi;
   let m;
   while ((m = re.exec(html)) !== null) {
-    const text = m[1].replace(/<[^>]+>/g, "").trim();
-    if (text) items.push(text);
+    const inner = m[1]
+      .replace(/<\/?(p|div|h[1-6])[^>]*>/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    // Only keep items that carry actual visible text
+    if (inner.replace(/<[^>]+>/g, "").trim()) items.push(inner);
   }
   return items;
 }
@@ -107,14 +114,28 @@ export function buildModuleTemplateProps(
     body?: string;
   }>(blocks, "rich_text");
 
-  const apartItems = richTextBlock?.body ? parseListItems(richTextBlock.body) : [];
-  const apart: ModuleTemplateProps["apart"] | undefined =
-    apartItems.length > 0
-      ? {
-          heading: stripHtml(richTextBlock?.heading) || `What Sets EHSWatch ${name} Apart`,
-          items: apartItems,
-        }
-      : undefined;
+  // The rich_text block feeds the "What Sets … Apart" section. A bullet
+  // list renders as the check-marked grid (preserving inline links); any
+  // other rich content (paragraphs, headings, links) is rendered as HTML
+  // instead of being dropped.
+  const richBody = (richTextBlock?.body ?? "").trim();
+  const apartItems = richBody ? parseListItems(richBody) : [];
+  // If the body is essentially just a bullet list, keep the designed
+  // check-marked grid. If it also carries paragraphs/headings/other text,
+  // render the full HTML so nothing is dropped.
+  const nonListText = richBody
+    .replace(/<[uo]l[\s\S]*?<\/[uo]l>/gi, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .trim();
+  const useGrid = apartItems.length > 0 && nonListText.length === 0;
+  const apart: ModuleTemplateProps["apart"] | undefined = richBody
+    ? {
+        heading: stripHtml(richTextBlock?.heading) || `What Sets EHSWatch ${name} Apart`,
+        items: useGrid ? apartItems : [],
+        bodyHtml: richBody,
+      }
+    : undefined;
 
   const faqBlock = findBlock<{
     heading?: string;
