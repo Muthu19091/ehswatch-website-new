@@ -4,40 +4,24 @@ import React, { useEffect, useRef, useState } from "react";
 
 const TESTIMONIALS = [
   {
-    quote: "EHSWatch standardised EHS processes across our 12 companies, eliminated paper workflows, and gave us real-time visibility with exceptionally clear dashboards and a fast, reliable mobile app.",
-    author: "Muhammad Fahad A — SR. QHSE ADVISOR, BARIK GROUP",
+    quote: "Everything. Our field teams report incidents in minutes, not days.",
+    author: "EHS Director, Construction Firm",
   },
   {
-    quote: "We use EHSWatch for daily observations and inspections. It meets our expectations across many features, and the training metrics are especially valuable for tracking expiries and active courses.",
-    author: "Afad K — HSE OFFICER, AL BARAKA OILFIELD SERVICES",
+    quote: "EHSWatch transformed how we manage compliance — what used to take weeks now takes hours.",
+    author: "Safety Manager, Oil & Gas",
   },
   {
-    quote: "We use EHSWatch to manage inspections, report observations and track incidents. Real-time corrective action reporting lets us assign tasks immediately from site, ensuring nothing is missed.",
-    author: "Dijin D — HSE ENGINEER, POWER CHINA – HDEC",
+    quote: "The mobile-first approach means our site workers actually use it. Adoption went through the roof.",
+    author: "HSE Lead, Manufacturing",
   },
   {
-    quote: "EHSWatch is far more efficient than other tools we've used. It saves time, reduces paperwork and ensures a faster, more reliable way of working.",
-    author: "Mohammed Al Harthy — HSE MANAGER, AL SUMRI TRANSPORT CO.",
+    quote: "Real-time visibility across all our sites. We caught three potential incidents before they escalated.",
+    author: "EHSQ Director, Logistics",
   },
   {
-    quote: "We customised EHSWatch to match our needs and can extract data from anywhere, at any time. Regular updates help maintain smooth operations.",
-    author: "GK Yuvaraj P — OMAN NATIONAL ENGINEERING AND INVESTMENT CO.",
-  },
-  {
-    quote: "EHSWatch gives us a single platform for incidents, observations, audits, file management and inspections. Automated workflows and real-time dashboards speed up corrective-action tracking, and the mobile app makes field reporting simple.",
-    author: "Anish R — SPECIAL OILFIELD SERVICES",
-  },
-  {
-    quote: "EHSWatch is well structured and easy to follow. It simplifies monthly and yearly data summaries and progress tracking.",
-    author: "Amwaj A — QUALITY ASSURANCE ENGINEER, OMAN CABLES",
-  },
-  {
-    quote: "EHSWatch is customisable to our business needs, easy to navigate and user-friendly.",
-    author: "Asif Ali — QUALITY MANAGER, SPECIAL OILFIELD SERVICES",
-  },
-  {
-    quote: "EHSWatch gives us a single, well-organised platform for reporting, tracking and resolving safety issues. It streamlines workflows, improves transparency and enhances communication among teams.",
-    author: "Basma — HSE OFFICER, OMAN CABLES",
+    quote: "Finally, a platform that speaks the language of safety professionals, not just developers.",
+    author: "Compliance Officer, Utilities",
   },
 ];
 
