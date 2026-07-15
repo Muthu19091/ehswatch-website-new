@@ -63,6 +63,7 @@ export default async function ProductPage() {
     heading?: string;
     subheading?: string;
     body?: string;
+    image?: { url?: string; alt?: string } | null;
   }>(blocks, "image_text");
 
   // ── number_steps block (ProductHowItWorks) ────────────────────────────────
@@ -132,6 +133,7 @@ export default async function ProductPage() {
           cmsHeading={imageTextBlock?.heading || undefined}
           cmsSubheading={imageTextBlock?.subheading || undefined}
           cmsBody={imageTextBlock?.body || undefined}
+          cmsImage={imageTextBlock?.image?.url ? { url: imageTextBlock.image.url, alt: imageTextBlock.image.alt } : undefined}
         />
         <Stats cmsItems={statsItems} />
         <ProductHowItWorks
