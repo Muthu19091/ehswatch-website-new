@@ -6,12 +6,14 @@ interface AboutStoryCmsProps {
   cmsHeading?: string | undefined;
   cmsSubheading?: string | undefined;
   cmsBody?: string | undefined;
+  cmsImage?: string | undefined;
 }
 
 export default function AboutStory({
   cmsHeading,
   cmsSubheading,
   cmsBody,
+  cmsImage,
 }: AboutStoryCmsProps = {}) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +101,20 @@ export default function AboutStory({
         />
 
       </div>
+
+      {/* CMS banner image — shown at natural ratio (no crop) when provided */}
+      {cmsImage && (
+        <div className="max-w-[1160px] mx-auto px-6 md:px-8 mt-12 md:mt-16">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cmsImage}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto rounded-2xl"
+          />
+        </div>
+      )}
     </section>
   );
 }

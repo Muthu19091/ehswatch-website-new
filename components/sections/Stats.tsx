@@ -12,6 +12,7 @@ interface CmsStatItem {
 
 interface StatsCmsProps {
   cmsItems?: CmsStatItem[] | undefined;
+  cmsHeading?: string | undefined;
 }
 
 // ─── Hardcoded fallback data ───────────────────────────────────────────────────
@@ -83,8 +84,9 @@ function Counter({
   return <>{display(value)}</>;
 }
 
-export default function Stats({ cmsItems }: StatsCmsProps = {}) {
+export default function Stats({ cmsItems, cmsHeading }: StatsCmsProps = {}) {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.3 });
+  const heading = cmsHeading?.trim();
 
   // Build the stats array: use CMS data if available, else hardcoded fallback
   const stats =
@@ -104,6 +106,13 @@ export default function Stats({ cmsItems }: StatsCmsProps = {}) {
 
   return (
     <section ref={ref} className="bg-white py-10 md:py-[73px]">
+      {heading && (
+        <div className="max-w-[1280px] mx-auto px-6 md:px-[32px] mb-8 md:mb-12 text-center">
+          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight text-[#0a1628] tracking-[-0.02em]">
+            {heading}
+          </h2>
+        </div>
+      )}
       <div className="max-w-[1280px] mx-auto px-6 md:px-[32px] grid grid-cols-2 md:grid-cols-4 gap-y-10">
         {stats.map((stat, i) => (
           <Reveal

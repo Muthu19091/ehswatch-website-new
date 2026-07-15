@@ -56,11 +56,16 @@ export default async function AboutPage() {
     heading?: string | null;
     subheading?: string | null;
     body?: string | null;
+    image?: { url?: string | null } | string | null;
   }>(blocks, "image_text");
 
   const storyHeading = imageTextData?.heading || undefined;
   const storySubheading = stripHtmlOpt(imageTextData?.subheading);
   const storyBody = imageTextData?.body || undefined;
+  const storyImage =
+    (typeof imageTextData?.image === "string"
+      ? imageTextData.image
+      : imageTextData?.image?.url) || undefined;
 
   // ── icon_features blocks ────────────────────────────────────────────────────
   // [0] "Purpose Behind Every Feature" (Mission / Vision cards)
@@ -142,13 +147,14 @@ export default async function AboutPage() {
           cmsHeading={storyHeading}
           cmsSubheading={storySubheading}
           cmsBody={storyBody}
+          cmsImage={storyImage}
         />
         <AboutDrives
           cmsHeading={drives?.heading}
           cmsSubheading={drives?.subheading}
           cmsItems={drives?.items}
         />
-        <Stats cmsItems={statsItems} />
+        <Stats cmsItems={statsItems} cmsHeading={statsData?.heading || undefined} />
         {principles?.items && principles.items.length > 0 && (
           <AboutDrives
             cmsHeading={principles.heading}
