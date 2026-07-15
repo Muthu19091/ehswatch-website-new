@@ -261,10 +261,19 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 
             {cmsPost ? (
               <>
-                {/* Cover image */}
-                <div className="relative w-full rounded-2xl overflow-hidden mb-10" style={{ aspectRatio: "16/9" }}>
-                  <Image src={post.coverImg} alt={post.title} fill className="object-cover" />
-                </div>
+                {/* Cover image — shown at its natural aspect ratio so
+                    infographic / portrait covers aren't cropped by a fixed
+                    16/9 banner (previously object-cover cut off the top and
+                    bottom of the image). Capped in height so an unusually
+                    tall upload can't dominate the article. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={post.coverImg}
+                  alt={post.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-auto max-h-[80vh] object-contain rounded-2xl mb-10"
+                />
 
                 {/* CMS body HTML */}
                 <div
