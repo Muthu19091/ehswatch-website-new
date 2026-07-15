@@ -42,7 +42,8 @@ export default async function CaseStudiesPage() {
     eyebrow?: string;
     headline?: string;
     subheadline?: string;
-    primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
+    primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "hero");
 
   const ctaBlock = findBlock<{
@@ -62,8 +63,11 @@ export default async function CaseStudiesPage() {
       <Navbar lightHero={true} />
       <main>
         <CaseStudiesHero
+          cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
           cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
           cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
+          cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
+          cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
         />
         <CaseStudiesGrid cmsStudies={cmsItems.length > 0 ? cmsItems : undefined} />
         <CTABanner

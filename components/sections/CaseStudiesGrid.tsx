@@ -292,22 +292,6 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
           )
         )}
 
-        {/* View more */}
-        <div className="flex justify-center pt-4">
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 font-[family-name:var(--font-dm-sans)] text-[14px] font-semibold px-7 py-[11px] rounded-full border transition-colors"
-            style={{ color: "#111827", borderColor: "#E5E7EB" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#111827"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "#E5E7EB"; }}
-          >
-            View more case studies
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-              <path d="M2.5 7h9M8 3.5l3.5 3.5L8 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </a>
-        </div>
-
       </div>
     </section>
   );

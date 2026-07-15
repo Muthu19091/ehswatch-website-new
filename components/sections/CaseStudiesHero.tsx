@@ -6,9 +6,12 @@ interface Props {
   cmsEyebrow?: string;
   cmsHeadline?: string;
   cmsSubheadline?: string;
+  cmsPrimaryCta?: { label: string; url: string };
+  cmsSecondaryCta?: { label: string; url: string };
 }
 
-export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }: Props) {
+export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadline, cmsPrimaryCta, cmsSecondaryCta }: Props) {
+  const primaryCta = cmsPrimaryCta ?? { label: "Explore Case Studies", url: "#case-studies" };
   return (
     <section
       className="relative overflow-hidden flex items-center justify-center px-6 pt-[148px] pb-[72px]"
@@ -55,6 +58,13 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
       </div>
 
       <div className="relative z-20 max-w-[720px] w-full mx-auto text-center flex flex-col items-center gap-5">
+        {cmsEyebrow?.trim() && (
+          <span
+            className="font-[family-name:var(--font-dm-sans)] text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8] animate-hero-rise"
+          >
+            {cmsEyebrow}
+          </span>
+        )}
         <h1
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-[-0.03em] animate-hero-rise"
           style={{ color: "#0a1628", animationDelay: "80ms" }}
@@ -78,14 +88,25 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
         </p>
         <div className="flex flex-wrap gap-3 justify-center animate-hero-rise" style={{ animationDelay: "320ms" }}>
           <GlareButton
-            href="#case-studies"
+            href={primaryCta.url}
             className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white"
             style={{
               backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
             }}
           >
-            Explore Case Studies
+            {primaryCta.label}
           </GlareButton>
+          {cmsSecondaryCta && (
+            <GlareButton
+              href={cmsSecondaryCta.url}
+              fillColor="#FFA660"
+              hoverTextColor="#ffffff"
+              className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] border"
+              style={{ borderColor: "#d1d5db", color: "#374151" }}
+            >
+              {cmsSecondaryCta.label}
+            </GlareButton>
+          )}
         </div>
       </div>
     </section>
