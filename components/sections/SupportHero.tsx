@@ -1,6 +1,14 @@
 "use client";
 
-export default function SupportHero() {
+interface SupportHeroProps {
+  cmsEyebrow?: string;
+  cmsHeadline?: string;
+  cmsSubheadline?: string;
+}
+
+export default function SupportHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }: SupportHeroProps = {}) {
+  const headlineHtml = (cmsHeadline || "We're Here When You Need Us — <span>Before, During and After Go-Live.</span>")
+    .replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">');
   return (
     <section
       className="relative overflow-hidden flex items-center justify-center px-4 sm:px-6 pt-[90px] sm:pt-[120px] md:pt-[148px] pb-[60px] sm:pb-[80px] md:pb-[100px]"
@@ -59,13 +67,24 @@ export default function SupportHero() {
 
       {/* Content */}
       <div className="relative z-20 max-w-[760px] w-full mx-auto text-center flex flex-col items-center gap-4 md:gap-5">
+        {cmsEyebrow?.trim() && (
+          <span className="font-[family-name:var(--font-dm-sans)] text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8] animate-hero-rise">
+            {cmsEyebrow}
+          </span>
+        )}
         <h1
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[42px] md:text-[52px] leading-[1.1] text-[#0f1728] tracking-[-0.02em] animate-hero-rise"
           style={{ animationDelay: "80ms" }}
-        >
-          We're Here When You Need Us —{" "}
-          <span className="text-[#155eef]">Before, During and After Go-Live.</span>
-        </h1>
+          dangerouslySetInnerHTML={{ __html: headlineHtml }}
+        />
+        {cmsSubheadline?.trim() && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-[#6b7280] leading-[1.75] max-w-[560px] animate-hero-rise text-pretty"
+            style={{ animationDelay: "200ms" }}
+          >
+            {cmsSubheadline}
+          </p>
+        )}
       </div>
     </section>
   );
