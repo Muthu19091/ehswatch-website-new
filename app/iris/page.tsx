@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import IrisPage from "@/components/sections/IrisPage";
-import { getPage } from "@/lib/api";
-import { findBlock, iconFeaturesToArray } from "@/lib/blocks";
+import { getPage, getPageList } from "@/lib/api";
+import { findBlock, iconFeaturesToArray, buildPageMap } from "@/lib/blocks";
 import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -24,11 +24,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function IrisPageRoute() {
-  const pageData = await getPage("iris");
+  const [pageData, pageListRes] = await Promise.all([getPage("iris"), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =
     (pageData?.data?.attributes?.content as Array<{ type: string; data: Record<string, unknown> }>) ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   const cmsHero         = findBlock<{ eyebrow?: string; headline?: string; subheadline?: string; primary_cta?: unknown; secondary_cta?: unknown }>(blocks, "hero") ?? undefined;
   const cmsTextCta      = findBlock<{ heading?: string; subheading?: string; cta?: unknown }>(blocks, "text_cta") ?? undefined;
@@ -55,6 +56,7 @@ export default async function IrisPageRoute() {
           cmsStepsHeading={cmsNumberSteps?.heading || undefined}
           cmsStepsSubheading={cmsNumberSteps?.subheading || undefined}
           cmsCtaBanner={cmsCtaBanner}
+          cmsPageMap={pageMap}
         />
       </main>
       <Footer />

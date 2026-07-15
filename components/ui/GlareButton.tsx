@@ -1,6 +1,21 @@
 "use client";
 
 import { useRef, useState, ReactNode } from "react";
+import { basePath } from "@/lib/basePath";
+
+// Root-relative internal links need the app basePath prepended — GlareButton
+// renders a plain <a>, so (unlike next/link) Next.js won't add it and the link
+// would 404. External, anchor, mailto/tel and already-prefixed links pass through.
+function withBasePath(href?: string): string {
+  if (!href) return "#";
+  if (/^(https?:)?\/\//i.test(href) || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+    return href;
+  }
+  if (href.startsWith("/") && basePath && href !== basePath && !href.startsWith(basePath + "/")) {
+    return `${basePath}${href}`;
+  }
+  return href;
+}
 
 interface GlareButtonProps {
   children: ReactNode;
@@ -85,7 +100,7 @@ export default function GlareButton({
   return (
     <a
       {...shared}
-      href={href ?? "#"}
+      href={withBasePath(href)}
       onClick={onClick}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >

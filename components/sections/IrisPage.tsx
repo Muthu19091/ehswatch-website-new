@@ -8,6 +8,7 @@ import IRISChatShowcase from "@/components/sections/IRISChatShowcase";
 import Orb from "@/components/ui/Orb";
 import GlareButton from "@/components/ui/GlareButton";
 import CmsIcon from "@/components/ui/CmsIcon";
+import { resolveCta, type PageMap } from "@/lib/blocks";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -63,18 +64,16 @@ interface IrisCmsProps {
   cmsStepsHeading?: string;
   cmsStepsSubheading?: string;
   cmsCtaBanner?: { headline?: string; subhead?: string; primary_cta?: any; secondary_cta?: any; button?: { button?: { label?: string; url?: string } } };
+  cmsPageMap?: PageMap;
 }
 
-// Resolve a CMS link object ({label,url,anchor,type} possibly nested under .cta)
-// to a {label, href} pair; undefined when no label is set.
-function resolveCmsCta(raw: any): { label: string; href: string } | undefined {
-  if (!raw || typeof raw !== "object") return undefined;
-  const cta = raw.cta?.label ? raw.cta : raw;
-  const label = typeof cta.label === "string" ? cta.label.trim() : "";
-  if (!label) return undefined;
-  const href =
-    (cta.type === "anchor" ? cta.anchor : cta.url) || cta.url || cta.anchor || "#";
-  return { label, href };
+// Resolve a CMS link object to a {label, href} pair; undefined when no label.
+// Delegates to the shared resolveCta so internal page_id links, anchors and
+// bare-domain URLs all resolve the same way as the rest of the site (needs the
+// page map for page_id → path lookups).
+function resolveCmsCta(raw: any, pageMap?: PageMap): { label: string; href: string } | undefined {
+  const c = resolveCta(raw, pageMap);
+  return c ? { label: c.label, href: c.url } : undefined;
 }
 
 // Split a heading so its last `words` words render in the accent colour
@@ -1441,20 +1440,21 @@ export default function IrisPage({
   cmsStepsHeading,
   cmsStepsSubheading,
   cmsCtaBanner,
+  cmsPageMap,
 }: IrisCmsProps = {}) {
   // ── Derived CMS values with hardcoded fallbacks ──────────────────────────
   const heroHeadline    = cmsHero?.headline    || "Meet IRIS";
   const heroSubheadline = cmsHero?.subheadline || undefined;
-  const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta)   ?? { label: "Book AI Demo", href: "/contact-us" };
-  const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta) ?? { label: "See Pricing", href: "/pricing" };
+  const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap)   ?? { label: "Book AI Demo", href: "/contact-us" };
+  const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap) ?? { label: "See Pricing", href: "/pricing" };
   const ctaBannerHeadline = cmsCtaBanner?.headline || "Put IRIS to work on your safety data";
   const ctaBannerSubhead  = cmsCtaBanner?.subhead  || "See what you’ve been missing. Book a demo and explore every AI capability live.";
   const ctaBannerPrimary =
-    resolveCmsCta(cmsCtaBanner?.primary_cta) ??
+    resolveCmsCta(cmsCtaBanner?.primary_cta, cmsPageMap) ??
     (cmsCtaBanner?.button?.button?.label
       ? { label: cmsCtaBanner.button.button.label, href: cmsCtaBanner.button.button.url || "#" }
       : { label: "Book Your Free Demo", href: "/contact-us" });
-  const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta) ?? { label: "View Pricing", href: "/pricing" };
+  const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta, cmsPageMap) ?? { label: "View Pricing", href: "/pricing" };
   const [problemsHeadStart, problemsHeadTail] = splitTail(
     cmsProblemsHeading?.trim() || "Why Traditional EHS Systems Fall Short",
   );
@@ -1612,6 +1612,11 @@ export default function IrisPage({
 
         {/* ── Title ── */}
         <div className="relative z-10 text-center mb-2 animate-hero-rise" style={{ animationDelay:"60ms" }}>
+          {cmsHero?.eyebrow?.trim() && (
+            <span className="inline-block mb-3 font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8]">
+              {cmsHero.eyebrow}
+            </span>
+          )}
           {cmsHero?.headline ? (
             <h1
               className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.06] tracking-[-0.03em] text-[#0a0f1e]"
