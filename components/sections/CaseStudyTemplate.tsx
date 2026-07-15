@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/blocks";
-import { basePath } from "@/lib/basePath";
 import GlareButton from "@/components/ui/GlareButton";
 import type { CmsCaseStudy } from "@/lib/types";
 
@@ -78,7 +77,10 @@ export default function CaseStudyTemplate({
   const summary = attrs.summary || DUMMY.summary;
   const bodyHtml = attrs.body?.trim() ? attrs.body : DUMMY_BODY(clientName);
   const results = attrs.results?.length ? attrs.results : DUMMY.results;
-  const coverUrl = mediaUrl(attrs.cover) ?? `${basePath}/images/blogs/blog-1.png`;
+  // Only use a real uploaded cover — no generic blog-image fallback (it read as
+  // a random stock photo on every study). When absent, the cover band is hidden
+  // and the green "at a glance" card becomes the lead visual.
+  const coverUrl = mediaUrl(attrs.cover);
 
   const publishDate = new Date(attrs.published_at).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -181,10 +183,12 @@ export default function CaseStudyTemplate({
         <div className="px-4 sm:px-6 pt-8 pb-0">
           <div className="max-w-[820px] mx-auto">
 
-            {/* Cover */}
-            <div className="relative w-full rounded-2xl overflow-hidden mb-10" style={{ aspectRatio: "16/9" }}>
-              <Image src={coverUrl} alt={title} fill className="object-cover" />
-            </div>
+            {/* Cover — only when a real image is uploaded */}
+            {coverUrl && (
+              <div className="relative w-full rounded-2xl overflow-hidden mb-10" style={{ aspectRatio: "16/9" }}>
+                <Image src={coverUrl} alt={title} fill className="object-cover" />
+              </div>
+            )}
 
             {/* At a glance — summary + quick facts */}
             <div
