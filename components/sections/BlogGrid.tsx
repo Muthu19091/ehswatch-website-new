@@ -397,20 +397,6 @@ export default function BlogGrid({
           </div>
         )}
 
-        {/* Load more */}
-        {filtered.length >= 6 && (
-          <div className="flex justify-center mt-12">
-            <button
-              className="inline-flex items-center gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] bg-white border transition-all duration-200 hover:border-[#111827]"
-              style={{ borderColor: "#E5E7EB", color: "#374151" }}
-            >
-              Load More Articles
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M8 3v10M3 8l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );

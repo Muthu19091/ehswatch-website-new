@@ -487,7 +487,7 @@ export default function NavbarClient({
             </Link>
           )
         )}
-        <Link href="#" onClick={() => setOpen(false)}
+        <Link href={ctaHref} onClick={() => setOpen(false)}
           className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[#ff6d00] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}
         </Link>

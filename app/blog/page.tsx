@@ -9,7 +9,8 @@ import Reveal from "@/components/ui/Reveal";
 import GlareButton from "@/components/ui/GlareButton";
 import { basePath } from "@/lib/basePath";
 import type { Metadata } from "next";
-import { getBlogPosts, getPage, getForm } from "@/lib/api";
+import { getBlogPosts, getPage, getForm, getPageList } from "@/lib/api";
+import { buildPageMap, resolveCta } from "@/lib/blocks";
 import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -94,13 +95,15 @@ function BlogCTA({
 }
 
 export default async function BlogPage() {
-  const [res, pageRes] = await Promise.all([
+  const [res, pageRes, pageListRes] = await Promise.all([
     getBlogPosts(),
     getPage("blog"),
+    getPageList(),
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   const cmsPosts = res?.data ?? [];
+  const pageMap = buildPageMap(pageListRes?.data);
 
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =
     (pageRes?.data?.attributes?.content as Array<{ type: string; data: Record<string, unknown> }>) ?? [];
@@ -135,15 +138,16 @@ export default async function BlogPage() {
   const ctaHeadline = (ctaBlock.headline as string | undefined) || undefined;
   const ctaSubhead = (ctaBlock.subhead as string | undefined) || undefined;
 
-  // CMS nests CTA labels under {cta: {...}}
-  const primaryCtaData = (ctaBlock.primary_cta as { cta?: { label?: string; url?: string } } | undefined)?.cta;
-  const secondaryCtaData = (ctaBlock.secondary_cta as { cta?: { label?: string; url?: string } } | undefined)?.cta;
+  // Resolve CTAs via the shared resolver so internal page_id links (e.g. the
+  // "View Pricing Plans" secondary → Pricing page) resolve to a real path
+  // instead of "#", and bare domains/anchors are handled consistently.
+  const primaryCta = resolveCta(ctaBlock.primary_cta, pageMap);
+  const secondaryCta = resolveCta(ctaBlock.secondary_cta, pageMap);
 
-  const primaryLabel = primaryCtaData?.label || undefined;
-  const primaryUrl = primaryCtaData?.url || undefined;
-  const secondaryLabel = secondaryCtaData?.label || undefined;
-  // secondary_cta is internal (page_id based) — fall back to "#" if no url
-  const secondaryUrl = secondaryCtaData?.url || undefined;
+  const primaryLabel = primaryCta?.label || undefined;
+  const primaryUrl = primaryCta?.url || undefined;
+  const secondaryLabel = secondaryCta?.label || undefined;
+  const secondaryUrl = secondaryCta?.url || undefined;
 
   return (
     <>
