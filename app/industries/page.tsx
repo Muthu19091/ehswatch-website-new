@@ -56,8 +56,14 @@ export default async function IndustriesPage() {
   const ctaPrimary   = resolveCta(ctaData?.primary_cta, pageMap);
   const ctaSecondary = resolveCta(ctaData?.secondary_cta, pageMap);
 
+  /* Testimonials section header — from the industries CMS testimonials block */
+  const testimonialsData = findBlock<{ heading?: string; subheading?: string }>(industryBlocks, "testimonials");
+
   // ── solution_carousel block → SolutionsZigzag ─────────────────────────────
   const solutionCarousel = findBlock<{
+    heading?: string;
+    subheading?: string;
+    eyebrow?: string;
     cards?: Record<string, CmsIndustryCard> | CmsIndustryCard[];
   }>(industryBlocks, "solution_carousel");
   const cmsZigzagCards: CmsIndustryCard[] | undefined = solutionCarousel?.cards
@@ -81,9 +87,18 @@ export default async function IndustriesPage() {
           cmsPrimaryCta={resolveCta(cmsHero?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(cmsHero?.secondary_cta, pageMap) ?? undefined}
         />
-        <SolutionsZigzag cmsCards={cmsZigzagCards} />
+        <SolutionsZigzag
+          cmsCards={cmsZigzagCards}
+          cmsHeading={stripHtmlOpt(solutionCarousel?.heading)}
+          cmsSubheading={stripHtmlOpt(solutionCarousel?.subheading)}
+          cmsEyebrow={stripHtmlOpt(solutionCarousel?.eyebrow)}
+        />
         {cmsTestimonials.length > 0 && (
-          <Testimonials title="A Snapshot of Real‑World Impact" cmsItems={cmsTestimonials} />
+          <Testimonials
+            title={stripHtmlOpt(testimonialsData?.heading) || "A Snapshot of Real‑World Impact"}
+            subtitle={stripHtmlOpt(testimonialsData?.subheading) ?? ""}
+            cmsItems={cmsTestimonials}
+          />
         )}
         {ctaData?.headline && (
           <CTABanner

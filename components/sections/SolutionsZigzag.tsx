@@ -6,9 +6,15 @@ import { basePath } from "@/lib/basePath";
 const VID = basePath + "/images/Solutions_/Videos/";
 
 function resolveVideoUrl(video: unknown): string | null {
-  if (!video || typeof video !== "string") return null;
-  if (video.startsWith("/")) return `https://stage.odigma.ooo${video}`;
-  return video;
+  // CMS sends video either as a media object ({url}) or a plain URL string.
+  let v: string | null = null;
+  if (typeof video === "string") v = video;
+  else if (video && typeof video === "object" && "url" in video) {
+    v = (video as { url?: string | null }).url ?? null;
+  }
+  if (!v) return null;
+  if (v.startsWith("/")) return `https://stage.odigma.ooo${v}`;
+  return v;
 }
 
 interface Solution {
@@ -252,7 +258,7 @@ function MediaBlock({ industry }: { industry: Industry }) {
 export interface CmsIndustryCard {
   title: string;
   subheading?: string;
-  video?: string | null;
+  video?: string | { url?: string | null } | null;
   accordion_items?: Record<string, { title?: string; description?: string }>;
 }
 
@@ -272,7 +278,17 @@ function cmsCardToIndustry(card: CmsIndustryCard): Industry {
 }
 
 /* ── Main ── */
-export default function SolutionsZigzag({ cmsCards }: { cmsCards?: CmsIndustryCard[] }) {
+export default function SolutionsZigzag({
+  cmsCards,
+  cmsHeading,
+  cmsSubheading,
+  cmsEyebrow,
+}: {
+  cmsCards?: CmsIndustryCard[];
+  cmsHeading?: string;
+  cmsSubheading?: string;
+  cmsEyebrow?: string;
+}) {
   if (!cmsCards || cmsCards.length === 0) return null;
 
   const ACTIVE = cmsCards.map(cmsCardToIndustry);
@@ -290,6 +306,29 @@ export default function SolutionsZigzag({ cmsCards }: { cmsCards?: CmsIndustryCa
   return (
     <section className="bg-white py-12 md:py-20 px-6">
       <div className="max-w-[1240px] mx-auto">
+
+        {/* Section header (eyebrow / heading / subheading) — from the CMS
+            solution_carousel block; renders only when provided. */}
+        {(cmsEyebrow || cmsHeading || cmsSubheading) && (
+          <div className="text-center max-w-[760px] mx-auto mb-10 md:mb-12">
+            {cmsEyebrow?.trim() && (
+              <p className="mb-3 font-[family-name:var(--font-dm-sans)] text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8]">
+                {cmsEyebrow}
+              </p>
+            )}
+            {cmsHeading?.trim() && (
+              <h2
+                className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] leading-[1.18] text-[#1b1b1b] tracking-[-0.02em] text-balance"
+                dangerouslySetInnerHTML={{ __html: cmsHeading }}
+              />
+            )}
+            {cmsSubheading?.trim() && (
+              <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[16px] leading-[1.7] text-[#6b7280] max-w-[640px] mx-auto text-pretty">
+                {cmsSubheading}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Tab bar — wraps on desktop, scrolls on mobile */}
         <div className="hidden md:flex flex-wrap gap-2 justify-center mb-8">
