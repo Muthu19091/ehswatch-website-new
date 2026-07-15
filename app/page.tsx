@@ -52,7 +52,14 @@ export default async function HomePage() {
     eyebrow?: string;
     primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
     secondary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
+    tertiary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
   }>(blocks, "hero");
+
+  // ── trusted_logos block (heading only; logos come from getClientLogos) ──────
+  const trustedBlock = findBlock<{ heading?: string; subheading?: string }>(blocks, "trusted_logos");
+
+  // ── testimonials block (section heading/subheading; items from getTestimonials) ──
+  const testimonialsBlock = findBlock<{ heading?: string; subheading?: string }>(blocks, "testimonials");
 
   // ── stats_row block ─────────────────────────────────────────────────────────
   const statsBlock = findBlock<{
@@ -80,16 +87,20 @@ export default async function HomePage() {
   const solutionBlock = findBlock<{
     heading?: string;
     subheading?: string;
+    eyebrow?: string;
+    description?: string;
+    cta?: unknown;
     cards?: Record<string, { title?: string; subheading?: string; description?: string }> | Array<{ title?: string; subheading?: string; description?: string }>;
   }>(blocks, "solution_carousel");
 
   // Normalise solution cards (CMS sends them as a keyed object)
   const solutionCards = solutionBlock?.cards
-    ? normalizeArray<{ title?: string; subheading?: string; description?: string; image?: { url?: string } | string | null }>(solutionBlock.cards).map(c => ({
+    ? normalizeArray<{ title?: string; subheading?: string; description?: string; image?: { url?: string } | string | null; video?: { url?: string } | string | null }>(solutionBlock.cards).map(c => ({
         title:      stripHtml(c.title),
         subheading: stripHtml(c.subheading),
         description: stripHtml(c.description),
         image:      c.image      ?? null,
+        video:      c.video      ?? null,
       }))
     : undefined;
 
@@ -109,7 +120,7 @@ export default async function HomePage() {
         badge:       t.badge       || null,
         cmsImage:    t.image       || null,
         ctaLabel:    t.cta?.label  || "",
-        ctaUrl:      t.cta?.url    || "#",
+        ctaUrl:      t.cta?.url    || "",
       }))
     : undefined;
 
@@ -117,6 +128,7 @@ export default async function HomePage() {
   const blogBlock = findBlock<{
     heading?: string;
     subheading?: string;
+    view_all_cta?: unknown;
     items?: Array<{
       slug?: string;
       title?: string;
@@ -162,8 +174,12 @@ export default async function HomePage() {
           cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
+          cmsTertiaryCta={resolveCta(heroBlock?.tertiary_cta, pageMap) ?? undefined}
         />
-        <TrustedLogos cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined} />
+        <TrustedLogos
+          cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined}
+          cmsHeading={stripHtmlOpt(trustedBlock?.heading)}
+        />
         <Stats
           cmsItems={
             statsBlock?.items && statsBlock.items.length > 0
@@ -202,13 +218,20 @@ export default async function HomePage() {
         <WorkEnvironments
           cmsHeading={solutionBlock?.heading || undefined}
           cmsSubheading={solutionBlock?.subheading || undefined}
+          cmsEyebrow={stripHtmlOpt(solutionBlock?.eyebrow)}
           cmsCards={solutionCards}
+          cmsCta={resolveCta(solutionBlock?.cta, pageMap) ?? undefined}
         />
-        <Testimonials cmsItems={cmsTestimonials.length > 0 ? cmsTestimonials : undefined} />
+        <Testimonials
+          cmsItems={cmsTestimonials.length > 0 ? cmsTestimonials : undefined}
+          title={stripHtmlOpt(testimonialsBlock?.heading)}
+          subtitle={stripHtmlOpt(testimonialsBlock?.subheading) ?? ""}
+        />
         <Blogs
           cmsHeading={blogBlock?.heading || undefined}
           cmsSubheading={blogBlock?.subheading || undefined}
           cmsPosts={cmsBlogPosts}
+          cmsViewAllCta={resolveCta(blogBlock?.view_all_cta, pageMap) ?? undefined}
         />
         <CTABanner
           cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}

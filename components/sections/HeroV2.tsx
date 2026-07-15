@@ -12,6 +12,7 @@ interface HeroProps {
   cmsEyebrow?: string;
   cmsPrimaryCta?: { label: string; url: string };
   cmsSecondaryCta?: { label: string; url: string };
+  cmsTertiaryCta?: { label: string; url: string };
 }
 
 export default function HeroV2({
@@ -20,6 +21,7 @@ export default function HeroV2({
   cmsEyebrow,
   cmsPrimaryCta,
   cmsSecondaryCta,
+  cmsTertiaryCta,
 }: HeroProps) {
   const headline = cmsHeadline || "From Manual Chaos to Smart Safety.";
   const subheadline =
@@ -27,6 +29,7 @@ export default function HeroV2({
   // Buttons render only when configured in the CMS (label + link).
   const primaryCta = cmsPrimaryCta;
   const secondaryCta = cmsSecondaryCta;
+  const tertiaryCta = cmsTertiaryCta;
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
@@ -119,6 +122,15 @@ export default function HeroV2({
                     </svg>
                   </span>
                   {secondaryCta.label}
+                </Link>
+                )}
+
+                {tertiaryCta && (
+                <Link
+                  href={tertiaryCta.url}
+                  className="font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a]/80 hover:text-[#ff6d00] underline underline-offset-4 decoration-[#0f172a]/20 hover:decoration-[#ff6d00] whitespace-nowrap transition-colors"
+                >
+                  {tertiaryCta.label}
                 </Link>
                 )}
               </div>

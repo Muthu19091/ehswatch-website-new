@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
+import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 
 const panel = (file: string) =>
@@ -18,6 +19,7 @@ interface Card {
   idx?: number; /* image left px offset (construction only) */
   noFade?: boolean;
   imgSrc: string;
+  videoSrc?: string; /* CMS card video — takes over the panel when present */
 }
 
 interface SolutionCarouselCard {
@@ -25,19 +27,22 @@ interface SolutionCarouselCard {
   subheading?: string;
   description?: string;
   image?: { url?: string } | string | null;
+  video?: { url?: string } | string | null;
 }
 
-// CMS image may arrive as a media object ({url}) or a plain URL string
-function cardImageUrl(image: SolutionCarouselCard["image"]): string | undefined {
-  if (!image) return undefined;
-  if (typeof image === "string") return image;
-  return image.url || undefined;
+// CMS image/video may arrive as a media object ({url}) or a plain URL string
+function cardMediaUrl(media: { url?: string } | string | null | undefined): string | undefined {
+  if (!media) return undefined;
+  if (typeof media === "string") return media;
+  return media.url || undefined;
 }
 
 interface WorkEnvironmentsProps {
   cmsHeading?: string;
   cmsSubheading?: string;
+  cmsEyebrow?: string;
   cmsCards?: SolutionCarouselCard[];
+  cmsCta?: { label: string; url: string };
 }
 
 const HARDCODED_CARDS: Card[] = [
@@ -117,8 +122,9 @@ function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
       ...layout,
       key: `${layout.key}-${i}`,
       title: c.title || (i < HARDCODED_CARDS.length ? hardcoded.title : ""),
-      desc:  c.subheading || (i < HARDCODED_CARDS.length ? hardcoded.desc : ""),
-      imgSrc: cardImageUrl(c.image) ?? inferPanelImage(c.title || hardcoded.title),
+      desc:  c.subheading || c.description || (i < HARDCODED_CARDS.length ? hardcoded.desc : ""),
+      imgSrc: cardMediaUrl(c.image) ?? inferPanelImage(c.title || hardcoded.title),
+      videoSrc: cardMediaUrl(c.video),
     };
   });
 }
@@ -151,13 +157,10 @@ function IndustryCard({ card }: { card: Card }) {
         />
       )}
 
-      {/* Panel image — pinned to bottom, percentage width and left */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={card.imgSrc}
-        alt=""
-        draggable={false}
-        style={{
+      {/* Panel media — pinned to bottom, percentage width and left. A CMS
+          card video takes over the panel when present; otherwise the image. */}
+      {(() => {
+        const mediaStyle: CSSProperties = {
           position: "absolute",
           bottom: 0,
           left: card.idx != null ? `calc(${card.il}% + ${card.idx}px)` : `${card.il}%`,
@@ -166,13 +169,27 @@ function IndustryCard({ card }: { card: Card }) {
           display: "block",
           userSelect: "none",
           pointerEvents: "none",
-        }}
-      />
+        };
+        return card.videoSrc ? (
+          <video
+            src={card.videoSrc}
+            poster={card.imgSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={mediaStyle}
+          />
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img src={card.imgSrc} alt="" draggable={false} style={mediaStyle} />
+        );
+      })()}
     </div>
   );
 }
 
-export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }: WorkEnvironmentsProps) {
+export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow, cmsCards, cmsCta }: WorkEnvironmentsProps) {
   const cards = buildCards(cmsCards);
   const [expanded, setExpanded] = useState(false);
 
@@ -202,6 +219,11 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }
       <div className="max-w-[1180px] mx-auto px-4 md:px-6">
 
         <div className="text-center max-w-[820px] mx-auto">
+          {cmsEyebrow?.trim() && (
+            <p className="mb-3 font-[family-name:var(--font-dm-sans)] text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8]">
+              {cmsEyebrow}
+            </p>
+          )}
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] lg:text-[44px] leading-[1.18] text-[#1b1b1b] text-balance">
             {headingMain}{" "}
             <span className="text-[#155eef]">{headingBlue}</span>
@@ -261,6 +283,22 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsCards }
                 <path d="M7 2v10M2 7l5 5 5-5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+          </div>
+        )}
+
+        {/* Section CTA — links to the industries/solutions page (from CMS) */}
+        {cmsCta?.label && cmsCta.url && (
+          <div className="flex justify-center mt-8">
+            <Link
+              href={cmsCta.url}
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-white whitespace-nowrap transition-transform hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(102deg, #ffa964 0%, #ff8e37 34%, #ff7812 50%, #ff6d00 120%)" }}
+            >
+              {cmsCta.label}
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
           </div>
         )}
       </div>

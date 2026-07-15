@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 
 /* ── asset paths ──────────────────────────────────────────────── */
@@ -499,6 +500,7 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
       title: cms?.title?.trim() || t.title,
       desc: cms?.description?.trim() || t.desc,
       link: cms?.ctaLabel?.trim() || t.link,
+      linkUrl: cms?.ctaUrl?.trim() || undefined,
       badge: cms?.badge ?? null,
       cmsImage: cms?.cmsImage ?? null,
     };
@@ -618,9 +620,18 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
               <p className="font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[15px] text-[#555] leading-relaxed">
                 {tabs[active].desc}
               </p>
-              <button className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors cursor-pointer">
-                {tabs[active].link} →
-              </button>
+              {tabs[active].linkUrl ? (
+                <Link
+                  href={tabs[active].linkUrl!}
+                  className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
+                >
+                  {tabs[active].link} →
+                </Link>
+              ) : (
+                <span className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316]">
+                  {tabs[active].link} →
+                </span>
+              )}
             </div>
             {/* right — mockup, fills remaining space */}
             <div className="flex-1 overflow-hidden" translate="no">

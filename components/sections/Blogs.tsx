@@ -21,6 +21,7 @@ interface BlogsProps {
   cmsHeading?: string;
   cmsSubheading?: string;
   cmsPosts?: BlogItem[];
+  cmsViewAllCta?: { label: string; url: string };
 }
 
 // ─── Hardcoded fallback posts ─────────────────────────────────────────────────
@@ -183,8 +184,10 @@ function BlogCard({ blog }: { blog: typeof FALLBACK_BLOGS[0] }) {
 }
 
 /* ── Section ── */
-export default function Blogs({ cmsHeading, cmsPosts }: BlogsProps) {
+export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllCta }: BlogsProps) {
   const heading = cmsHeading || "From the EHSWatch Blog";
+  const viewAllLabel = cmsViewAllCta?.label || "View All Articles";
+  const viewAllUrl = cmsViewAllCta?.url || "/blog";
 
   // Use CMS posts if we have them; otherwise fallback
   const displayBlogs =
@@ -210,6 +213,11 @@ export default function Blogs({ cmsHeading, cmsPosts }: BlogsProps) {
                 <span className="text-[#155eef]">{headingHighlight}</span>
               )}
             </h2>
+            {cmsSubheading && (
+              <p className="mt-3 md:mt-4 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[17px] leading-relaxed text-[#5b6472] max-w-[640px] mx-auto">
+                {cmsSubheading}
+              </p>
+            )}
           </div>
         </Reveal>
 
@@ -226,12 +234,12 @@ export default function Blogs({ cmsHeading, cmsPosts }: BlogsProps) {
         <Reveal variant="fade-up" duration={600} delay={200}>
           <div className="flex justify-center mt-10 md:mt-12">
             <GlareButton
-              href="/blog"
+              href={viewAllUrl}
               fillColor="#FF6D00"
               hoverTextColor="#ffffff"
               className="gap-2 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-[#ff6d00] border border-[#ffd9b8] bg-white rounded-full px-7 py-3"
             >
-              View All Articles
+              {viewAllLabel}
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

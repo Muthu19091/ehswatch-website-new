@@ -24,7 +24,8 @@ const FALLBACK_LOGOS = [
   { src: basePath + "/images/clients/synergies.png",     alt: "Synergies" },
 ];
 
-export default function TrustedLogos({ cmsLogos }: { cmsLogos?: CmsClientLogo[] }) {
+export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsClientLogo[]; cmsHeading?: string }) {
+  const heading = cmsHeading || "Trusted by Teams Across Industries";
   const CLIENT_LOGOS = cmsLogos && cmsLogos.length > 0
     ? cmsLogos.map((l) => ({ src: l.attributes.logo.attributes.url, alt: l.attributes.name }))
     : FALLBACK_LOGOS;
@@ -34,7 +35,7 @@ export default function TrustedLogos({ cmsLogos }: { cmsLogos?: CmsClientLogo[] 
       <div className="flex flex-col gap-6 md:gap-[42px]">
         <Reveal variant="fade-in" duration={1100}>
           <p className="font-[family-name:var(--font-inter)] font-normal text-[14px] md:text-[18px] leading-normal text-[rgba(15,23,42,0.45)] tracking-[-0.18px] text-center px-4">
-            Trusted by Teams Across Industries
+            {heading}
           </p>
         </Reveal>
 
