@@ -161,7 +161,9 @@ export function buildModuleTemplateProps(
     ? {
         headline: stripHtml(ctaBlock.headline),
         subhead: stripHtmlOpt(ctaBlock.subhead),
-        cta: resolveCta(ctaBlock.primary_cta, pageMap) ?? { label: "Book a Demo", href: "/contact-us" },
+        // No hardcoded fallback — the CTA button only appears when the CMS
+        // cta_banner actually has a configured CTA (label + link).
+        cta: resolveCta(ctaBlock.primary_cta, pageMap),
       }
     : undefined;
 
