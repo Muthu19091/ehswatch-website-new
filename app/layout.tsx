@@ -72,6 +72,13 @@ export default async function RootLayout({
         <GoogleTranslate />
         <PagePreviewBanner />
         {children}
+        {/* Odigma preview/embed overlay — loaded site-wide (all pages).
+            data-cfasync="false" keeps Cloudflare Rocket Loader from deferring it. */}
+        <script
+          src="https://preview.odigma.ooo/embed.js?project=ehswatch-stage&key=qe_f675d8908bf1b5c6cfcaad4f"
+          data-cfasync="false"
+          defer
+        />
       </body>
     </html>
   );
