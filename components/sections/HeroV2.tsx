@@ -128,7 +128,7 @@ export default function HeroV2({
                 {tertiaryCta && (
                 <Link
                   href={tertiaryCta.url}
-                  className="font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a]/80 hover:text-[#ff6d00] underline underline-offset-4 decoration-[#0f172a]/20 hover:decoration-[#ff6d00] whitespace-nowrap transition-colors"
+                  className="inline-flex items-center justify-center px-7 py-[10px] rounded-full border border-[#0f172a]/20 font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a] hover:border-[#ff6d00] hover:text-[#ff6d00] hover:bg-[#ff6d00]/5 whitespace-nowrap transition-colors"
                 >
                   {tertiaryCta.label}
                 </Link>
