@@ -24,15 +24,18 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
   const [error,        setError]        = useState<string | null>(null);
 
   const siteKey     = formAttrs?.captcha?.site_key ?? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
-  const submitLabel = formAttrs?.submit_label ?? "Subscribe";
-  const successHeading = formAttrs?.success_heading || "You're subscribed!";
-  const successMsg  = formAttrs?.success_message ?? "Check your inbox for a confirmation.";
-  // CMS-editable heading via the form's description; falls back to design copy
+  // CMS-only content — no hardcoded copy. Success heading/message and the
+  // section heading render only when the CMS form provides them.
+  const successHeading = formAttrs?.success_heading?.trim() || "";
+  const successMsg  = formAttrs?.success_message?.trim() || "";
   const heading = formAttrs?.description?.trim() || null;
+  // The submit button must carry a label to stay operable — CMS submit_label,
+  // with a neutral non-marketing word as the last resort.
+  const submitLabel = formAttrs?.submit_label?.trim() || "Subscribe";
 
-  /* CMS email field drives placeholder/label */
+  /* CMS email field drives placeholder/label (empty when unset) */
   const emailField = formAttrs?.fields?.find((f) => f.field_type === "email") ?? null;
-  const emailPlaceholder = emailField?.placeholder || emailField?.label || "Your Email Address";
+  const emailPlaceholder = emailField?.placeholder || emailField?.label || "";
   const emailKey = emailField?.key ?? "email";
 
   /* consent: any consent/checkboxes field, whatever its key */
@@ -113,12 +116,16 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
                 </svg>
               </div>
               <div>
-                <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px]" style={{ color: DARK }}>
-                  {successHeading}
-                </p>
-                <p className="font-[family-name:var(--font-dm-sans)] text-[14px] mt-1" style={{ color: DARK_MID }}>
-                  {successMsg}
-                </p>
+                {successHeading && (
+                  <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px]" style={{ color: DARK }}>
+                    {successHeading}
+                  </p>
+                )}
+                {successMsg && (
+                  <p className="font-[family-name:var(--font-dm-sans)] text-[14px] mt-1" style={{ color: DARK_MID }}>
+                    {successMsg}
+                  </p>
+                )}
               </div>
             </div>
           ) : (
