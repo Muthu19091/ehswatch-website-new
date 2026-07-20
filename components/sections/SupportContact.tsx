@@ -62,8 +62,9 @@ export default function SupportContact({
       : null,
   ].filter(Boolean) as ContactInfoItem[];
 
-  const headingHtml = (heading || "Contact <span>Support</span>").replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">');
-  const desc = subheading || "Questions, support, or a closer look at EHSWatch? Send us your concern and the team will respond shortly.";
+  // CMS-only: no hardcoded fallback heading/copy.
+  const headingHtml = (heading?.trim() || "").replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">');
+  const desc = subheading?.trim() || "";
 
   return (
     <section id="contact-form" className="bg-white py-12 md:py-20 px-4 md:px-6 scroll-mt-24">
@@ -72,15 +73,21 @@ export default function SupportContact({
 
           {/* Left — heading, copy, contact info */}
           <div className="flex flex-col gap-6 justify-center">
+            {(headingHtml || desc) && (
             <div>
-              <h2
-                className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] md:text-[28px] leading-snug text-[#0f1728] mb-3"
-                dangerouslySetInnerHTML={{ __html: headingHtml }}
-              />
-              <p className="font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[16px] leading-[1.75] text-[#64748b]" style={{ textWrap: "pretty" } as React.CSSProperties}>
-                {desc}
-              </p>
+              {headingHtml && (
+                <h2
+                  className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] md:text-[28px] leading-snug text-[#0f1728] mb-3"
+                  dangerouslySetInnerHTML={{ __html: headingHtml }}
+                />
+              )}
+              {desc && (
+                <p className="font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[16px] leading-[1.75] text-[#64748b]" style={{ textWrap: "pretty" } as React.CSSProperties}>
+                  {desc}
+                </p>
+              )}
             </div>
+            )}
 
             {info.length > 0 && (
               <div className="flex flex-col gap-5">

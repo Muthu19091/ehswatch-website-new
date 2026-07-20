@@ -1,7 +1,8 @@
 export default function SupportMap({ address }: { address?: string | null } = {}) {
-  // Drive the map from the CMS Settings → Contact address; fall back to a
-  // sensible default so the embed is never blank.
-  const query = (address && address.trim()) || "Bangalore, India";
+  // CMS-only: the map is driven by the CMS Settings → Contact address. With no
+  // address configured there is nothing to map, so the section is hidden.
+  const query = address?.trim() || "";
+  if (!query) return null;
   const src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
   return (
     <section className="bg-white pb-12 md:pb-20 px-4 md:px-6">

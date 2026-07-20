@@ -7,7 +7,8 @@ interface SupportHeroProps {
 }
 
 export default function SupportHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }: SupportHeroProps = {}) {
-  const headlineHtml = (cmsHeadline || "We're Here When You Need Us — <span>Before, During and After Go-Live.</span>")
+  // CMS-only: no hardcoded fallback headline.
+  const headlineHtml = (cmsHeadline?.trim() || "")
     .replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">');
   return (
     <section
@@ -72,11 +73,13 @@ export default function SupportHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }:
             {cmsEyebrow}
           </span>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[42px] md:text-[52px] leading-[1.1] text-[#0f1728] tracking-[-0.02em] animate-hero-rise"
-          style={{ animationDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: headlineHtml }}
-        />
+        {headlineHtml && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[42px] md:text-[52px] leading-[1.1] text-[#0f1728] tracking-[-0.02em] animate-hero-rise"
+            style={{ animationDelay: "80ms" }}
+            dangerouslySetInnerHTML={{ __html: headlineHtml }}
+          />
+        )}
         {cmsSubheadline?.trim() && (
           <p
             className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-[#6b7280] leading-[1.75] max-w-[560px] animate-hero-rise text-pretty"
