@@ -24,52 +24,14 @@ interface BlogsProps {
   cmsViewAllCta?: { label: string; url: string };
 }
 
-// ─── Hardcoded fallback posts ─────────────────────────────────────────────────
-const FALLBACK_BLOGS = [
-  {
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-    category: "Risk & Analytics",
-    title: "5 Leading Indicators Every Safety Manager Should Be Tracking",
-    href: "/blog/leading-indicators-safety",
-    readTime: "5 min read",
-    date: "Apr 14, 2026",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80",
-    category: "Operations",
-    title: "The Hidden Cost of Manual Incident Reporting",
-    href: "/blog/cost-manual-incident-reporting",
-    readTime: "7 min read",
-    date: "Apr 2, 2026",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-    category: "Contractor Management",
-    title: "Contractor Safety Management: Where Most Programmes Fall Short",
-    href: "/blog/contractor-safety-management",
-    readTime: "9 min read",
-    date: "Mar 18, 2026",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-    category: "Risk & Analytics",
-    title: "From Lagging to Leading: Rethinking Your Safety Metrics",
-    href: "/blog/lagging-to-leading-metrics",
-    readTime: "6 min read",
-    date: "Mar 5, 2026",
-  },
-];
-
-// Category-to-placeholder image mapping
-const CATEGORY_IMAGES: Record<string, string> = {
-  "Analytics":             "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-  "Operations":            "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80",
-  "Compliance":            "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-  "Risk & Analytics":      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-  "Contractor Management": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-};
-
-const DEFAULT_IMG = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80";
+interface DisplayBlog {
+  img: string | null;
+  category: string;
+  title: string;
+  href: string;
+  readTime: string;
+  date: string;
+}
 
 function formatDate(iso: string): string {
   try {
@@ -79,14 +41,11 @@ function formatDate(iso: string): string {
   }
 }
 
-// Normalise CMS items into the display shape
-function normalisePosts(cmsPosts: BlogItem[]) {
-  return cmsPosts.map((post, i) => ({
-    img:      post.featured_image_url
-                || CATEGORY_IMAGES[post.category || ""]
-                || FALLBACK_BLOGS[i % FALLBACK_BLOGS.length]?.img
-                || DEFAULT_IMG,
-    category: post.category || "EHS",
+// Normalise CMS items into the display shape — CMS-only, no placeholder images.
+function normalisePosts(cmsPosts: BlogItem[]): DisplayBlog[] {
+  return cmsPosts.map((post) => ({
+    img:      post.featured_image_url || null,
+    category: post.category || "",
     title:    post.title,
     href:     `/blog/${post.slug}`,
     readTime: "",   // not provided by blog_highlights block
@@ -95,7 +54,7 @@ function normalisePosts(cmsPosts: BlogItem[]) {
 }
 
 /* ── Individual card — full-bleed image with overlay content ── */
-function BlogCard({ blog }: { blog: typeof FALLBACK_BLOGS[0] }) {
+function BlogCard({ blog }: { blog: DisplayBlog }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -115,20 +74,24 @@ function BlogCard({ blog }: { blog: typeof FALLBACK_BLOGS[0] }) {
         transition: "transform 400ms cubic-bezier(.22,1,.36,1), box-shadow 400ms ease",
       }}
     >
-      {/* Background image */}
-      <Image
-        src={blog.img}
-        alt={blog.title}
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        // Covers are landscape with left-anchored titles; a portrait card crops
-        // ~half the width, so anchor left to keep the text side visible
-        className="object-cover object-left"
-        style={{
-          transform: hovered ? "scale(1.07)" : "scale(1)",
-          transition: "transform 700ms cubic-bezier(.22,1,.36,1)",
-        }}
-      />
+      {/* Background image — CMS cover only; neutral brand panel when none (no stock placeholder) */}
+      {blog.img ? (
+        <Image
+          src={blog.img}
+          alt={blog.title}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          // Covers are landscape with left-anchored titles; a portrait card crops
+          // ~half the width, so anchor left to keep the text side visible
+          className="object-cover object-left"
+          style={{
+            transform: hovered ? "scale(1.07)" : "scale(1)",
+            transition: "transform 700ms cubic-bezier(.22,1,.36,1)",
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#0a1628 0%,#1e3a68 100%)" }} />
+      )}
 
       {/* Gradient overlay — subtle at top, strong at bottom */}
       <div
@@ -185,15 +148,10 @@ function BlogCard({ blog }: { blog: typeof FALLBACK_BLOGS[0] }) {
 
 /* ── Section ── */
 export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllCta }: BlogsProps) {
-  const heading = cmsHeading || "From the EHSWatch Blog";
-  const viewAllLabel = cmsViewAllCta?.label || "View All Articles";
-  const viewAllUrl = cmsViewAllCta?.url || "/blog";
-
-  // Use CMS posts if we have them; otherwise fallback
-  const displayBlogs =
-    cmsPosts && cmsPosts.length > 0
-      ? normalisePosts(cmsPosts)
-      : FALLBACK_BLOGS;
+  // CMS-only: no hardcoded heading/posts/view-all. Hide the section if no posts.
+  const heading = cmsHeading?.trim() || "";
+  const displayBlogs = (cmsPosts && cmsPosts.length > 0) ? normalisePosts(cmsPosts) : [];
+  if (displayBlogs.length === 0) return null;
 
   // Split heading for blue highlight on "EHSWatch Blog" portion
   const [headingStart, headingHighlight] = heading.includes("EHSWatch")
@@ -205,14 +163,17 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
       <div className="max-w-[1200px] mx-auto">
 
         {/* Centred heading */}
+        {(heading || cmsSubheading) && (
         <Reveal variant="fade-up" duration={700}>
           <div className="text-center mb-10 md:mb-12">
+            {heading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-[1.1] text-[#0f1728]">
               {headingStart}
               {headingHighlight && (
                 <span className="text-[#155eef]">{headingHighlight}</span>
               )}
             </h2>
+            )}
             {cmsSubheading && (
               <p className="mt-3 md:mt-4 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[17px] leading-relaxed text-[#5b6472] max-w-[640px] mx-auto">
                 {cmsSubheading}
@@ -220,6 +181,7 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
             )}
           </div>
         </Reveal>
+        )}
 
         {/* 4-column card grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
@@ -230,22 +192,24 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
           ))}
         </div>
 
-        {/* View All CTA */}
+        {/* View All CTA — only when the CMS configures it */}
+        {cmsViewAllCta?.label && cmsViewAllCta.url && (
         <Reveal variant="fade-up" duration={600} delay={200}>
           <div className="flex justify-center mt-10 md:mt-12">
             <GlareButton
-              href={viewAllUrl}
+              href={cmsViewAllCta.url}
               fillColor="#FF6D00"
               hoverTextColor="#ffffff"
               className="gap-2 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-[#ff6d00] border border-[#ffd9b8] bg-white rounded-full px-7 py-3"
             >
-              {viewAllLabel}
+              {cmsViewAllCta.label}
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </GlareButton>
           </div>
         </Reveal>
+        )}
 
       </div>
     </section>

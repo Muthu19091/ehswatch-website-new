@@ -15,18 +15,6 @@ interface PainPointsProps {
   cmsItems?: PainPointItem[];
 }
 
-const FALLBACK_PAIN_POINTS: Array<{
-  icon: string;
-  label: string;
-  bobDuration: string;
-  amplitude: string;
-  bobDelay: string;
-}> = [
-  { icon: "layers",       label: "Data scattered across platforms",  bobDuration: "3.2s", amplitude: "10px", bobDelay: "0s" },
-  { icon: "clock-alert",  label: "Delayed reporting and follow-up",  bobDuration: "3.8s", amplitude: "8px",  bobDelay: "0.5s" },
-  { icon: "eye-off",      label: "Limited visibility into problems", bobDuration: "3.5s", amplitude: "12px", bobDelay: "0.3s" },
-  { icon: "shield-alert", label: "Reactive compliance checks",       bobDuration: "3.0s", amplitude: "6px",  bobDelay: "1.0s" },
-];
 
 // Bob animation values for CMS items (cycle through defaults)
 const BOB_PARAMS = [
@@ -45,18 +33,16 @@ const RING_SIZES = [1060, 800, 570, 340];
 export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: PainPointsProps) {
   const { ref } = useInView<HTMLDivElement>({ threshold: 0.2 });
 
-  // Build pain points from CMS or fallback
-  const painPoints = (cmsItems && cmsItems.length > 0)
-    ? cmsItems.map((item, i) => ({
-        icon: item.icon,
-        fallbackIcon: SLOT_FALLBACK_ICONS[i % SLOT_FALLBACK_ICONS.length],
-        label: item.label.trim(),
-        ...BOB_PARAMS[i % BOB_PARAMS.length],
-      }))
-    : FALLBACK_PAIN_POINTS.map((p, i) => ({
-        ...p,
-        fallbackIcon: SLOT_FALLBACK_ICONS[i],
-      }));
+  // CMS-only: no hardcoded fallback pain points.
+  const painPoints = (cmsItems ?? []).map((item, i) => ({
+    icon: item.icon,
+    fallbackIcon: SLOT_FALLBACK_ICONS[i % SLOT_FALLBACK_ICONS.length],
+    label: item.label.trim(),
+    ...BOB_PARAMS[i % BOB_PARAMS.length],
+  }));
+
+  // Nothing configured → hide the whole section.
+  if (painPoints.length === 0) return null;
 
   const [tl, tr, bl, br] = painPoints;
 
@@ -72,8 +58,8 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
   // Without a span, fall back to heading + subheading as two lines.
   const spanMatch = cmsHeading?.match(/^([\s\S]*?)<span[^>]*>([\s\S]*?)<\/span>/i);
   const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").trim();
-  const headingLine1 = (spanMatch ? stripTags(spanMatch[1]) : cmsHeading && stripTags(cmsHeading)) || "Manual Safety Processes Are";
-  const headingLine2 = (spanMatch ? stripTags(spanMatch[2]) : cmsSubheading) || "Slowing You Down";
+  const headingLine1 = (spanMatch ? stripTags(spanMatch[1]) : (cmsHeading ? stripTags(cmsHeading) : "")) || "";
+  const headingLine2 = (spanMatch ? stripTags(spanMatch[2]) : cmsSubheading) || "";
 
   return (
     <section

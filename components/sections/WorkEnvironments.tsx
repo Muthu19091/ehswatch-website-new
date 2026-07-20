@@ -45,50 +45,6 @@ interface WorkEnvironmentsProps {
   cmsCta?: { label: string; url: string };
 }
 
-const HARDCODED_CARDS: Card[] = [
-  {
-    key: "construction",
-    title: "Construction & Infrastructure Projects",
-    desc: "Track hazards and compliance across multiple job sites instantly.",
-    tx: 4.8, ty: 6, tw: 50, iw: 93.4, il: 10.1, idx: -5, noFade: true,
-    imgSrc: panel("Construction%20%26%20Infrastructure%20Projects.png"),
-  },
-  {
-    key: "manufacturing",
-    title: "Manufacturing & Engineering",
-    desc: "Centralise plant audits, equipment safety and worker training logs.",
-    tx: 7.7, ty: 5.3, tw: 50, iw: 89.5, il: 13.1, noFade: true,
-    imgSrc: panel("Manufacturing%20%26%20Engineering.png"),
-  },
-  {
-    key: "oilgas",
-    title: "Oil, Gas & Energy",
-    desc: "Permit-to-work, incident reporting and risk control in one place.",
-    tx: 3.2, ty: 13.4, tw: 49, iw: 90.1, il: 9.9,
-    imgSrc: panel("Oil%2C%20Gas%20%26%20Energy.png"),
-  },
-  {
-    key: "logistics",
-    title: "Logistics, Warehousing & Transport",
-    desc: "Track vehicle incidents, warehouse safety and driver compliance.",
-    tx: 7.3, ty: 13.4, tw: 67, iw: 92.2, il: 7.3,
-    imgSrc: panel("Logistics%2C%20Warehousing%20%26%20Transport.png"),
-  },
-  {
-    key: "utilities",
-    title: "Utilities and Public Services",
-    desc: "Ensure field worker safety, outage reporting and regulatory compliance.",
-    tx: 1.3, ty: 10, tw: 59, iw: 75.3, il: 11.8, noFade: true,
-    imgSrc: panel("Utilities%20and%20Public%20Services.png"),
-  },
-  {
-    key: "facilities",
-    title: "Facilities & Property Management",
-    desc: "Manage vendor safety, fire inspections and building maintenance risks.",
-    tx: 4.8, ty: 11.3, tw: 58, iw: 91, il: 2.7,
-    imgSrc: panel("Facilities%20%26%20Property%20Management.png"),
-  },
-];
 
 // Layout metadata for up to 6 cards (positional display config)
 const CARD_LAYOUT: Omit<Card, "title" | "desc" | "imgSrc">[] = [
@@ -113,17 +69,18 @@ function inferPanelImage(title: string): string {
 }
 
 function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
-  if (!cmsCards || cmsCards.length === 0) return HARDCODED_CARDS;
-  // All CMS cards render; layout metadata cycles for cards beyond the first six
+  // CMS-only: no hardcoded fallback cards. Text comes from the CMS; the
+  // industry panel illustration is a design asset used when a card has no
+  // uploaded image/video.
+  if (!cmsCards || cmsCards.length === 0) return [];
   return cmsCards.map((c, i) => {
     const layout = CARD_LAYOUT[i % CARD_LAYOUT.length];
-    const hardcoded = HARDCODED_CARDS[i % HARDCODED_CARDS.length];
     return {
       ...layout,
       key: `${layout.key}-${i}`,
-      title: c.title || (i < HARDCODED_CARDS.length ? hardcoded.title : ""),
-      desc:  c.subheading || c.description || (i < HARDCODED_CARDS.length ? hardcoded.desc : ""),
-      imgSrc: cardMediaUrl(c.image) ?? inferPanelImage(c.title || hardcoded.title),
+      title: c.title || "",
+      desc:  c.subheading || c.description || "",
+      imgSrc: cardMediaUrl(c.image) ?? inferPanelImage(c.title || ""),
       videoSrc: cardMediaUrl(c.video),
     };
   });
@@ -193,6 +150,9 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
   const cards = buildCards(cmsCards);
   const [expanded, setExpanded] = useState(false);
 
+  // CMS-only: hide the whole section when there are no cards.
+  if (cards.length === 0) return null;
+
   const INITIAL_COUNT = 6;
   const hasMore = cards.length > INITIAL_COUNT;
   const visibleCards = expanded ? cards : cards.slice(0, INITIAL_COUNT);
@@ -203,9 +163,8 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
     rows.push(visibleCards.slice(i, i + 2));
   }
 
-  const heading    = cmsHeading    || "Built for High‑Risk, High‑Activity Work Environments";
-  // Subheading is optional — renders only when the CMS provides one, so it
-  // can be removed by clearing the field (no forced default duplicate copy).
+  // CMS-only: no hardcoded heading.
+  const heading    = cmsHeading?.trim()    || "";
   const subheading = cmsSubheading?.trim() || "";
 
   // Split heading to apply blue highlight to last two words
@@ -224,10 +183,12 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
               {cmsEyebrow}
             </p>
           )}
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] lg:text-[44px] leading-[1.18] text-[#1b1b1b] text-balance">
-            {headingMain}{" "}
-            <span className="text-[#155eef]">{headingBlue}</span>
-          </h2>
+          {heading && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] lg:text-[44px] leading-[1.18] text-[#1b1b1b] text-balance">
+              {headingMain}{" "}
+              <span className="text-[#155eef]">{headingBlue}</span>
+            </h2>
+          )}
           {subheading && (
             <p
               className="mt-[16px] font-[family-name:var(--font-dm-sans)] font-medium text-[13px] md:text-[15px] lg:text-[16px] text-[#727272] leading-[1.64] tracking-[-0.18px] max-w-[640px] mx-auto text-pretty"

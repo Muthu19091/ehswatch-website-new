@@ -15,14 +15,6 @@ interface StatsCmsProps {
   cmsHeading?: string | undefined;
 }
 
-// ─── Hardcoded fallback data ───────────────────────────────────────────────────
-const FALLBACK_STATS = [
-  { target: 20,    display: (n: number) => `${Math.round(n)}`,                                                                     suffix: "+", label: "Years of proven expertise in EHS management" },
-  { target: 25000, display: (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 25000 ? 0 : 1)}K` : `${Math.round(n)}`),       suffix: "+", label: "Professionals across industries rely on our platform daily" },
-  { target: 95,    display: (n: number) => `${Math.round(n)}`,                                                                     suffix: "%", label: "Users rate us highly for ease of use and workflow impact" },
-  { target: 60,    display: (n: number) => `${Math.round(n)}`,                                                                     suffix: "%", label: "Reduction in incident reporting time across teams" },
-];
-
 // ─── Parse a CMS value string like "25,000+" or "95" into a numeric target ───
 function parseTarget(value: string): number {
   return parseFloat(value.replace(/[^0-9.]/g, "")) || 0;
@@ -88,21 +80,14 @@ export default function Stats({ cmsItems, cmsHeading }: StatsCmsProps = {}) {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.3 });
   const heading = cmsHeading?.trim();
 
-  // Build the stats array: use CMS data if available, else hardcoded fallback
-  const stats =
-    cmsItems && cmsItems.length > 0
-      ? cmsItems.map((item) => {
-          const target = parseTarget(item.value || "0");
-          const suffix = parseSuffix(item.value || "", item.suffix);
-          const display = makeDisplay(target);
-          return { target, display, suffix, label: item.label || "" };
-        })
-      : FALLBACK_STATS.map((s) => ({
-          target: s.target,
-          display: s.display,
-          suffix: s.suffix,
-          label: s.label,
-        }));
+  // CMS-only: no hardcoded fallback stats. Hide the section when the CMS has none.
+  const stats = (cmsItems ?? []).map((item) => {
+    const target = parseTarget(item.value || "0");
+    const suffix = parseSuffix(item.value || "", item.suffix);
+    const display = makeDisplay(target);
+    return { target, display, suffix, label: item.label || "" };
+  });
+  if (stats.length === 0) return null;
 
   return (
     <section ref={ref} className="bg-white py-10 md:py-[73px]">

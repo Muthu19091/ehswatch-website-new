@@ -2,42 +2,24 @@
 
 import Reveal from "@/components/ui/Reveal";
 import Image from "next/image";
-import { basePath } from "@/lib/basePath";
 import type { CmsClientLogo } from "@/lib/types";
 
-const FALLBACK_LOGOS = [
-  { src: basePath + "/images/clients/al-sumri.png",      alt: "Al Sumri" },
-  { src: basePath + "/images/clients/albaraka.png",      alt: "AlBaraka" },
-  { src: basePath + "/images/clients/bunduq.png",        alt: "Bunduq" },
-  { src: basePath + "/images/clients/dct.png",           alt: "DCT" },
-  { src: basePath + "/images/clients/ewowdm.png",        alt: "EWOWDM" },
-  { src: basePath + "/images/clients/emirates-post.png", alt: "Emirates Post" },
-  { src: basePath + "/images/clients/ndc.png",           alt: "NDC" },
-  { src: basePath + "/images/clients/oapil.png",         alt: "OAPIL" },
-  { src: basePath + "/images/clients/omifco.png",        alt: "OMIFCO" },
-  { src: basePath + "/images/clients/oneic.png",         alt: "ONEIC" },
-  { src: basePath + "/images/clients/opal.png",          alt: "OPAL" },
-  { src: basePath + "/images/clients/oman-cables.png",   alt: "Oman Cables" },
-  { src: basePath + "/images/clients/power-china.png",   alt: "Power China" },
-  { src: basePath + "/images/clients/qia.png",           alt: "QIA" },
-  { src: basePath + "/images/clients/sos.png",           alt: "SOS" },
-  { src: basePath + "/images/clients/synergies.png",     alt: "Synergies" },
-];
-
 export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsClientLogo[]; cmsHeading?: string }) {
-  const heading = cmsHeading || "Trusted by Teams Across Industries";
-  const CLIENT_LOGOS = cmsLogos && cmsLogos.length > 0
-    ? cmsLogos.map((l) => ({ src: l.attributes.logo.attributes.url, alt: l.attributes.name }))
-    : FALLBACK_LOGOS;
+  // CMS-only: no hardcoded logos/heading. Hide the section when the CMS has no logos.
+  const heading = cmsHeading?.trim() || "";
+  const CLIENT_LOGOS = (cmsLogos ?? []).map((l) => ({ src: l.attributes.logo.attributes.url, alt: l.attributes.name }));
+  if (CLIENT_LOGOS.length === 0) return null;
   const TRACK = [...CLIENT_LOGOS, ...CLIENT_LOGOS, ...CLIENT_LOGOS];
   return (
     <section translate="no" className="bg-white pt-16 md:pt-[80px] pb-10 md:pb-[60px]">
       <div className="flex flex-col gap-6 md:gap-[42px]">
+        {heading && (
         <Reveal variant="fade-in" duration={1100}>
           <p className="font-[family-name:var(--font-inter)] font-normal text-[14px] md:text-[18px] leading-normal text-[rgba(15,23,42,0.45)] tracking-[-0.18px] text-center px-4">
             {heading}
           </p>
         </Reveal>
+        )}
 
         <Reveal variant="fade-in" duration={1400} delay={200}>
         <div

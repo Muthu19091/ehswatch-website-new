@@ -185,14 +185,6 @@ function IrisChat({ active }: { active: boolean }) {
   );
 }
 
-// ─── Fallback feature bullets ─────────────────────────────────────────────────
-const FALLBACK_FEATURES = [
-  { label: "AI-Driven Incident Intelligence", color: "#155eef" },
-  { label: "Predictive Risk Intelligence",   color: "#7c3aed" },
-  { label: "Vision-Based Hazard Detection",  color: "#0891b2" },
-  { label: "Smart Workflow Automation",      color: "#f97316" },
-];
-
 // ─── Parse <li><strong>X</strong> — rest</li> from CMS body HTML ─────────────
 // CMS body arrives as HTML — after stripping tags, entities like &amp; and
 // &nbsp; would otherwise render literally in JSX text.
@@ -236,23 +228,21 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
     };
   }, [inView]);
 
-  // Heading
-  const headingText = cmsHeading || "AI That Works for Your Safety Team";
+  // CMS-only: no hardcoded copy/features/CTA.
+  const headingText = cmsHeading?.trim() || "";
 
-  // Features from CMS body or fallback
-  const features = (cmsBody && cmsBody.includes("<li>"))
-    ? parseFeatures(cmsBody)
-    : FALLBACK_FEATURES;
-  if (features.length === 0) features.push(...FALLBACK_FEATURES);
+  // Features are parsed from the CMS body's <li> items (none → no list).
+  const features = (cmsBody && cmsBody.includes("<li>")) ? parseFeatures(cmsBody) : [];
 
-  // Intro paragraph: first <p> tag content from CMS body, or fallback
+  // Intro paragraph: first <p> of the CMS body (empty if none).
   const introMatch = cmsBody ? cmsBody.match(/<p>(.*?)<\/p>/) : null;
-  const introParagraph = introMatch
-    ? decodeEntities(introMatch[1].replace(/<[^>]+>/g, ""))
-    : "Leverage IRIS, our built-in Intelligent Risk & Insight System, to transform raw data into proactive safety leadership. IRIS automates the heavy lifting of data analysis, allowing your team to focus on intervention rather than administration.";
+  const introParagraph = introMatch ? decodeEntities(introMatch[1].replace(/<[^>]+>/g, "")) : "";
 
-  const ctaLabel = cmsCtaLabel || "Explore AI Modules →";
-  const ctaUrl   = cmsCtaUrl ? normalizeUrl(cmsCtaUrl) : "#";
+  const ctaLabel = cmsCtaLabel?.trim() || "";
+  const ctaUrl   = cmsCtaUrl ? normalizeUrl(cmsCtaUrl) : "";
+
+  // Nothing configured for this block → hide the section (widget included).
+  if (!headingText && !introParagraph && features.length === 0 && !ctaLabel) return null;
 
   return (
     <section ref={ref} className="bg-white py-12 md:py-[80px] px-4 md:px-6 overflow-hidden">
@@ -262,6 +252,7 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
           {/* Left: text */}
           <Reveal variant="slide-right" duration={750} className="flex flex-col gap-4 md:gap-[18px] w-full md:max-w-[480px] min-w-0">
             <div className="flex flex-col gap-4 md:gap-[18px]">
+            {headingText && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[40px] lg:text-[46px] leading-tight md:leading-[1.3] text-[#1b1b1b]">
               {headingText.includes("Safety Team") ? (
                 <>
@@ -273,9 +264,13 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
                 headingText
               )}
             </h2>
+            )}
+            {introParagraph && (
             <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[16px] lg:text-[17px] leading-relaxed text-[#727272] tracking-[-0.18px]">
               {introParagraph}
             </p>
+            )}
+            {features.length > 0 && (
             <div className="grid grid-cols-2 gap-x-5 gap-y-3 mt-2">
               {features.map(({ label, color }) => (
                 <div key={label} className="flex items-start gap-2.5">
@@ -289,13 +284,16 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
                 </div>
               ))}
             </div>
+            )}
+            {ctaLabel && (
             <a
-              href={ctaUrl}
+              href={ctaUrl || "#"}
               {...(isExternalUrl(ctaUrl) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="self-start mt-1 font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
             >
               {ctaLabel}
             </a>
+            )}
             </div>
           </Reveal>
 

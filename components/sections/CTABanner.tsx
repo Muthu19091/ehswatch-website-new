@@ -15,10 +15,12 @@ export default function CTABanner({
   cmsPrimaryCta,
   cmsSecondaryCta,
 }: CTABannerProps = {}) {
-  const headline = cmsHeadline || "Ready to See EHSWatch in Action?";
-  const subhead = cmsSubhead || "Give your teams a simple way to report, respond, and prevent incidents — all from one platform.";
-  // Buttons render only when the CMS provides a configured CTA (label + link).
+  // CMS-only: no hardcoded copy. The whole banner is hidden if the CMS
+  // provides no headline, subhead, or buttons.
+  const headline = cmsHeadline?.trim() || "";
+  const subhead = cmsSubhead?.trim() || "";
   const hasButtons = !!(cmsPrimaryCta || cmsSecondaryCta);
+  if (!headline && !subhead && !hasButtons) return null;
 
   return (
     <section
@@ -32,17 +34,21 @@ export default function CTABanner({
       }}
     >
       <div className="max-w-[800px] mx-auto flex flex-col gap-3 md:gap-[16px] items-center">
+        {headline && (
         <Reveal variant="slide-right" duration={750}>
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] text-center">
             {headline}
           </h2>
         </Reveal>
+        )}
 
+        {subhead && (
         <Reveal variant="slide-left" duration={750} delay={120}>
           <p className="font-[family-name:var(--font-inter)] text-[14px] md:text-[17px] leading-relaxed md:leading-[29.75px] text-[#6b7280] text-center max-w-[560px]">
             {subhead}
           </p>
         </Reveal>
+        )}
 
         {hasButtons && (
           <Reveal variant="fade-up" duration={700} delay={240} className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px] w-full sm:w-auto">

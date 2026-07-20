@@ -6,14 +6,6 @@ import { stripHtml } from "@/lib/text";
 
 interface TestimonialItem { quote: string; author: string; rating: number }
 
-const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
-  { quote: "Everything. Our field teams report incidents in minutes, not days.", author: "EHS Director, Construction Firm", rating: 5 },
-  { quote: "EHSWatch transformed how we manage compliance — what used to take weeks now takes hours.", author: "Safety Manager, Oil & Gas", rating: 5 },
-  { quote: "The mobile-first approach means our site workers actually use it. Adoption went through the roof.", author: "HSE Lead, Manufacturing", rating: 5 },
-  { quote: "Real-time visibility across all our sites. We caught three potential incidents before they escalated.", author: "EHSQ Director, Logistics", rating: 5 },
-  { quote: "Finally, a platform that speaks the language of safety professionals, not just developers.", author: "Compliance Officer, Utilities", rating: 5 },
-];
-
 function StarRow({ rating }: { rating: number }) {
   // Clamp to 0–5; fill up to `rating`, outline the rest.
   const filled = Math.max(0, Math.min(5, Math.round(rating || 0)));
@@ -36,23 +28,22 @@ function StarRow({ rating }: { rating: number }) {
 
 export default function Testimonials({
   title,
-  subtitle = "Real stories from safety leaders who've transformed their operations with EHSWatch.",
+  subtitle,
   cmsItems,
 }: { title?: React.ReactNode; subtitle?: string; cmsItems?: CmsTestimonial[] }) {
   const clean = (v: unknown) =>
     v && String(v).toLowerCase() !== "null" ? stripHtml(String(v)) : "";
-  const TESTIMONIALS: TestimonialItem[] = cmsItems && cmsItems.length > 0
-    ? cmsItems.map((t) => ({
-        quote: stripHtml(t.attributes.quote),
-        // Lead with the client's name (author_name), then role, then company;
-        // drop empty/"null" parts so we never render "Manufacturing, null".
-        author: [t.attributes.author_name, t.attributes.author_role, t.attributes.author_company]
-          .map(clean)
-          .filter(Boolean)
-          .join(", "),
-        rating: typeof t.attributes.rating === "number" ? t.attributes.rating : 5,
-      }))
-    : FALLBACK_TESTIMONIALS;
+  // CMS-only: no hardcoded fallback testimonials.
+  const TESTIMONIALS: TestimonialItem[] = (cmsItems ?? []).map((t) => ({
+    quote: stripHtml(t.attributes.quote),
+    // Lead with the client's name (author_name), then role, then company;
+    // drop empty/"null" parts so we never render "Manufacturing, null".
+    author: [t.attributes.author_name, t.attributes.author_role, t.attributes.author_company]
+      .map(clean)
+      .filter(Boolean)
+      .join(", "),
+    rating: typeof t.attributes.rating === "number" ? t.attributes.rating : 5,
+  }));
   const trackRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   const posRef = useRef(0);
@@ -78,6 +69,9 @@ export default function Testimonials({
     return () => cancelAnimationFrame(rafRef.current);
   }, [paused]);
 
+  // CMS-only: hide the whole section when there are no testimonials.
+  if (TESTIMONIALS.length === 0) return null;
+
   // Double the array for seamless loop
   const items = [...TESTIMONIALS, ...TESTIMONIALS];
 
@@ -85,9 +79,11 @@ export default function Testimonials({
     <section className="bg-white py-12 md:py-[80px] overflow-hidden">
       {/* Heading */}
       <div className="px-4 md:px-6 text-center mb-8 md:mb-12">
+        {title && (
         <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] leading-tight text-[#1b1b1b]">
-          {title ?? <>What <span className="text-[#155eef]">Our Customers</span> Say</>}
+          {title}
         </h2>
+        )}
         {subtitle && (
           <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] text-[#727272] max-w-[560px] mx-auto leading-relaxed">
             {subtitle}

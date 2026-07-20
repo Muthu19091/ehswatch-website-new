@@ -23,9 +23,9 @@ export default function HeroV2({
   cmsSecondaryCta,
   cmsTertiaryCta,
 }: HeroProps) {
-  const headline = cmsHeadline || "From Manual Chaos to Smart Safety.";
-  const subheadline =
-    cmsSubheadline || "AI-powered EHS platform to streamline reporting everywhere.";
+  // CMS-only: no hardcoded copy. Empty CMS field → nothing rendered.
+  const headline = cmsHeadline ?? "";
+  const subheadline = cmsSubheadline ?? "";
   // Buttons render only when configured in the CMS (label + link).
   const primaryCta = cmsPrimaryCta;
   const secondaryCta = cmsSecondaryCta;
@@ -66,6 +66,7 @@ export default function HeroV2({
                   {cmsEyebrow}
                 </span>
               )}
+              {headline && (
               <h1
                 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[48px] md:text-[62px] lg:text-[72px] xl:text-[77px] leading-[1.1] text-[#0f172a] tracking-[0.2px] lg:tracking-[0.5px] animate-hero-rise"
                 style={{ animationDelay: "60ms" }}
@@ -86,13 +87,16 @@ export default function HeroV2({
                   </>
                 )}
               </h1>
+              )}
 
+              {subheadline && (
               <p
                 className="font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] lg:text-[20px] leading-relaxed text-[#475569] max-w-[580px] animate-hero-rise text-pretty"
                 style={{ animationDelay: "180ms" }}
               >
                 {subheadline}
               </p>
+              )}
 
               {(primaryCta || secondaryCta) && (
               <div

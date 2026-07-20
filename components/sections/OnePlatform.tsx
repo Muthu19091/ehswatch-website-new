@@ -490,16 +490,17 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
   const tablistRef                = useRef<HTMLDivElement>(null);
   const MockupPanel               = MOCKUPS[active];
 
-  const sectionHeading = cmsHeading?.trim() || "One Platform for Everyday Safety";
-  const sectionSubheading = cmsSubheading?.trim() || "EHSWatch brings all your EHSQ activities into a single, easy-to-use platform so everyone, from workers in the field to leadership, works from the same, up-to-date information.";
+  // CMS-only text (the tab mockups + number remain as design).
+  const sectionHeading = cmsHeading?.trim() || "";
+  const sectionSubheading = cmsSubheading?.trim() || "";
   const tabs = TABS.map((t, i) => {
     const cms = cmsTabs?.[i];
     return {
       ...t,
-      label: cms?.label?.trim() || t.label,
-      title: cms?.title?.trim() || t.title,
-      desc: cms?.description?.trim() || t.desc,
-      link: cms?.ctaLabel?.trim() || t.link,
+      label: cms?.label?.trim() || "",
+      title: cms?.title?.trim() || "",
+      desc: cms?.description?.trim() || "",
+      link: cms?.ctaLabel?.trim() || "",
       linkUrl: cms?.ctaUrl?.trim() || undefined,
       badge: cms?.badge ?? null,
       cmsImage: cms?.cmsImage ?? null,
@@ -539,12 +540,17 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
     list.scrollTo({ left: btn.offsetLeft - (list.clientWidth - btn.offsetWidth) / 2, behavior: "smooth" });
   }, [active]);
 
+  // CMS-only: hide the whole section when the CMS has no tabs.
+  if (!cmsTabs || cmsTabs.length === 0) return null;
+
   return (
     <section ref={sectionRef} className="bg-[#f8fbff] py-12 md:py-20 px-4 md:px-6">
       <div className="max-w-[1200px] mx-auto">
 
         {/* heading */}
+        {(sectionHeading || sectionSubheading) && (
         <div className="text-center mb-10 md:mb-14">
+          {sectionHeading && (
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b]">
             {(() => {
               const HIGHLIGHT = "Everyday Safety";
@@ -553,10 +559,14 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
               return <>{sectionHeading.slice(0, idx)}<span className="text-[#155eef]">{HIGHLIGHT}</span>{sectionHeading.slice(idx + HIGHLIGHT.length)}</>;
             })()}
           </h2>
+          )}
+          {sectionSubheading && (
           <p className="mt-3 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] md:text-[16px] lg:text-[18px] leading-relaxed text-[#727272] max-w-[809px] mx-auto">
             {sectionSubheading}
           </p>
+          )}
         </div>
+        )}
 
         {/* card */}
         <div className="border border-[#cbcbcb] rounded-[8px] overflow-hidden bg-[#f8fbff]">
@@ -614,23 +624,29 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
           >
             {/* left — text */}
             <div className="flex-none md:flex-[0_0_38%] px-6 md:px-12 py-8 md:py-12 flex flex-col justify-center">
+              {tabs[active].title && (
               <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[24px] leading-snug text-[#0a0f1e] mb-3">
                 {tabs[active].title}
               </h3>
+              )}
+              {tabs[active].desc && (
               <p className="font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[15px] text-[#555] leading-relaxed">
                 {tabs[active].desc}
               </p>
-              {tabs[active].linkUrl ? (
-                <Link
-                  href={tabs[active].linkUrl!}
-                  className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
-                >
-                  {tabs[active].link} →
-                </Link>
-              ) : (
-                <span className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316]">
-                  {tabs[active].link} →
-                </span>
+              )}
+              {tabs[active].link && (
+                tabs[active].linkUrl ? (
+                  <Link
+                    href={tabs[active].linkUrl!}
+                    className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
+                  >
+                    {tabs[active].link} →
+                  </Link>
+                ) : (
+                  <span className="mt-6 self-start font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#f97316]">
+                    {tabs[active].link} →
+                  </span>
+                )
               )}
             </div>
             {/* right — mockup, fills remaining space */}
