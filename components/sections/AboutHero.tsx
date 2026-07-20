@@ -17,10 +17,9 @@ export default function AboutHero({
   cmsPrimaryCtaLabel,
   cmsPrimaryCtaUrl,
 }: AboutHeroCmsProps = {}) {
-  const headline = cmsHeadline || "Built to Simplify EHSQ. Designed to Protect.";
-  const subheadline =
-    cmsSubheadline ||
-    "The intelligent EHSQ platform trusted by 25K+ teams — making safety faster, simpler and more visible.";
+  // CMS-only: no hardcoded fallback copy.
+  const headline = cmsHeadline?.trim() || "";
+  const subheadline = cmsSubheadline?.trim() || "";
   // Button renders only when configured in the CMS (label + real link).
   const ctaLabel = cmsPrimaryCtaLabel?.trim();
   const ctaHref = cmsPrimaryCtaUrl?.trim();
@@ -97,18 +96,22 @@ export default function AboutHero({
             {cmsEyebrow}
           </span>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[58px] leading-[1.08] text-gray-900 tracking-[-0.03em] animate-hero-rise"
-          style={{ animationDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: headline }}
-        />
+        {headline && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[58px] leading-[1.08] text-gray-900 tracking-[-0.03em] animate-hero-rise"
+            style={{ animationDelay: "80ms" }}
+            dangerouslySetInnerHTML={{ __html: headline }}
+          />
+        )}
 
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-gray-700 leading-[1.75] max-w-[460px] animate-hero-rise text-pretty"
-          style={{ animationDelay: "200ms" }}
-        >
-          {subheadline}
-        </p>
+        {subheadline && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-gray-700 leading-[1.75] max-w-[460px] animate-hero-rise text-pretty"
+            style={{ animationDelay: "200ms" }}
+          >
+            {subheadline}
+          </p>
+        )}
 
         {showCta && (
         <GlareButton

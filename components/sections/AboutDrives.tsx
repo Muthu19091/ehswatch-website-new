@@ -15,19 +15,6 @@ interface AboutDrivesCmsProps {
   cmsItems?: DriveItem[] | undefined;
 }
 
-const DEFAULT_CARDS: DriveItem[] = [
-  {
-    title: "Mission",
-    description:
-      "To help organisations simplify EHSQ management with a platform that makes reporting faster, compliance easier and safety performance more visible across every team and site.",
-  },
-  {
-    title: "Vision",
-    description:
-      "A world where every organisation has the tools to make safety as instinctive as the work itself — where protection is built into every process, every site, every day.",
-  },
-];
-
 const CARD_ICONS = [
   (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -74,7 +61,8 @@ export default function AboutDrives({
   cmsSubheading,
   cmsItems,
 }: AboutDrivesCmsProps = {}) {
-  const heading = cmsHeading || "Purpose Behind <span class=\"text-[#155eef]\">Every Feature</span>";
+  // CMS-only: no hardcoded fallback heading or cards.
+  const heading = cmsHeading?.trim() || "";
   const cards =
     cmsItems && cmsItems.length > 0
       ? cmsItems.map((item) => ({
@@ -83,12 +71,10 @@ export default function AboutDrives({
           body: item.description || "",
           icon: item.icon ?? null,
         }))
-      : DEFAULT_CARDS.map((item) => ({
-          label: item.title,
-          color: "#155eef",
-          body: item.description,
-          icon: null,
-        }));
+      : [];
+
+  // Nothing configured → hide the whole section.
+  if (cards.length === 0) return null;
 
   return (
     <section className="bg-[#f1f7ff] py-[50px] md:py-[90px] lg:py-[110px] px-4 md:px-6">
@@ -97,10 +83,12 @@ export default function AboutDrives({
         {/* Heading */}
         <Reveal variant="fade-up" duration={700}>
           <div className="text-center mb-[60px] md:mb-[72px]">
-            <h2
-              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b] tracking-[-0.025em]"
-              dangerouslySetInnerHTML={{ __html: heading }}
-            />
+            {heading && (
+              <h2
+                className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b] tracking-[-0.025em]"
+                dangerouslySetInnerHTML={{ __html: heading }}
+              />
+            )}
             {cmsSubheading && (
               <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[17px] text-[#6b7280] leading-relaxed max-w-[560px] mx-auto">
                 {cmsSubheading}
