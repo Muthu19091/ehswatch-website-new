@@ -9,9 +9,8 @@ interface BlogHeroProps {
 export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroProps) {
   // Parse headline HTML: CMS wraps the coloured part in <span>
   // We render as dangerouslySetInnerHTML only for the headline span
-  const headlineHtml =
-    headline ||
-    'EHSQ Insights, <span style="color:#1d4ed8">Beyond The Dashboard</span>';
+  // CMS-only: no hardcoded fallback copy.
+  const headlineHtml = headline?.trim() || "";
 
   // Strip any inline color from CMS <span> and apply our brand blue
   const styledHeadline = headlineHtml.replace(
@@ -19,9 +18,7 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
     '<span style="color:#1d4ed8">'
   );
 
-  const subheadlineText =
-    subheadline ||
-    "Practical guidance, regulatory updates and operational insights for EHSQ professionals who need more than theory. Written by safety practitioners, for safety practitioners.";
+  const subheadlineText = subheadline?.trim() || "";
 
   return (
     <section
@@ -81,17 +78,21 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
             {eyebrow}
           </p>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-normal animate-hero-rise"
-          style={{ color: "#0a1628", animationDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: styledHeadline }}
-        />
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[540px] animate-hero-rise"
-          style={{ color: "#6b7280", animationDelay: "200ms" }}
-        >
-          {subheadlineText}
-        </p>
+        {styledHeadline && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-normal animate-hero-rise"
+            style={{ color: "#0a1628", animationDelay: "80ms" }}
+            dangerouslySetInnerHTML={{ __html: styledHeadline }}
+          />
+        )}
+        {subheadlineText && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[540px] animate-hero-rise"
+            style={{ color: "#6b7280", animationDelay: "200ms" }}
+          >
+            {subheadlineText}
+          </p>
+        )}
       </div>
     </section>
   );

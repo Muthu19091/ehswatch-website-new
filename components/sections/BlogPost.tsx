@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
-import { basePath } from "@/lib/basePath";
 import type { CmsBlogPost } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Placeholder post data — swap per slug when real content exists
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface BlogPostData {
@@ -24,82 +21,7 @@ export interface BlogPostData {
   tertiaryImg?: string;
 }
 
-const POSTS: Record<string, BlogPostData> = {
-  "near-miss-reporting-culture": {
-    slug: "near-miss-reporting-culture",
-    category: "Incident Management",
-    title: "How to Build a Near-Miss Reporting Culture That Actually Works",
-    date: "8 May 2026",
-    readTime: "6 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-1.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-2.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-3.png`,
-  },
-  "iso-45001-transition": {
-    slug: "iso-45001-transition",
-    category: "Compliance",
-    title: "ISO 45001 vs OHSAS 18001: What the Transition Really Means for Your Team",
-    date: "29 April 2026",
-    readTime: "8 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-2.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-1.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-3.png`,
-  },
-  "leading-indicators-safety": {
-    slug: "leading-indicators-safety",
-    category: "Risk & Analytics",
-    title: "5 Leading Indicators Every Safety Manager Should Be Tracking",
-    date: "14 April 2026",
-    readTime: "5 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-3.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-1.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-2.png`,
-  },
-  "cost-manual-incident-reporting": {
-    slug: "cost-manual-incident-reporting",
-    category: "Operations",
-    title: "The Hidden Cost of Manual Incident Reporting",
-    date: "2 April 2026",
-    readTime: "5 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-1.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-3.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-2.png`,
-  },
-  "contractor-safety-management": {
-    slug: "contractor-safety-management",
-    category: "Operations",
-    title: "Contractor Safety Management: Why Most Programmes Fail at the Gate",
-    date: "20 March 2026",
-    readTime: "7 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-2.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-3.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-1.png`,
-  },
-  "lagging-to-leading-metrics": {
-    slug: "lagging-to-leading-metrics",
-    category: "Risk & Analytics",
-    title: "Moving from Lagging to Leading Safety Metrics: A Practical Guide",
-    date: "5 March 2026",
-    readTime: "9 min read",
-    author: "EHSWatch Team",
-    authorRole: "EHS Editorial",
-    coverImg: `${basePath}/images/blogs/blog-3.png`,
-    secondaryImg: `${basePath}/images/blogs/blog-2.png`,
-    tertiaryImg: `${basePath}/images/blogs/blog-1.png`,
-  },
-};
 
-const SLUGS = Object.keys(POSTS);
 
 // Editors sometimes author headings as whole-bold paragraphs instead of using
 // the editor's H2 button. Normalise those at render time so every post — past
@@ -111,12 +33,9 @@ function normalizeBody(html: string): string {
   );
 }
 
-function getPost(slug: string): BlogPostData {
-  return POSTS[slug] ?? POSTS["near-miss-reporting-culture"];
-}
 
 function getPrevNext(slug: string, cmsSlugs?: string[]) {
-  const list = cmsSlugs && cmsSlugs.length > 0 ? cmsSlugs : SLUGS;
+  const list = cmsSlugs && cmsSlugs.length > 0 ? cmsSlugs : [];
   const idx = list.indexOf(slug);
   if (idx === -1) return { prev: null, next: null };
   return {
@@ -130,18 +49,19 @@ function getPrevNext(slug: string, cmsSlugs?: string[]) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cmsPost?: CmsBlogPost; cmsSlugs?: string[] }) {
-  const post: BlogPostData = cmsPost
-    ? {
-        slug,
-        category: cmsPost.attributes.category ?? "General",
-        title: cmsPost.attributes.title,
-        date: new Date(cmsPost.attributes.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
-        readTime: `${cmsPost.attributes.read_time_minutes} min read`,
-        author: cmsPost.attributes.author?.name ?? "EHSWatch Team",
-        authorRole: "EHS Editorial",
-        coverImg: mediaUrl(cmsPost.attributes.cover) ?? `${basePath}/images/blogs/blog-1.png`,
-      }
-    : getPost(slug);
+  // CMS-only: the blog routes 404 on missing/unpublished posts, so there is
+  // always a real CMS record here — no hardcoded placeholder content.
+  if (!cmsPost) return null;
+  const post: BlogPostData = {
+    slug,
+    category: cmsPost.attributes.category ?? "",
+    title: cmsPost.attributes.title,
+    date: new Date(cmsPost.attributes.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
+    readTime: `${cmsPost.attributes.read_time_minutes} min read`,
+    author: cmsPost.attributes.author?.name ?? "",
+    authorRole: "",
+    coverImg: mediaUrl(cmsPost.attributes.cover) ?? "",
+  };
   const { prev, next } = getPrevNext(slug, cmsSlugs);
 
   return (
@@ -228,13 +148,15 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 
           {/* Hero content */}
           <div className="relative z-20 max-w-[760px] w-full mx-auto text-center flex flex-col items-center gap-4">
-            {/* Category pill */}
-            <span
-              className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em]"
-              style={{ color: "#1d4ed8" }}
-            >
-              {post.category}
-            </span>
+            {/* Category pill — CMS-only */}
+            {post.category && (
+              <span
+                className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em]"
+                style={{ color: "#1d4ed8" }}
+              >
+                {post.category}
+              </span>
+            )}
 
             {/* Title */}
             <h1 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-[1.1] tracking-[-0.025em] text-[#0a0f1e]">
@@ -259,102 +181,23 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
         <div className="px-4 sm:px-6 pt-8 pb-0">
           <div className="max-w-[720px] mx-auto">
 
-            {cmsPost ? (
-              <>
-                {/* Cover image — shown at its natural aspect ratio so
-                    infographic / portrait covers aren't cropped by a fixed
-                    16/9 banner (previously object-cover cut off the top and
-                    bottom of the image). Capped in height so an unusually
-                    tall upload can't dominate the article. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={post.coverImg}
-                  alt={post.title}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto max-h-[80vh] object-contain rounded-2xl mb-10"
-                />
-
-                {/* CMS body HTML */}
-                <div
-                  className="blog-body prose prose-lg max-w-none font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
-                  dangerouslySetInnerHTML={{ __html: normalizeBody(cmsPost.attributes.body) }}
-                />
-              </>
-            ) : (
-              <>
-                {/* Lead paragraph */}
-                <div className="blog-body">
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty">
-                    Every safety professional knows the feeling: a near-miss occurs on site, the supervisor makes a mental note, and by the end of the shift it is forgotten. No record, no investigation, no corrective action. The incident that could have prevented a serious injury simply disappears into the operational noise.
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                    This is not a problem of awareness. Most EHS teams understand why near-miss reporting matters — it is the backbone of proactive safety management and a direct indicator of cultural health. The challenge is consistently capturing those events in a way that leads to meaningful follow-through.
-                  </p>
-                </div>
-
-                {/* Cover image */}
-                <div className="relative w-full rounded-2xl overflow-hidden my-10" style={{ aspectRatio: "16/9" }}>
-                  <Image src={post.coverImg} alt={post.title} fill className="object-cover" />
-                </div>
-
-                {/* Body */}
-                <div className="blog-body">
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty">
-                    The root cause of poor near-miss reporting is almost never a lack of willingness. Field workers notice hazards. They experience close calls. The barrier is friction: the process of reporting feels bureaucratic, there is no visible outcome from previous reports, and there is a persistent — sometimes justified — concern about blame.
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                    Organisations that successfully build reporting cultures do so by reducing that friction at every touchpoint. They make it simple to report, visible that reports are acted upon, and safe to raise concerns without fear of disciplinary consequence. The technology and the culture must move together.
-                  </p>
-                </div>
-
-                {/* Pull quote */}
-                <blockquote className="my-12 text-center">
-                  <p
-                    className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[22px] sm:text-[26px] md:text-[28px] leading-[1.4] tracking-[-0.01em] text-[#0a0f1e]"
-                    style={{ fontStyle: "italic" }}
-                  >
-                    &ldquo;The organisations with the lowest incident rates are rarely the ones with the fewest hazards — they are the ones that see and act on them fastest.&rdquo;
-                  </p>
-                  <footer className="mt-4 font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">
-                    — EHSWatch Research, 2025
-                  </footer>
-                </blockquote>
-
-                {/* More body */}
-                <div className="blog-body">
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty">
-                    The practical starting point is removing the paper form. Mobile reporting tools that allow a worker to log a near-miss in under sixty seconds — with a photo, a location and a brief description — consistently outperform paper-based systems in volume and quality of reports.
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                    But technology alone is insufficient. The second step is closing the loop visibly. When a near-miss is reported, the reporter must see what happened as a result — whether an action was raised, what the finding was, and whether the hazard has been resolved. This feedback loop is the single most powerful driver of sustained reporting behaviour.
-                  </p>
-                </div>
-
-                {/* Dual image grid */}
-                <div className="grid grid-cols-2 gap-4 my-10">
-                  <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: "4/3" }}>
-                    <Image src={post.secondaryImg ?? post.coverImg} alt="Supporting visual" fill className="object-cover" />
-                  </div>
-                  <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: "4/3" }}>
-                    <Image src={post.tertiaryImg ?? post.coverImg} alt="Supporting visual" fill className="object-cover" />
-                  </div>
-                </div>
-
-                {/* Closing body */}
-                <div className="blog-body">
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty">
-                    Leadership behaviour is the third pillar. When senior managers actively reference near-miss reports in safety meetings, thank reporters by name, and share the outcomes of investigations, reporting rates reliably increase. Psychological safety is built through demonstrated action, not policy statements.
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                    Platforms like EHSWatch embed all three elements — simple mobile capture, automatic assignment of corrective actions, and real-time dashboards that show reporting trends to both workers and leadership. The result is a system where reporting is the path of least resistance, not the path of most friction.
-                  </p>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                    Building a near-miss culture is not a six-month project with a launch date. It is an ongoing commitment to making it easier and safer to speak up than to stay silent. Organisations that sustain it over time consistently outperform their peers on every incident metric that matters.
-                  </p>
-                </div>
-              </>
+            {/* Cover image — natural aspect ratio, capped height. CMS-only. */}
+            {post.coverImg && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={post.coverImg}
+                alt={post.title}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto max-h-[80vh] object-contain rounded-2xl mb-10"
+              />
             )}
+
+            {/* CMS body HTML */}
+            <div
+              className="blog-body prose prose-lg max-w-none font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
+              dangerouslySetInnerHTML={{ __html: normalizeBody(cmsPost.attributes.body) }}
+            />
 
             {/* Closing divider */}
             <div className="blog-divider mt-10">
@@ -409,7 +252,6 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
   );
 }
 
-export { POSTS as BLOG_POSTS };
 
 /* ── Share + Bookmark actions ─────────────────────────────────────────────
    Share: Web Share API on supported devices, clipboard copy as fallback.

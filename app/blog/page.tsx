@@ -35,13 +35,18 @@ interface CtaBannerProps {
 }
 
 function BlogCTA({
-  headline = "Reading is a start. Now is your time to take action.",
-  subhead = "Give your teams the platform to match the knowledge — report, respond and prevent incidents all from one place.",
-  primaryLabel = "Book Your Free Demo",
-  primaryUrl = "#",
-  secondaryLabel = "View Pricing Plans",
-  secondaryUrl = "#",
+  headline,
+  subhead,
+  primaryLabel,
+  primaryUrl,
+  secondaryLabel,
+  secondaryUrl,
 }: CtaBannerProps) {
+  // CMS-only: no hardcoded copy or CTAs.
+  const showPrimary = !!primaryLabel?.trim() && !!primaryUrl && primaryUrl !== "#";
+  const showSecondary = !!secondaryLabel?.trim() && !!secondaryUrl && secondaryUrl !== "#";
+  // Hide the whole banner when the CMS provides nothing.
+  if (!headline?.trim() && !subhead?.trim() && !showPrimary && !showSecondary) return null;
   return (
     <section
       className="relative py-12 md:py-[61px] px-4 md:px-6 overflow-hidden"
@@ -54,24 +59,30 @@ function BlogCTA({
       }}
     >
       <div className="max-w-[800px] mx-auto flex flex-col gap-3 md:gap-[16px] items-center">
-        <Reveal variant="slide-right" duration={750}>
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] text-center">
-            {headline}
-          </h2>
-        </Reveal>
-        <Reveal variant="slide-left" duration={750} delay={120}>
-          <p className="font-[family-name:var(--font-inter)] text-[14px] md:text-[17px] leading-relaxed md:leading-[29.75px] text-[#6b7280] text-center max-w-[520px]">
-            {subhead}
-          </p>
-        </Reveal>
+        {headline?.trim() && (
+          <Reveal variant="slide-right" duration={750}>
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] text-center">
+              {headline}
+            </h2>
+          </Reveal>
+        )}
+        {subhead?.trim() && (
+          <Reveal variant="slide-left" duration={750} delay={120}>
+            <p className="font-[family-name:var(--font-inter)] text-[14px] md:text-[17px] leading-relaxed md:leading-[29.75px] text-[#6b7280] text-center max-w-[520px]">
+              {subhead}
+            </p>
+          </Reveal>
+        )}
+        {(showPrimary || showSecondary) && (
         <Reveal
           variant="fade-up"
           duration={700}
           delay={240}
           className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px] w-full sm:w-auto"
         >
+          {showPrimary && (
           <GlareButton
-            href={primaryUrl}
+            href={primaryUrl!}
             className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-inter)] font-medium text-[14px] text-white whitespace-nowrap"
             style={{
               backgroundImage:
@@ -80,15 +91,19 @@ function BlogCTA({
           >
             {primaryLabel}
           </GlareButton>
+          )}
+          {showSecondary && (
           <GlareButton
-            href={secondaryUrl}
+            href={secondaryUrl!}
             fillColor="#FFA660"
             hoverTextColor="#ffffff"
             className="w-full sm:w-auto px-7 md:px-[31.5px] py-3 md:py-[15.5px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] text-[14px] text-[#ff6d00] whitespace-nowrap"
           >
             {secondaryLabel}
           </GlareButton>
+          )}
         </Reveal>
+        )}
       </div>
     </section>
   );

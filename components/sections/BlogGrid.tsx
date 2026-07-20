@@ -16,98 +16,25 @@ interface Post {
   date: string;
   dateSort: number;
   readTime: string;
-  img: string;
+  img: string | null;
 }
 
 function cmsToPost(p: CmsBlogPost): Post {
   return {
     slug:     p.attributes.slug,
-    category: p.attributes.category ?? "General",
-    topic:    p.attributes.category ?? "General",
+    category: p.attributes.category ?? "",
+    topic:    p.attributes.category ?? "",
     format:   "Article",
     title:    p.attributes.title,
     excerpt:  p.attributes.excerpt,
     date:     new Date(p.attributes.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
     dateSort: new Date(p.attributes.published_at).getTime(),
     readTime: `${p.attributes.read_time_minutes} min read`,
-    img:      mediaUrl(p.attributes.cover) ?? "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80",
+    // CMS-only cover — no stock-image fallback; cards show a neutral panel instead.
+    img:      mediaUrl(p.attributes.cover) ?? null,
   };
 }
 
-const FALLBACK_POSTS: Post[] = [
-  {
-    slug: "near-miss-reporting-culture",
-    category: "Incident Management",
-    topic: "Incident Management",
-    format: "Article",
-    title: "How to Build a Near-Miss Reporting Culture That Actually Works",
-    excerpt: "Most near-miss programmes fail not from lack of effort, but from friction. Here's how to make reporting effortless and act on what you capture.",
-    date: "May 8, 2026",
-    dateSort: 1746662400000,
-    readTime: "6 min read",
-    img: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    slug: "iso-45001-transition",
-    category: "Compliance",
-    topic: "Compliance",
-    format: "Guide",
-    title: "ISO 45001 vs OHSAS 18001: What the Transition Really Means for Your Team",
-    excerpt: "The move to ISO 45001 is more than a certificate swap. We break down the practical shifts your team needs to plan for.",
-    date: "Apr 29, 2026",
-    dateSort: 1745884800000,
-    readTime: "8 min read",
-    img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    slug: "leading-indicators-safety",
-    category: "Risk & Analytics",
-    topic: "Risk Management",
-    format: "Article",
-    title: "5 Leading Indicators Every Safety Manager Should Be Tracking",
-    excerpt: "Lagging metrics tell you what already went wrong. These five leading indicators help you act before incidents happen.",
-    date: "Apr 14, 2026",
-    dateSort: 1744588800000,
-    readTime: "5 min read",
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    slug: "cost-manual-incident-reporting",
-    category: "Operations",
-    topic: "Operations",
-    format: "Article",
-    title: "The Hidden Cost of Manual Incident Reporting",
-    excerpt: "Paper forms and spreadsheets cost far more than they seem. We add up the real price of manual incident reporting.",
-    date: "Apr 2, 2026",
-    dateSort: 1743552000000,
-    readTime: "7 min read",
-    img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    slug: "contractor-safety-management",
-    category: "Contractor Management",
-    topic: "Contractor Management",
-    format: "Guide",
-    title: "Contractor Safety Management: Where Most Programmes Fall Short",
-    excerpt: "Most contractor safety failures start at the gate. Here's where programmes break down and how to close the gaps.",
-    date: "Mar 18, 2026",
-    dateSort: 1742256000000,
-    readTime: "9 min read",
-    img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    slug: "lagging-to-leading-metrics",
-    category: "Risk & Analytics",
-    topic: "Risk Management",
-    format: "Case Study",
-    title: "From Lagging to Leading: Rethinking Your Safety Metrics",
-    excerpt: "A practical guide to shifting your safety reporting from reactive lagging metrics toward proactive leading indicators.",
-    date: "Mar 5, 2026",
-    dateSort: 1741132800000,
-    readTime: "6 min read",
-    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-  },
-];
 
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
 // Topic/Format options are derived from the actual posts (CMS categories) so
@@ -135,18 +62,22 @@ function FeaturedCard({ post }: { post: Post }) {
         className="relative flex-shrink-0 overflow-hidden"
         style={{ width: "47%", aspectRatio: "8/5", borderRadius: "7px 0 0 7px" }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={post.img}
-          alt={post.title}
-          className="w-full h-full object-cover"
-          style={{
-            display: "block",
-            objectPosition: "left center",
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform 0.5s ease",
-          }}
-        />
+        {post.img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={post.img}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            style={{
+              display: "block",
+              objectPosition: "left center",
+              transform: hovered ? "scale(1.04)" : "scale(1)",
+              transition: "transform 0.5s ease",
+            }}
+          />
+        ) : (
+          <div className="w-full h-full" style={{ background: "linear-gradient(135deg,#eef4ff 0%,#dbeafe 100%)" }} />
+        )}
       </div>
 
       {/* Text — right, vertically centered */}
@@ -204,18 +135,22 @@ function StandardCard({ post }: { post: Post }) {
         className="relative overflow-hidden flex-shrink-0"
         style={{ aspectRatio: "8/5", borderRadius: "7px 7px 0 0" }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={post.img}
-          alt={post.title}
-          className="w-full h-full object-cover"
-          style={{
-            display: "block",
-            objectPosition: "left center",
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform 0.5s ease",
-          }}
-        />
+        {post.img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={post.img}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            style={{
+              display: "block",
+              objectPosition: "left center",
+              transform: hovered ? "scale(1.04)" : "scale(1)",
+              transition: "transform 0.5s ease",
+            }}
+          />
+        ) : (
+          <div className="w-full h-full" style={{ background: "linear-gradient(135deg,#eef4ff 0%,#dbeafe 100%)" }} />
+        )}
       </div>
 
       {/* Text */}
@@ -290,7 +225,8 @@ export default function BlogGrid({
   showTopic?: boolean;
   showFormat?: boolean;
 }) {
-  const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : FALLBACK_POSTS;
+  // CMS-only: no hardcoded fallback posts.
+  const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : [];
 
   // Dedupe case-insensitively (categories are free text in the CMS) —
   // first-seen casing wins as the display value
@@ -334,6 +270,9 @@ export default function BlogGrid({
 
   const featured = filtered.slice(0, 2);
   const standard = filtered.slice(2);
+
+  // CMS-only: nothing to list → hide the section entirely.
+  if (POSTS.length === 0) return null;
 
   return (
     <section className="pt-[48px] pb-[80px] px-8" style={{ background: "#FFFFFF" }}>

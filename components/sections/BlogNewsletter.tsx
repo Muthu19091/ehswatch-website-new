@@ -128,19 +128,15 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
               noValidate
               className="flex flex-wrap items-center justify-center w-full gap-8 md:gap-12"
             >
-              {/* Heading — CMS form description when set, design copy otherwise */}
-              <h2
-                className="font-[family-name:var(--font-gothic-a1)] font-bold text-[18px] sm:text-[19px] md:text-[20px] leading-[1.6] tracking-[-0.01em] shrink-0"
-                style={{ color: DARK, maxWidth: heading ? 340 : undefined }}
-              >
-                {heading ?? (
-                  <>
-                    <span className="block whitespace-nowrap">Get the latest EHSQ insights,</span>
-                    <span className="block whitespace-nowrap">product updates,</span>
-                    <span className="block whitespace-nowrap">and regulatory signals.</span>
-                  </>
-                )}
-              </h2>
+              {/* Heading — CMS-only (the form's description field); no design copy */}
+              {heading && (
+                <h2
+                  className="font-[family-name:var(--font-gothic-a1)] font-bold text-[18px] sm:text-[19px] md:text-[20px] leading-[1.6] tracking-[-0.01em] shrink-0"
+                  style={{ color: DARK, maxWidth: 340 }}
+                >
+                  {heading}
+                </h2>
+              )}
 
               {/* Email + consent */}
               <div className="flex flex-col gap-3 w-full max-w-[340px]">
