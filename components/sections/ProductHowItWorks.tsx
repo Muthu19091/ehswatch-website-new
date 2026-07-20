@@ -615,21 +615,16 @@ export default function ProductHowItWorks({
 
   const TRACK = (steps.length - 1) * (CIRCLE + GAP);
 
-  const heading = cmsHeading
-    ? cmsHeading.replace(/<[^>]+>/g, "").trim()
-    : "How EHSWatch Works";
-
-  // Detect the <span> portion for blue styling
-  const headingSpanMatch = (cmsHeading || "How <span>EHSWatch</span> Works").match(/<span>([\s\S]*?)<\/span>/);
-  const headingSpanText = headingSpanMatch ? headingSpanMatch[1] : "EHSWatch";
-  const headingPlain = (cmsHeading || "How <span>EHSWatch</span> Works").replace(/<[^>]+>/g, "");
-  const headingSpanIdx = headingPlain.indexOf(headingSpanText);
+  // CMS-only heading/subheading — no hardcoded fallback copy.
+  const rawHeading = cmsHeading?.trim() || "";
+  const headingSpanMatch = rawHeading.match(/<span>([\s\S]*?)<\/span>/);
+  const headingSpanText = headingSpanMatch ? headingSpanMatch[1] : "";
+  const headingPlain = rawHeading.replace(/<[^>]+>/g, "");
+  const headingSpanIdx = headingSpanText ? headingPlain.indexOf(headingSpanText) : -1;
   const headingBefore = headingSpanIdx >= 0 ? headingPlain.slice(0, headingSpanIdx) : headingPlain;
   const headingAfter = headingSpanIdx >= 0 ? headingPlain.slice(headingSpanIdx + headingSpanText.length) : "";
 
-  const subheading =
-    cmsSubheading ||
-    "EHSWatch is designed to make EHSQ management simple for every team member — from the field to the leadership team.";
+  const subheading = cmsSubheading?.trim() || "";
 
   /* Scroll-driven step detection */
   useEffect(() => {
@@ -663,16 +658,22 @@ export default function ProductHowItWorks({
     {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
         stepper and visuals under md, which left 7 near-empty screens of scroll */}
     <section className="md:hidden bg-[#f1f7ff] px-6 py-14">
+      {(headingPlain || subheading) && (
       <div className="text-center mb-10">
-        <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] leading-tight text-[#1b1b1b] tracking-[-0.025em]">
-          {headingBefore}
-          <span className="text-[#155eef]">{headingSpanText}</span>
-          {headingAfter}
-        </h2>
-        <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#4b5563] leading-[1.7] mx-auto max-w-[700px]">
-          {subheading}
-        </p>
+        {headingPlain && (
+          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] leading-tight text-[#1b1b1b] tracking-[-0.025em]">
+            {headingBefore}
+            {headingSpanText && <span className="text-[#155eef]">{headingSpanText}</span>}
+            {headingAfter}
+          </h2>
+        )}
+        {subheading && (
+          <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#4b5563] leading-[1.7] mx-auto max-w-[700px]">
+            {subheading}
+          </p>
+        )}
       </div>
+      )}
       <div className="flex flex-col max-w-[480px] mx-auto">
         {steps.map((step, i) => (
           <div key={i} className="relative pl-12 pb-10 last:pb-0">
@@ -705,16 +706,22 @@ export default function ProductHowItWorks({
       <div className="sticky top-0 overflow-hidden flex flex-col" style={{ height: "100vh" }}>
 
         {/* Heading */}
+        {(headingPlain || subheading) && (
         <div className="flex-none text-center px-6 pt-[11vh] pb-[1vh]">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b] tracking-[-0.025em]">
-            {headingBefore}
-            <span className="text-[#155eef]">{headingSpanText}</span>
-            {headingAfter}
-          </h2>
-          <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[16px] text-[#4b5563] leading-[1.7] mx-auto max-w-[700px]">
-            {subheading}
-          </p>
+          {headingPlain && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b] tracking-[-0.025em]">
+              {headingBefore}
+              {headingSpanText && <span className="text-[#155eef]">{headingSpanText}</span>}
+              {headingAfter}
+            </h2>
+          )}
+          {subheading && (
+            <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[16px] text-[#4b5563] leading-[1.7] mx-auto max-w-[700px]">
+              {subheading}
+            </p>
+          )}
         </div>
+        )}
 
         {/* Main row */}
         <div className="flex-1 flex items-center gap-8 md:gap-12 max-w-[1200px] mx-auto w-full px-6 md:px-10 pt-[1vh] pb-[5vh]">

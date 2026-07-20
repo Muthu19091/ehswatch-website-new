@@ -16,11 +16,9 @@ export default function ProductHero({
   cmsSubheadline,
   cmsPrimaryCta,
 }: ProductHeroProps = {}) {
-  // Defaults
-  const headlineRaw = cmsHeadline || "One Platform. <span>Every EHSQ Process.</span>";
-  const subheadline =
-    cmsSubheadline ||
-    "From field incidents to board‑level dashboards — all connected, all in real time.";
+  // CMS-only: no hardcoded fallback copy.
+  const headlineRaw = cmsHeadline?.trim() || "";
+  const subheadline = cmsSubheadline?.trim() || "";
   // Button renders only when configured in the CMS (label + real link).
   const ctaLabel = cmsPrimaryCta?.label?.trim();
   const ctaHref = cmsPrimaryCta?.url?.trim();
@@ -110,24 +108,28 @@ export default function ProductHero({
             {cmsEyebrow}
           </span>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[60px] leading-[1.06] text-gray-900 tracking-[-0.03em] animate-hero-rise"
-          style={{ animationDelay: "80ms" }}
-        >
-          {firstPart}
-          {secondPart && (
-            <>
-              <br />
-              <span style={{ color: "#1d4ed8" }}>{secondPart}</span>
-            </>
-          )}
-        </h1>
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] leading-[1.75] max-w-[490px] animate-hero-rise text-gray-700"
-          style={{ animationDelay: "200ms" }}
-        >
-          {subheadline}
-        </p>
+        {plainHeadline && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[60px] leading-[1.06] text-gray-900 tracking-[-0.03em] animate-hero-rise"
+            style={{ animationDelay: "80ms" }}
+          >
+            {firstPart}
+            {secondPart && (
+              <>
+                <br />
+                <span style={{ color: "#1d4ed8" }}>{secondPart}</span>
+              </>
+            )}
+          </h1>
+        )}
+        {subheadline && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] leading-[1.75] max-w-[490px] animate-hero-rise text-gray-700"
+            style={{ animationDelay: "200ms" }}
+          >
+            {subheadline}
+          </p>
+        )}
         {showCta && (
         <GlareButton
           href={ctaHref}

@@ -123,24 +123,6 @@ interface Module {
   cmsIcon?: string | null;
 }
 
-const MODULES: Module[] = [
-  { name: "Action Tracker",           href: "/modules/action-tracker", desc: "Track corrective and preventive actions to closure with owners, due dates, reminders, and full accountability.", color: "#155eef", icon: "check-circle" },
-  { name: "Audit Management",         href: "#", desc: "Plan and run audits with configurable checklists, structured findings, and follow-up workflows that close compliance gaps faster.", color: "#6366f1", icon: "clipboard" },
-  { name: "Customer Complaints",      href: "#", desc: "Capture, assign, investigate and resolve customer complaints through a structured workflow with full audit trail.", color: "#0891b2", icon: "chat-warning" },
-  { name: "Emergency Response Drills",href: "#", desc: "Schedule, record, and review emergency drills so teams can test readiness and turn lessons learned into tracked actions.", color: "#ef4444", icon: "alarm" },
-  { name: "File Management",          href: "#", desc: "Centralise EHSQ documents with version control, access permissions and expiry alerts — always the right version at the point of need.", color: "#059669", icon: "folder" },
-  { name: "HSE Observations",         href: "#", desc: "Report unsafe acts, unsafe conditions, and positive behaviours in real time to strengthen proactive safety reporting across sites.", color: "#f59e0b", icon: "eye" },
-  { name: "Inspections",              href: "#", desc: "Conduct digital inspections with custom forms, instant findings capture, and reporting that helps teams act on issues sooner.", color: "#155eef", icon: "search" },
-  { name: "Incident Management",      href: "#", desc: "Manage incidents, accidents, and near misses through reporting, investigation, root cause analysis, and corrective action workflows.", color: "#ef4444", icon: "warning" },
-  { name: "Legal Register",           href: "#", desc: "Maintain a central record of legal and regulatory obligations so your teams can monitor updates and stay audit-ready.", color: "#7c3aed", icon: "book" },
-  { name: "Management of Change",     href: "#", desc: "Control operational and process changes with structured reviews, risk assessments, approvals, and full implementation traceability.", color: "#0891b2", icon: "arrows-cycle" },
-  { name: "Meetings Management",      href: "#", desc: "Capture meeting decisions, assign actions live, and track follow-through so safety commitments do not get lost.", color: "#059669", icon: "calendar" },
-  { name: "Non-conformance",          href: "#", desc: "Record non-conformances, investigate root causes, assign corrective actions, and monitor closure to prevent recurrence.", color: "#f97316", icon: "x-circle" },
-  { name: "Permit to Work",           href: "#", desc: "Digitise high-risk work permits with configurable approvals, linked controls, expiry tracking, and live permit visibility.", color: "#155eef", icon: "lock" },
-  { name: "Risk Assessment",          href: "#", desc: "Identify hazards, assess risk levels, and document controls in a consistent workflow that supports safer operational decisions.", color: "#6366f1", icon: "shield" },
-  { name: "Training Management",      href: "#", desc: "Manage training records, competency requirements, certification expiries, and gap analysis to keep every worker current.", color: "#f59e0b", icon: "graduation" },
-];
-
 const INITIAL_ROWS = 2;
 const COLS = 3;
 const STEP = COLS;
@@ -232,6 +214,7 @@ export default function ProductModules({
   );
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
 
+  // CMS-only: modules come solely from the CMS product-modules collection.
   const modules: Module[] =
     cmsModules && cmsModules.length > 0
       ? cmsModules.map((m, i) => ({
@@ -242,7 +225,10 @@ export default function ProductModules({
           icon: "check-circle",
           cmsIcon: m.icon ?? null,
         }))
-      : MODULES;
+      : [];
+
+  // Nothing configured → hide the whole section.
+  if (modules.length === 0) return null;
 
   const visibleModules = modules.slice(0, visibleCount);
   const hasMore = visibleCount < modules.length;
@@ -271,10 +257,10 @@ export default function ProductModules({
     rows.push(visibleModules.slice(i, i + COLS));
   }
 
-  // Resolve heading — strip HTML tags and split on <span> for styled portion
-  const rawHeading = cmsHeading || "Our <span>Modules</span>";
+  // Resolve heading — CMS-only, strip HTML tags and split on <span> for styled portion
+  const rawHeading = cmsHeading?.trim() || "";
   const spanMatch = rawHeading.match(/<span>([\s\S]*?)<\/span>/);
-  const spanText = spanMatch ? spanMatch[1] : "Modules";
+  const spanText = spanMatch ? spanMatch[1] : "";
   const plainHeading = rawHeading.replace(/<[^>]+>/g, "");
   const spanIdx = plainHeading.indexOf(spanText);
   const headingBefore = spanIdx >= 0 ? plainHeading.slice(0, spanIdx) : plainHeading;
@@ -289,19 +275,23 @@ export default function ProductModules({
       `}</style>
       <div className="max-w-[1160px] mx-auto">
 
-        {/* Section title */}
+        {/* Section title — CMS-only */}
+        {(plainHeading || cmsSubheading) && (
         <div className="text-center mb-10 md:mb-14">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-            {headingBefore}
-            <span style={{ color: "#0060F9" }}>{spanText}</span>
-            {headingAfter}
-          </h2>
+          {plainHeading && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
+              {headingBefore}
+              {spanText && <span style={{ color: "#0060F9" }}>{spanText}</span>}
+              {headingAfter}
+            </h2>
+          )}
           {cmsSubheading && (
             <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[16px] text-[#6b7280] leading-relaxed mx-auto max-w-[600px]">
               {cmsSubheading}
             </p>
           )}
         </div>
+        )}
 
         {/* Grid */}
         <div className="w-full">
