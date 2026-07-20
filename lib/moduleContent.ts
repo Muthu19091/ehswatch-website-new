@@ -61,7 +61,9 @@ export function buildModuleTemplateProps(
     eyebrow: stripHtmlOpt(heroBlock?.eyebrow),
     headline: stripHtml(heroBlock?.headline) || name,
     subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
-    primaryCta: resolveCta(heroBlock?.primary_cta, pageMap) ?? { label: "Book a Demo", href: "/contact-us" },
+    // CMS-only: no hardcoded default — the banner button appears only when the
+    // CMS hero block has a configured CTA (label + link).
+    primaryCta: resolveCta(heroBlock?.primary_cta, pageMap),
     secondaryCta: resolveCta(heroBlock?.secondary_cta, pageMap),
   };
 
@@ -103,7 +105,7 @@ export function buildModuleTemplateProps(
   const features: ModuleTemplateProps["features"] | undefined =
     featureItems.length > 0
       ? {
-          heading: stripHtml(iconFeaturesBlock?.heading) || `Key Features of ${name}`,
+          heading: stripHtml(iconFeaturesBlock?.heading) || "",
           subheading: stripHtmlOpt(iconFeaturesBlock?.subheading),
           items: featureItems,
         }
@@ -131,7 +133,7 @@ export function buildModuleTemplateProps(
   const useGrid = apartItems.length > 0 && nonListText.length === 0;
   const apart: ModuleTemplateProps["apart"] | undefined = richBody
     ? {
-        heading: stripHtml(richTextBlock?.heading) || `What Sets EHSWatch ${name} Apart`,
+        heading: stripHtml(richTextBlock?.heading) || "",
         items: useGrid ? apartItems : [],
         bodyHtml: richBody,
       }
@@ -148,7 +150,7 @@ export function buildModuleTemplateProps(
 
   const faqs: ModuleTemplateProps["faqs"] | undefined =
     faqItems.length > 0
-      ? { heading: stripHtml(faqBlock?.heading) || "Frequently Asked Questions", items: faqItems }
+      ? { heading: stripHtml(faqBlock?.heading) || "", items: faqItems }
       : undefined;
 
   const ctaBlock = findBlock<{
@@ -209,7 +211,7 @@ export function buildModuleTemplateProps(
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
       ? {
-          heading: stripHtml(modulesBlock?.heading) || "Explore More EHSWatch Modules",
+          heading: stripHtml(modulesBlock?.heading) || "",
           modules: otherModules,
         }
       : undefined;

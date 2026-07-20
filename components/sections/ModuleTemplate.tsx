@@ -166,11 +166,13 @@ function FAQAccordion({ heading, items }: { heading: string; items: Array<{ ques
   return (
     <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
       <div className="max-w-[820px] mx-auto flex flex-col gap-8">
-        <div className="text-center">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-            {heading}
-          </h2>
-        </div>
+        {heading && (
+          <div className="text-center">
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
+              {heading}
+            </h2>
+          </div>
+        )}
         <div className="flex flex-col divide-y divide-[#e5eaf2]">
           {items.map((faq, i) => (
             <div key={i} className="py-5">
@@ -359,12 +361,14 @@ export default function ModuleTemplate({
           `}</style>
           <div className="max-w-[1160px] mx-auto">
             <div className="text-center mb-12 md:mb-16">
-              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                {(() => {
-                  const [s, h] = splitHeadline(features.heading, 2);
-                  return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-                })()}
-              </h2>
+              {features.heading && (
+                <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
+                  {(() => {
+                    const [s, h] = splitHeadline(features.heading, 2);
+                    return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
+                  })()}
+                </h2>
+              )}
               {features.subheading && (
                 <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] text-[#6b7280] mt-4 max-w-[500px] mx-auto text-pretty leading-[1.7]">
                   {features.subheading}
@@ -415,10 +419,12 @@ export default function ModuleTemplate({
       {apart && (apart.items.length > 0 || apart.bodyHtml) && (
         <section className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-              {apartStart}
-              <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
-            </h2>
+            {apart.heading && (
+              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
+                {apartStart}
+                <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
+              </h2>
+            )}
             {apart.items.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {apart.items.map((item, i) => (
@@ -472,12 +478,14 @@ export default function ModuleTemplate({
       {moreModules && moreModules.modules.length > 0 && (
         <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
           <div className="max-w-[1160px] mx-auto">
-            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-center mb-10 md:mb-14 text-[#0a0f1e]">
-              {(() => {
-                const [s, h] = splitHeadline(moreModules.heading, 2);
-                return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-              })()}
-            </h2>
+            {moreModules.heading && (
+              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-center mb-10 md:mb-14 text-[#0a0f1e]">
+                {(() => {
+                  const [s, h] = splitHeadline(moreModules.heading, 2);
+                  return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
+                })()}
+              </h2>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
               {moreModules.modules.map((mod, i) => (
                 <MoreModuleCard
