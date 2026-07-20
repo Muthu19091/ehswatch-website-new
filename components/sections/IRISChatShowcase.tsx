@@ -535,12 +535,9 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
     desc: cmsSteps?.[i]?.description?.trim() || f.desc,
   }));
 
-  const [headingStart, headingTail] = splitShowcaseHeading(
-    cmsHeading?.trim() || "AI agents available today, more on the way.",
-  );
-  const subheading =
-    cmsSubheading?.trim() ||
-    "Each capability targets a real EHS gap. Scroll to see IRIS at work across all six.";
+  // CMS-only heading/subheading — no hardcoded fallback copy.
+  const [headingStart, headingTail] = splitShowcaseHeading(cmsHeading?.trim() || "");
+  const subheading = cmsSubheading?.trim() || "";
 
   // Refs to avoid stale closures and prevent re-triggering on every scroll tick
   const prevStepRef        = useRef<number>(-1);   // currently displayed step
@@ -646,18 +643,24 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
 
   return (
     <>
-      {/* Heading */}
+      {/* Heading — CMS-only, hidden when not configured */}
+      {(headingTail || subheading) && (
       <section className="pt-[80px] md:pt-[100px] pb-0 px-6 bg-white">
         <div className="max-w-[1160px] mx-auto flex flex-col items-center text-center gap-3">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-            {headingStart}
-            <span style={{ color:"#155eef" }}>{headingTail}</span>
-          </h2>
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] text-[#727272] max-w-[640px]">
-            {subheading}
-          </p>
+          {headingTail && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
+              {headingStart}
+              <span style={{ color:"#155eef" }}>{headingTail}</span>
+            </h2>
+          )}
+          {subheading && (
+            <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] text-[#727272] max-w-[640px]">
+              {subheading}
+            </p>
+          )}
         </div>
       </section>
+      )}
 
       {/* ~170vh sticky scroll — one scroll click per step */}
       <div ref={outerRef} style={{ height:"170vh" }}>

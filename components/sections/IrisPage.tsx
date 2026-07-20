@@ -1442,40 +1442,39 @@ export default function IrisPage({
   cmsCtaBanner,
   cmsPageMap,
 }: IrisCmsProps = {}) {
-  // ── Derived CMS values with hardcoded fallbacks ──────────────────────────
-  const heroHeadline    = cmsHero?.headline    || "Meet IRIS";
+  // ── Derived CMS values — CMS-only, no hardcoded content fallbacks ─────────
+  const heroHeadline    = cmsHero?.headline    || "";
   const heroSubheadline = cmsHero?.subheadline || undefined;
-  const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap)   ?? { label: "Book AI Demo", href: "/contact-us" };
-  const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap) ?? { label: "See Pricing", href: "/pricing" };
-  const ctaBannerHeadline = cmsCtaBanner?.headline || "Put IRIS to work on your safety data";
-  const ctaBannerSubhead  = cmsCtaBanner?.subhead  || "See what you’ve been missing. Book a demo and explore every AI capability live.";
+  const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap);
+  const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap);
+  const ctaBannerHeadline = cmsCtaBanner?.headline?.trim() || "";
+  const ctaBannerSubhead  = cmsCtaBanner?.subhead?.trim()  || "";
   const ctaBannerPrimary =
     resolveCmsCta(cmsCtaBanner?.primary_cta, cmsPageMap) ??
     (cmsCtaBanner?.button?.button?.label
       ? { label: cmsCtaBanner.button.button.label, href: cmsCtaBanner.button.button.url || "#" }
-      : { label: "Book Your Free Demo", href: "/contact-us" });
-  const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta, cmsPageMap) ?? { label: "View Pricing", href: "/pricing" };
+      : undefined);
+  const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta, cmsPageMap);
   const [problemsHeadStart, problemsHeadTail] = splitTail(
-    cmsProblemsHeading?.trim() || "Why Traditional EHS Systems Fall Short",
+    cmsProblemsHeading?.trim() || "",
   );
-  const problemsSubheading =
-    cmsProblemsSubheading?.trim() ||
-    "Human attention, manual processes and scattered data create dangerous gaps.";
+  const problemsSubheading = cmsProblemsSubheading?.trim() || "";
 
-  // ACTIVE_PROBLEMS: prefer CMS items, fall back to module-level PROBLEMS constant.
-  // Icons are preserved from the hardcoded array by index (CMS supplies icon name strings,
-  // not React nodes — the existing SVG icon components are reused as fallbacks).
+  // ACTIVE_PROBLEMS: CMS items only — no fallback content. The SVG icon and
+  // colour palette are design assets applied by index; the title/description
+  // come solely from the CMS. Empty items are dropped and the section hides
+  // when nothing is configured.
   const ACTIVE_PROBLEMS: Array<ProblemCard & { cmsIcon?: string | null }> =
-    cmsProblems && cmsProblems.length > 0
-      ? cmsProblems.map((item, i) => ({
-          title: item.title || PROBLEMS[i]?.title || "",
-          desc:  item.description || PROBLEMS[i]?.desc || "",
-          icon:  PROBLEMS[i]?.icon ?? null,
-          cmsIcon: item.icon ?? null,
-          color: PROBLEMS[i % PROBLEMS.length]?.color || "#155eef",
-          bg:    PROBLEMS[i % PROBLEMS.length]?.bg    || "#eff4ff",
-        }))
-      : PROBLEMS;
+    (cmsProblems ?? [])
+      .map((item, i) => ({
+        title: item.title || "",
+        desc:  item.description || "",
+        icon:  PROBLEMS[i % PROBLEMS.length]?.icon ?? null,
+        cmsIcon: item.icon ?? null,
+        color: PROBLEMS[i % PROBLEMS.length]?.color || "#155eef",
+        bg:    PROBLEMS[i % PROBLEMS.length]?.bg    || "#eff4ff",
+      }))
+      .filter((p) => p.title || p.desc);
 
   // CAPABILITIES: overlay CMS title/desc by index if provided; keep all
   // styling, icons, features and benefits from the hardcoded array.
@@ -1617,17 +1616,11 @@ export default function IrisPage({
               {cmsHero.eyebrow}
             </span>
           )}
-          {cmsHero?.headline ? (
+          {heroHeadline && (
             <h1
               className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.06] tracking-[-0.03em] text-[#0a0f1e]"
               dangerouslySetInnerHTML={{ __html: heroHeadline }}
             />
-          ) : (
-            <h1 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.06] tracking-[-0.03em] text-[#0a0f1e]">
-              Meet IRIS
-              <br />
-              <span style={{ color:"#1d4ed8" }}>Intelligent Risk &amp; Insight System</span>
-            </h1>
           )}
           {heroSubheadline && (
             <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.7] text-[#4b5563] mt-4 max-w-[600px] mx-auto text-pretty">
@@ -1636,8 +1629,10 @@ export default function IrisPage({
           )}
         </div>
 
-        {/* ── CTAs ── */}
+        {/* ── CTAs — render only those configured in the CMS ── */}
+        {(heroPrimaryCta || heroSecondaryCta) && (
         <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3 mt-2 mb-8 animate-hero-rise" style={{ animationDelay: "200ms" }}>
+          {heroPrimaryCta && (
           <GlareButton
             href={heroPrimaryCta.href}
             className="inline-flex items-center gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white duration-200 hover:shadow-lg"
@@ -1651,6 +1646,8 @@ export default function IrisPage({
               <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </GlareButton>
+          )}
+          {heroSecondaryCta && (
           <GlareButton
             href={heroSecondaryCta.href}
             fillColor="#FFA660"
@@ -1660,7 +1657,9 @@ export default function IrisPage({
           >
             {heroSecondaryCta.label}
           </GlareButton>
+          )}
         </div>
+        )}
 
         {/* ── Cards + IRIS logo ── */}
         <div className="relative z-10 w-full max-w-[1100px]">
@@ -1793,48 +1792,36 @@ export default function IrisPage({
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 2 — ABOUT IRIS (simple text)                               */}
       {/* ─────────────────────────────────────────────────────────────────── */}
+      {(cmsTextCta?.title?.trim() || cmsTextCta?.description?.trim()) && (
       <section
         ref={introRef}
         className="py-[70px] md:py-[90px] px-4 md:px-6"
         style={{ background: "#F8FBFF" }}
       >
         <div className="max-w-[760px] mx-auto text-center flex flex-col gap-5 iris-reveal-target">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-            {cmsTextCta?.title
-              ? <span dangerouslySetInnerHTML={{ __html: cmsTextCta.title }} />
-              : <>About <span style={{ color: "#155eef" }}>IRIS</span></>
-            }
-          </h2>
+          {cmsTextCta?.title?.trim() && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
+              <span dangerouslySetInnerHTML={{ __html: cmsTextCta.title }} />
+            </h2>
+          )}
 
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty">
-            {cmsTextCta?.description ? (
-              /* CMS rich-text HTML — render it, don't print the tags */
+          {cmsTextCta?.description?.trim() && (
+            <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty">
+              {/* CMS rich-text HTML — render it, don't print the tags */}
               <span
                 className="[&_p+p]:mt-4 [&_p]:inline-block"
                 dangerouslySetInnerHTML={{ __html: cmsTextCta.description }}
               />
-            ) : (
-              <>
-                IRIS <span style={{ color: "#727272" }}>(Intelligent Risk &amp; Insight System)</span>{" "}
-                is EHSWatch&apos;s embedded AI layer — built into every workflow your safety team
-                already uses. Six capabilities work together to surface hazards earlier, accelerate
-                incident closure and turn raw safety data into actionable intelligence that used to
-                take days to compile manually.
-              </>
-            )}
-          </p>
-
-          <div className="w-12 border-t border-[#d1d5db] mx-auto" />
-
-          <p className="font-[family-name:var(--font-dm-sans)] text-[16px] leading-[1.75] italic text-[#727272]">
-            &ldquo;IRIS doesn&apos;t replace your safety team&apos;s judgment — it sharpens it.&rdquo;
-          </p>
+            </p>
+          )}
         </div>
       </section>
+      )}
 
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 3 — PROBLEMS (modules-style grid)                           */}
       {/* ─────────────────────────────────────────────────────────────────── */}
+      {ACTIVE_PROBLEMS.length > 0 && (
       <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
         <style>{`
           @media (min-width: 640px) and (max-width: 1023px) {
@@ -1843,15 +1830,21 @@ export default function IrisPage({
         `}</style>
         <div className="max-w-[1160px] mx-auto">
           {/* Heading */}
+          {(problemsHeadTail || problemsSubheading) && (
           <div className="text-center mb-10 md:mb-14" ref={problemsHeadRef}>
-            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b] iris-reveal-target">
-              {problemsHeadStart}
-              <span style={{ color: "#155eef" }}>{problemsHeadTail}</span>
-            </h2>
-            <p className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#727272] mt-3 max-w-[520px] mx-auto text-pretty iris-reveal-target" style={{ transitionDelay: "80ms" }}>
-              {problemsSubheading}
-            </p>
+            {problemsHeadTail && (
+              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b] iris-reveal-target">
+                {problemsHeadStart}
+                <span style={{ color: "#155eef" }}>{problemsHeadTail}</span>
+              </h2>
+            )}
+            {problemsSubheading && (
+              <p className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.75] text-[#727272] mt-3 max-w-[520px] mx-auto text-pretty iris-reveal-target" style={{ transitionDelay: "80ms" }}>
+                {problemsSubheading}
+              </p>
+            )}
           </div>
+          )}
 
           {/* Grid — no outer border, internal dividers only (matches modules style).
               Rows are derived from the item count so any number of CMS cards
@@ -1900,6 +1893,7 @@ export default function IrisPage({
           </div>
         </div>
       </section>
+      )}
 
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 4+5 — AI CHAT SHOWCASE (scroll-driven)                      */}
@@ -1913,6 +1907,7 @@ export default function IrisPage({
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION 6 — CTA (orange gradient)                                   */}
       {/* ─────────────────────────────────────────────────────────────────── */}
+      {(ctaBannerHeadline || ctaBannerSubhead || ctaBannerPrimary || ctaBannerSecondary) && (
       <section
         ref={ctaRef}
         className="relative py-12 md:py-[61px] px-4 md:px-6 overflow-hidden iris-reveal-target"
@@ -1921,15 +1916,21 @@ export default function IrisPage({
         }}
       >
         <div className="max-w-[800px] mx-auto flex flex-col gap-3 md:gap-[16px] items-center text-center">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e]">
-            {ctaBannerHeadline}
-          </h2>
+          {ctaBannerHeadline && (
+            <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e]">
+              {ctaBannerHeadline}
+            </h2>
+          )}
 
-          <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-relaxed text-[#6b7280] max-w-[500px]">
-            {ctaBannerSubhead}
-          </p>
+          {ctaBannerSubhead && (
+            <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-relaxed text-[#6b7280] max-w-[500px]">
+              {ctaBannerSubhead}
+            </p>
+          )}
 
+          {(ctaBannerPrimary || ctaBannerSecondary) && (
           <div className="flex flex-col sm:flex-row gap-3 md:gap-[16px] items-center justify-center pt-4 md:pt-[24px]">
+            {ctaBannerPrimary && (
             <GlareButton
               href={ctaBannerPrimary.href}
               className="flex items-center justify-center px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white whitespace-nowrap"
@@ -1940,6 +1941,8 @@ export default function IrisPage({
             >
               {ctaBannerPrimary.label}
             </GlareButton>
+            )}
+            {ctaBannerSecondary && (
             <GlareButton
               fillColor="#FFA660"
               hoverTextColor="#ffffff"
@@ -1949,9 +1952,12 @@ export default function IrisPage({
             >
               {ctaBannerSecondary.label}
             </GlareButton>
+            )}
           </div>
+          )}
         </div>
       </section>
+      )}
     </>
   );
 }
