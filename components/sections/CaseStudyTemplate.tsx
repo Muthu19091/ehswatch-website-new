@@ -10,45 +10,12 @@ import type { CmsCaseStudy } from "@/lib/types";
 // Case-study inner-page template.
 //
 // Every visible field is driven by the CMS case-study record (title, client,
-// industry, summary, body HTML, results, cover, meta). The DUMMY fallbacks
-// below only render when a field is empty, so the layout always looks complete
-// even for a sparsely-authored study. Edit the study in the CMS and it flows
-// straight through here.
+// industry, summary, body HTML, results, cover, meta). There are no hardcoded
+// fallbacks — empty fields simply don't render. Edit the study in the CMS and
+// it flows straight through here.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ACCENT = "#059669";
-
-const DUMMY: CmsCaseStudy["attributes"] = {
-  title: "How [Client] Cut Incident Reporting Time by 68%",
-  slug: "sample-case-study",
-  client_name: "Sample Client",
-  industry: "Oil & Gas",
-  summary:
-    "A short, punchy summary of the outcome goes here — the one-sentence version a busy reader remembers. Replace it by editing the case study's Summary field in the CMS.",
-  body: "",
-  results: [
-    { label: "Reporting Time Reduced", value: "68%" },
-    { label: "Near-Miss Reports / Month", value: "3×" },
-    { label: "Audit Findings Closed On Time", value: "94%" },
-    { label: "Compliance Score", value: "99.2%" },
-  ],
-  status: "published",
-  published_at: "2026-01-01T00:00:00.000Z",
-  cover: null,
-  meta: { meta_title: "", meta_description: "", meta_keywords: null, canonical_url: null, og_image: null, robots: "index,follow" },
-  structured_data: [],
-  updated_at: "2026-01-01T00:00:00.000Z",
-};
-
-const DUMMY_BODY = (client: string) => `
-<h2>The Challenge</h2>
-<p>Before EHSWatch, the safety team at ${client} managed compliance across multiple sites using a patchwork of spreadsheets, email threads and a legacy desktop tool. Audit preparation alone consumed days each quarter, and field workers routinely deferred documentation until end-of-shift — by which point key details were lost.</p>
-<h2>The Approach</h2>
-<p>EHSWatch was rolled out across all sites within six weeks. A mobile-first capture flow replaced paper forms, automatic routing sent corrective actions to the right owners, and live dashboards gave leadership the real-time view they had been missing.</p>
-<h2>The Outcome</h2>
-<p>Within one quarter the team saw dramatic improvements across every metric they tracked — faster reporting, more near-miss submissions, and audit trails that were complete and always ready.</p>
-<p><em>This is placeholder copy. Add the real story in the case study's Body field in the CMS and it replaces everything here.</em></p>
-`;
 
 function getPrevNext(slug: string, allSlugs?: string[]) {
   const list = allSlugs && allSlugs.length > 0 ? allSlugs : [];
@@ -69,14 +36,17 @@ export default function CaseStudyTemplate({
   cmsStudy?: CmsCaseStudy;
   allSlugs?: string[];
 }) {
-  const attrs = cmsStudy?.attributes ?? DUMMY;
+  // CMS-only: the detail route 404s when the study is missing, so there is
+  // always a real record here — no DUMMY placeholder content.
+  if (!cmsStudy) return null;
+  const attrs = cmsStudy.attributes;
 
-  const title = attrs.title || DUMMY.title;
-  const clientName = attrs.client_name || DUMMY.client_name;
-  const industry = attrs.industry || DUMMY.industry;
-  const summary = attrs.summary || DUMMY.summary;
-  const bodyHtml = attrs.body?.trim() ? attrs.body : DUMMY_BODY(clientName);
-  const results = attrs.results?.length ? attrs.results : DUMMY.results;
+  const title = attrs.title || "";
+  const clientName = attrs.client_name || "";
+  const industry = attrs.industry || "";
+  const summary = attrs.summary || "";
+  const bodyHtml = attrs.body?.trim() ? attrs.body : "";
+  const results = attrs.results?.length ? attrs.results : [];
   // Only use a real uploaded cover — no generic blog-image fallback (it read as
   // a random stock photo on every study). When absent, the cover band is hidden
   // and the green "at a glance" card becomes the lead visual.
@@ -147,16 +117,20 @@ export default function CaseStudyTemplate({
           </div>
 
           <div className="relative z-20 max-w-[760px] w-full mx-auto text-center flex flex-col items-center gap-4">
-            <span
-              className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em]"
-              style={{ color: ACCENT }}
-            >
-              {industry}
-            </span>
+            {industry && (
+              <span
+                className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.12em]"
+                style={{ color: ACCENT }}
+              >
+                {industry}
+              </span>
+            )}
 
-            <h1 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-[1.1] tracking-[-0.025em] text-[#0a0f1e] text-balance">
-              {title}
-            </h1>
+            {title && (
+              <h1 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-[1.1] tracking-[-0.025em] text-[#0a0f1e] text-balance">
+                {title}
+              </h1>
+            )}
 
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
             <div className="flex items-center justify-between w-full max-w-[680px] py-3">
@@ -191,13 +165,16 @@ export default function CaseStudyTemplate({
             )}
 
             {/* At a glance — summary + quick facts */}
+            {(summary || heroMetric) && (
             <div
               className="rounded-2xl px-6 py-6 mb-12 flex flex-col md:flex-row gap-6 md:items-center"
               style={{ background: "linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%)", border: "1px solid #D1FAE5" }}
             >
-              <p className="flex-1 font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.75] text-[#065f46] font-medium">
-                {summary}
-              </p>
+              {summary && (
+                <p className="flex-1 font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.75] text-[#065f46] font-medium">
+                  {summary}
+                </p>
+              )}
               {heroMetric && (
                 <div className="shrink-0 md:border-l md:border-[#A7F3D0] md:pl-6 text-center md:text-left">
                   <div
@@ -212,12 +189,15 @@ export default function CaseStudyTemplate({
                 </div>
               )}
             </div>
+            )}
 
             {/* Story */}
-            <div
-              className="cs-body font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
-            />
+            {bodyHtml && (
+              <div
+                className="cs-body font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
+                dangerouslySetInnerHTML={{ __html: bodyHtml }}
+              />
+            )}
 
             {/* Results */}
             {results.length > 0 && (

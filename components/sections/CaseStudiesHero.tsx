@@ -11,7 +11,8 @@ interface Props {
 }
 
 export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadline, cmsPrimaryCta, cmsSecondaryCta }: Props) {
-  const primaryCta = cmsPrimaryCta ?? { label: "Explore Case Studies", url: "#case-studies" };
+  // CMS-only: buttons render only when configured in the CMS.
+  const primaryCta = cmsPrimaryCta;
   return (
     <section
       className="relative overflow-hidden flex items-center justify-center px-6 pt-[148px] pb-[72px]"
@@ -65,28 +66,30 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
             {cmsEyebrow}
           </span>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-[-0.03em] animate-hero-rise"
-          style={{ color: "#0a1628", animationDelay: "80ms" }}
-        >
-          {cmsHeadline ? (
-            /* CMS headline may carry a <span> for the blue highlight — render it, restyled */
+        {cmsHeadline?.trim() && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[46px] md:text-[56px] leading-[1.06] tracking-[-0.03em] animate-hero-rise"
+            style={{ color: "#0a1628", animationDelay: "80ms" }}
+          >
+            {/* CMS headline may carry a <span> for the blue highlight — render it, restyled */}
             <span
               dangerouslySetInnerHTML={{
                 __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
               }}
             />
-          ) : (
-            <>Proof from the Field,<br /><span style={{ color: "#1d4ed8" }}>Not the Pitch.</span></>
-          )}
-        </h1>
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[580px] animate-hero-rise"
-          style={{ color: "#6b7280", animationDelay: "200ms", textWrap: "pretty" } as React.CSSProperties}
-        >
-          {cmsSubheadline ?? "EHSQ teams across construction, energy, manufacturing, logistics and other sectors use EHSWatch to cut reporting time, accelerate audits, close actions faster and gain clear visibility into risk across every site."}
-        </p>
+          </h1>
+        )}
+        {cmsSubheadline?.trim() && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] max-w-[580px] animate-hero-rise"
+            style={{ color: "#6b7280", animationDelay: "200ms", textWrap: "pretty" } as React.CSSProperties}
+          >
+            {cmsSubheadline}
+          </p>
+        )}
+        {(primaryCta || cmsSecondaryCta) && (
         <div className="flex flex-wrap gap-3 justify-center animate-hero-rise" style={{ animationDelay: "320ms" }}>
+          {primaryCta && (
           <GlareButton
             href={primaryCta.url}
             className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white"
@@ -96,6 +99,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
           >
             {primaryCta.label}
           </GlareButton>
+          )}
           {cmsSecondaryCta && (
             <GlareButton
               href={cmsSecondaryCta.url}
@@ -108,6 +112,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
             </GlareButton>
           )}
         </div>
+        )}
       </div>
     </section>
   );

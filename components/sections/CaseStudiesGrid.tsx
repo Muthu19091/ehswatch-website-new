@@ -17,38 +17,6 @@ interface Card {
   metricLabel?: string;
 }
 
-/* ═══════════════════════════════════════════════════════
-   FALLBACK DATA
-═══════════════════════════════════════════════════════ */
-const UNSPLASH = "https://images.unsplash.com";
-
-const FALLBACK_CARDS: Card[] = [
-  {
-    slug: "construction",
-    title: "42% faster incident reporting across 18 active construction sites.",
-    body: "Al Masood Infrastructure replaced paper forms and email chains with EHSWatch. Safety managers now receive incident reports in minutes — not days — across every site, every shift.",
-    img: UNSPLASH + "/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=700&h=400&q=75",
-  },
-  {
-    slug: "oil-gas",
-    title: "Zero missed permit closures across a multi-rig offshore operation.",
-    body: "Gulf Energy Services digitised their entire permit-to-work workflow. Every permit is now issued, tracked, and formally closed in real time — with no slippage, no paper, no gaps.",
-    img: UNSPLASH + "/photo-1548337138-e87d889cc369?auto=format&fit=crop&w=700&h=400&q=75",
-  },
-  {
-    slug: "utilities",
-    title: "Full site risk visibility achieved in under 8 weeks.",
-    body: "National Grid Services deployed EHSWatch enterprise-wide across multiple regions in eight weeks, giving leadership a live risk dashboard across every field team and open action.",
-    img: UNSPLASH + "/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=700&h=400&q=75",
-  },
-  {
-    slug: "manufacturing",
-    title: "Audit cycles cut by 60% — and the team is audit-ready every day.",
-    body: "Apex Industrial Group moved from weeks of manual prep to on-demand compliance. Inspection checklists, corrective actions, and audit records are all captured digitally and available instantly.",
-    img: UNSPLASH + "/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=700&h=400&q=75",
-  },
-];
-
 function cmsToCard(cs: CmsCaseStudy): Card {
   const r = cs.attributes.results?.[0];
   return {
@@ -260,10 +228,14 @@ interface CaseStudiesGridProps {
 }
 
 export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
+  // CMS-only: no hardcoded fallback studies.
   const cards: Card[] =
     cmsStudies && cmsStudies.length > 0
       ? cmsStudies.map(cmsToCard)
-      : FALLBACK_CARDS;
+      : [];
+
+  // Nothing configured → hide the whole section.
+  if (cards.length === 0) return null;
 
   // Layout: first card wide, middle pair square, rest wide; last 2 in another pair
   const [first, second, third, ...rest] = cards;
