@@ -53,7 +53,7 @@ export interface ModuleTemplateProps {
   };
   moreModules?: {
     heading: string;
-    modules: Array<{ name: string; slug: string; desc: string; icon?: string | null }>;
+    modules: Array<{ name: string; slug: string; desc: string; icon?: string | null; href?: string }>;
   };
 }
 
@@ -120,7 +120,7 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
 }
 
 function MoreModuleCard({ mod, color, isLast }: {
-  mod: { name: string; slug: string; desc: string; icon?: string | null };
+  mod: { name: string; slug: string; desc: string; icon?: string | null; href?: string };
   color: string;
   isLast: boolean;
 }) {
@@ -143,7 +143,7 @@ function MoreModuleCard({ mod, color, isLast }: {
         {mod.desc}
       </p>
       <Link
-        href={`/modules/${mod.slug}`}
+        href={mod.href ?? `/modules/${mod.slug}`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="mt-1 self-start inline-flex items-center gap-1 font-[family-name:var(--font-dm-sans)] font-medium text-[13px] no-underline transition-all duration-200"

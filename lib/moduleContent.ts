@@ -170,17 +170,41 @@ export function buildModuleTemplateProps(
   const modulesBlock = findBlock<{
     heading?: string;
     visible_count?: number;
+    items?: unknown;
   }>(blocks, "product_modules");
 
-  const otherModules = allModules
-    .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
-    .slice(0, modulesBlock?.visible_count || 5)
-    .map((m) => ({
-      name: stripHtml(m.attributes.name),
-      slug: m.attributes.slug,
-      desc: stripHtml(m.attributes.description) || stripHtml(m.attributes.tagline),
-      icon: m.attributes.icon ?? null,
-    }));
+  // Curated related-modules: when the block's items carry per-page custom
+  // descriptions, render exactly those (order, copy and links from the CMS).
+  // Otherwise fall back to auto-listing other active modules with their global
+  // description. A slug of "iris" links to the IRIS page, not a module page.
+  const curatedItems = normalizeArray<{
+    slug?: string;
+    name?: string;
+    tagline?: string;
+    description?: string;
+    icon?: string;
+  }>(modulesBlock?.items).filter((it) => it?.name && stripHtmlOpt(it.description));
+
+  const hrefForModule = (s?: string) => (s === "iris" ? "/iris" : `/modules/${s ?? ""}`);
+
+  const otherModules = curatedItems.length > 0
+    ? curatedItems.map((it) => ({
+        name: stripHtml(it.name),
+        slug: it.slug ?? "",
+        desc: stripHtml(it.description),
+        icon: it.icon ?? null,
+        href: hrefForModule(it.slug),
+      }))
+    : allModules
+        .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
+        .slice(0, modulesBlock?.visible_count || 5)
+        .map((m) => ({
+          name: stripHtml(m.attributes.name),
+          slug: m.attributes.slug,
+          desc: stripHtml(m.attributes.description) || stripHtml(m.attributes.tagline),
+          icon: m.attributes.icon ?? null,
+          href: hrefForModule(m.attributes.slug),
+        }));
 
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
