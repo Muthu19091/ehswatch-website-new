@@ -95,7 +95,7 @@ export default async function IndustriesPage() {
         />
         {cmsTestimonials.length > 0 && (
           <Testimonials
-            title={stripHtmlOpt(testimonialsData?.heading) || "A Snapshot of Real‑World Impact"}
+            title={stripHtmlOpt(testimonialsData?.heading) || undefined}
             subtitle={stripHtmlOpt(testimonialsData?.subheading) ?? ""}
             cmsItems={cmsTestimonials}
           />
