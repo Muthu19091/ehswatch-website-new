@@ -8,45 +8,32 @@ export interface FaqItem {
   answer: string;
 }
 
-const DEFAULT_FAQS: FaqItem[] = [
-  {
-    question: "Are there hidden fees or setup costs?",
-    answer: "No hidden fees. Pricing is based only on the applications you choose, with unlimited users included.",
-  },
-  {
-    question: "What is the minimum term for a contract?",
-    answer: "The minimum contract term is 1 year.",
-  },
-  {
-    question: "Is there a free trial or demo?",
-    answer: "Yes, we offer a free trial or live demo to explore EHSWatch before you commit.",
-  },
-  {
-    question: "Do you offer customised packages?",
-    answer: "Yes, packages are fully customisable. Select the EHSWatch modules that match your organisation and only pay for what you use.",
-  },
-];
-
 interface PricingFAQProps {
   heading?: string;
   items?: FaqItem[];
 }
 
 export default function PricingFAQ({
-  heading = "Frequently Asked Questions",
+  heading,
   items,
 }: PricingFAQProps = {}) {
-  const faqs = items && items.length > 0 ? items : DEFAULT_FAQS;
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  // CMS-only: no hardcoded FAQ fallback. Hide the section when empty.
+  const faqs = items && items.length > 0 ? items : [];
+  const displayHeading = heading?.trim() || "";
+  if (faqs.length === 0) return null;
 
   return (
     <section className="py-[60px] md:py-[80px] px-4 md:px-6 bg-white">
       <div className="max-w-[760px] mx-auto flex flex-col gap-8">
+        {displayHeading && (
         <div className="text-center">
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-            {heading}
+            {displayHeading}
           </h2>
         </div>
+        )}
         <div className="flex flex-col divide-y divide-[#e5eaf2]">
           {faqs.map((faq, i) => (
             <div key={i} className="py-5">

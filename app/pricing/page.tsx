@@ -42,13 +42,16 @@ export default async function PricingPage() {
     secondary_cta?: { label?: string; url?: string };
   }>(blocks, "hero");
 
+  // CMS-only: labels come solely from the CMS (buttons hide when absent). The
+  // hrefs keep functional defaults so a CMS-configured button still targets the
+  // calculator when no explicit link is set.
   const heroEyebrow       = heroBlock?.eyebrow || undefined;
   const heroHeadline      = heroBlock?.headline || undefined;
   const heroSubheadline   = heroBlock?.subheadline || undefined;
-  const primaryCtaLabel   = heroBlock?.primary_cta?.label || "Build Your Package";
+  const primaryCtaLabel   = heroBlock?.primary_cta?.label || undefined;
   const primaryCtaHref    = heroBlock?.primary_cta?.anchor || heroBlock?.primary_cta?.url || "#calculator";
-  const secondaryCtaLabel = heroBlock?.secondary_cta?.label || "Book a Demo";
-  const secondaryCtaHref  = heroBlock?.secondary_cta?.url || "#";
+  const secondaryCtaLabel = heroBlock?.secondary_cta?.label || undefined;
+  const secondaryCtaHref  = heroBlock?.secondary_cta?.url || undefined;
 
   // ── text_checklist block ────────────────────────────────────────────────────
   const overviewBlock = findBlock<{

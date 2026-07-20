@@ -14,13 +14,18 @@ interface PricingHeroProps {
 
 export default function PricingHero({
   eyebrow,
-  headline = "Simple, Flexible Pricing for Enterprise EHS",
-  subheadline = "Pay only for the modules you need. No hidden fees, no bundled features you won’t use — just the capabilities that match your EHS requirements.",
-  primaryCtaLabel = "Build Your Package",
-  primaryCtaHref = "#calculator",
-  secondaryCtaLabel = "Book a Demo",
-  secondaryCtaHref = "#",
+  headline,
+  subheadline,
+  primaryCtaLabel,
+  primaryCtaHref,
+  secondaryCtaLabel,
+  secondaryCtaHref,
 }: PricingHeroProps = {}) {
+  // CMS-only: no hardcoded fallback copy or CTAs.
+  const hasHeadline = !!headline?.trim();
+  const hasSubheadline = !!subheadline?.trim();
+  const showPrimary = !!primaryCtaLabel?.trim() && !!primaryCtaHref;
+  const showSecondary = !!secondaryCtaLabel?.trim() && !!secondaryCtaHref && secondaryCtaHref !== "#";
   return (
     <section
       className="relative overflow-hidden flex items-center justify-center px-4 sm:px-6 pt-[90px] sm:pt-[120px] md:pt-[148px] pb-[60px] sm:pb-[80px] md:pb-[100px]"
@@ -88,22 +93,28 @@ export default function PricingHero({
             {eyebrow}
           </span>
         )}
-        <h1
-          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[56px] leading-[1.08] text-gray-900 tracking-[-0.03em] animate-hero-rise"
-          style={{ animationDelay: "80ms" }}
-          dangerouslySetInnerHTML={{ __html: headline }}
-        />
+        {hasHeadline && (
+          <h1
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[56px] leading-[1.08] text-gray-900 tracking-[-0.03em] animate-hero-rise"
+            style={{ animationDelay: "80ms" }}
+            dangerouslySetInnerHTML={{ __html: headline! }}
+          />
+        )}
 
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-gray-600 leading-[1.75] max-w-[560px] animate-hero-rise text-pretty"
-          style={{ animationDelay: "180ms" }}
-        >
-          {subheadline}
-        </p>
+        {hasSubheadline && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-gray-600 leading-[1.75] max-w-[560px] animate-hero-rise text-pretty"
+            style={{ animationDelay: "180ms" }}
+          >
+            {subheadline}
+          </p>
+        )}
 
+        {(showPrimary || showSecondary) && (
         <div className="flex flex-col sm:flex-row gap-3 animate-hero-rise" style={{ animationDelay: "280ms" }}>
+          {showPrimary && (
           <GlareButton
-            href={primaryCtaHref}
+            href={primaryCtaHref!}
             className="inline-flex items-center gap-2 px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white transition-all duration-200 hover:shadow-lg"
             style={{
               backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
@@ -115,8 +126,10 @@ export default function PricingHero({
               <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </GlareButton>
+          )}
+          {showSecondary && (
           <GlareButton
-            href={secondaryCtaHref}
+            href={secondaryCtaHref!}
             fillColor="#FFA660"
             hoverTextColor="#ffffff"
             className="px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] border"
@@ -124,7 +137,9 @@ export default function PricingHero({
           >
             {secondaryCtaLabel}
           </GlareButton>
+          )}
         </div>
+        )}
       </div>
     </section>
   );

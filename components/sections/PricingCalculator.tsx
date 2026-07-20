@@ -11,81 +11,6 @@ import CmsIcon from "@/components/ui/CmsIcon";
 // Validation is derived from each field's `required` flag and `field_type`.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Fallback data (used only when the CMS form schema is unavailable) ────────
-
-const APPS = [
-  { id: "action",         name: "Action Tracker",             desc: "Track corrective actions to closure with accountability.",  color: "#155eef", icon: "check-circle" },
-  { id: "eightd",         name: "8D Report",                  desc: "Structured 8-discipline problem-solving reports.",          color: "#6366f1", icon: "clipboard" },
-  { id: "audit",          name: "Audit Management",           desc: "Plan audits, capture findings, close compliance gaps.",     color: "#6366f1", icon: "clipboard-check" },
-  { id: "communications", name: "Communications",             desc: "Share safety alerts, updates and bulletins org-wide.",      color: "#0891b2", icon: "message-circle" },
-  { id: "complaints",     name: "Customer Complaint Details", desc: "Structured complaints workflow with full audit trail.",     color: "#0891b2", icon: "message-square" },
-  { id: "emergency",      name: "Emergency Response Drills",  desc: "Schedule drills and capture lessons learned.",              color: "#ef4444", icon: "alarm-clock" },
-  { id: "files",          name: "File Management",            desc: "Version-controlled EHSQ documents with access control.",    color: "#059669", icon: "folder" },
-  { id: "hsestats",       name: "HSE Monthly Statistics",     desc: "Aggregate and report monthly HSE performance data.",        color: "#155eef", icon: "bar-chart-2" },
-  { id: "hseplans",       name: "HSE Plans",                  desc: "Build and track health & safety plans across sites.",       color: "#7c3aed", icon: "book" },
-  { id: "observations",   name: "HSE Observations",           desc: "Capture unsafe acts and positive safety behaviours.",       color: "#f59e0b", icon: "eye" },
-  { id: "inspections",    name: "Inspections",                desc: "Conduct digital inspections with custom checklists.",       color: "#155eef", icon: "search" },
-  { id: "incident",       name: "Incident Management",        desc: "Report, investigate and close incidents end-to-end.",       color: "#ef4444", icon: "alert-triangle" },
-  { id: "legal",          name: "Legal Register",             desc: "Track regulatory obligations and stay audit-ready.",        color: "#7c3aed", icon: "book-open" },
-  { id: "moc",            name: "Management of Change",       desc: "Control operational changes with structured approvals.",    color: "#0891b2", icon: "refresh-cw" },
-  { id: "meetings",       name: "Meetings Management",        desc: "Capture decisions and track action follow-through.",        color: "#059669", icon: "calendar" },
-  { id: "mutualaid",      name: "Mutual Aid",                 desc: "Coordinate shared resources and emergency assistance.",     color: "#ef4444", icon: "heart" },
-  { id: "nonconformance", name: "Non Conformance",            desc: "Record, investigate and prevent recurring issues.",         color: "#f97316", icon: "x-circle" },
-  { id: "permit",         name: "Permit to Work",             desc: "Digitise high-risk work permits with approval workflows.",  color: "#155eef", icon: "lock" },
-  { id: "risk",           name: "Risk Assessments",           desc: "Identify hazards, assess risk and document controls.",      color: "#6366f1", icon: "shield" },
-  { id: "survey",         name: "Survey",                     desc: "Create and distribute safety culture surveys.",             color: "#f59e0b", icon: "clipboard-list" },
-  { id: "training",       name: "Training Management",        desc: "Manage training records and certification expiries.",       color: "#f59e0b", icon: "graduation-cap" },
-];
-
-const ADDONS = [
-  { id: "iris",     name: "IRIS AI",                desc: "AI incident analysis & smart insights",    color: "#6366f1", icon: "sparkles" },
-  { id: "whatsapp", name: "WhatsApp Reporting",     desc: "Report incidents directly from WhatsApp",  color: "#25d366", icon: "message-circle" },
-  { id: "api",      name: "API Integrations",       desc: "Connect with existing systems",            color: "#0891b2", icon: "link" },
-  { id: "bi",       name: "3rd Party BI Connector", desc: "Power BI / Tableau connectivity",          color: "#f59e0b", icon: "bar-chart-2" },
-  { id: "hr",       name: "HR Integration",         desc: "Sync users from your HRMS",               color: "#7c3aed", icon: "users" },
-  { id: "sso",      name: "Single Sign On (SSO)",   desc: "Azure / Google / Active Directory login",  color: "#155eef", icon: "lock" },
-];
-
-const INDUSTRIES = [
-  "Construction", "Oil & Gas", "Manufacturing", "Mining", "Utilities",
-  "Chemical & Pharma", "Food & Beverage", "Transportation & Logistics",
-  "Healthcare", "Facilities Management", "Retail", "Other",
-];
-
-// Fallback schema — mirrors the CMS default so both render paths are identical
-const DEFAULT_STEPS: CmsFormStep[] = [
-  {
-    key: "applications", title: "Applications",
-    description: "Select the applications you need in your organisation",
-    fields: [{ key: "selected_applications", label: "Applications", field_type: "application_picker", required: true, full_width: true }],
-  },
-  {
-    key: "addons", title: "Add-Ons",
-    description: "Enhance your EHSWatch experience (optional)",
-    fields: [{ key: "selected_addons", label: "Advanced features", field_type: "addon_picker", required: false, full_width: true }],
-  },
-  {
-    key: "organisation", title: "Organisation",
-    description: "Tell us about your organisation so we can size the proposal",
-    fields: [
-      { key: "employees", label: "Number of Employees", field_type: "select", options: ["< 50", "50–200", "201–1,000", "1,001–5,000", "5,000+"], required: true, full_width: true },
-      { key: "sites",     label: "Number of Sites",     field_type: "select", options: ["1", "2–5", "6–20", "21–50", "50+"], required: true, full_width: true },
-      { key: "industry",  label: "Industry",            field_type: "select", options: INDUSTRIES, required: true, full_width: true },
-    ],
-  },
-  {
-    key: "contact", title: "Get Proposal",
-    description: "Where should we send your tailored proposal?",
-    fields: [
-      { key: "name",       label: "Full Name",          field_type: "text",     placeholder: "Jane Smith", required: true, full_width: true },
-      { key: "email",      label: "Work Email",         field_type: "email",    placeholder: "jane@company.com", required: true },
-      { key: "phone",      label: "Phone Number",       field_type: "phone",    placeholder: "+1 000 000 0000", required: false },
-      { key: "company",    label: "Company",            field_type: "text",     placeholder: "Your organisation name", required: true },
-      { key: "messagebox", label: "Message (optional)", field_type: "textarea", placeholder: "Anything specific you'd like us to know?", required: false, full_width: true },
-    ],
-  },
-];
-
 // ── Icon renderer — shared sitewide resolver (Lucide + heroicon-o-* slugs) ──
 function LucideIcon({ name, size = 18 }: { name?: string; size?: number }) {
   return <CmsIcon icon={name} size={size} strokeWidth={1.5} color="currentColor" fallback="square-check" />;
@@ -189,34 +114,35 @@ export default function PricingCalculator({
   cmsSuccessBody,
 }: PricingCalculatorProps = {}) {
   const formSlug   = cmsFormSlug || "build-ehswatch-package";
-  const heading    = cmsHeading    || "Build Your EHSWatch Package";
-  const subheading = cmsSubheading || "Select what you need and we’ll put together a tailored proposal.";
+  // CMS-only: no hardcoded fallback copy.
+  const heading    = cmsHeading?.trim()    || "";
+  const subheading = cmsSubheading?.trim() || "";
 
-  // The wizard is the CMS schema; hardcoded steps only when CMS is unreachable
+  // The wizard IS the CMS form schema — no hardcoded fallback steps.
   const wizardSteps: CmsFormStep[] =
-    cmsFormSteps && cmsFormSteps.length > 0 ? cmsFormSteps : DEFAULT_STEPS;
+    cmsFormSteps && cmsFormSteps.length > 0 ? cmsFormSteps : [];
 
   const stepLabels =
     cmsStepLabels && cmsStepLabels.length === wizardSteps.length
       ? cmsStepLabels
       : wizardSteps.map((s) => s.title);
 
-  // Picker catalogues (apps / addons)
-  const apps: PickerItem[] = (cmsApplications && cmsApplications.length > 0)
-    ? cmsApplications.map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon || "check-circle", color: a.color || "#155eef" }))
-    : APPS;
-  const addons: PickerItem[] = (cmsAddons && cmsAddons.length > 0)
-    ? cmsAddons.map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon, color: a.color || "#6366f1" }))
-    : ADDONS;
+  // Picker catalogues (apps / addons) — CMS-only, no hardcoded catalogue.
+  const apps: PickerItem[] = (cmsApplications ?? [])
+    .map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon || "check-circle", color: a.color || "#155eef" }));
+  const addons: PickerItem[] = (cmsAddons ?? [])
+    .map(a => ({ id: a.id, name: a.name, desc: a.description, icon: a.icon, color: a.color || "#6366f1" }));
 
-  // Industry override from the pricing_calculator block
+  // Industry options come from the CMS (pricing_calculator block or the form field schema).
   const fieldOptions = (field: CmsFormField): string[] => {
     if (field.key === "industry" && cmsIndustries && cmsIndustries.length > 0) return cmsIndustries;
     return field.options ?? [];
   };
 
-  const submitLabel    = cmsSubmitLabel    || "Get My EHSWatch Proposal →";
-  const successHeading = cmsSuccessHeading || "Proposal Request Sent!";
+  // Submit button must carry a label to remain operable; use the CMS value,
+  // falling back to a neutral, non-marketing word only if the form omits it.
+  const submitLabel    = cmsSubmitLabel?.trim()    || "Submit";
+  const successHeading = cmsSuccessHeading?.trim() || "";
 
   const [step, setStep]               = useState(0);
   const [values, setValues]           = useState<Record<string, string>>({});
@@ -550,6 +476,9 @@ export default function PricingCalculator({
 
   const stepHasPicker = current.fields.some((f) => PICKER_TYPES.has(f.field_type));
 
+  // CMS-only: with no form steps there is nothing to render.
+  if (wizardSteps.length === 0) return null;
+
   return (
     <section id="calculator" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white scroll-mt-20">
       <style>{`
@@ -564,15 +493,21 @@ export default function PricingCalculator({
 
       <div className="max-w-[1160px] mx-auto">
         {/* Section heading */}
+        {(heading || subheading) && (
         <div className="text-center mb-10 md:mb-14">
-          <h2
-            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]"
-            dangerouslySetInnerHTML={{ __html: heading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">') }}
-          />
-          <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] mt-3 max-w-[460px] mx-auto text-pretty">
-            {subheading}
-          </p>
+          {heading && (
+            <h2
+              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]"
+              dangerouslySetInnerHTML={{ __html: heading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">') }}
+            />
+          )}
+          {subheading && (
+            <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] mt-3 max-w-[460px] mx-auto text-pretty">
+              {subheading}
+            </p>
+          )}
         </div>
+        )}
 
         {/* Step indicator */}
         <div className="w-full max-w-[640px] mx-auto mb-10 md:mb-14">
@@ -681,15 +616,16 @@ export default function PricingCalculator({
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] text-[#0a0f1e] mb-2">
-                    {successHeading}
-                  </h3>
-                  <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] leading-[1.75] text-pretty">
-                    {cmsSuccessBody
-                      ? cmsSuccessBody.replace(/{name}/g, firstName).replace(/{email}/g, emailVal)
-                      : <>Thanks {firstName}! Our team will review your selections and send a tailored proposal to <strong>{emailVal}</strong> within 1 business day.</>
-                    }
-                  </p>
+                  {successHeading && (
+                    <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] text-[#0a0f1e] mb-2">
+                      {successHeading}
+                    </h3>
+                  )}
+                  {cmsSuccessBody?.trim() && (
+                    <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#6b7280] leading-[1.75] text-pretty">
+                      {cmsSuccessBody.replace(/{name}/g, firstName).replace(/{email}/g, emailVal)}
+                    </p>
+                  )}
                 </div>
               </div>
             )}

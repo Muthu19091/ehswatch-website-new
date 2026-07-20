@@ -2,18 +2,6 @@
 
 import CmsIcon from "@/components/ui/CmsIcon";
 
-const DEFAULT_HEADING = "Designed Around Your <span style=\"color:#1d4ed8\">EHS Needs</span>, Not a Template";
-const DEFAULT_BODY_1 =
-  "EHSWatch is built for organisations that cannot afford generic templates or rigid licensing. Our pricing reflects how you actually use EHSQ software — across sites, modules, users, and compliance requirements.";
-const DEFAULT_BODY_2 =
-  "Implementation support, configuration, and role-based access are built into the way pricing is structured, so you can focus on improving safety and compliance instead of deciphering licence tiers.";
-const DEFAULT_CHECKLIST_HEADING = "Available for organisations that require:";
-const DEFAULT_CHECKLIST_ITEMS: Array<{ icon?: string; text: string }> = [
-  { icon: "check-circle", text: "Specific module combinations across different business units" },
-  { icon: "check-circle", text: "Multi-site or multi-country deployments with regional configuration" },
-  { icon: "check-circle", text: "Integration with existing ERP, HRMS or BI systems" },
-];
-
 // Any CMS icon pick renders inside the blue circle via the shared resolver
 function ItemIcon({ name }: { name?: string }) {
   return <CmsIcon icon={name} size={11} strokeWidth={2.2} color="white" fallback="check" />;
@@ -34,12 +22,13 @@ export default function PricingOverview({
   checklistHeading,
   checklistItems,
 }: PricingOverviewProps = {}) {
-  const displayHeading = heading || DEFAULT_HEADING;
+  // CMS-only: no hardcoded fallback content.
+  const displayHeading = heading?.trim() || "";
   const checklistNeedsArr: Array<{ icon?: string; text: string }> =
-    checklistItems && checklistItems.length > 0 ? checklistItems : DEFAULT_CHECKLIST_ITEMS;
-  const checklistLabel = checklistHeading || DEFAULT_CHECKLIST_HEADING;
+    checklistItems && checklistItems.length > 0 ? checklistItems : [];
+  const checklistLabel = checklistHeading?.trim() || "";
 
-  // Parse body HTML paragraphs; fallback to two default strings
+  // Parse body HTML paragraphs from the CMS only (no default copy).
   let bodyParagraphs: string[] = [];
   if (body) {
     // Extract content of <p> tags; if none found, use the raw string
@@ -49,9 +38,12 @@ export default function PricingOverview({
     } else {
       bodyParagraphs = [body];
     }
-  } else {
-    bodyParagraphs = [DEFAULT_BODY_1, DEFAULT_BODY_2];
   }
+
+  // Hide the whole section when the CMS provides nothing.
+  const hasLeft = !!displayHeading || bodyParagraphs.length > 0;
+  const hasRight = !!checklistLabel || checklistNeedsArr.length > 0;
+  if (!hasLeft && !hasRight) return null;
 
   return (
     <>
@@ -70,18 +62,21 @@ export default function PricingOverview({
         <div className="max-w-[1100px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left: description */}
+            {hasLeft && (
             <div className="flex flex-col gap-6">
               {cmsEyebrow && (
                 <p className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.12em] text-[#1d4ed8]">
                   {cmsEyebrow}
                 </p>
               )}
+              {displayHeading && (
               <div>
                 <h2
                   className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]"
                   dangerouslySetInnerHTML={{ __html: displayHeading }}
                 />
               </div>
+              )}
               {bodyParagraphs.map((para, i) => (
                 <p
                   key={i}
@@ -90,14 +85,18 @@ export default function PricingOverview({
                 />
               ))}
             </div>
+            )}
 
             {/* Right: custom pricing card */}
+            {hasRight && (
             <div className="flex flex-col gap-6 pt-2 items-center text-center">
+              {checklistLabel && (
               <div>
                 <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] leading-snug text-[#0a0f1e]">
                   {checklistLabel}
                 </h3>
               </div>
+              )}
 
               {/* Step-progress bullet list */}
               <div className="flex flex-col max-w-[400px] w-full text-left">
@@ -132,6 +131,7 @@ export default function PricingOverview({
                 ))}
               </div>
             </div>
+            )}
           </div>
         </div>
       </section>
