@@ -179,10 +179,15 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
                   </label>
                 )}
 
-                <p className="font-[family-name:var(--font-dm-sans)] text-[12px]" style={{ color: DARK_MID }}>
-                  Read more about how we protect your data.{" "}
-                  <a href={`${basePath}/privacy-policy/`} className="font-semibold underline" style={{ color: DARK }}>Learn More</a>
-                </p>
+                {/* Privacy note — CMS-driven via the consent field's help text;
+                    hidden entirely when the CMS leaves it blank. The link goes to
+                    the site's privacy-policy page. */}
+                {consentField?.help_text?.trim() && (
+                  <p className="font-[family-name:var(--font-dm-sans)] text-[12px]" style={{ color: DARK_MID }}>
+                    {consentField.help_text}{" "}
+                    <a href={`${basePath}/privacy-policy/`} className="font-semibold underline" style={{ color: DARK }}>Learn More</a>
+                  </p>
+                )}
               </div>
 
               {/* Turnstile */}
