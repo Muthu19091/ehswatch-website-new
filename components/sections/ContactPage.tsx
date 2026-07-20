@@ -54,12 +54,6 @@ export interface ContactPageProps {
   galleryData?: CmsGalleryData | null;
 }
 
-const DEFAULT_OFFICE_ITEMS: CmsOfficeItem[] = [
-  { icon: "building-office", title: "USA Office",   description: "7138 Sale Ave,\nWest Hills, CA 91307, USA",          linkLabel: null, linkUrl: null, linkType: null },
-  { icon: "building-office", title: "India Office", description: "Awfis Space Solutions,\nHyderabad, Telangana, India", linkLabel: null, linkUrl: null, linkType: null },
-  { icon: "mail",            title: "Email",        description: null, linkLabel: "sales@ehswatch.com", linkUrl: "sales@ehswatch.com", linkType: "email" },
-];
-
 export default function ContactPage({
   formAttrs,
   formSlug = "contact",
@@ -76,12 +70,13 @@ export default function ContactPage({
   sliderData,
   galleryData,
 }: ContactPageProps) {
-  const resolvedOfficeItems = officeItems && officeItems.length > 0 ? officeItems : DEFAULT_OFFICE_ITEMS;
+  // CMS-only: no hardcoded fallback office items.
+  const resolvedOfficeItems = officeItems && officeItems.length > 0 ? officeItems : [];
 
-  /* Resolve the form section heading — prefer form_embed.heading, fall back to plain text */
+  /* Form section heading — CMS-only (rendered only when formHeading is set) */
   const sectionHeading = formHeading
     ? formHeading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">')
-    : 'Get in Touch with <span style="color:#1d4ed8">Our Team</span>';
+    : "";
 
   return (
     <>
@@ -134,24 +129,26 @@ export default function ContactPage({
             </span>
           )}
 
-          {/* Headline */}
-          <h1
-            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[52px] md:text-[64px] leading-[1.05] tracking-[-0.03em] text-[#0a0f1e] animate-hero-rise"
-            style={{ animationDelay: "80ms" }}
-            dangerouslySetInnerHTML={{
-              __html: heroHeadline
-                ? heroHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">')
-                : 'Get in Touch with <span style="color:#1d4ed8">Our Team</span>',
-            }}
-          />
+          {/* Headline — CMS-only */}
+          {heroHeadline?.trim() && (
+            <h1
+              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[52px] md:text-[64px] leading-[1.05] tracking-[-0.03em] text-[#0a0f1e] animate-hero-rise"
+              style={{ animationDelay: "80ms" }}
+              dangerouslySetInnerHTML={{
+                __html: heroHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+              }}
+            />
+          )}
 
-          {/* Subheadline */}
-          <p
-            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] text-[#6b7280] max-w-[520px] text-pretty animate-hero-rise"
-            style={{ animationDelay: "180ms" }}
-          >
-            {heroSubheadline ?? "Reach out for demos, onboarding support, or to discuss how EHSWatch fits your organisation."}
-          </p>
+          {/* Subheadline — CMS-only */}
+          {heroSubheadline?.trim() && (
+            <p
+              className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] text-[#6b7280] max-w-[520px] text-pretty animate-hero-rise"
+              style={{ animationDelay: "180ms" }}
+            >
+              {heroSubheadline}
+            </p>
+          )}
 
           {/* Primary CTA — only rendered when CMS provides one */}
           {heroPrimaryCtaLabel && heroPrimaryCtaHref && (
