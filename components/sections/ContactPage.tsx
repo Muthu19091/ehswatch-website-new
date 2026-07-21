@@ -140,14 +140,15 @@ export default function ContactPage({
             />
           )}
 
-          {/* Subheadline — CMS-only */}
+          {/* Subheadline — CMS rich text; render as HTML (div so a wrapping
+              <p> is valid) so <p>/<br>/<strong>/<a> format instead of showing
+              literal tags. */}
           {heroSubheadline?.trim() && (
-            <p
-              className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] text-[#6b7280] max-w-[520px] text-pretty animate-hero-rise"
+            <div
+              className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.8] text-[#6b7280] max-w-[520px] text-pretty animate-hero-rise [&_p]:m-0 [&_a]:text-[#155eef] [&_a]:underline [&_strong]:font-semibold"
               style={{ animationDelay: "180ms" }}
-            >
-              {heroSubheadline}
-            </p>
+              dangerouslySetInnerHTML={{ __html: heroSubheadline }}
+            />
           )}
 
           {/* Primary CTA — only rendered when CMS provides one */}
