@@ -23,6 +23,11 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [error,        setError]        = useState<string | null>(null);
 
+  // CMS-controlled: no active newsletter form → hide the whole section (rather
+  // than showing a bare, unbranded email + Subscribe). Toggling the form
+  // active in the CMS shows/hides the newsletter.
+  if (!formAttrs) return null;
+
   const siteKey     = formAttrs?.captcha?.site_key ?? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
   // CMS-only content — no hardcoded copy. Success heading/message and the
   // section heading render only when the CMS form provides them.
