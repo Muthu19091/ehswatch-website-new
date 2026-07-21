@@ -3,9 +3,7 @@
 import { useState } from "react";
 import type { ReactElement } from "react";
 import Link from "next/link";
-import GlareButton from "@/components/ui/GlareButton";
 import CmsIcon from "@/components/ui/CmsIcon";
-import { basePath } from "@/lib/basePath";
 import type { CmsProductModule } from "@/lib/types";
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
@@ -344,36 +342,6 @@ export default function ProductModules({
               </svg>
             </button>
           )}
-        </div>
-
-        {/* Callout strip */}
-        <div
-          className="mt-16 rounded-[24px] px-8 md:px-14 py-10 md:py-12 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
-          style={{
-            background: "#f1f7ff",
-            backgroundImage: `url(${basePath}/images/product/cta-background.svg)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <p className="font-[family-name:var(--font-dm-sans)] text-[15px] md:text-[17px] text-[#0a0f1e] leading-[1.72] max-w-[580px] text-center md:text-left">
-            Book a personalised walkthrough and see exactly how EHSWatch maps to your{" "}
-            <strong className="font-semibold">industry&rsquo;s workflows</strong> and compliance requirements.
-          </p>
-          <GlareButton
-            href="#"
-            className="shrink-0 inline-flex items-center gap-2 px-7 py-3 rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white whitespace-nowrap"
-            style={{
-              backgroundImage:
-                "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
-            }}
-          >
-            Book a Demo
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </GlareButton>
         </div>
 
       </div>

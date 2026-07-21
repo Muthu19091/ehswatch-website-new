@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* All buttons / clickable CTAs use a pointer cursor (Tailwind's reset leaves
+   native <button> on the default arrow). Disabled controls keep not-allowed. */
+button:not(:disabled),
+[role="button"],
+a[href],
+label[for],
+summary {
+  cursor: pointer;
+}
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 .orb-container {
   position: relative;
   z-index: 0;
