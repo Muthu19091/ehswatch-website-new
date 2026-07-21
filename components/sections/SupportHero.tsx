@@ -81,12 +81,15 @@ export default function SupportHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }:
           />
         )}
         {cmsSubheadline?.trim() && (
-          <p
-            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-[#6b7280] leading-[1.75] max-w-[560px] animate-hero-rise text-pretty"
+          /* CMS rich text — render as HTML so <p>/<br>/<strong>/<a> format
+             correctly instead of showing the literal tags. Uses a div (not p)
+             so a wrapping <p> from the editor is valid, with inner margins
+             reset to keep the single-subheadline look. */
+          <div
+            className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-[#6b7280] leading-[1.75] max-w-[560px] animate-hero-rise text-pretty [&_p]:m-0 [&_a]:text-[#155eef] [&_a]:underline [&_strong]:font-semibold"
             style={{ animationDelay: "200ms" }}
-          >
-            {cmsSubheadline}
-          </p>
+            dangerouslySetInnerHTML={{ __html: cmsSubheadline }}
+          />
         )}
       </div>
     </section>
