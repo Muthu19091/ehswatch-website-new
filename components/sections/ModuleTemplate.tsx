@@ -105,14 +105,17 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
       href={href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="self-start inline-flex items-center gap-1.5 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] no-underline transition-all duration-200"
+      className="self-start inline-block font-[family-name:var(--font-dm-sans)] font-medium text-[14px] leading-[1.6] no-underline transition-all duration-200"
       style={{
         color: hovered ? "#cc5700" : "#FF6D00",
         transform: hovered ? "translateX(4px)" : "translateX(0)",
       }}
     >
-      <span>{label}</span>
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      {/* Arrow flows inline right after the label so a long, wrapping CTA
+          sentence keeps the arrow next to its last word instead of being
+          pushed to the far right of the column. */}
+      {label}
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" className="inline-block align-middle ml-1.5">
         <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </Link>
