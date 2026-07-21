@@ -98,15 +98,15 @@ export default function AboutDrives({
         </Reveal>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-[72px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-[72px] items-stretch">
           {cards.map((card, i) => (
-            <Reveal key={`${card.label}-${i}`} variant={i === 0 ? "slide-right" : "slide-left"} duration={750} delay={i * 100}>
-              <div className="relative pt-[44px]">
+            <Reveal key={`${card.label}-${i}`} variant={i === 0 ? "slide-right" : "slide-left"} duration={750} delay={i * 100} className="h-full">
+              <div className="relative pt-[44px] h-full">
                 <TabShape label={card.label} color={card.color} />
 
-                {/* Card body */}
+                {/* Card body — h-full so both cards match the tallest in the row */}
                 <div
-                  className="relative bg-white rounded-[24px] px-8 md:px-10 pt-10 pb-10 overflow-hidden"
+                  className="relative bg-white rounded-[24px] px-8 md:px-10 pt-10 pb-10 overflow-hidden h-full"
                   style={{
                     border: "1px solid rgba(0,0,0,0.07)",
                     boxShadow: "0 2px 12px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
