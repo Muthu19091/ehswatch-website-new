@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { mediaUrl } from "@/lib/blocks";
 import type { CmsCaseStudy } from "@/lib/types";
 
@@ -91,7 +92,7 @@ const PLACEHOLDER_COLORS = ["#EFF6FF", "#DBEAFE", "#E0F2FE", "#F0FDF4"];
 function WideCard({ card, index }: { card: Card; index: number }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <a
+    <Link
       href={`/case-studies/${card.slug}`}
       className="flex flex-col md:flex-row bg-white overflow-hidden w-full"
       style={{
@@ -149,7 +150,7 @@ function WideCard({ card, index }: { card: Card; index: number }) {
           <CoverPanel card={card} index={index} />
         )}
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -159,7 +160,7 @@ function WideCard({ card, index }: { card: Card; index: number }) {
 function SquareCard({ card, index }: { card: Card; index: number }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <a
+    <Link
       href={`/case-studies/${card.slug}`}
       className="flex flex-col bg-white overflow-hidden"
       style={{
@@ -216,7 +217,7 @@ function SquareCard({ card, index }: { card: Card; index: number }) {
         <div className="my-5" style={{ height: 1, background: "#F0F0F0" }} />
         <KnowMore hovered={hovered} />
       </div>
-    </a>
+    </Link>
   );
 }
 
