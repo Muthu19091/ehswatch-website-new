@@ -509,17 +509,20 @@ export default function PricingCalculator({
         </div>
         )}
 
-        {/* Step indicator */}
+        {/* Step indicator — circles evenly spaced (fixed circle + flex-1
+            connector); labels are absolutely positioned under each circle so
+            varying label widths don't skew the spacing. */}
         <div className="w-full max-w-[640px] mx-auto mb-10 md:mb-14">
-          <div className="flex items-center">
+          <div className="flex items-center pb-8">
             {stepLabels.map((label, i) => {
               const done   = i < step;
               const active = i === step;
+              const isLast = i === stepLabels.length - 1;
               return (
-                <div key={i} className="flex items-center flex-1 last:flex-none">
-                  <div className="flex flex-col items-center gap-1 relative">
+                <div key={i} className={`flex items-center ${isLast ? "" : "flex-1"}`}>
+                  <div className="relative shrink-0 flex justify-center">
                     <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center font-[family-name:var(--font-dm-sans)] font-bold text-[14px] border-2 transition-all duration-300 shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center font-[family-name:var(--font-dm-sans)] font-bold text-[14px] border-2 transition-all duration-300"
                       style={{
                         borderColor: done || active ? "#1d4ed8" : "#d1d5db",
                         background:  done || active ? "#1d4ed8" : "white",
@@ -535,7 +538,7 @@ export default function PricingCalculator({
                       )}
                     </div>
                     <span
-                      className="font-[family-name:var(--font-dm-sans)] text-[11px] sm:text-[12px] font-medium mt-1 whitespace-nowrap transition-colors duration-300"
+                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 font-[family-name:var(--font-dm-sans)] text-[11px] sm:text-[12px] font-medium whitespace-nowrap text-center transition-colors duration-300"
                       style={{
                         color: active ? "#0a0f1e" : done ? "#1d4ed8" : "#9ca3af",
                         fontWeight: active ? 700 : 500,
@@ -544,8 +547,8 @@ export default function PricingCalculator({
                       {label}
                     </span>
                   </div>
-                  {i < stepLabels.length - 1 && (
-                    <div className="flex-1 h-[2px] mx-1 relative" style={{ background: "#e5e7eb", marginBottom: "20px" }}>
+                  {!isLast && (
+                    <div className="flex-1 h-[2px] mx-2 relative" style={{ background: "#e5e7eb" }}>
                       <div
                         className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
                         style={{ width: i < step ? "100%" : "0%", background: "#1d4ed8" }}

@@ -50,20 +50,17 @@ const IcSend = () => (
   </svg>
 );
 
-// ─── Feature data ─────────────────────────────────────────────────────────────
+// ─── Feature layout data ──────────────────────────────────────────────────────
+// Only the callout position (side) and the sequence number are design-owned.
+// The title + description are CMS-only (from the number_steps block) — no
+// hardcoded copy.
 const FEATURES = [
-  { side:"left"  as const, num:"01", title:"Text / Voice-to-Report",
-    desc:"Spoken or typed notes instantly become a structured, pre-filled incident report." },
-  { side:"right" as const, num:"02", title:"Action Recommendation Engine",
-    desc:"AI surfaces prioritised corrective actions based on your facility's incident history." },
-  { side:"left"  as const, num:"03", title:"AI Root Cause Analysis",
-    desc:"Guides teams through 5-Why analysis and uncovers systemic root causes automatically." },
-  { side:"right" as const, num:"04", title:"Event Similarity Detector",
-    desc:"Scans all recorded safety events to expose hidden patterns and leading indicators." },
-  { side:"left"  as const, num:"05", title:"AI Insights Generator",
-    desc:"Raw EHS data becomes board-ready executive narratives and summaries in seconds." },
-  { side:"right" as const, num:"06", title:"Image Recognition",
-    desc:"Detects PPE failures and unsafe zones in field photos with real-time supervisor alerts." },
+  { side:"left"  as const, num:"01" },
+  { side:"right" as const, num:"02" },
+  { side:"left"  as const, num:"03" },
+  { side:"right" as const, num:"04" },
+  { side:"left"  as const, num:"05" },
+  { side:"right" as const, num:"06" },
 ] as const;
 
 // ─── Chat messages — one step at a time ───────────────────────────────────────
@@ -526,13 +523,13 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
   const [showIris,   setShowIris]   = useState(false);
   const [voicePhase, setVoicePhase] = useState<0|1|2>(0);
 
-  // Overlay CMS step titles/descriptions onto the hardcoded feature callouts;
-  // the chat scenes themselves stay design-owned.
+  // Titles/descriptions are CMS-only (number_steps); the chat scenes and
+  // callout positions stay design-owned. No hardcoded fallback copy.
   const features: FeatureItem[] = FEATURES.map((f, i) => ({
     side: f.side,
     num: f.num,
-    title: cmsSteps?.[i]?.title?.trim() || f.title,
-    desc: cmsSteps?.[i]?.description?.trim() || f.desc,
+    title: cmsSteps?.[i]?.title?.trim() || "",
+    desc: cmsSteps?.[i]?.description?.trim() || "",
   }));
 
   // CMS-only heading/subheading — no hardcoded fallback copy.

@@ -128,7 +128,7 @@ export default function NavbarClient({
       nav.style.paddingLeft    = `${lerp(40, 16, t)}px`;
       nav.style.paddingRight   = `${lerp(40, 10, t)}px`;
       nav.style.paddingTop     = nav.style.paddingBottom = `${lerp(14, 7, t)}px`;
-      nav.style.maxWidth       = `${lerp(2400, 860, t)}px`;
+      nav.style.maxWidth       = `${lerp(2400, 1160, t)}px`;   // wide enough to keep all nav links (incl. Support) visible in the collapsed pill
       nav.style.borderRadius   = `${lerp(0, 9999, t)}px`;
       nav.style.gap            = `${lerp(0, 0, t)}px`;   // gap handled per-link via padding
       nav.style.background     = `rgba(255,255,255,${lerp(0, 0.92, t)})`;

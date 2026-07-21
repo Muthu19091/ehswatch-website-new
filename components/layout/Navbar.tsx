@@ -21,14 +21,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   const latestBlogCover = (blogRes?.data ?? []).map(extractCover).find(Boolean) as string | undefined;
   const latestCsCover   = (csRes?.data   ?? []).map(extractCover).find(Boolean) as string | undefined;
 
-  const linkIndices = (mainNav as any[])
-    .map((item: any, i: number) => (item.type !== "dropdown" ? i : -1))
-    .filter((i: number) => i !== -1);
-  // Only the last inline link fades out when the navbar collapses on scroll;
-  // About Us (first link) must stay visible (design feedback).
-  const lastLinkIdx  = linkIndices[linkIndices.length - 1] ?? -1;
-
-  const cmsNav = (mainNav as any[]).map((item: any, idx: number) => {
+  const cmsNav = (mainNav as any[]).map((item: any) => {
     let children: { label: string; href: string; desc?: string; img?: string }[] | undefined;
 
     if (item.type === "dropdown" && Array.isArray(item.children)) {
@@ -68,7 +61,9 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       label:        item.label as string,
       href:         item.type === "dropdown" ? "#" : (item.url ? normalizeUrl(item.url as string) : "#"),
       hasDropdown:  item.type === "dropdown",
-      hideOnScroll: idx === lastLinkIdx,
+      // All nav links stay visible when the navbar collapses on scroll
+      // (the last link, e.g. Support, must remain in the header).
+      hideOnScroll: false,
       children,
     };
   });
