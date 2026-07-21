@@ -172,41 +172,57 @@ export function buildModuleTemplateProps(
   const modulesBlock = findBlock<{
     heading?: string;
     visible_count?: number;
+    curated_ids?: unknown;
     items?: unknown;
   }>(blocks, "product_modules");
 
-  // Curated related-modules: when the block's items carry per-page custom
-  // descriptions, render exactly those (order, copy and links from the CMS).
-  // Otherwise fall back to auto-listing other active modules with their global
-  // description. A slug of "iris" links to the IRIS page, not a module page.
-  const curatedItems = normalizeArray<{
-    slug?: string;
-    name?: string;
-    tagline?: string;
-    description?: string;
-    icon?: string;
-  }>(modulesBlock?.items).filter((it) => it?.name && stripHtmlOpt(it.description));
-
   const hrefForModule = (s?: string) => (s === "iris" ? "/iris" : `/modules/${s ?? ""}`);
 
-  const otherModules = curatedItems.length > 0
-    ? curatedItems.map((it) => ({
-        name: stripHtml(it.name),
-        slug: it.slug ?? "",
-        desc: stripHtml(it.description),
-        icon: it.icon ?? null,
-        href: hrefForModule(it.slug),
-      }))
+  // Curated related-modules: the CMS product_modules block stores the modules
+  // chosen for THIS page in `curated_ids` (an ordered list of module ids).
+  // Render exactly those — mapped to the active module records, in order,
+  // excluding the current module. Any per-page custom copy in `items` (matched
+  // by slug) overrides the module's own description. Only when the block has no
+  // curated_ids do we fall back to auto-listing other active modules.
+  const curatedIds = normalizeArray<number | string>(modulesBlock?.curated_ids)
+    .map((v) => Number(v))
+    .filter((n) => Number.isFinite(n));
+
+  const activeById = new Map(
+    allModules
+      .filter((m) => m.attributes.status === "active")
+      .map((m) => [Number(m.id), m] as const),
+  );
+
+  // Optional per-page custom descriptions from the block's items (by slug)
+  const customDescBySlug = new Map(
+    normalizeArray<{ slug?: string; description?: string }>(modulesBlock?.items)
+      .filter((it) => it?.slug && stripHtmlOpt(it.description))
+      .map((it) => [it.slug as string, stripHtml(it.description)] as const),
+  );
+
+  const toCard = (m: CmsProductModule) => ({
+    name: stripHtml(m.attributes.name),
+    slug: m.attributes.slug,
+    desc:
+      customDescBySlug.get(m.attributes.slug) ||
+      stripHtml(m.attributes.description) ||
+      stripHtml(m.attributes.tagline),
+    icon: m.attributes.icon ?? null,
+    href: hrefForModule(m.attributes.slug),
+  });
+
+  const curatedModules = curatedIds
+    .map((id) => activeById.get(id))
+    .filter((m): m is CmsProductModule => !!m && m.attributes.slug !== slug)
+    .map(toCard);
+
+  const otherModules = curatedModules.length > 0
+    ? curatedModules
     : allModules
         .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
-        .slice(0, modulesBlock?.visible_count || 5)
-        .map((m) => ({
-          name: stripHtml(m.attributes.name),
-          slug: m.attributes.slug,
-          desc: stripHtml(m.attributes.description) || stripHtml(m.attributes.tagline),
-          icon: m.attributes.icon ?? null,
-          href: hrefForModule(m.attributes.slug),
-        }));
+        .slice(0, typeof modulesBlock?.visible_count === "number" ? modulesBlock.visible_count : 5)
+        .map(toCard);
 
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0

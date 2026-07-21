@@ -462,6 +462,7 @@ interface FeatureItem {
   num: string;
   title: string;
   desc: string;
+  subItems: { title: string; description: string }[];
 }
 
 function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }) {
@@ -488,10 +489,25 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
           marginBottom:8, fontFamily:"var(--font-gothic-a1,sans-serif)" }}>
           {feat.title}
         </h3>
-        <p style={{ fontSize:13.5, lineHeight:1.7, color:"#64748B",
-          fontFamily:"var(--font-dm-sans,sans-serif)", textWrap:"pretty" } as React.CSSProperties}>
-          {feat.desc}
-        </p>
+        {feat.desc && (
+          <p style={{ fontSize:13.5, lineHeight:1.7, color:"#64748B",
+            fontFamily:"var(--font-dm-sans,sans-serif)", textWrap:"pretty" } as React.CSSProperties}>
+            {feat.desc}
+          </p>
+        )}
+        {feat.subItems.map((si, k) => (
+          <div key={k} style={{ marginTop: 10 }}>
+            <p style={{ fontSize:10.5, fontWeight:700, textTransform:"uppercase",
+              letterSpacing:"0.12em", color:"#94a3b8", marginBottom:2,
+              fontFamily:"var(--font-dm-sans,sans-serif)" }}>
+              {si.title}
+            </p>
+            <p style={{ fontSize:12.5, lineHeight:1.6, color:"#475569",
+              fontFamily:"var(--font-dm-sans,sans-serif)", textWrap:"pretty" } as React.CSSProperties}>
+              {si.description}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -501,7 +517,11 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
 interface IRISChatShowcaseProps {
   cmsHeading?: string;
   cmsSubheading?: string;
-  cmsSteps?: Array<{ title?: string; description?: string }>;
+  cmsSteps?: Array<{
+    title?: string;
+    description?: string;
+    sub_items?: Array<{ title?: string; description?: string; icon?: string }>;
+  }>;
 }
 
 // Split heading at the first comma so the tail renders in blue; falls back to
@@ -530,6 +550,9 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
     num: f.num,
     title: cmsSteps?.[i]?.title?.trim() || "",
     desc: cmsSteps?.[i]?.description?.trim() || "",
+    subItems: (cmsSteps?.[i]?.sub_items ?? [])
+      .filter((s) => (s?.title?.trim() || s?.description?.trim()))
+      .map((s) => ({ title: s.title?.trim() || "", description: s.description?.trim() || "" })),
   }));
 
   // CMS-only heading/subheading — no hardcoded fallback copy.
