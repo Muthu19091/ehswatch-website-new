@@ -700,7 +700,9 @@ export default function ProductHowItWorks({
     <section
       ref={sectionRef}
       className="hidden md:block bg-[#f1f7ff]"
-      style={{ height: `${steps.length * 100}vh` }}
+      /* Per-step scroll distance: (55 - 100/steps)vh ≈ 30vh (~1.5–2 wheel
+         notches) for a 4-step section — was 100 (~75vh, ~4 scrolls per step). */
+      style={{ height: `${steps.length * 55}vh` }}
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 overflow-hidden flex flex-col" style={{ height: "100vh" }}>
