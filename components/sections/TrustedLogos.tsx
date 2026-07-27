@@ -11,7 +11,7 @@ export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsC
   if (CLIENT_LOGOS.length === 0) return null;
   const TRACK = [...CLIENT_LOGOS, ...CLIENT_LOGOS, ...CLIENT_LOGOS];
   return (
-    <section translate="no" className="bg-white pt-16 md:pt-[80px] pb-10 md:pb-[60px]">
+    <section className="bg-white pt-16 md:pt-[80px] pb-10 md:pb-[60px]">
       <div className="flex flex-col gap-6 md:gap-[42px]">
         {heading && (
         <Reveal variant="fade-in" duration={1100}>
@@ -24,7 +24,8 @@ export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsC
         <Reveal variant="fade-in" duration={1400} delay={200}>
         <div
           dir="ltr"
-          className="relative overflow-hidden"
+          translate="no"
+          className="relative overflow-hidden notranslate"
           style={{
             maskImage:
               "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
