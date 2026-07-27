@@ -149,3 +149,12 @@ body {
   0%, 100% { opacity: 0; }
   50%      { opacity: 0.14; }
 }
+
+/* WorkEnvironments heading — the highlighted <span> sits between two runs of
+   text. In Arabic (RTL) Google Translate drops the spaces at the span's edges,
+   gluing words together ("عاليةصُممت"). A layout margin can't be stripped by
+   the translator, so restore the gap on both inline sides — RTL only, since the
+   English space renders fine. */
+html[dir="rtl"] .wenv-hl {
+  margin-inline: 0.28em;
+}
