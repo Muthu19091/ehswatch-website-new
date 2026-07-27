@@ -4,6 +4,7 @@ import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
 import PagePreviewBanner from "@/components/layout/PagePreviewBanner";
 import GoogleTranslate from "@/components/layout/GoogleTranslate";
+import ArabicOverrides from "@/components/layout/ArabicOverrides";
 import UtmCapture from "@/components/UtmCapture";
 import { getLocale } from "@/lib/locale";
 
@@ -70,6 +71,7 @@ export default async function RootLayout({
         <UtmCapture />
         <CustomCursor />
         <GoogleTranslate />
+        <ArabicOverrides />
         <PagePreviewBanner />
         {children}
         {/* Odigma preview/embed overlay — loaded site-wide (all pages).
