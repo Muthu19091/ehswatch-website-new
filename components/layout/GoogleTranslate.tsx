@@ -102,7 +102,12 @@ export default function GoogleTranslate() {
       .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.skiptranslate,
       #goog-gt-tt, .goog-te-balloon-frame, .goog-te-spinner-pos,
       .goog-tooltip, .goog-tooltip:hover,
+      .VIpgJd-ZVi9od-ORHb-OEVmcd, .VIpgJd-ZVi9od-ORHb,
       [class*="VIpgJd-ZVi9od-aZ2wEe"], [class^="VIpgJd-ZVi9od-vH1Gmf"] { display: none !important; visibility: hidden !important; }
+      /* Google injects a full-width banner wrapper as a direct child of body.
+         Our working combo lives inside #google_translate_element (a separate
+         host), so hiding the body-level wrapper is safe. */
+      body > .skiptranslate { display: none !important; }
       body { top: 0 !important; position: static !important; }
       .goog-text-highlight { background: none !important; box-shadow: none !important; }
       font { background: none !important; box-shadow: none !important; }

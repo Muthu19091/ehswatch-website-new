@@ -122,10 +122,14 @@ export default async function Footer() {
   const tagline     = attrs?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
   const copyright   = attrs?.bottom?.copyright_text || "© 2026 EHSWatch. All rights reserved.";
   const legalLinks  = (attrs?.bottom?.legal_links ?? []) as { label: string; url: string }[];
-  const ctaEyebrow  = attrs?.cta?.eyebrow  || "GET STARTED";
-  const ctaHeadline = attrs?.cta?.headline || "See how EHSWatch transforms safety management across your organisation.";
-  const ctaPrimaryLabel = (attrs?.cta?.primary?.label) || (attrs?.cta?.primary_cta?.label) || "Book a Demo";
+  // CTA column is fully CMS-controlled: honour the `enabled` flag and only
+  // render when there's real content. No hardcoded "Book a Demo" fallback — an
+  // admin disabling or emptying the CTA in the CMS hides the whole column.
+  const ctaEyebrow  = (attrs?.cta?.eyebrow  || "").trim();
+  const ctaHeadline = (attrs?.cta?.headline || "").trim();
+  const ctaPrimaryLabel = ((attrs?.cta?.primary?.label) || (attrs?.cta?.primary_cta?.label) || "").trim();
   const ctaPrimaryHref  = (attrs?.cta?.primary?.url) || (attrs?.cta?.primary_cta?.url) || "#";
+  const ctaEnabled = attrs?.cta?.enabled !== false && Boolean(ctaHeadline || ctaPrimaryLabel);
 
   // Empty list in CMS = admin removed them all; hardcoded fallback only when
   // the footer API itself is unreachable.
@@ -157,7 +161,7 @@ export default async function Footer() {
   const modCol2      = allModules.slice(mid);
 
   // Dynamic lg grid template: Brand | (generic columns…) | Modules | CTA
-  const footerGridCols = `1.1fr ${genericColumns.map(() => "0.9fr").join(" ")} 1.6fr 1.1fr`;
+  const footerGridCols = `1.1fr ${genericColumns.map(() => "0.9fr").join(" ")} 1.6fr${ctaEnabled ? " 1.1fr" : ""}`;
 
   return (
     <footer dir="ltr" className="bg-[#0a1628] flex flex-col items-center pt-12 md:pt-[72px] relative isolate overflow-hidden">
@@ -267,21 +271,29 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* ── CTA column ── */}
+        {/* ── CTA column (CMS-controlled; hidden when disabled or empty) ── */}
+        {ctaEnabled && (
         <div className="flex flex-col items-start">
+          {ctaEyebrow && (
           <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase mb-3 md:mb-[14px]">
             {ctaEyebrow}
           </p>
+          )}
+          {ctaHeadline && (
           <p className="font-[family-name:var(--font-inter)] font-medium text-[14px] md:text-[15px] leading-relaxed md:leading-[24px] text-[rgba(255,255,255,0.72)] max-w-[240px] mb-4 md:mb-[20px]">
             {ctaHeadline}
           </p>
+          )}
+          {ctaPrimaryLabel && (
           <Link
             href={ctaPrimaryHref}
             className="bg-white px-5 md:px-[24px] py-2.5 md:py-[12px] rounded-full font-[family-name:var(--font-inter)] font-medium text-[13px] md:text-[13.5px] text-[#071828] hover:bg-gray-100 transition-colors"
           >
             {ctaPrimaryLabel} →
           </Link>
+          )}
         </div>
+        )}
 
       </div>
 
