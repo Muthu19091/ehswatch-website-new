@@ -127,41 +127,19 @@ body {
 }
 .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
-/* ── Hero animated square-grid backgrounds: clear the centre behind the text ──
-   Every page hero paints an animated grid of pale-blue squares (opacity → 0.6)
-   as a decorative background. Those squares were lighting up directly behind
-   the centred hero copy. Each hero uses its own container class, but all share
-   one of these names. We overlay a centred white radial mask ABOVE the squares
-   (::after is the container's last-painted child) — the hero backgrounds are
-   white, so the mask is invisible except that it stops the squares/grid lines
-   from showing behind the text. The animation stays visible toward the edges.
-   The hero copy is a SIBLING at a higher z-index, so it is never dimmed.
-   These containers are all already `position: absolute; inset: 0`, so ::after
-   anchors to them directly. */
-.about-grid-container::after,
-.pricing-grid-container::after,
-.grid-container::after,
-.at-grid-container::after,
-.hero-grid-container::after,
-.iris-hero-grid-container::after,
-.iris-grid-container::after,
-.mt-grid-container::after,
-.sol-grid::after,
-.cs-grid::after,
-.blog-grid::after,
-.sup-grid::after,
-.ct-grid::after,
-.post-grid::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 82% 70% at 50% 44%,
-    #ffffff 0%,
-    #ffffff 34%,
-    rgba(255, 255, 255, 0.85) 52%,
-    rgba(255, 255, 255, 0.35) 70%,
-    rgba(255, 255, 255, 0) 88%
-  );
+/* ── Hero animated square-grid backgrounds: soften the "blocks" ──
+   Every page hero paints a faint grid of lines PLUS animated pale-blue squares
+   ("blocks") that pulse to 0.6 opacity. The grid itself should stay fully
+   visible, but the pulsing blocks were highlighting behind the centred hero
+   copy. Every block sets its animation inline with a name ending in "BoxFill"
+   (aboutGridBoxFill, solBoxFill, csBoxFill, …), so this one selector reaches
+   them all. We only reduce the blocks' peak opacity to a subtle level — the
+   grid lines (drawn on the container background) are untouched and remain
+   visible across the whole hero. */
+[style*="BoxFill"] {
+  animation-name: gridBoxSoft !important;
+}
+@keyframes gridBoxSoft {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 0.14; }
 }
