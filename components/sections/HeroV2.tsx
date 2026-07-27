@@ -39,12 +39,14 @@ export default function HeroV2({
         <DotGrid />
       </div>
 
-      {/* White radial mask behind text */}
+      {/* White radial mask behind text — covers the whole text column
+          (headline → subheadline → CTA) so the animated grid blocks never
+          highlight behind the copy, while the grid stays visible at the edges. */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 18%, rgba(255,255,255,0.88) 30%, rgba(255,255,255,0.5) 55%, rgba(255,255,255,0) 78%)",
+            "radial-gradient(ellipse 66% 66% at 50% 42%, rgba(255,255,255,0.96) 26%, rgba(255,255,255,0.6) 56%, rgba(255,255,255,0) 84%)",
         }}
       />
 
