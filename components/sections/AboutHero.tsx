@@ -1,6 +1,7 @@
 "use client";
 
 import GlareButton from "@/components/ui/GlareButton";
+import DotGrid from "@/components/ui/DotGrid";
 
 interface AboutHeroCmsProps {
   cmsEyebrow?: string | undefined;
@@ -33,61 +34,28 @@ export default function AboutHero({
         background: "linear-gradient(to bottom, white 0%, white 85%, rgba(248, 250, 252, 0.5) 100%)",
       }}
     >
-      {/* Animated grid background */}
-      <style>{`
-        .about-grid-container {
-          background-image:
-            linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
-          background-size: 50px 50px;
-        }
-
-        @keyframes aboutGridBoxFill {
-          0%, 100% { opacity: 0; }
-          50%       { opacity: 0.6; }
-        }
-
-        .about-grid-box {
-          position: absolute;
-          width: 48px;
-          height: 48px;
-        }
-      `}</style>
-
-      {/* Grid + animated squares */}
-      <div className="absolute inset-0 overflow-hidden about-grid-container pointer-events-none">
-        {Array.from({ length: 200 }, (_, i) => {
-          const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
-          const colorVariant = i % 4;
-          const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD"];
-          const animationDelay = (i * 0.3) % 12;
-          const animationDuration = 4 + ((i * 2) % 6);
-          const row = Math.floor(i / 20);
-          const col = i % 20;
-
-          return shouldAnimate ? (
-            <div
-              key={`about-grid-box-${i}`}
-              className="about-grid-box"
-              style={{
-                left: `${col * 50 + 1}px`,
-                top: `${row * 50 + 1}px`,
-                backgroundColor: colors[colorVariant],
-                animation: `aboutGridBoxFill ${animationDuration}s ease-in-out infinite`,
-                animationDelay: `${animationDelay}s`,
-              }}
-            />
-          ) : null;
-        })}
-
-        {/* Bottom fade into next section */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{
-            background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.8) 70%, white 100%)",
-          }}
-        />
+      {/* DotGrid background — same interactive dot grid as the home hero */}
+      <div className="absolute inset-0 z-0">
+        <DotGrid />
       </div>
+
+      {/* White radial mask behind the text so the dots never highlight behind
+          the copy, while the grid stays visible toward the edges. */}
+      <div
+        className="absolute inset-0 pointer-events-none z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 62% at 50% 50%, rgba(255,255,255,0.96) 28%, rgba(255,255,255,0.6) 56%, rgba(255,255,255,0) 84%)",
+        }}
+      />
+
+      {/* Bottom fade into next section */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-10"
+        style={{
+          background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.8) 70%, white 100%)",
+        }}
+      />
 
       {/* Hero content */}
       <div className="relative z-20 max-w-[720px] w-full mx-auto text-center flex flex-col items-center gap-5 md:gap-6">
