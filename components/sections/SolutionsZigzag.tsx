@@ -72,7 +72,7 @@ function MediaBlock({ industry }: { industry: Industry }) {
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {!videoReady && (
+      {industry.video && !videoReady && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="w-8 h-8 rounded-full border-2 border-[#e2e8f0] border-t-[#155eef] animate-spin" />
         </div>
@@ -109,7 +109,7 @@ function MediaBlock({ industry }: { industry: Industry }) {
           style={{
             objectFit: "contain",
             transform: "scale(0.85)",
-            opacity: videoReady ? 1 : 0,
+            opacity: 1,
             transition: "opacity 0.3s ease",
           }}
         />
@@ -131,11 +131,17 @@ function cmsCardToIndustry(card: CmsIndustryCard): Industry {
         .filter((a) => a.title)
         .map((a) => ({ heading: a.title!, body: a.description || "" }))
     : [];
+  // A CMS "video" field can actually hold an animated GIF. A <video> element
+  // cannot decode a GIF, so its canplay event never fires and the panel spins
+  // forever. Route real video files to <video> and everything else (gif/png/
+  // jpg/webp) to <img>, which paints progressively and fires onLoad.
+  const media = resolveVideoUrl(card.video ?? null);
+  const isVideoFile = !!media && /\.(mp4|webm|ogg|mov|m4v)(?:[?#]|$)/i.test(media);
   return {
     label:     card.title,
     subcopy:   card.subheading || "",
-    video:     resolveVideoUrl(card.video ?? null),
-    gif:       null,
+    video:     isVideoFile ? media : null,
+    gif:       media && !isVideoFile ? media : null,
     solutions: solutions.length > 0 ? solutions : [],
   };
 }
