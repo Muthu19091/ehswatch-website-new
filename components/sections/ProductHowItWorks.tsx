@@ -599,8 +599,6 @@ export default function ProductHowItWorks({
   cmsSteps,
 }: ProductHowItWorksProps = {}) {
   const [activeStep,  setActiveStep]  = useState(0);
-  const [displayStep, setDisplayStep] = useState(0);
-  const [textVisible, setTextVisible] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
 
   // Build steps from CMS or use defaults
@@ -642,14 +640,6 @@ export default function ProductHowItWorks({
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [steps.length]);
-
-  /* Fade-out → swap content → fade-in */
-  useEffect(() => {
-    if (displayStep === activeStep) return;
-    setTextVisible(false);
-    const t = setTimeout(() => { setDisplayStep(activeStep); setTextVisible(true); }, 180);
-    return () => clearTimeout(t);
-  }, [activeStep, displayStep]);
 
   const fillH = activeStep === 0 ? 0 : (activeStep / (steps.length - 1)) * TRACK;
 
@@ -761,26 +751,26 @@ export default function ProductHowItWorks({
             ))}
           </div>
 
-          {/* Step text */}
+          {/* Step text — driven directly by activeStep so it can never desync
+              from the stepper (the old timer-based displayStep could get stuck
+              at "Step 1" during fast scrolling). key={activeStep} re-triggers a
+              short CSS fade-in on each change. */}
           <div
+            key={activeStep}
             className="flex-1 md:flex-none md:flex-[0_0_260px] lg:flex-[0_0_330px] md:shrink-0 flex flex-col justify-center min-w-0"
-            style={{
-              opacity:    textVisible ? 1 : 0,
-              transform:  textVisible ? "translateY(0)" : "translateY(10px)",
-              transition: "opacity 0.22s ease, transform 0.22s ease",
-            }}
+            style={{ animation: "howStepFade 0.32s ease both" }}
           >
             <div className="flex items-center gap-2 mb-4">
               <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
-                Step {steps[displayStep].n}
+                Step {steps[activeStep].n}
               </span>
               <span className="inline-block w-7 h-[1.5px] bg-[#155eef] opacity-35 rounded-full" />
             </div>
             <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] md:text-[26px] leading-snug mb-4 text-[#0a0f1e]">
-              {steps[displayStep].title}
+              {steps[activeStep].title}
             </h3>
             <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-[1.82] text-[#4b5563]">
-              {steps[displayStep].body}
+              {steps[activeStep].body}
             </p>
           </div>
 

@@ -109,6 +109,12 @@ main {
   30%           { transform: translateY(-5px); opacity: 1;   }
 }
 
+/* How EHSWatch Works — step-text fade-in (keyed on the active step) */
+@keyframes howStepFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
 /* ── Google Translate: suppress all Google chrome, keep only the translation ── */
 .goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate,
