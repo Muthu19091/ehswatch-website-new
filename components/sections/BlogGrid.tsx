@@ -240,9 +240,9 @@ export default function BlogGrid({
   };
   const topicOptions = ["Topic: All topics", ...uniqueCI(POSTS.map((p) => p.topic).filter(Boolean))];
   const formatOptions = ["Format: All formats", ...uniqueCI(POSTS.map((p) => p.format).filter(Boolean))];
-  // CMS toggles control visibility; format also needs >1 real value to be useful.
+  // CMS toggles control filter visibility (matches Timeline/Topic behaviour).
   const topicEnabled = showTopic;
-  const formatEnabled = showFormat && formatOptions.length > 2;
+  const formatEnabled = showFormat;
   const anyControl = showSearch || showTimeline || topicEnabled || formatEnabled;
   const anyFilter = showTimeline || topicEnabled || formatEnabled;
 
