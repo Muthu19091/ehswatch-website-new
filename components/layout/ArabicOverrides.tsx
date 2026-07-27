@@ -32,7 +32,22 @@ const EN_TO_AR: Record<string, string> = {
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
   "Why Traditional EHS Systems Fall Short": "لماذا تقصر أنظمة الصحة والسلامة والبيئة التقليدية؟",
   "What Sets EHSWatch Action Tracker Apart": "ما الذي يميز نظام EHSWatch Action Tracker؟",
+  "EHSWatch: One Platform for Everyday Safety": "EHSWatch: منصة واحدة للسلامة اليومية",
+  // Header / footer navigation labels (authored Arabic).
+  "Company": "الشركة",
+  "Home": "الصفحة الرئيسية",
+  "About Us": "من نحن",
+  "Product": "منتجات",
+  "Pricing": "الأسعار",
+  "Case Studies": "دراسات",
+  "Blogs": "مقالات",
+  "Support": "الدعم",
 };
+
+// Overrides whose text starts with a Latin brand ("EHSWatch: …"): force the
+// element to LTR so the brand stays on the left and the Arabic phrase follows,
+// instead of the brand being reordered to the right by the RTL page.
+const FORCE_LTR = new Set(["EHSWatch: One Platform for Everyday Safety"]);
 
 // Machine-Arabic → corrected Arabic (used when there's no stable English key).
 const AR_FIX: Record<string, string> = {
@@ -48,6 +63,13 @@ const CANDIDATE = "h1,h2,h3,h4,p,span,a,button,li,label,div";
 
 const norm = (s: string | null) => (s ?? "").replace(/\s+/g, " ").trim();
 const isArabic = () => /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) || /(?:^|;\s*)locale=ar/.test(document.cookie);
+
+// True when a descendant ELEMENT holds the exact same text — i.e. this element
+// is just a wrapper. We must NOT setTextContent on it (that would wipe the inner
+// heading/span and its styling); let the more specific inner element handle it.
+const isWrapperFor = (el: Element, text: string) =>
+  Array.from(el.querySelectorAll("h1,h2,h3,h4,p,span,a,button,li,label"))
+    .some((c) => c !== el && norm(c.textContent) === text);
 
 export default function ArabicOverrides() {
   useEffect(() => {
@@ -70,16 +92,20 @@ export default function ArabicOverrides() {
         // English-keyed overrides.
         const enHit = Object.prototype.hasOwnProperty.call(EN_TO_AR, text) ? text : el.getAttribute("data-ar-en");
         if (enHit && EN_TO_AR[enHit] !== undefined) {
+          // Skip wrapper containers — target the inner element so we keep its styling.
+          if (isWrapperFor(el, enHit)) return;
           if (!el.getAttribute("data-ar-en")) el.setAttribute("data-ar-en", enHit);
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");
+          // Keep a Latin-brand-led header reading left-to-right in both languages.
+          if (FORCE_LTR.has(enHit)) el.setAttribute("dir", "ltr");
           const want = ar ? EN_TO_AR[enHit] : enHit;
           if (norm(el.textContent) !== want) el.textContent = want;
           return;
         }
 
         // Machine-Arabic corrections (only meaningful while Arabic is on).
-        if (ar && AR_FIX[text] !== undefined) {
+        if (ar && AR_FIX[text] !== undefined && !isWrapperFor(el, text)) {
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");
           el.textContent = AR_FIX[text];
