@@ -185,7 +185,9 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
           )}
           {heading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] lg:text-[44px] leading-[1.18] text-[#1b1b1b] text-balance">
-              {headingMain}{" "}
+              {/* trailing space folded into the text node (no React <!-- --> marker)
+                  so the gap before the highlighted words never collapses on mobile */}
+              {`${headingMain} `}
               <span className="text-[#155eef]">{headingBlue}</span>
             </h2>
           )}
