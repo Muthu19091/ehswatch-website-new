@@ -160,7 +160,7 @@ export default async function Footer() {
   const footerGridCols = `1.1fr ${genericColumns.map(() => "0.9fr").join(" ")} 1.6fr 1.1fr`;
 
   return (
-    <footer className="bg-[#0a1628] flex flex-col items-center pt-12 md:pt-[72px] relative isolate overflow-hidden">
+    <footer dir="ltr" className="bg-[#0a1628] flex flex-col items-center pt-12 md:pt-[72px] relative isolate overflow-hidden">
 
       {/* Main grid: Brand | (generic columns…) | Modules | CTA.
           lg template is dynamic so extra CMS columns render. */}
