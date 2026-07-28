@@ -682,8 +682,8 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       </section>
       )}
 
-      {/* ~170vh sticky scroll — one scroll click per step */}
-      <div ref={outerRef} style={{ height:"170vh" }}>
+      {/* ~170vh sticky scroll — one scroll click per step (desktop only) */}
+      <div ref={outerRef} className="hidden lg:block" style={{ height:"170vh" }}>
         <div className="sticky top-0 bg-white overflow-hidden" style={{ height:"100vh" }}>
 
           {/* Desktop: 3-col */}
@@ -725,35 +725,22 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
             </div>
           </div>
 
-          {/* Mobile */}
-          <div className="lg:hidden flex flex-col h-full items-center pt-4 px-4 gap-3 overflow-hidden">
-            <div className="flex items-center gap-3 shrink-0 self-start pl-1">
-              <div style={{ width:3, height:30, background:"linear-gradient(180deg,#ff8e37,#ff6d00)", borderRadius:3 }} />
-              <div>
-                <span style={{ fontSize:10, fontWeight:600, textTransform:"uppercase",
-                  letterSpacing:"0.16em", color:"#ff6d00", fontFamily:"var(--font-dm-sans,sans-serif)" }}>
-                  FEATURE {features[step].num}
-                </span>
-                <p style={{ fontSize:15, fontWeight:700, color:"#1e293b",
-                  fontFamily:"var(--font-gothic-a1,sans-serif)" }}>
-                  {features[step].title}
-                </p>
-              </div>
+        </div>
+      </div>
+
+      {/* Mobile / tablet — stacked & scrollable (no scroll-pinning): every
+          feature shows its full details AND its scene, so nothing is hidden. */}
+      <div className="lg:hidden px-5 pt-6 pb-14 flex flex-col gap-14 bg-white">
+        {features.map((f, i) => (
+          <div key={i} className="flex flex-col items-center gap-6">
+            <div className="self-start">
+              <FeatureCallout feat={f} active />
             </div>
-            <div className="flex-1 flex items-center justify-center min-h-0 w-full"
-              style={{ transform:"scale(0.9)", transformOrigin:"top center" }}>
-              <ChatMockup step={step} showIris={showIris} voicePhase={voicePhase} />
-            </div>
-            <div className="flex gap-2 shrink-0 pb-2">
-              {features.map((_, i) => (
-                <div key={i} className="rounded-full transition-all duration-500"
-                  style={{ height:6, width:step===i?24:6,
-                    background:step===i?"#ff6d00":"#E2E8F0" }} />
-              ))}
+            <div style={{ transform: "scale(0.92)", transformOrigin: "top center" }}>
+              <ChatMockup step={i} showIris voicePhase={2} />
             </div>
           </div>
-
-        </div>
+        ))}
       </div>
     </>
   );
