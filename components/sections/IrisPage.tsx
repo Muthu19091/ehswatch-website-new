@@ -1764,7 +1764,7 @@ export default function IrisPage({
               {["Deploy safety barriers","Retrain 3 operators","Update risk register"].map((t,i) => (
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:7, marginBottom:6 }}>
                   <div style={{ width:15, height:15, borderRadius:4, background:i===0?"#10b981":"transparent", border:i===0?"none":"1.5px solid #d1d5db", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    {i===0 && <svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    {i===0 && <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                   </div>
                   <span style={{ fontSize:10, color:i===0?"#9ca3af":"#374151", fontFamily:"var(--font-dm-sans,sans-serif)", textDecoration:i===0?"line-through":"none" }}>{t}</span>
                 </div>

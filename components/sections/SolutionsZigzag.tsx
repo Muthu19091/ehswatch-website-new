@@ -253,14 +253,6 @@ export default function SolutionsZigzag({
           </div>
         </div>
 
-        {/* Orange dot separator */}
-        <div className="flex justify-center mb-8 md:mb-10">
-          <span
-            className="rounded-full"
-            style={{ width: 10, height: 10, background: "#FF6D00", display: "block" }}
-          />
-        </div>
-
         {/* Content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
@@ -295,7 +287,7 @@ export default function SolutionsZigzag({
                     >
                       <span
                         className="flex-shrink-0 rounded-full mt-[7px]"
-                        style={{ width: 7, height: 7, background: open ? "#FF6D00" : "#C7D2E5" }}
+                        style={{ width: 7, height: 7, background: "#FF6D00", opacity: open ? 1 : 0.55 }}
                       />
                       <span
                         className="font-[family-name:var(--font-gothic-a1)] font-bold text-[15px] flex-1"

@@ -374,10 +374,7 @@ function UnifiedMockup() {
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${UNI_BASE}/Logo.png`} alt="EHSWatch" style={{ width: "72%", objectFit: "contain", marginBottom: 1 }} />
-          <p style={{ color: "#5d5b5b", fontWeight: 500, fontSize: "clamp(4px,0.45vw,6.5px)", textAlign: "center", lineHeight: 1.2, margin: 0 }}>
-            Unified Platform
-          </p>
+          <img src={`${basePath}/images/EHS%20logo.svg`} alt="EHSWatch" style={{ width: "78%", objectFit: "contain" }} />
         </div>
 
         {/*
@@ -453,10 +450,10 @@ function UnifiedMockup() {
    TAB DATA
    ══════════════════════════════════════════════════════════════════ */
 const TABS = [
-  { number: "1.", label: "Compliance Reporting", title: "Stay Audit-Ready, Always",           desc: "Automatically generate compliance reports, track control effectiveness, and get ahead of regulatory deadlines — all from one centralised dashboard.", link: "See Compliance Tools" },
-  { number: "2.", label: "Mobile App",           title: "Safety in the Field, Offline-Ready", desc: "Your team can submit hazard reports, complete inspections, and log incidents directly from their phone — even without an internet connection.",         link: "Explore Mobile Features" },
-  { number: "3.", label: "Unlimited Users",      title: "Scale Without Extra Cost",           desc: "Add as many team members as you need — from field workers to executives — with role-based access and zero per-seat charges.",                         link: "See Pricing" },
-  { number: "4.", label: "Unified Platform",     title: "Everything in One Place",            desc: "From incident management to contractor safety, all your EHSQ modules share the same data, the same interface, and update in real-time.",               link: "View All Modules" },
+  { number: "1.", label: "Compliance Reporting", title: "Stay Audit-Ready, Always",           desc: "Automatically generate compliance reports, track control effectiveness, and get ahead of regulatory deadlines — all from one centralised dashboard.", link: "See Compliance Tools", href: "/product" },
+  { number: "2.", label: "Mobile App",           title: "Safety in the Field, Offline-Ready", desc: "Your team can submit hazard reports, complete inspections, and log incidents directly from their phone — even without an internet connection.",         link: "Explore Mobile Features", href: "/product" },
+  { number: "3.", label: "Unlimited Users",      title: "Scale Without Extra Cost",           desc: "Add as many team members as you need — from field workers to executives — with role-based access and zero per-seat charges.",                         link: "See Pricing", href: "/pricing" },
+  { number: "4.", label: "Unified Platform",     title: "Everything in One Place",            desc: "From incident management to contractor safety, all your EHSQ modules share the same data, the same interface, and update in real-time.",               link: "View All Modules", href: "/product" },
 ];
 
 const MOCKUPS    = [ComplianceMockup, MobileMockup, UsersMockup, UnifiedMockup];
@@ -500,8 +497,10 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
       label: cms?.label?.trim() || "",
       title: cms?.title?.trim() || "",
       desc: cms?.description?.trim() || "",
-      link: cms?.ctaLabel?.trim() || "",
-      linkUrl: cms?.ctaUrl?.trim() || undefined,
+      link: cms?.ctaLabel?.trim() || t.link,
+      // Fall back to the built-in destination when the CMS has no CTA url, so
+      // the "explore" link always navigates (CMS edits can drop the url).
+      linkUrl: cms?.ctaUrl?.trim() || t.href,
       badge: cms?.badge ?? null,
       cmsImage: cms?.cmsImage ?? null,
     };

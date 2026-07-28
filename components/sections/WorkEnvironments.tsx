@@ -75,13 +75,18 @@ function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
   if (!cmsCards || cmsCards.length === 0) return [];
   return cmsCards.map((c, i) => {
     const layout = CARD_LAYOUT[i % CARD_LAYOUT.length];
+    // The CMS "video" field often actually holds an image (.png/.webp). Only
+    // treat real video files as video; route images to <img> so each card shows
+    // its own uploaded media instead of falling back to the Construction panel.
+    const media = cardMediaUrl(c.video);
+    const isVideoFile = !!media && /\.(mp4|webm|ogg|mov|m4v)(?:[?#]|$)/i.test(media);
     return {
       ...layout,
       key: `${layout.key}-${i}`,
       title: c.title || "",
       desc:  c.subheading || c.description || "",
-      imgSrc: cardMediaUrl(c.image) ?? inferPanelImage(c.title || ""),
-      videoSrc: cardMediaUrl(c.video),
+      imgSrc: cardMediaUrl(c.image) ?? (media && !isVideoFile ? media : inferPanelImage(c.title || "")),
+      videoSrc: isVideoFile ? media : undefined,
     };
   });
 }
