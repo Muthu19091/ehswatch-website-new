@@ -56,6 +56,16 @@ export default async function RootLayout({
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
     >
       <body className="antialiased">
+        {/* Cloak (before paint): when Arabic is active, hide the page until the
+            first-party translator has swapped the text in, so the visitor never
+            sees the English→Arabic reflow. Force-reveal after 3s so the page can
+            never get stuck hidden if translation is slow or fails. */}
+        <script
+          data-cfasync="false"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(/(?:^|;\\s*)(googtrans=\\/en\\/ar|locale=ar)/.test(document.cookie)){document.documentElement.classList.add("gt-cloak");setTimeout(function(){document.documentElement.classList.remove("gt-cloak");},3000);}}catch(e){}})();`,
+          }}
+        />
         {/* Pre-hydration language-switch fallback: on slow devices a click can
             land before React attaches handlers and is silently lost. This
             native capture listener handles those early clicks by setting the

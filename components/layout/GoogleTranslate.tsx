@@ -2,154 +2,150 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { basePath } from "@/lib/basePath";
 
-declare global {
-  interface Window {
-    googleTranslateElementInit?: () => void;
-    google?: {
-      translate?: {
-        TranslateElement?: new (
-          options: { pageLanguage: string; includedLanguages?: string; autoDisplay?: boolean },
-          elementId: string,
-        ) => unknown;
-      };
-    };
-  }
+/* ────────────────────────────────────────────────────────────────────────────
+   First-party Arabic translator.
+
+   Replaces the old client-side Google Translate widget. The widget failed
+   whenever the visitor's browser/network blocked translate.google.com (Edge
+   tracking-prevention, proxies, AV, extensions) and caused a layout shift
+   because it swapped text in after paint.
+
+   Here the browser talks ONLY to our own origin (/api/translate); our SERVER
+   calls Google, so blocking on the client's network is irrelevant. A cloak
+   (see globals.css / layout.tsx) hides the page until the first swap completes,
+   so the visitor never sees the English→Arabic reflow.
+
+   Authored strings and brand terms are left to <ArabicOverrides /> — anything
+   it (or the author) marks translate="no" / [data-ar-en] / .notranslate is
+   skipped here.
+   ──────────────────────────────────────────────────────────────────────── */
+
+const isArabic = () =>
+  /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ||
+  /(?:^|;\s*)locale=ar/.test(document.cookie);
+
+const SKIP_TAGS = new Set([
+  "SCRIPT", "STYLE", "NOSCRIPT", "IFRAME", "SVG", "CANVAS",
+  "CODE", "PRE", "TEXTAREA", "INPUT", "SELECT", "OPTION",
+]);
+const KEEP = new Set(["IRIS", "EHSWatch", "EN", "AR"]);
+const hasLetters = (s: string) => /[A-Za-z]/.test(s);
+
+const reveal = () => document.documentElement.classList.remove("gt-cloak");
+
+interface MTNode extends Text {
+  __mt?: string; // the Arabic value we last wrote (to detect React resets)
 }
 
-const wantsArabic = () => /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie);
-
-/**
- * Poll for Google's hidden language <select> (it appears a beat after the
- * widget script initialises) and apply the given language. Retries for a few
- * seconds so a fresh page load reliably translates even on a slow script load.
- */
-function applyLanguage(lang: "en" | "ar", attempts = 20) {
-  const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
-  if (combo) {
-    if (combo.value !== lang) {
-      combo.value = lang;
-      combo.dispatchEvent(new Event("change"));
-    }
-    return;
-  }
-  if (attempts > 0) setTimeout(() => applyLanguage(lang, attempts - 1), 250);
-}
-
-/**
- * Headless Google Translate integration.
- *
- * The widget element is rendered OFF-SCREEN (not display:none) — Google's
- * combo will not initialise or operate inside a display:none host, which was
- * why translation silently failed after load. All of Google's visible chrome
- * (banner, tooltip, balloon) is suppressed via CSS instead.
- */
 export default function GoogleTranslate() {
   const pathname = usePathname();
 
-  // Re-apply the chosen language after client-side navigation (Next swaps page
-  // content without a reload, so new pages arrive untranslated).
   useEffect(() => {
-    if (wantsArabic()) applyLanguage("ar");
-  }, [pathname]);
-
-  // Persistent cookie↔combo sync. Bounded polling elsewhere gives up after a
-  // few seconds, which loses the user's choice when Google's script loads
-  // slowly (throttled networks) or the switch is clicked mid-load. This keeps
-  // the widget matched to the googtrans cookie for the whole page lifetime.
-  useEffect(() => {
-    const iv = setInterval(() => {
-      const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
-      if (!combo) return;
-      const want = wantsArabic() ? "ar" : "en";
-      // combo.value is "" until Google finishes initialising — treat as "en"
-      const current = combo.value || "en";
-      if (current !== want) {
-        combo.value = want;
-        combo.dispatchEvent(new Event("change"));
-      }
-    }, 1500);
-    return () => clearInterval(iv);
-  }, []);
-
-  useEffect(() => {
-    if (document.getElementById("gt-script")) {
-      if (wantsArabic()) applyLanguage("ar");
+    if (!isArabic()) {
+      reveal();
       return;
     }
 
-    // Google Translate re-parents text nodes into <font> wrappers, which makes
-    // React's removeChild/insertBefore throw during re-renders. These guards
-    // turn the mismatched-parent case into a no-op instead of a crash.
-    if (!(window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard) {
-      (window as unknown as { __gtDomGuard?: boolean }).__gtDomGuard = true;
-      const origRemoveChild = Node.prototype.removeChild;
-      Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
-        if (child.parentNode !== this) return child;
-        return origRemoveChild.call(this, child) as T;
+    // Text-node mutations upset React's reconciliation; make the mismatched-
+    // parent case a no-op instead of a crash (same guard the widget used).
+    const w = window as unknown as { __mtGuard?: boolean };
+    if (!w.__mtGuard) {
+      w.__mtGuard = true;
+      const origRemove = Node.prototype.removeChild;
+      Node.prototype.removeChild = function <T extends Node>(this: Node, c: T): T {
+        if (c.parentNode !== this) return c;
+        return origRemove.call(this, c) as T;
       };
-      const origInsertBefore = Node.prototype.insertBefore;
-      Node.prototype.insertBefore = function <T extends Node>(this: Node, node: T, ref: Node | null): T {
-        if (ref && ref.parentNode !== this) return node;
-        return origInsertBefore.call(this, node, ref) as T;
+      const origInsert = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function <T extends Node>(this: Node, n: T, r: Node | null): T {
+        if (r && r.parentNode !== this) return n;
+        return origInsert.call(this, n, r) as T;
       };
     }
 
-    // Suppress Google's visible chrome (but NOT the combo/host element itself)
-    const style = document.createElement("style");
-    style.id = "gt-style";
-    style.textContent = `
-      .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.skiptranslate,
-      #goog-gt-tt, .goog-te-balloon-frame, .goog-te-spinner-pos,
-      .goog-tooltip, .goog-tooltip:hover,
-      .VIpgJd-ZVi9od-ORHb-OEVmcd, .VIpgJd-ZVi9od-ORHb,
-      [class*="VIpgJd-ZVi9od-aZ2wEe"], [class^="VIpgJd-ZVi9od-vH1Gmf"] { display: none !important; visibility: hidden !important; }
-      /* Google injects a full-width banner wrapper as a direct child of body.
-         Our working combo lives inside #google_translate_element (a separate
-         host), so hiding the body-level wrapper is safe. */
-      body > .skiptranslate { display: none !important; }
-      body { top: 0 !important; position: static !important; }
-      .goog-text-highlight { background: none !important; box-shadow: none !important; }
-      font { background: none !important; box-shadow: none !important; }
-    `;
-    document.head.appendChild(style);
+    let cancelled = false;
+    const dict = new Map<string, string>(); // trimmed EN -> AR
 
-    window.googleTranslateElementInit = () => {
-      try {
-        const TE = window.google?.translate?.TranslateElement;
-        if (TE) {
-          new TE(
-            { pageLanguage: "en", includedLanguages: "en,ar", autoDisplay: false },
-            "google_translate_element",
-          );
-          // Apply the persisted choice once the combo is ready
-          if (wantsArabic()) applyLanguage("ar");
-        }
-      } catch {
-        /* network-blocked or script race — site simply stays untranslated */
+    const collect = (): MTNode[] => {
+      const out: MTNode[] = [];
+      const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const n = node as MTNode;
+          const t = (n.nodeValue || "").trim();
+          if (!t || !hasLetters(t) || KEEP.has(t)) return NodeFilter.FILTER_REJECT;
+          if (n.__mt && t === n.__mt) return NodeFilter.FILTER_REJECT; // already ours
+          const p = n.parentElement;
+          if (!p || SKIP_TAGS.has(p.tagName)) return NodeFilter.FILTER_REJECT;
+          if (p.closest('[translate="no"], .notranslate, [data-ar-en], [contenteditable="true"]'))
+            return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        },
+      });
+      let cur: Node | null;
+      while ((cur = tw.nextNode())) out.push(cur as MTNode);
+      return out;
+    };
+
+    const swap = (nodes: MTNode[]) => {
+      for (const n of nodes) {
+        const raw = n.nodeValue || "";
+        const t = raw.trim();
+        const ar = dict.get(t);
+        if (!ar || ar === t) continue;
+        const lead = raw.match(/^\s*/)?.[0] ?? "";
+        const trail = raw.match(/\s*$/)?.[0] ?? "";
+        n.nodeValue = lead + ar + trail;
+        n.__mt = ar;
       }
     };
 
-    const s = document.createElement("script");
-    s.id = "gt-script";
-    s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    s.async = true;
-    document.body.appendChild(s);
-  }, []);
+    const run = async (nodes: MTNode[]) => {
+      const need = [
+        ...new Set(nodes.map((n) => (n.nodeValue || "").trim()).filter((t) => t && !dict.has(t))),
+      ];
+      if (need.length) {
+        try {
+          const res = await fetch(`${basePath}/api/translate/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ texts: need, target: "ar" }),
+          });
+          const data = (await res.json()) as { t?: string[] };
+          const arr = Array.isArray(data?.t) ? data.t : [];
+          need.forEach((t, i) => dict.set(t, arr[i] ?? t));
+        } catch {
+          need.forEach((t) => dict.set(t, t)); // keep English on failure
+        }
+      }
+      if (!cancelled) swap(nodes);
+    };
 
-  // Off-screen but rendered — the widget needs a laid-out host to initialise.
-  return (
-    <div
-      id="google_translate_element"
-      aria-hidden
-      style={{
-        position: "absolute",
-        left: "-9999px",
-        top: "-9999px",
-        width: "1px",
-        height: "1px",
-        overflow: "hidden",
-      }}
-    />
-  );
+    (async () => {
+      try { await run(collect()); } finally { reveal(); }
+    })();
+
+    let raf = 0;
+    const schedule = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => { raf = 0; run(collect()); });
+    };
+    const mo = new MutationObserver(schedule);
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+    const timers = [400, 1200, 2500].map((ms) => window.setTimeout(schedule, ms));
+    // Backstop: never keep the page hidden longer than this even if the API
+    // hangs. The normal reveal happens as soon as the first pass resolves.
+    const safety = window.setTimeout(reveal, 5000);
+
+    return () => {
+      cancelled = true;
+      mo.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      clearTimeout(safety);
+    };
+  }, [pathname]);
+
+  return null;
 }

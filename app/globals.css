@@ -158,3 +158,9 @@ body {
 html[dir="rtl"] .wenv-hl {
   margin-inline: 0.28em;
 }
+
+/* Server-side Arabic translation: hide the page until the first translation
+   pass swaps the text in, so the visitor never sees the English→Arabic reflow.
+   An inline script in layout.tsx adds .gt-cloak before paint (only when Arabic)
+   and force-removes it after 3s as a safety net. */
+html.gt-cloak body { visibility: hidden !important; }

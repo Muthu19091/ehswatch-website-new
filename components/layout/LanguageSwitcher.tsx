@@ -22,19 +22,6 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
     (window as unknown as { __lsHydrated?: boolean }).__lsHydrated = true;
   }, []);
 
-  // Drive Google Translate's hidden language selector directly so the page
-  // translates live, without a reload.
-  // Apply via Google's hidden combo, polling briefly in case the widget is
-  // still initialising right after load.
-  const applyLive = (next: "en" | "ar", attempts = 16): void => {
-    const combo = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
-    if (combo) {
-      combo.value = next;
-      combo.dispatchEvent(new Event("change"));
-      return;
-    }
-    if (attempts > 0) setTimeout(() => applyLive(next, attempts - 1), 250);
-  };
 
   const toggle = () => {
     const next: "en" | "ar" = lang === "en" ? "ar" : "en";
@@ -51,12 +38,18 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
       }
     }
 
-    // Flip direction/lang immediately for a live RTL switch
+    // Flip direction/lang immediately so the reload paints in the right mode.
     document.documentElement.lang = next;
     document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+    // Cloak straight away when switching to Arabic so the reload doesn't flash
+    // English before the translator runs.
+    if (next === "ar") document.documentElement.classList.add("gt-cloak");
 
     setLang(next);
-    applyLive(next);
+    // Reload: the server renders in the new dir/lang and the first-party
+    // translator (server-side Arabic) runs fresh — no dependency on the
+    // browser reaching Google, and no post-paint reflow.
+    window.location.reload();
   };
 
   return (
