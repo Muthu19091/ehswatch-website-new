@@ -647,7 +647,7 @@ export default function ProductHowItWorks({
     <>
     {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
         stepper and visuals under md, which left 7 near-empty screens of scroll */}
-    <section className="md:hidden bg-[#f1f7ff] px-6 py-14">
+    <section className="lg:hidden bg-[#f1f7ff] px-6 py-14">
       {(headingPlain || subheading) && (
       <div className="text-center mb-10">
         {headingPlain && (
@@ -689,7 +689,7 @@ export default function ProductHowItWorks({
 
     <section
       ref={sectionRef}
-      className="hidden md:block bg-[#f1f7ff]"
+      className="hidden lg:block bg-[#f1f7ff]"
       /* Per-step scroll distance: (55 - 100/steps)vh ≈ 30vh (~1.5–2 wheel
          notches) for a 4-step section — was 100 (~75vh, ~4 scrolls per step). */
       style={{ height: `${steps.length * 55}vh` }}
