@@ -127,23 +127,12 @@ const STEP = COLS;
 
 // ── Module cell ────────────────────────────────────────────────────────────
 
-function ModuleCell({ mod, isLastRow, colIndex }: {
-  mod: Module;
-  isLastRow: boolean;
-  colIndex: number;
-}) {
+function ModuleCell({ mod }: { mod: Module }) {
   const [linkHovered, setLinkHovered] = useState(false);
 
   return (
-    <div
-      className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8"
-      style={{
-        borderBottom: !isLastRow ? "1px solid #e5e7eb" : "none",
-        borderRight: colIndex < COLS - 1 ? "1px solid #e5e7eb" : "none",
-        borderLeft: "none",
-        borderTop: "none",
-      }}
-    >
+    <div className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
+
       <div
         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
         style={{ backgroundColor: mod.color + "14", color: mod.color }}
@@ -207,9 +196,6 @@ export default function ProductModules({
   cmsModules,
 }: ProductModulesProps = {}) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_ROWS * COLS);
-  const [animatedRows, setAnimatedRows] = useState<Set<number>>(
-    () => new Set(Array.from({ length: INITIAL_ROWS }, (_, i) => i))
-  );
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
 
   // CMS-only: modules come solely from the CMS product-modules collection.
@@ -232,28 +218,15 @@ export default function ProductModules({
   const hasMore = visibleCount < modules.length;
 
   const handleViewMore = () => {
-    const nextCount = Math.min(visibleCount + STEP, modules.length);
-    setVisibleCount(nextCount);
-    const newRowIdx = Math.ceil(visibleCount / COLS);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setAnimatedRows((prev) => new Set([...prev, newRowIdx]));
-      });
-    });
+    setVisibleCount(Math.min(visibleCount + STEP, modules.length));
   };
 
   const handleViewLess = () => {
     setVisibleCount(INITIAL_ROWS * COLS);
-    setAnimatedRows(new Set(Array.from({ length: INITIAL_ROWS }, (_, i) => i)));
     if (sectionEl) {
       sectionEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-
-  const rows: Module[][] = [];
-  for (let i = 0; i < visibleModules.length; i += COLS) {
-    rows.push(visibleModules.slice(i, i + COLS));
-  }
 
   // Resolve heading — CMS-only, strip HTML tags and split on <span> for styled portion
   const rawHeading = cmsHeading?.trim() || "";
@@ -266,11 +239,6 @@ export default function ProductModules({
 
   return (
     <section ref={(el) => setSectionEl(el)} className="bg-white py-[50px] md:py-[90px] lg:py-[110px] px-4 md:px-6">
-      <style>{`
-        @media (min-width: 640px) and (max-width: 1023px) {
-          .modules-row > *:nth-child(2n) { border-right: none !important; }
-        }
-      `}</style>
       <div className="max-w-[1160px] mx-auto">
 
         {/* Section title — CMS-only */}
@@ -291,32 +259,15 @@ export default function ProductModules({
         </div>
         )}
 
-        {/* Grid */}
+        {/* Grid — one responsive grid with 1px gaps over a grey background so
+            the dividers render correctly at 1 / 2 / 3 columns (was a per-row
+            grid whose borders broke on iPad/mobile). */}
         <div className="w-full">
-          {rows.map((row, rowIdx) => {
-            const isLastVisibleRow = rowIdx === rows.length - 1;
-            const isVisible = animatedRows.has(rowIdx);
-            return (
-              <div
-                key={rowIdx}
-                className="modules-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? "translateY(0)" : "translateY(12px)",
-                  transition: "opacity 0.4s ease, transform 0.4s ease",
-                }}
-              >
-                {row.map((mod, colIdx) => (
-                  <ModuleCell
-                    key={mod.name}
-                    mod={mod}
-                    isLastRow={isLastVisibleRow}
-                    colIndex={colIdx}
-                  />
-                ))}
-              </div>
-            );
-          })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
+            {visibleModules.map((mod) => (
+              <ModuleCell key={mod.name} mod={mod} />
+            ))}
+          </div>
         </div>
 
         {/* View more / View less */}
