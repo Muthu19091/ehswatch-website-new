@@ -672,10 +672,10 @@ export default function PricingCalculator({
             )}
           </div>
 
-          {/* ── Sticky sidebar summary ── */}
-          <div className="hidden lg:block w-[280px] shrink-0">
+          {/* ── Sticky sidebar summary (stacks full-width below wizard on mobile/tablet, sticky sidebar on lg) ── */}
+          <div className="w-full lg:w-[280px] shrink-0">
             <div
-              className="sticky top-[100px] rounded-2xl p-6 flex flex-col gap-5"
+              className="lg:sticky lg:top-[100px] rounded-2xl p-6 flex flex-col gap-5"
               style={{ background: "#F8FBFF", border: "1px solid #dbeafe" }}
             >
               <div className="flex items-center justify-between">
