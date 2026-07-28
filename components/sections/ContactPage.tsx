@@ -151,6 +151,25 @@ export default function ContactPage({
             />
           )}
 
+          {/* Trust badges below the subheading */}
+          <div
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 animate-hero-rise"
+            style={{ animationDelay: "230ms" }}
+          >
+            {["Rapid Deployment", "4-Hour SLA Response", "ISO 27001 Certified"].map((t) => (
+              <span
+                key={t}
+                className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#0a0f1e]"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
+                  <circle cx="8" cy="8" r="8" fill="#ff7812" />
+                  <path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {t}
+              </span>
+            ))}
+          </div>
+
           {/* Primary CTA — only rendered when CMS provides one */}
           {heroPrimaryCtaLabel && heroPrimaryCtaHref && (
             <div className="animate-hero-rise" style={{ animationDelay: "280ms" }}>
