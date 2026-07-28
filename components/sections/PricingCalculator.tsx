@@ -513,7 +513,7 @@ export default function PricingCalculator({
             connector); labels are absolutely positioned under each circle so
             varying label widths don't skew the spacing. */}
         <div className="w-full max-w-[640px] mx-auto mb-10 md:mb-14">
-          <div className="flex items-center pb-8">
+          <div className="flex items-center pb-2 sm:pb-8">
             {stepLabels.map((label, i) => {
               const done   = i < step;
               const active = i === step;
@@ -537,8 +537,10 @@ export default function PricingCalculator({
                         i + 1
                       )}
                     </div>
+                    {/* Per-circle labels: hidden on mobile (they overlap when
+                        long) and allowed to wrap on ≥sm so they never collide. */}
                     <span
-                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 font-[family-name:var(--font-dm-sans)] text-[11px] sm:text-[12px] font-medium whitespace-nowrap text-center transition-colors duration-300"
+                      className="hidden sm:block absolute top-full mt-2 left-1/2 -translate-x-1/2 font-[family-name:var(--font-dm-sans)] text-[11px] sm:text-[12px] font-medium whitespace-normal max-w-[104px] leading-tight text-center transition-colors duration-300"
                       style={{
                         color: active ? "#0a0f1e" : done ? "#1d4ed8" : "#9ca3af",
                         fontWeight: active ? 700 : 500,
@@ -559,6 +561,10 @@ export default function PricingCalculator({
               );
             })}
           </div>
+          {/* Mobile: show only the current step's label (per-circle labels hidden) */}
+          <p className="sm:hidden text-center font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold text-[#0a0f1e]">
+            Step {step + 1} of {stepLabels.length} — {stepLabels[step]}
+          </p>
         </div>
 
         {/* Main layout: content + sidebar */}
