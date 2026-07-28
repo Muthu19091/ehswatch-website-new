@@ -164,3 +164,9 @@ html[dir="rtl"] .wenv-hl {
    An inline script in layout.tsx adds .gt-cloak before paint (only when Arabic)
    and force-removes it after 3s as a safety net. */
 html.gt-cloak body { visibility: hidden !important; }
+
+/* #139 — the custom orange cursor dot is desktop-only. On touch / coarse-pointer
+   devices its JS never moves it, leaving it stuck at the top-left. Hide it. */
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot { display: none !important; }
+}
