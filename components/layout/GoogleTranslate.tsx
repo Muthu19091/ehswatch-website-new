@@ -7,19 +7,14 @@ import { basePath } from "@/lib/basePath";
 /* ────────────────────────────────────────────────────────────────────────────
    First-party Arabic translator.
 
-   Replaces the old client-side Google Translate widget. The widget failed
-   whenever the visitor's browser/network blocked translate.google.com (Edge
-   tracking-prevention, proxies, AV, extensions) and caused a layout shift
-   because it swapped text in after paint.
+   The browser talks ONLY to our own origin (/api/translate); our SERVER calls
+   Google, so it works even when the visitor's network/browser blocks Google
+   directly. A cloak (globals.css / layout.tsx) hides the page only while the
+   text is being swapped, so there's no visible English→Arabic reflow.
 
-   Here the browser talks ONLY to our own origin (/api/translate); our SERVER
-   calls Google, so blocking on the client's network is irrelevant. A cloak
-   (see globals.css / layout.tsx) hides the page until the first swap completes,
-   so the visitor never sees the English→Arabic reflow.
-
-   Authored strings and brand terms are left to <ArabicOverrides /> — anything
-   it (or the author) marks translate="no" / [data-ar-en] / .notranslate is
-   skipped here.
+   Switching language is LIVE — no page reload. The <LanguageSwitcher/> fires an
+   "ehs-locale" event; we translate the current DOM in place (Arabic) or restore
+   the saved English (back to English).
    ──────────────────────────────────────────────────────────────────────── */
 
 const isArabic = () =>
@@ -33,23 +28,19 @@ const SKIP_TAGS = new Set([
 const KEEP = new Set(["IRIS", "EHSWatch", "EN", "AR"]);
 const hasLetters = (s: string) => /[A-Za-z]/.test(s);
 
+const cloak = () => document.documentElement.classList.add("gt-cloak");
 const reveal = () => document.documentElement.classList.remove("gt-cloak");
 
 interface MTNode extends Text {
-  __mt?: string; // the Arabic value we last wrote (to detect React resets)
+  __mt?: string; // Arabic value we last wrote (to detect React resets)
+  __en?: string; // original English value (to restore on switch-back)
 }
 
 export default function GoogleTranslate() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isArabic()) {
-      reveal();
-      return;
-    }
-
-    // Text-node mutations upset React's reconciliation; make the mismatched-
-    // parent case a no-op instead of a crash (same guard the widget used).
+    // Guard React reconciliation against our text-node mutations.
     const w = window as unknown as { __mtGuard?: boolean };
     if (!w.__mtGuard) {
       w.__mtGuard = true;
@@ -66,7 +57,8 @@ export default function GoogleTranslate() {
     }
 
     let cancelled = false;
-    const dict = new Map<string, string>(); // trimmed EN -> AR
+    const dict = new Map<string, string>();        // trimmed EN -> AR
+    const swapped = new Set<MTNode>();             // nodes we translated (for revert)
 
     const collect = (): MTNode[] => {
       const out: MTNode[] = [];
@@ -94,10 +86,12 @@ export default function GoogleTranslate() {
         const t = raw.trim();
         const ar = dict.get(t);
         if (!ar || ar === t) continue;
+        if (n.__en === undefined) n.__en = raw; // remember English for revert
         const lead = raw.match(/^\s*/)?.[0] ?? "";
         const trail = raw.match(/\s*$/)?.[0] ?? "";
         n.nodeValue = lead + ar + trail;
         n.__mt = ar;
+        swapped.add(n);
       }
     };
 
@@ -116,30 +110,52 @@ export default function GoogleTranslate() {
           const arr = Array.isArray(data?.t) ? data.t : [];
           need.forEach((t, i) => dict.set(t, arr[i] ?? t));
         } catch {
-          need.forEach((t) => dict.set(t, t)); // keep English on failure
+          need.forEach((t) => dict.set(t, t));
         }
       }
       if (!cancelled) swap(nodes);
     };
 
-    (async () => {
-      try { await run(collect()); } finally { reveal(); }
-    })();
+    // useCloak: true only for the first paint, so the initial view never shows
+    // the English→Arabic reflow. A manual toggle swaps live (no cloak/blank).
+    const applyAr = async (useCloak: boolean) => {
+      if (useCloak) cloak();
+      try { await run(collect()); } finally { if (useCloak) reveal(); }
+    };
 
+    const revertEn = () => {
+      swapped.forEach((n) => {
+        if (n.__en !== undefined) { n.nodeValue = n.__en; n.__mt = undefined; }
+      });
+      reveal();
+    };
+
+    // Initial state (from cookie / SSR) — cloak so the first view has no shift.
+    if (isArabic()) applyAr(true);
+    else reveal();
+
+    // Live switch from the language button — no reload, no blank.
+    const onLocale = (e: Event) => {
+      const to = (e as CustomEvent).detail;
+      if (to === "ar") applyAr(false);
+      else revertEn();
+    };
+    window.addEventListener("ehs-locale", onLocale);
+
+    // Translate late-arriving / re-rendered content — only while Arabic is on.
     let raf = 0;
     const schedule = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(() => { raf = 0; run(collect()); });
+      if (raf || !isArabic()) return;
+      raf = window.requestAnimationFrame(() => { raf = 0; if (isArabic()) run(collect()); });
     };
     const mo = new MutationObserver(schedule);
     mo.observe(document.body, { childList: true, subtree: true, characterData: true });
     const timers = [400, 1200, 2500].map((ms) => window.setTimeout(schedule, ms));
-    // Backstop: never keep the page hidden longer than this even if the API
-    // hangs. The normal reveal happens as soon as the first pass resolves.
     const safety = window.setTimeout(reveal, 5000);
 
     return () => {
       cancelled = true;
+      window.removeEventListener("ehs-locale", onLocale);
       mo.disconnect();
       if (raf) cancelAnimationFrame(raf);
       timers.forEach(clearTimeout);

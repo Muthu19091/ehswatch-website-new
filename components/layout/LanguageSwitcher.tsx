@@ -38,18 +38,14 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
       }
     }
 
-    // Flip direction/lang immediately so the reload paints in the right mode.
+    // Flip direction/lang immediately.
     document.documentElement.lang = next;
     document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
-    // Cloak straight away when switching to Arabic so the reload doesn't flash
-    // English before the translator runs.
-    if (next === "ar") document.documentElement.classList.add("gt-cloak");
 
     setLang(next);
-    // Reload: the server renders in the new dir/lang and the first-party
-    // translator (server-side Arabic) runs fresh — no dependency on the
-    // browser reaching Google, and no post-paint reflow.
-    window.location.reload();
+    // Live switch — no page reload. The translator (GoogleTranslate) listens
+    // for this and translates the current DOM in place / restores English.
+    window.dispatchEvent(new CustomEvent("ehs-locale", { detail: next }));
   };
 
   return (
