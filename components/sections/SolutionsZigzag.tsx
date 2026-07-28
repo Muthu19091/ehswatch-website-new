@@ -225,9 +225,9 @@ export default function SolutionsZigzag({
           })}
         </div>
 
-        {/* Mobile — horizontally scrollable tab row */}
-        <div className="md:hidden overflow-x-auto pb-2 mb-6 -mx-6 px-6">
-          <div className="flex gap-2 w-max">
+        {/* Mobile — wrapping tab row so every industry is visible (no hidden scroll) */}
+        <div className="md:hidden mb-6">
+          <div className="flex flex-wrap gap-2">
             {ACTIVE.map((ind, i) => {
               const isActive = activeIdx === i;
               return (

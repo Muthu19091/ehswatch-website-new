@@ -168,7 +168,7 @@ function PainPill({
       <div className="w-9 h-9 sm:w-[40px] sm:h-[40px] rounded-full bg-[#dbeafe] flex items-center justify-center shrink-0">
         <CmsIcon icon={icon} fallback={fallbackIcon} size={22} strokeWidth={2} color="#1d4ed8" />
       </div>
-      <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[11px] sm:text-[12px] lg:text-[14px] leading-normal text-[#0a0f1e] tracking-[-0.2px] lg:tracking-[-0.3px] whitespace-nowrap">
+      <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[11px] sm:text-[12px] lg:text-[14px] leading-normal text-[#0a0f1e] tracking-[-0.2px] lg:tracking-[-0.3px] whitespace-normal md:whitespace-nowrap">
         {label}
       </span>
     </div>
