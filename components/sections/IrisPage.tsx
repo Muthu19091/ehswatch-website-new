@@ -1823,11 +1823,6 @@ export default function IrisPage({
       {/* ─────────────────────────────────────────────────────────────────── */}
       {ACTIVE_PROBLEMS.length > 0 && (
       <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
-        <style>{`
-          @media (min-width: 640px) and (max-width: 1023px) {
-            .problems-row > *:nth-child(2n) { border-right: none !important; }
-          }
-        `}</style>
         <div className="max-w-[1160px] mx-auto">
           {/* Heading */}
           {(problemsHeadTail || problemsSubheading) && (
@@ -1849,47 +1844,40 @@ export default function IrisPage({
           {/* Grid — no outer border, internal dividers only (matches modules style).
               Rows are derived from the item count so any number of CMS cards
               renders (was hard-capped at 2 rows / 6 items). */}
-          <div ref={problemsGridRef}>
-            {Array.from({ length: Math.ceil(ACTIVE_PROBLEMS.length / 3) }, (_, rowIdx) => {
-              const row = ACTIVE_PROBLEMS.slice(rowIdx * 3, rowIdx * 3 + 3);
-              const isLastRow = rowIdx === Math.ceil(ACTIVE_PROBLEMS.length / 3) - 1;
-              return (
-                <div key={rowIdx} className="problems-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 iris-stagger iris-reveal-target" style={{ transitionDelay: `${rowIdx * 120}ms` }}>
-                  {row.map((p, colIdx) => (
-                    <div
-                      key={p.title}
-                      className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8"
-                      style={{
-                        borderBottom: !isLastRow ? "1px solid #e5e7eb" : "none",
-                        borderRight: colIdx < 2 ? "1px solid #e5e7eb" : "none",
-                      }}
-                    >
-                      {/* Icon — CMS Lucide icon when set, hardcoded SVG otherwise */}
-                      <div
-                        className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: p.color + "14", color: p.color }}
-                      >
-                        {p.cmsIcon ? (
-                          <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
-                        ) : (
-                          p.icon
-                        )}
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
-                        {p.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] text-pretty">
-                        {p.desc}
-                      </p>
-                    </div>
-                  ))}
+          {/* Single responsive grid with gap dividers — clean borders at
+              1 / 2 / 3 columns (was a rows-of-3 grid that broke on iPad). */}
+          <div
+            ref={problemsGridRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden iris-stagger"
+          >
+            {ACTIVE_PROBLEMS.map((p) => (
+              <div
+                key={p.title}
+                className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target"
+              >
+                {/* Icon — CMS Lucide icon when set, hardcoded SVG otherwise */}
+                <div
+                  className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: p.color + "14", color: p.color }}
+                >
+                  {p.cmsIcon ? (
+                    <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
+                  ) : (
+                    p.icon
+                  )}
                 </div>
-              );
-            })}
+
+                {/* Title */}
+                <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
+                  {p.title}
+                </h3>
+
+                {/* Description */}
+                <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] text-pretty">
+                  {p.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -357,11 +357,6 @@ export default function ModuleTemplate({
       {/* ── KEY FEATURES ── */}
       {features && features.items.length > 0 && (
         <section id="features" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
-          <style>{`
-            @media (min-width: 640px) and (max-width: 1023px) {
-              .mt-features-row > *:nth-child(2n) { border-right: none !important; }
-            }
-          `}</style>
           <div className="max-w-[1160px] mx-auto">
             <div className="text-center mb-12 md:mb-16">
               {features.heading && (
@@ -379,41 +374,29 @@ export default function ModuleTemplate({
               )}
             </div>
 
-            {(() => {
-              const rows: (typeof features.items)[] = [];
-              for (let i = 0; i < features.items.length; i += 3) rows.push(features.items.slice(i, i + 3));
-              return rows.map((row, rowIdx) => (
-                <div key={rowIdx} className="mt-features-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {row.map((feat, colIdx) => {
-                    const isLastRow = rowIdx === rows.length - 1;
-                    const color = FEATURE_COLORS[(rowIdx * 3 + colIdx) % FEATURE_COLORS.length];
-                    return (
-                      <div
-                        key={colIdx}
-                        className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8"
-                        style={{
-                          borderBottom: !isLastRow ? "1px solid #e5e7eb" : "none",
-                          borderRight: colIdx < 2 ? "1px solid #e5e7eb" : "none",
-                        }}
-                      >
-                        <div
-                          className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                          style={{ background: color + "14", color }}
-                        >
-                          <CmsIcon icon={feat.icon} size={22} strokeWidth={1.6} color={color} fallback="square-check" />
-                        </div>
-                        <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
-                          {feat.title}
-                        </h3>
-                        <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] flex-1 text-pretty">
-                          {feat.description}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              ));
-            })()}
+            {/* Single responsive grid with gap dividers — renders clean borders
+                at 1 / 2 / 3 columns (was a rows-of-3 grid that broke on iPad). */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
+              {features.items.map((feat, i) => {
+                const color = FEATURE_COLORS[i % FEATURE_COLORS.length];
+                return (
+                  <div key={i} className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
+                    <div
+                      className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+                      style={{ background: color + "14", color }}
+                    >
+                      <CmsIcon icon={feat.icon} size={22} strokeWidth={1.6} color={color} fallback="square-check" />
+                    </div>
+                    <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
+                      {feat.title}
+                    </h3>
+                    <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] flex-1 text-pretty">
+                      {feat.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
