@@ -346,8 +346,15 @@ export default function ModuleTemplate({
             </div>
             {why.imageUrl && (
               <div className="w-full lg:w-[60%] rounded-2xl overflow-hidden">
+                {/* Fixed 16:9 frame + cover so portrait/odd-ratio CMS images
+                    render at a consistent size instead of blowing up the section. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={why.imageUrl} alt={`${moduleName} dashboard`} className="w-full h-auto" />
+                <img
+                  src={why.imageUrl}
+                  alt={`${moduleName} dashboard`}
+                  className="block w-full object-cover"
+                  style={{ aspectRatio: "16 / 9" }}
+                />
               </div>
             )}
           </div>
