@@ -582,8 +582,8 @@ export default function ActionTrackerPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 animate-hero-rise" style={{ animationDelay: "300ms" }}>
-            <CTAButton href="/support" label="Book a Demo" variant="primary" />
-            <CTAButton href="#features" label="See Key Features" variant="ghost" />
+            <CTAButton href="/support" label="Get Free Trial Access" variant="primary" />
+            <CTAButton href="/pricing" label="View Pricing" variant="ghost" />
           </div>
         </div>
       </section>
@@ -737,7 +737,10 @@ export default function ActionTrackerPage() {
           <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.8] text-[#4b5563] max-w-[560px] text-pretty">
             Request your free Action Tracker demo. See how EHSWatch transforms safety and compliance findings into closed, evidenced actions — across every site, every team, every time.
           </p>
-          <CTAButton href="/support" label="Book Demo Now" variant="primary" />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <CTAButton href="/support" label="Get Free Trial Access" variant="primary" />
+            <CTAButton href="/pricing" label="View Pricing" variant="ghost" />
+          </div>
         </div>
       </section>
 
