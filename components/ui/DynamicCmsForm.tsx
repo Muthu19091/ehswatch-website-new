@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import TurnstileField from "@/components/ui/TurnstileField";
-import PhoneInput from "@/components/ui/PhoneInput";
+import PhoneInput, { isPhoneField } from "@/components/ui/PhoneInput";
 import type { CmsForm, CmsFormField } from "@/lib/types";
 
 export type FormVariant = "contact" | "support";
@@ -189,8 +189,8 @@ function FieldWidget({
     );
   }
 
-  /* phone / tel → intl-tel-input widget */
-  if (field.field_type === "phone" || field.field_type === "tel") {
+  /* phone / tel (by type OR field name) → intl-tel-input widget */
+  if (isPhoneField(field)) {
     return (
       <div>
         {label}
@@ -297,7 +297,7 @@ function validateFields(
       }
     }
 
-    if ((field.field_type === "phone" || field.field_type === "tel") && val.replace(/\D/g, "").length < 7) {
+    if (isPhoneField(field) && val.replace(/\D/g, "").length < 7) {
       errors[field.key] = "Enter a valid phone number.";
     }
   }

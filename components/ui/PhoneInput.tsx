@@ -9,12 +9,39 @@ interface Props {
   required?: boolean;
   placeholder?: string;
   variant?: FormVariant;
+  /** Called with the full E.164 number whenever it changes (for controlled forms). */
+  onValue?: (value: string) => void;
+  /** Seed the field (controlled forms re-mounting the widget across steps). */
+  defaultValue?: string;
 }
 
-export default function PhoneInput({ name, required, placeholder, variant = "contact" }: Props) {
+/**
+ * A field is treated as a phone field — and gets the country-code widget — when
+ * its CMS type is phone/tel OR its name/label looks like a phone field. This
+ * keeps the dial-code selector on every form's phone field regardless of how
+ * the field_type was configured in the CMS.
+ */
+export function isPhoneField(field: {
+  field_type?: string | null;
+  label?: string | null;
+  key?: string | null;
+}): boolean {
+  const t = (field.field_type || "").toLowerCase();
+  if (t === "phone" || t === "tel") return true;
+  const hay = `${field.label || ""} ${field.key || ""}`.toLowerCase();
+  return (
+    /\b(phone|mobile|whatsapp|telephone|cellphone)\b/.test(hay) ||
+    /\bcell\s*phone\b/.test(hay) ||
+    /(phone|mobile|contact|whats\s*app)\s*(number|no\.?|#)/.test(hay)
+  );
+}
+
+export default function PhoneInput({ name, required, placeholder, variant = "contact", onValue, defaultValue }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const itiRef = useRef<any>(null);
-  const [fullNumber, setFullNumber] = useState("");
+  const onValueRef = useRef(onValue);
+  onValueRef.current = onValue;
+  const [fullNumber, setFullNumber] = useState(defaultValue ?? "");
 
   useEffect(() => {
     const el = inputRef.current;
@@ -41,9 +68,17 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
         loadUtils: () => import("intl-tel-input/utils"),
       });
       itiRef.current = iti;
+      // Seed a previously-entered value when the widget re-mounts (wizard steps).
+      if (defaultValue) {
+        try { iti.setNumber(defaultValue); } catch { /* ignore */ }
+      }
     });
 
-    const sync = () => setFullNumber(itiRef.current?.getNumber() ?? "");
+    const sync = () => {
+      const v = itiRef.current?.getNumber() ?? "";
+      setFullNumber(v);
+      onValueRef.current?.(v);
+    };
 
     el.addEventListener("input", sync);
     el.addEventListener("countrychange", sync);

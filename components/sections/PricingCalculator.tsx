@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import TurnstileField from "@/components/ui/TurnstileField";
 import CmsIcon from "@/components/ui/CmsIcon";
+import PhoneInput, { isPhoneField } from "@/components/ui/PhoneInput";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fully CMS-driven pricing wizard.
@@ -86,7 +87,7 @@ function validateField(
   if (field.field_type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) {
     return "Enter a valid email address.";
   }
-  if ((field.field_type === "phone" || field.field_type === "tel") && val.replace(/\D/g, "").length < 7) {
+  if (isPhoneField(field) && val.replace(/\D/g, "").length < 7) {
     return "Enter a valid phone number.";
   }
   if (field.field_type === "url" && !/^https?:\/\/.+\..+/.test(val)) {
@@ -431,6 +432,25 @@ export default function PricingCalculator({
               {field.required && <span style={{ color: "#ef4444" }}> *</span>}
             </span>
           </label>
+          {help}
+          <FieldError msg={err} />
+        </div>
+      );
+    }
+
+    // Phone (by type OR field name) → country-code widget, country auto-detected per visitor.
+    if (isPhoneField(field)) {
+      return (
+        <div key={field.key} className="flex flex-col gap-2">
+          {label}
+          <PhoneInput
+            name={field.key}
+            required={field.required}
+            placeholder={field.placeholder ?? ""}
+            variant="support"
+            defaultValue={values[field.key] ?? ""}
+            onValue={(v) => setValue(field.key, v)}
+          />
           {help}
           <FieldError msg={err} />
         </div>
