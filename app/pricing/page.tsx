@@ -119,6 +119,7 @@ export default async function PricingPage() {
       applications?: Array<{ slug: string; name: string; icon?: string; description?: string; category?: string }>;
       addons?: Array<{ slug: string; name: string; icon?: string; description?: string }>;
     };
+    captcha?: { provider?: string; site_key?: string };
   } | undefined;
 
   // ── picker_catalogues — apps and addons from the dedicated CMS admin sections
@@ -226,6 +227,7 @@ export default async function PricingPage() {
           cmsSubmitLabel={calcBlock?.submit_label || calcFormAttrs?.submit_label || undefined}
           cmsSuccessHeading={calcBlock?.success_heading || calcFormAttrs?.success_heading || undefined}
           cmsSuccessBody={calcBlock?.success_body || calcFormAttrs?.success_message || undefined}
+          cmsCaptchaSiteKey={calcFormAttrs?.captcha?.site_key || undefined}
         />
         )}
         <PricingFAQ

@@ -59,6 +59,7 @@ interface PricingCalculatorProps {
   cmsSubmitLabel?: string;
   cmsSuccessHeading?: string;
   cmsSuccessBody?: string;
+  cmsCaptchaSiteKey?: string;
 }
 
 // ── Field-level validation, driven by the CMS schema ─────────────────────────
@@ -121,6 +122,7 @@ export default function PricingCalculator({
   cmsSubmitLabel,
   cmsSuccessHeading,
   cmsSuccessBody,
+  cmsCaptchaSiteKey,
 }: PricingCalculatorProps = {}) {
   const formSlug   = cmsFormSlug || "build-ehswatch-package";
   // CMS-only: no hardcoded fallback copy.
@@ -627,7 +629,7 @@ export default function PricingCalculator({
                 {isLastStep ? (
                   <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
                     {current.fields.map(renderField)}
-                    <TurnstileField onToken={setCaptchaToken} onExpire={() => setCaptchaToken(null)} />
+                    <TurnstileField siteKey={cmsCaptchaSiteKey} onToken={setCaptchaToken} onExpire={() => setCaptchaToken(null)} />
                     {submitError && (
                       <div
                         className="rounded-xl px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-[1.6]"
