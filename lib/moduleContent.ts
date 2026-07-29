@@ -157,21 +157,24 @@ export function buildModuleTemplateProps(
     headline?: string;
     subhead?: string;
     primary_cta?: CtaShape;
+    secondary_cta?: CtaShape;
   }>(blocks, "cta_banner");
 
   const finalCta: ModuleTemplateProps["finalCta"] | undefined = ctaBlock?.headline
     ? {
         headline: stripHtml(ctaBlock.headline),
         subhead: stripHtmlOpt(ctaBlock.subhead),
-        // No hardcoded fallback — the CTA button only appears when the CMS
-        // cta_banner actually has a configured CTA (label + link).
+        // No hardcoded fallback — each CTA button only appears when the CMS
+        // cta_banner actually has that CTA configured (label + link).
         cta: resolveCta(ctaBlock.primary_cta, pageMap),
+        secondaryCta: resolveCta(ctaBlock.secondary_cta, pageMap),
       }
     : undefined;
 
   const modulesBlock = findBlock<{
     heading?: string;
     visible_count?: number;
+    source?: string;
     curated_ids?: unknown;
     items?: unknown;
   }>(blocks, "product_modules");
@@ -184,45 +187,80 @@ export function buildModuleTemplateProps(
   // excluding the current module. Any per-page custom copy in `items` (matched
   // by slug) overrides the module's own description. Only when the block has no
   // curated_ids do we fall back to auto-listing other active modules.
-  const curatedIds = normalizeArray<number | string>(modulesBlock?.curated_ids)
-    .map((v) => Number(v))
-    .filter((n) => Number.isFinite(n));
+  const slugify = (s: string) =>
+    s.toLowerCase().trim().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-+|-+$)/g, "");
 
-  const activeById = new Map(
-    allModules
-      .filter((m) => m.attributes.status === "active")
-      .map((m) => [Number(m.id), m] as const),
-  );
+  type MoreCard = { name: string; slug: string; desc: string; icon: string | null; href: string };
+  let otherModules: MoreCard[];
 
-  // Optional per-page custom descriptions from the block's items (by slug)
-  const customDescBySlug = new Map(
-    normalizeArray<{ slug?: string; description?: string }>(modulesBlock?.items)
-      .filter((it) => it?.slug && stripHtmlOpt(it.description))
-      .map((it) => [it.slug as string, stripHtml(it.description)] as const),
-  );
+  if ((modulesBlock?.source ?? "").toLowerCase() === "inline") {
+    // Inline source — each card's copy/icon/link is authored directly on this
+    // page's block (includes a per-page contextual IRIS AI card). Self-contained,
+    // so no lookup against the global module pool.
+    otherModules = normalizeArray<{
+      name?: string;
+      tagline?: string;
+      icon?: string | null;
+      cta?: Parameters<typeof resolveCta>[0];
+    }>(modulesBlock?.items)
+      .filter((it) => stripHtmlOpt(it?.name))
+      .map((it) => {
+        const nm = stripHtml(it.name as string);
+        // Resolve the card's CTA (url, or page_id→pageMap, e.g. IRIS AI → /iris).
+        const resolved = resolveCta(it.cta, pageMap);
+        const url = resolved?.href && resolved.href !== "#" ? resolved.href : undefined;
+        return {
+          name: nm,
+          slug: slugify(nm),
+          desc: stripHtml(it.tagline ?? ""),
+          icon: it.icon ?? null,
+          href: url || hrefForModule(slugify(nm)),
+        };
+      });
+  } else {
+    // Curated source — the block stores an ordered list of module ids in
+    // `curated_ids`; render exactly those (excluding the current module), with
+    // optional per-page description overrides from `items` (matched by slug).
+    // No curated_ids → fall back to auto-listing other active modules.
+    const curatedIds = normalizeArray<number | string>(modulesBlock?.curated_ids)
+      .map((v) => Number(v))
+      .filter((n) => Number.isFinite(n));
 
-  const toCard = (m: CmsProductModule) => ({
-    name: stripHtml(m.attributes.name),
-    slug: m.attributes.slug,
-    desc:
-      customDescBySlug.get(m.attributes.slug) ||
-      stripHtml(m.attributes.description) ||
-      stripHtml(m.attributes.tagline),
-    icon: m.attributes.icon ?? null,
-    href: hrefForModule(m.attributes.slug),
-  });
+    const activeById = new Map(
+      allModules
+        .filter((m) => m.attributes.status === "active")
+        .map((m) => [Number(m.id), m] as const),
+    );
 
-  const curatedModules = curatedIds
-    .map((id) => activeById.get(id))
-    .filter((m): m is CmsProductModule => !!m && m.attributes.slug !== slug)
-    .map(toCard);
+    const customDescBySlug = new Map(
+      normalizeArray<{ slug?: string; description?: string }>(modulesBlock?.items)
+        .filter((it) => it?.slug && stripHtmlOpt(it.description))
+        .map((it) => [it.slug as string, stripHtml(it.description)] as const),
+    );
 
-  const otherModules = curatedModules.length > 0
-    ? curatedModules
-    : allModules
-        .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
-        .slice(0, typeof modulesBlock?.visible_count === "number" ? modulesBlock.visible_count : 5)
-        .map(toCard);
+    const toCard = (m: CmsProductModule): MoreCard => ({
+      name: stripHtml(m.attributes.name),
+      slug: m.attributes.slug,
+      desc:
+        customDescBySlug.get(m.attributes.slug) ||
+        stripHtml(m.attributes.description) ||
+        stripHtml(m.attributes.tagline),
+      icon: m.attributes.icon ?? null,
+      href: hrefForModule(m.attributes.slug),
+    });
+
+    const curatedModules = curatedIds
+      .map((id) => activeById.get(id))
+      .filter((m): m is CmsProductModule => !!m && m.attributes.slug !== slug)
+      .map(toCard);
+
+    otherModules = curatedModules.length > 0
+      ? curatedModules
+      : allModules
+          .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
+          .slice(0, typeof modulesBlock?.visible_count === "number" ? modulesBlock.visible_count : 5)
+          .map(toCard);
+  }
 
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0

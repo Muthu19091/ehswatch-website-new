@@ -50,6 +50,7 @@ export interface ModuleTemplateProps {
     headline: string;
     subhead?: string;
     cta?: ModuleCta;
+    secondaryCta?: ModuleCta;
   };
   moreModules?: {
     heading: string;
@@ -462,7 +463,12 @@ export default function ModuleTemplate({
                 {finalCta.subhead}
               </p>
             )}
-            {finalCta.cta && <CTAButton href={finalCta.cta.href} label={finalCta.cta.label} variant="primary" />}
+            {(finalCta.cta || finalCta.secondaryCta) && (
+              <div className="flex flex-col sm:flex-row gap-3">
+                {finalCta.cta && <CTAButton href={finalCta.cta.href} label={finalCta.cta.label} variant="primary" />}
+                {finalCta.secondaryCta && <CTAButton href={finalCta.secondaryCta.href} label={finalCta.secondaryCta.label} variant="ghost" />}
+              </div>
+            )}
           </div>
         </section>
       )}
