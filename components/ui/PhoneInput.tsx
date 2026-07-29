@@ -26,14 +26,10 @@ export function isPhoneField(field: {
   label?: string | null;
   key?: string | null;
 }): boolean {
+  // Country-code widget shows ONLY for the explicit "phone" field type
+  // (and its "tel" synonym) — never for "phone_plain" or a name/label guess.
   const t = (field.field_type || "").toLowerCase();
-  if (t === "phone" || t === "tel") return true;
-  const hay = `${field.label || ""} ${field.key || ""}`.toLowerCase();
-  return (
-    /\b(phone|mobile|whatsapp|telephone|cellphone)\b/.test(hay) ||
-    /\bcell\s*phone\b/.test(hay) ||
-    /(phone|mobile|contact|whats\s*app)\s*(number|no\.?|#)/.test(hay)
-  );
+  return t === "phone" || t === "tel";
 }
 
 export default function PhoneInput({ name, required, placeholder, variant = "contact", onValue, defaultValue }: Props) {
