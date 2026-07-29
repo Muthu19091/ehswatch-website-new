@@ -38,6 +38,7 @@ const EN_TO_AR: Record<string, string> = {
   "Home": "الصفحة الرئيسية",
   "About Us": "من نحن",
   "Product": "منتجات",
+  "Products": "منتجات",
   "Pricing": "الأسعار",
   "Case Studies": "دراسات",
   "Blogs": "مقالات",
