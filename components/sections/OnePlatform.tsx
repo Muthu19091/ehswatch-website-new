@@ -374,7 +374,7 @@ function UnifiedMockup() {
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${basePath}/images/EHS%20logo.svg`} alt="EHSWatch" style={{ width: "78%", objectFit: "contain" }} />
+          <img src={`${basePath}/images/EHS%20logo%20clean.svg`} alt="EHSWatch" style={{ width: "82%", objectFit: "contain" }} />
         </div>
 
         {/*
