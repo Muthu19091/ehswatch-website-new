@@ -17,6 +17,14 @@ function LucideIcon({ name, size = 18 }: { name?: string; size?: number }) {
   return <CmsIcon icon={name} size={size} strokeWidth={1.5} color="currentColor" fallback="square-check" />;
 }
 
+// Selected-apps count label with correct Arabic number grammar (singular/dual/plural).
+function appCountLabel(n: number, ar: boolean): string {
+  if (!ar) return `${n} app${n !== 1 ? "s" : ""}`;
+  if (n === 1) return "تطبيق واحد";
+  if (n === 2) return "تطبيقان";
+  return `تطبيقات ${n}`;
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface CmsFormField {
@@ -153,6 +161,21 @@ export default function PricingCalculator({
   const [submitting, setSubmitting]   = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Arabic active? (drives locale-aware, self-rendered labels like the app count)
+  const [isAr, setIsAr] = useState(false);
+  useEffect(() => {
+    const check = () =>
+      /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ||
+      /(?:^|;\s*)locale=ar/.test(document.cookie) ||
+      document.documentElement.dir === "rtl";
+    setIsAr(check());
+    const onLocale = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setIsAr(detail === "ar" || (detail == null && check()));
+    };
+    window.addEventListener("ehs-locale", onLocale);
+    return () => window.removeEventListener("ehs-locale", onLocale);
+  }, []);
 
   const isLastStep = step === wizardSteps.length - 1;
   const current = wizardSteps[step];
@@ -702,10 +725,11 @@ export default function PricingCalculator({
                 <span className="font-[family-name:var(--font-gothic-a1)] font-bold text-[15px] text-[#0a0f1e]">Your Package</span>
                 {selectedAppIds.size > 0 && (
                   <span
-                    className="font-[family-name:var(--font-dm-sans)] text-[12px] font-bold px-2.5 py-1 rounded-full"
+                    translate="no"
+                    className="notranslate font-[family-name:var(--font-dm-sans)] text-[12px] font-bold px-2.5 py-1 rounded-full"
                     style={{ background: "#1d4ed8", color: "white" }}
                   >
-                    {selectedAppIds.size} app{selectedAppIds.size !== 1 ? "s" : ""}
+                    {appCountLabel(selectedAppIds.size, isAr)}
                   </span>
                 )}
               </div>
