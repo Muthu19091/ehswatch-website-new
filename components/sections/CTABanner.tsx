@@ -36,9 +36,10 @@ export default function CTABanner({
       <div className="max-w-[800px] mx-auto flex flex-col gap-3 md:gap-[16px] items-center">
         {headline && (
         <Reveal variant="slide-right" duration={750}>
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] text-center">
-            {headline}
-          </h2>
+          <h2
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[44px] leading-tight text-[#0a0f1e] text-center"
+            dangerouslySetInnerHTML={{ __html: headline }}
+          />
         </Reveal>
         )}
 

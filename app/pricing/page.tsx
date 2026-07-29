@@ -7,7 +7,7 @@ import PricingCalculator from "@/components/sections/PricingCalculator";
 import PricingFAQ from "@/components/sections/PricingFAQ";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getForm, getPageList } from "@/lib/api";
-import { stripHtml, stripHtmlOpt } from "@/lib/text";
+import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
@@ -61,7 +61,7 @@ export default async function PricingPage() {
     checklist_items?: Record<string, { text?: string }> | Array<{ text?: string }>;
   }>(blocks, "text_checklist");
 
-  const overviewHeading          = overviewBlock?.heading || undefined;
+  const overviewHeading          = headingHtmlOpt(overviewBlock?.heading);
   const overviewBody             = overviewBlock?.body || undefined;
   const overviewChecklistHeading = overviewBlock?.checklist_heading || undefined;
   const rawChecklistItems        = overviewBlock?.checklist_items;
@@ -77,7 +77,7 @@ export default async function PricingPage() {
     items?: Record<string, { question?: string; answer?: string }> | Array<{ question?: string; answer?: string }>;
   }>(blocks, "faq_accordion");
 
-  const faqHeading  = stripHtml(faqBlock?.heading) || undefined;
+  const faqHeading  = headingHtmlOpt(faqBlock?.heading);
   const rawFaqItems = faqBlock?.items;
   const faqItems: Array<{ question: string; answer: string }> = rawFaqItems
     ? normalizeArray<{ question?: string; answer?: string }>(rawFaqItems)
@@ -175,7 +175,7 @@ export default async function PricingPage() {
     secondary_cta?: unknown;
   }>(blocks, "cta_banner");
 
-  const ctaHeadline  = stripHtmlOpt(ctaBlock?.headline);
+  const ctaHeadline  = headingHtmlOpt(ctaBlock?.headline);
   const ctaSubhead   = stripHtmlOpt(ctaBlock?.subhead);
   const ctaPrimary   = resolveCta(ctaBlock?.primary_cta, pageMap);
   const ctaSecondary = resolveCta(ctaBlock?.secondary_cta, pageMap);

@@ -9,7 +9,7 @@ import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getProductModules, getPageList } from "@/lib/api";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
-import { stripHtmlOpt } from "@/lib/text";
+import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -147,7 +147,7 @@ export default async function ProductPage() {
           cmsModules={cmsModules.length > 0 ? cmsModules : undefined}
         />
         <CTABanner
-          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
           cmsSubhead={stripHtmlOpt(ctaBlock?.subhead)}
           cmsPrimaryCta={ctaPrimary ?? undefined}
           cmsSecondaryCta={ctaSecondary ?? undefined}

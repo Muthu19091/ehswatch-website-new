@@ -6,7 +6,7 @@ import CaseStudiesGrid from "@/components/sections/CaseStudiesGrid";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getCaseStudies, getPageList } from "@/lib/api";
 import { findBlock, buildPageMap, resolveCta } from "@/lib/blocks";
-import { stripHtmlOpt } from "@/lib/text";
+import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom } from "@/lib/seo";
 
@@ -71,7 +71,7 @@ export default async function CaseStudiesPage() {
         />
         <CaseStudiesGrid cmsStudies={cmsItems.length > 0 ? cmsItems : undefined} />
         <CTABanner
-          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
           cmsSubhead={stripHtmlOpt(ctaBlock?.subhead)}
           cmsPrimaryCta={ctaPrimary ?? undefined}
           cmsSecondaryCta={ctaSecondary ?? undefined}

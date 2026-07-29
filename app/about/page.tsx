@@ -9,7 +9,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import type { Metadata } from "next";
 import { getPage, getPageList } from "@/lib/api";
 import { findBlock, findBlocks, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
-import { stripHtmlOpt } from "@/lib/text";
+import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { robotsFrom } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -154,7 +154,7 @@ export default async function AboutPage() {
           cmsSubheading={drives?.subheading}
           cmsItems={drives?.items}
         />
-        <Stats cmsItems={statsItems} cmsHeading={statsData?.heading || undefined} />
+        <Stats cmsItems={statsItems} cmsHeading={headingHtmlOpt(statsData?.heading)} />
         {principles?.items && principles.items.length > 0 && (
           <AboutDrives
             cmsHeading={principles.heading}
@@ -163,7 +163,7 @@ export default async function AboutPage() {
           />
         )}
         <CTABanner
-          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
           cmsSubhead={stripHtmlOpt(ctaBlock?.subheadline || ctaBlock?.subhead)}
           cmsPrimaryCta={ctaPrimary ?? undefined}
           cmsSecondaryCta={ctaSecondary ?? undefined}

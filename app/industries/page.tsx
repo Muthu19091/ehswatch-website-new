@@ -6,7 +6,7 @@ import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
 import CTABanner from "@/components/sections/CTABanner";
 import Testimonials from "@/components/sections/Testimonials";
 import { getPage, getTestimonials, getPageList } from "@/lib/api";
-import { stripHtml, stripHtmlOpt } from "@/lib/text";
+import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { CmsIndustryCard } from "@/components/sections/SolutionsZigzag";
 import type { Metadata } from "next";
@@ -89,20 +89,20 @@ export default async function IndustriesPage() {
         />
         <SolutionsZigzag
           cmsCards={cmsZigzagCards}
-          cmsHeading={stripHtmlOpt(solutionCarousel?.heading)}
+          cmsHeading={headingHtmlOpt(solutionCarousel?.heading)}
           cmsSubheading={stripHtmlOpt(solutionCarousel?.subheading)}
           cmsEyebrow={stripHtmlOpt(solutionCarousel?.eyebrow)}
         />
         {cmsTestimonials.length > 0 && (
           <Testimonials
-            title={stripHtmlOpt(testimonialsData?.heading) || undefined}
+            title={headingHtmlOpt(testimonialsData?.heading)}
             subtitle={stripHtmlOpt(testimonialsData?.subheading) ?? ""}
             cmsItems={cmsTestimonials}
           />
         )}
         {ctaData?.headline && (
           <CTABanner
-            cmsHeadline={stripHtmlOpt(ctaData.headline)}
+            cmsHeadline={headingHtmlOpt(ctaData.headline)}
             cmsSubhead={stripHtmlOpt(ctaData?.subhead)}
             cmsPrimaryCta={ctaPrimary ?? undefined}
             cmsSecondaryCta={ctaSecondary ?? undefined}

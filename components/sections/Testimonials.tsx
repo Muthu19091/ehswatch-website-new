@@ -80,9 +80,10 @@ export default function Testimonials({
       {/* Heading */}
       <div className="px-4 md:px-6 text-center mb-8 md:mb-12">
         {title && (
-        <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] leading-tight text-[#1b1b1b]">
-          {title}
-        </h2>
+        <h2
+          className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] leading-tight text-[#1b1b1b]"
+          dangerouslySetInnerHTML={{ __html: title }}
+        />
         )}
         {subtitle && (
           <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] text-[#727272] max-w-[560px] mx-auto leading-relaxed">

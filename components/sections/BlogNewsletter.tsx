@@ -145,9 +145,8 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
                 <h2
                   className="font-[family-name:var(--font-gothic-a1)] font-bold text-[18px] sm:text-[19px] md:text-[20px] leading-[1.6] tracking-[-0.01em] shrink-0"
                   style={{ color: DARK, maxWidth: 340 }}
-                >
-                  {heading}
-                </h2>
+                  dangerouslySetInnerHTML={{ __html: heading }}
+                />
               )}
 
               {/* Email + consent */}

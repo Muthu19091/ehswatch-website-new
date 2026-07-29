@@ -12,7 +12,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import Blogs from "@/components/sections/Blogs";
 import CTABanner from "@/components/sections/CTABanner";
 import { getTestimonials, getClientLogos, getPage, getPageList } from "@/lib/api";
-import { stripHtml, stripHtmlOpt } from "@/lib/text";
+import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import { robotsFrom } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -178,7 +178,7 @@ export default async function HomePage() {
         />
         <TrustedLogos
           cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined}
-          cmsHeading={stripHtmlOpt(trustedBlock?.heading)}
+          cmsHeading={headingHtmlOpt(trustedBlock?.heading)}
         />
         <Stats
           cmsItems={
@@ -224,7 +224,7 @@ export default async function HomePage() {
         />
         <Testimonials
           cmsItems={cmsTestimonials.length > 0 ? cmsTestimonials : undefined}
-          title={stripHtmlOpt(testimonialsBlock?.heading)}
+          title={headingHtmlOpt(testimonialsBlock?.heading)}
           subtitle={stripHtmlOpt(testimonialsBlock?.subheading) ?? ""}
         />
         <Blogs
@@ -234,7 +234,7 @@ export default async function HomePage() {
           cmsViewAllCta={resolveCta(blogBlock?.view_all_cta, pageMap) ?? undefined}
         />
         <CTABanner
-          cmsHeadline={stripHtmlOpt(ctaBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
           cmsSubhead={stripHtmlOpt(ctaBlock?.subheadline || ctaBlock?.subhead)}
           cmsPrimaryCta={ctaPrimary ?? undefined}
           cmsSecondaryCta={ctaSecondary ?? undefined}

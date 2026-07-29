@@ -29,9 +29,10 @@ export default function PricingFAQ({
       <div className="max-w-[760px] mx-auto flex flex-col gap-8">
         {displayHeading && (
         <div className="text-center">
-          <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-            {displayHeading}
-          </h2>
+          <h2
+            className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]"
+            dangerouslySetInnerHTML={{ __html: displayHeading }}
+          />
         </div>
         )}
         <div className="flex flex-col divide-y divide-[#e5eaf2]">

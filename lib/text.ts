@@ -30,6 +30,39 @@ export function stripHtmlOpt(value: string | null | undefined): string | undefin
 }
 
 /**
+ * Heading guard for the "half black / half blue" pattern. Editors wrap the
+ * part they want highlighted in a <span> (`first half <span>second half</span>`)
+ * and this preserves ONLY that span — stripping every other tag and all span
+ * attributes for safety — then recolours the span to the brand blue (#1d4ed8).
+ * Headings with no <span> come out as plain text, identical to stripHtml, so
+ * existing headings are unaffected. Output is safe HTML for
+ * dangerouslySetInnerHTML (only a bare, recoloured <span> can survive).
+ */
+export function headingHtml(value: string | null | undefined): string {
+  if (!value) return "";
+  const decoded = value
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&amp;/g, "&");
+  return decoded
+    // Drop every tag except <span>/</span> (removes <p>, <strong>, scripts, …).
+    .replace(/<(?!\/?span\b)[^>]*>/gi, "")
+    // Sanitise span open tags (strip attributes) and recolour to brand blue.
+    .replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">')
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** headingHtml that preserves undefined for optional-prop chains */
+export function headingHtmlOpt(value: string | null | undefined): string | undefined {
+  const s = headingHtml(value);
+  return s || undefined;
+}
+
+/**
  * Rich editors escape tags an editor TYPES into them (&lt;p&gt;…), so typed
  * markup would display literally. For rich-text renders we decode escape
  * sequences that look like real HTML tags — so hand-typed markup behaves
