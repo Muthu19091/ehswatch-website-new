@@ -27,6 +27,9 @@ const EN_TO_AR: Record<string, string> = {
   "What is the minimum term for a contract?": "ما هو الحد الأدنى لمدة العقد؟",
   "Speak to our team to find the right configuration for your organisation.":
     "تحدث إلى فريقنا للعثور على الإعداد المناسب لمؤسستك.",
+  // Same phrase as authored in Title Case on the Pricing page (exact-match keyed).
+  "Speak to Our Team to Find the Right Configuration for Your Organisation.":
+    "تحدث إلى فريقنا للعثور على الإعداد المناسب لمؤسستك.",
   "AI-powered EHS platform to streamline reporting everywhere.":
     "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
