@@ -631,7 +631,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       const el = outerRef.current;
       if (!el) return;
       const scrolled = -el.getBoundingClientRect().top;
-      const stepSize = window.innerHeight / 10; // ~1 scroll click per step
+      const stepSize = window.innerHeight / 4; // ~2–3 scroll clicks per step (comfortable middle, not too quick)
       const newStep = scrolled < 0 ? -1 : Math.min(Math.floor(scrolled / stepSize), 5);
 
       if (newStep < 0) {
@@ -682,8 +682,8 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       </section>
       )}
 
-      {/* ~170vh sticky scroll — one scroll click per step (desktop only) */}
-      <div ref={outerRef} className="hidden lg:block" style={{ height:"170vh" }}>
+      {/* ~240vh sticky scroll — ~2–3 scroll clicks per step so each agent lingers (desktop only) */}
+      <div ref={outerRef} className="hidden lg:block" style={{ height:"240vh" }}>
         <div className="sticky top-0 bg-white overflow-hidden" style={{ height:"100vh" }}>
 
           {/* Desktop: 3-col */}
