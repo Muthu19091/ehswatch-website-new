@@ -8,6 +8,29 @@ import { findBlock, normalizeArray, resolveCta as resolveCtaBlock, type PageMap 
 // Used by the public /modules/[slug] route and the draft preview route.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// FE-HO-12: curated hero-headline accent word per module (the substring rendered
+// blue). Chosen for relevance rather than always the last word, which produced
+// filler/punctuation highlights ("Again", "Life.", "Current"). Overridden by the
+// CMS `headline_accent` field when an editor sets one; each value must be a
+// substring of that module's headline or the FE falls back to the last word.
+const HEADLINE_ACCENT: Record<string, string> = {
+  "action-tracker": "Results",
+  "incident-management": "Prevent",
+  "risk-assessment": "Risk",
+  "hse-observations": "Earlier",
+  "audit-management": "Audit",
+  "customer-complaints": "Resolution",
+  "emergency-response-drills": "Real",
+  "file-management": "Confidence",
+  "inspections": "Intelligence",
+  "legal-register": "Compliance",
+  "management-of-change": "Change",
+  "meetings-management": "Actions",
+  "non-conformance": "Non-Conformance",
+  "permit-to-work": "Permit to Work",
+  "training-management": "Qualified",
+};
+
 interface CtaShape {
   label?: string | null;
   url?: string | null;
@@ -55,6 +78,7 @@ export function buildModuleTemplateProps(
     headline?: string;
     subheadline?: string;
     bold_tagline?: string;
+    headline_accent?: string;
     primary_cta?: CtaShape;
     secondary_cta?: CtaShape;
   }>(blocks, "hero");
@@ -64,6 +88,12 @@ export function buildModuleTemplateProps(
     headline: stripHtml(heroBlock?.headline) || name,
     subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
     boldTagline: stripHtmlOpt(heroBlock?.bold_tagline),
+    // FE-HO-12: which word in the hero headline is highlighted blue. Prefer the
+    // CMS `headline_accent` field (editor-chosen); otherwise use a curated,
+    // meaning-based default per module so the highlight is purposeful rather
+    // than always the (sometimes filler/punctuation) last word. Substring must
+    // appear in the headline — the FE falls back to last-word if it doesn't.
+    headlineAccent: stripHtmlOpt(heroBlock?.headline_accent) || HEADLINE_ACCENT[slug],
     // CMS-only: no hardcoded default — the banner button appears only when the
     // CMS hero block has a configured CTA (label + link).
     primaryCta: resolveCta(heroBlock?.primary_cta, pageMap),

@@ -24,6 +24,7 @@ export interface ModuleTemplateProps {
     headline: string;
     subheadline?: string;
     boldTagline?: string;
+    headlineAccent?: string;
     primaryCta?: ModuleCta;
     secondaryCta?: ModuleCta;
   };
@@ -235,7 +236,18 @@ export default function ModuleTemplate({
   finalCta,
   moreModules,
 }: ModuleTemplateProps) {
-  const [headStart, headHighlight] = splitHeadline(hero.headline);
+  // FE-HO-12: highlight the CMS-chosen accent word (if set and present in the
+  // headline); otherwise fall back to highlighting the last word.
+  let headStart: string, headHighlight: string, headEnd = "";
+  const accent = hero.headlineAccent?.trim();
+  const accentIdx = accent ? hero.headline.toLowerCase().indexOf(accent.toLowerCase()) : -1;
+  if (accent && accentIdx >= 0) {
+    headStart = hero.headline.slice(0, accentIdx);
+    headHighlight = hero.headline.slice(accentIdx, accentIdx + accent.length);
+    headEnd = hero.headline.slice(accentIdx + accent.length);
+  } else {
+    [headStart, headHighlight] = splitHeadline(hero.headline);
+  }
   const [apartStart, apartHighlight] = apart ? splitHeadline(apart.heading, 2) : ["", ""];
 
   return (
@@ -318,6 +330,7 @@ export default function ModuleTemplate({
           >
             {headStart}
             <span style={{ color: "#1d4ed8" }}>{headHighlight}</span>
+            {headEnd}
           </h1>
 
           {hero.subheadline && (
