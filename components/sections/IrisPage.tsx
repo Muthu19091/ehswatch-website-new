@@ -1665,11 +1665,13 @@ export default function IrisPage({
         {/* ── Cards + IRIS logo ── */}
         <div className="relative z-10 w-full max-w-[1100px]">
 
-          {/* Top row: left 2 cards | IRIS circle | right 2 cards */}
-          <div className="flex items-center justify-center gap-5 lg:gap-8">
+          {/* Top row: left 2 cards | IRIS circle | right 2 cards.
+              Below lg the cards can't flank the orb (no width), so the whole
+              group stacks into a centred column: orb first, then the cards. */}
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
 
             {/* Left column: 2 cards */}
-            <div className="hidden lg:flex flex-col gap-4 w-[220px] shrink-0">
+            <div className="flex flex-col gap-4 w-[220px] shrink-0 order-2 lg:order-none">
               {/* Card 1: Hazard Intelligence */}
               <div className="iris-hero-card iris-card-left" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
                 <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Hazard Intelligence</p>
@@ -1696,7 +1698,7 @@ export default function IrisPage({
             </div>
 
             {/* Center: Orb + IRIS logo */}
-            <div className="relative shrink-0" style={{ width: 280, height: 280 }}>
+            <div className="relative shrink-0 order-1 lg:order-none" style={{ width: 280, height: 280 }}>
               <Orb
                 hue={30}
                 hoverIntensity={0.5}
@@ -1726,7 +1728,7 @@ export default function IrisPage({
             </div>
 
             {/* Right column: 2 cards */}
-            <div className="hidden lg:flex flex-col gap-4 w-[220px] shrink-0">
+            <div className="flex flex-col gap-4 w-[220px] shrink-0 order-3 lg:order-none">
               {/* Card 3: Workflow Acceleration */}
               <div className="iris-hero-card iris-card-right" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
                 <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Workflow Acceleration</p>
@@ -1758,7 +1760,7 @@ export default function IrisPage({
           </div>
 
           {/* Bottom row: 2 cards centred below the circle */}
-          <div className="hidden lg:flex justify-center gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
             {/* Card 5: Smart Recommendations */}
             <div className="iris-hero-card iris-card-bottom w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"560ms" }}>
               <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Smart Recommendations</p>
