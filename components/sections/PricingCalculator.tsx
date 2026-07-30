@@ -717,8 +717,9 @@ export default function PricingCalculator({
             )}
           </div>
 
-          {/* ── Sticky sidebar summary (stacks full-width below wizard on mobile/tablet, sticky sidebar on lg) ── */}
-          <div className="w-full lg:w-[280px] shrink-0">
+          {/* ── Sticky sidebar summary (stacks full-width below wizard on mobile/tablet, sticky sidebar on lg).
+              Hidden after submit so only the "Proposal Request Sent!" confirmation shows (FE QA #15). ── */}
+          <div className={`w-full lg:w-[280px] shrink-0 ${submitted ? "hidden" : ""}`}>
             <div
               className="lg:sticky lg:top-[100px] rounded-2xl p-6 flex flex-col gap-5"
               style={{ background: "#F8FBFF", border: "1px solid #dbeafe" }}

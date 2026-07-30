@@ -97,6 +97,12 @@ function MediaBlock({ industry }: { industry: Industry }) {
           loop
           playsInline
           preload="auto"
+          // Decorative loop — no user controls. Stop taps from surfacing the
+          // native play/fullscreen overlay, whose "enlarge" opened a black
+          // fullscreen for this muted, CSS-transformed loop (FE QA #1).
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
+          onContextMenu={(e) => e.preventDefault()}
           onLoadedMetadata={(e) => {
             const v = e.currentTarget;
             if (v.videoHeight) setAspect(v.videoWidth / v.videoHeight);
@@ -109,6 +115,7 @@ function MediaBlock({ industry }: { industry: Industry }) {
             transform: isLandscape ? "none" : "scale(1.4)",
             opacity: videoReady ? 1 : 0,
             transition: "opacity 0.3s ease",
+            pointerEvents: "none",
           }}
         >
           <source src={industry.video} type="video/mp4" />
