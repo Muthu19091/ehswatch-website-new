@@ -1,9 +1,6 @@
 import { getFooter, getProductModules, getSettings } from "@/lib/api";
 import Link from "next/link";
-import { basePath } from "@/lib/basePath";
 import CmsIcon from "@/components/ui/CmsIcon";
-
-const imgEhsWatch = basePath + "/images/EHS%20logo.svg";
 
 const COMPANY = [
   { label: "Home",         href: "/" },
@@ -117,7 +114,9 @@ export default async function Footer() {
     .filter((m) => m.attributes.status === "active")
     .map((m) => ({ label: m.attributes.name.trim(), url: `/modules/${m.attributes.slug}` }));
 
-  const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? imgEhsWatch;
+  // Footer's own CMS logo first, else the Site Settings brand footer logo
+  // (resolved to a URL by the CMS). No hardcoded logo fallback.
+  const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? (settingsRes?.data as any)?.brand?.footer_logo ?? undefined;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
   const tagline     = attrs?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
   const copyright   = attrs?.bottom?.copyright_text || "© 2026 EHSWatch. All rights reserved.";
@@ -175,10 +174,12 @@ export default async function Footer() {
 
         {/* ── Brand column ── */}
         <div className="flex flex-col gap-3 md:gap-[14px] items-start">
+          {logoSrc && (
           <div className="h-[34px] w-[124px] relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logoSrc} alt={logoAlt} className="h-full w-auto object-contain" />
           </div>
+          )}
           <p className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] leading-relaxed md:leading-[24.5px] text-[rgba(255,255,255,0.6)] max-w-[240px]">
             {tagline}
           </p>
@@ -302,10 +303,12 @@ export default async function Footer() {
 
       {/* Wordmark fade row */}
       <div className="relative w-full h-[100px] md:h-[180px] z-[2] overflow-hidden mt-8">
+        {logoSrc && (
         <div className="absolute bottom-3 md:bottom-[19.5px] left-6 md:left-[128px] w-[280px] md:w-[455px] h-[80px] md:h-[125px] opacity-30 md:opacity-40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logoSrc} alt="" className="w-full h-full object-contain object-left" />
         </div>
+        )}
         <div className="absolute inset-0 top-[40px]" style={{ background: "linear-gradient(to bottom, transparent, #0a1628)" }} />
       </div>
 

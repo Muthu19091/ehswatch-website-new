@@ -1,4 +1,4 @@
-import { getHeader, getBlogPosts, getCaseStudies } from "@/lib/api";
+import { getHeader, getBlogPosts, getCaseStudies, getSettings } from "@/lib/api";
 import { normalizeUrl } from "@/lib/blocks";
 import NavbarClient from "./NavbarClient";
 
@@ -8,10 +8,11 @@ function extractCover(item: any): string | undefined {
 }
 
 export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
-  const [header, blogRes, csRes] = await Promise.all([
+  const [header, blogRes, csRes, settingsRes] = await Promise.all([
     getHeader(),
     getBlogPosts().catch(() => null),
     getCaseStudies().catch(() => null),
+    getSettings().catch(() => null),
   ]);
 
   const mainNav = (header?.data as any)?.attributes?.main_nav ?? [];
@@ -73,13 +74,15 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
     ? { label: firstCta.label as string, href: firstCta.url ? normalizeUrl(firstCta.url as string) : "#" }
     : undefined;
 
-  /* Logo from the CMS header editor (media url + alt + link) */
+  /* Logo: CMS header editor first; otherwise the Site Settings brand header
+     logo (both resolved to URLs by the CMS). No hardcoded logo fallback. */
   const attrs = (header?.data as any)?.attributes;
-  const logoUrl = attrs?.logo?.attributes?.url ?? attrs?.logo?.url;
+  const brand = (settingsRes?.data as any)?.brand;
+  const logoUrl = attrs?.logo?.attributes?.url ?? attrs?.logo?.url ?? brand?.header_logo;
   const cmsLogo = logoUrl
     ? {
         url: logoUrl as string,
-        alt: (attrs?.logo_alt as string) || undefined,
+        alt: (attrs?.logo_alt as string) || (brand?.name as string) || undefined,
         href: (attrs?.logo_url as string) || undefined,
       }
     : undefined;

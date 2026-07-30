@@ -61,7 +61,7 @@ export default function NavbarClient({
   const overflowItems = collapse ? allNavItems.slice(MAX_INLINE - 1) : [];
   const ctaLabel = cmsCta?.label || "Book Demo";
   const ctaHref  = cmsCta?.href  || "#";
-  const logoSrc  = cmsLogo?.url  || basePath + "/images/hero/logo.png";
+  const logoSrc  = cmsLogo?.url;
   const logoAlt  = cmsLogo?.alt  || "EHSWatch";
   const logoHref = cmsLogo?.href || "/";
   const [open, setOpen] = useState(false);
@@ -229,7 +229,8 @@ export default function NavbarClient({
           willChange: "padding, max-width, border-radius, background",
         }}
       >
-        {/* ── Logo — CMS header logo with hardcoded fallback ── */}
+        {/* ── Logo — CMS header logo, else Site Settings brand logo. No hardcoded fallback. ── */}
+        {logoSrc && (
         <Link href={logoHref} className="shrink-0 relative w-[90px] h-[26px] lg:w-[110px] lg:h-[30px]">
           <Image
             ref={logoWhiteRef as React.RefObject<HTMLImageElement>}
@@ -248,6 +249,7 @@ export default function NavbarClient({
             priority
           />
         </Link>
+        )}
 
         {/* ── Desktop links ─────────────────────────────────── */}
         <div className="hidden lg:flex items-center justify-center flex-1 min-w-0">
