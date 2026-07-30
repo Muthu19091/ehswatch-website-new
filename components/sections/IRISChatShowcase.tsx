@@ -497,7 +497,7 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
           {feat.title}
         </h3>
         {feat.desc && (
-          <p style={{ fontSize:13.5, lineHeight:1.7, color:"#64748B",
+          <p style={{ fontSize:13.5, lineHeight:1.7, color:"#334155",
             fontFamily:"var(--font-dm-sans,sans-serif)", textWrap:"pretty" } as React.CSSProperties}>
             {feat.desc}
           </p>
@@ -509,7 +509,7 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
               fontFamily:"var(--font-dm-sans,sans-serif)" }}>
               {si.title}
             </p>
-            <p style={{ fontSize:12.5, lineHeight:1.6, color:"#475569",
+            <p style={{ fontSize:12.5, lineHeight:1.6, color:"#334155",
               fontFamily:"var(--font-dm-sans,sans-serif)", textWrap:"pretty" } as React.CSSProperties}>
               {si.description}
             </p>

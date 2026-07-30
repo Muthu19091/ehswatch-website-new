@@ -83,6 +83,11 @@ export default function CustomCursor() {
           will-change: transform, left, top, width, height;
           transition: width 180ms ease, height 180ms ease;
         }
+        /* Touch devices have no mouse — the effect bails but the dot element
+           still mounts at 0,0. Hide it so no static orange dot shows on mobile. */
+        @media (hover: none), (pointer: coarse) {
+          .cursor-dot { display: none !important; }
+        }
       `}</style>
       <div ref={dotRef} className="cursor-dot" />
     </>
