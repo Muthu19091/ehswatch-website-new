@@ -1623,9 +1623,10 @@ export default function IrisPage({
             />
           )}
           {heroSubheadline && (
-            <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.7] text-[#4b5563] mt-4 max-w-[600px] mx-auto text-pretty">
-              {heroSubheadline}
-            </p>
+            <div
+              className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] leading-[1.7] text-[#4b5563] mt-4 max-w-[600px] mx-auto text-pretty"
+              dangerouslySetInnerHTML={{ __html: heroSubheadline }}
+            />
           )}
         </div>
 
