@@ -53,15 +53,24 @@ function MediaPlaceholder({ label }: { label: string }) {
 function MediaBlock({ industry }: { industry: Industry }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
+  // Native aspect ratio of the current video (w/h), measured on load. The panel
+  // box is 4:3 landscape; some industry videos are portrait (≈0.81) and some are
+  // landscape (≈1.3–1.6). A single scale can't suit both, so we adapt below.
+  const [aspect, setAspect] = useState<number | null>(null);
 
   useEffect(() => {
     setVideoReady(false);
+    setAspect(null);
     const vid = videoRef.current;
     if (!vid) return;
     vid.load();
     vid.currentTime = 0;
     vid.play().catch(() => {});
   }, [industry]);
+
+  // Landscape videos already fill the box width, so cover them without extra
+  // zoom. Portrait videos are letterboxed by contain, so scale them up to fill.
+  const isLandscape = aspect !== null && aspect >= 1.1;
 
   if (!industry.video && !industry.gif) {
     return (
@@ -88,12 +97,16 @@ function MediaBlock({ industry }: { industry: Industry }) {
           loop
           playsInline
           preload="auto"
+          onLoadedMetadata={(e) => {
+            const v = e.currentTarget;
+            if (v.videoHeight) setAspect(v.videoWidth / v.videoHeight);
+          }}
           onCanPlay={() => setVideoReady(true)}
           className="w-full h-full"
           style={{
-            objectFit: "contain",
+            objectFit: isLandscape ? "cover" : "contain",
             objectPosition: "center",
-            transform: "scale(1.4)",
+            transform: isLandscape ? "none" : "scale(1.4)",
             opacity: videoReady ? 1 : 0,
             transition: "opacity 0.3s ease",
           }}
