@@ -455,9 +455,16 @@ export default function NavbarClient({
       </nav>
 
       {/* ── Mobile menu ───────────────────────────────────────── */}
+      {/* Show/hide via display (hidden ↔ flex), NOT opacity: iOS Safari fails to
+          repaint this panel when it flips from a long-hidden opacity:0 state to
+          visible (it sits inside the fixed, backdrop-filtered header), leaving it
+          stuck invisible — a CSS transition/animation hit the same paint bug.
+          A display:none→flex change forces a fresh layout+paint, which WebKit
+          renders correctly. Kept mounted (not conditionally rendered) so tapping
+          a link isn't unmounted mid-navigation by the setOpen(false) it fires. */}
       <div
-        className={`lg:hidden absolute top-[72px] left-4 right-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 flex flex-col gap-1 transition-all duration-300 origin-top z-50 ${
-          open ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
+        className={`lg:hidden absolute top-[72px] left-4 right-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 gap-1 origin-top z-50 ${
+          open ? "flex flex-col" : "hidden"
         }`}
       >
         {allNavItems.map((link) =>
