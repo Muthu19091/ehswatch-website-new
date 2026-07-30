@@ -23,15 +23,15 @@ const STYLES: Record<FormVariant, {
   showLabel: boolean;
 }> = {
   contact: {
+    // Boxed fields with a visible caption, matching the Pricing wizard (FE QA #7):
+    // rounded border on white, label above each field.
     inputBase:
-      "w-full bg-transparent font-[family-name:var(--font-dm-sans)] text-[15px] text-[#0a0f1e] placeholder:text-[#9ca3af] outline-none py-2.5",
-    wrapBase:
-      "border-b border-[#e5e7eb] focus-within:border-[#1d4ed8] transition-colors duration-200",
-    wrapError:
-      "border-b border-red-400 focus-within:border-red-500 transition-colors duration-200",
+      "w-full rounded-xl border border-[#e5e7eb] bg-white px-4 py-3 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#0a0f1e] placeholder:text-[#9ca3af] focus:outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/10 transition-all",
+    wrapBase: "",
+    wrapError: "ring-2 ring-red-300 rounded-xl",
     labelClass:
-      "block font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6b7280] mb-1.5",
-    showLabel: false,
+      "block font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-[#374151] mb-1.5",
+    showLabel: true,
   },
   support: {
     inputBase:
@@ -65,8 +65,8 @@ function FieldWidget({
 }) {
   const { inputBase, wrapBase, wrapError, labelClass, showLabel } = STYLES[variant];
   const wrapClass = error ? wrapError : wrapBase;
-  const inputClass = variant === "support" && error
-    ? inputBase.replace("border-[#d1d9e6]", "border-red-400")
+  const inputClass = error
+    ? inputBase.replace(/border-\[#[0-9a-fA-F]+\]/, "border-red-400")
     : inputBase;
   const placeholder = field.placeholder ?? field.label;
 
