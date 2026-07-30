@@ -35,6 +35,7 @@ const EN_TO_AR: Record<string, string> = {
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
   "Why Traditional EHS Systems Fall Short": "لماذا تقصر أنظمة الصحة والسلامة والبيئة التقليدية؟",
   "What Sets EHSWatch Action Tracker Apart": "ما الذي يميز نظام EHSWatch Action Tracker؟",
+  "About IRIS": "عن IRIS",
   "EHSWatch: One Platform for Everyday Safety": "EHSWatch: منصة واحدة للسلامة اليومية",
   // Header / footer navigation labels (authored Arabic).
   "Company": "الشركة",
