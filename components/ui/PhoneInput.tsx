@@ -114,23 +114,29 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
           box-shadow: 0 0 0 2px rgba(21, 94, 239, 0.1);
         }
 
-        /* Contact variant — match the underlined text inputs (transparent,
-           py-2.5 = 10px, 15px) so the phone field aligns with the field
-           beside it instead of sitting higher on the browser default. */
+        /* Contact variant — boxed to match the other contact fields (rounded
+           border on white, the Pricing-style boxed inputs). */
         .iti-contact { display: block; width: 100%; }
         .iti-contact .iti { width: 100%; }
         .iti-contact input[type="tel"] {
           width: 100%;
-          background: transparent;
-          border: none;
-          padding-top: 10px;
-          padding-bottom: 10px;
+          border-radius: 12px;
+          border: 1px solid #e5e7eb;
+          background: #fff;
+          padding-top: 12px;
+          padding-bottom: 12px;
+          padding-right: 16px;
           font-family: var(--font-dm-sans), sans-serif;
-          font-size: 15px;
+          font-size: 14px;
           color: #0a0f1e;
           outline: none;
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
         .iti-contact input[type="tel"]::placeholder { color: #9ca3af; }
+        .iti-contact input[type="tel"]:focus {
+          border-color: #1d4ed8;
+          box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.1);
+        }
       `}</style>
       <input
         ref={inputRef}
