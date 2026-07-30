@@ -1,5 +1,5 @@
-import { getHeader, getBlogPosts, getCaseStudies, getSettings } from "@/lib/api";
-import { normalizeUrl } from "@/lib/blocks";
+import { getHeader, getBlogPosts, getCaseStudies, getSettings, getPageList } from "@/lib/api";
+import { normalizeUrl, resolveHref, buildPageMap } from "@/lib/blocks";
 import NavbarClient from "./NavbarClient";
 
 function extractCover(item: any): string | undefined {
@@ -8,12 +8,15 @@ function extractCover(item: any): string | undefined {
 }
 
 export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
-  const [header, blogRes, csRes, settingsRes] = await Promise.all([
+  const [header, blogRes, csRes, settingsRes, pageListRes] = await Promise.all([
     getHeader(),
     getBlogPosts().catch(() => null),
     getCaseStudies().catch(() => null),
     getSettings().catch(() => null),
+    getPageList().catch(() => null),
   ]);
+  // Resolve internal nav items that reference a page by id (e.g. Contact Us).
+  const pageMap = buildPageMap((pageListRes as any)?.data);
 
   const mainNav = (header?.data as any)?.attributes?.main_nav ?? [];
   const ctas    = (header?.data as any)?.attributes?.ctas ?? [];
@@ -60,7 +63,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
 
     return {
       label:        item.label as string,
-      href:         item.type === "dropdown" ? "#" : (item.url ? normalizeUrl(item.url as string) : "#"),
+      href:         item.type === "dropdown" ? "#" : resolveHref(item, pageMap),
       hasDropdown:  item.type === "dropdown",
       // All nav links stay visible when the navbar collapses on scroll
       // (the last link, e.g. Support, must remain in the header).
