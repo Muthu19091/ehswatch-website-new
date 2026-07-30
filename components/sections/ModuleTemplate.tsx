@@ -1,7 +1,7 @@
 "use client";
 
 import { unescapeTypedTags } from "@/lib/text";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
 import CmsIcon from "@/components/ui/CmsIcon";
@@ -236,6 +236,21 @@ export default function ModuleTemplate({
   finalCta,
   moreModules,
 }: ModuleTemplateProps) {
+  // When the page is machine-translated to Arabic, the accent <span> below
+  // would split the headline into two fragments that get translated
+  // independently — producing wrong word order (FE QA #17). In Arabic we render
+  // the headline as one text node so the whole sentence translates coherently.
+  const [isArabic, setIsArabic] = useState(false);
+  useEffect(() => {
+    const check = () => setIsArabic(
+      /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ||
+      /(?:^|;\s*)locale=ar/.test(document.cookie),
+    );
+    check();
+    window.addEventListener("ehs-locale", check);
+    return () => window.removeEventListener("ehs-locale", check);
+  }, []);
+
   // FE-HO-12: highlight the CMS-chosen accent word (if set and present in the
   // headline); otherwise fall back to highlighting the last word.
   let headStart: string, headHighlight: string, headEnd = "";
@@ -328,9 +343,13 @@ export default function ModuleTemplate({
             className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[50px] md:text-[58px] leading-[1.06] text-[#0a0f1e] tracking-[-0.03em] animate-hero-rise"
             style={{ animationDelay: "80ms" }}
           >
-            {headStart}
-            <span style={{ color: "#1d4ed8" }}>{headHighlight}</span>
-            {headEnd}
+            {isArabic ? hero.headline : (
+              <>
+                {headStart}
+                <span style={{ color: "#1d4ed8" }}>{headHighlight}</span>
+                {headEnd}
+              </>
+            )}
           </h1>
 
           {hero.subheadline && (
