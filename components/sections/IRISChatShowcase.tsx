@@ -350,19 +350,25 @@ function SmartInput({ step, voicePhase }: { step: number; voicePhase: 0|1|2 }) {
 
 // ─── Chat mockup ──────────────────────────────────────────────────────────────
 function ChatMockup({
-  step, showIris, voicePhase,
+  step, showIris, voicePhase, singleStep = false,
 }: {
   step: number;
   showIris: boolean;
   voicePhase: 0|1|2;
+  // singleStep: show ONLY this step's exchange (no cumulative history). Used on
+  // mobile/tablet where each feature has its own phone — cumulative + a
+  // scroll-to-bottom is unreliable on iOS Safari, leaving every phone stuck at
+  // the shared opener so all features look identical. One step per phone keeps
+  // each feature's demo distinct and fully visible without any scrolling.
+  singleStep?: boolean;
 }) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   // Cumulative: all past steps fully visible, current step animates in
   const messagesReady = step > 0 || voicePhase === 2;
 
-  // Past steps — always fully shown (user + iris)
-  const pastMsgs = MSGS.filter(m => m.step < step);
+  // Past steps — always fully shown (user + iris). Omitted in single-step mode.
+  const pastMsgs = singleStep ? [] : MSGS.filter(m => m.step < step);
   // Current step — user always shown once ready; iris shown after delay
   const currentMsgs = messagesReady
     ? MSGS.filter(m => m.step === step && (m.role === "user" || showIris))
@@ -737,7 +743,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
               <FeatureCallout feat={f} active />
             </div>
             <div style={{ transform: "scale(0.92)", transformOrigin: "top center" }}>
-              <ChatMockup step={i} showIris voicePhase={2} />
+              <ChatMockup step={i} showIris voicePhase={2} singleStep />
             </div>
           </div>
         ))}
