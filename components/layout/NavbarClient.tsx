@@ -433,13 +433,17 @@ export default function NavbarClient({
           onClick={() => setOpen((o) => !o)}
           className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5"
           aria-label="Toggle menu"
-          style={{ cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
+          // touchAction:manipulation removes the iOS tap delay; the SVG below is
+          // pointer-events:none so a tap always lands on the button itself
+          // (iOS Safari otherwise hit-tests the inner SVG and can drop the click).
+          style={{ cursor: "pointer", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
         >
           <svg
             ref={hamburgerStrokeRef}
             width="20" height="20" viewBox="0 0 24 24"
             stroke={lightHero ? "rgb(64,64,64)" : "rgb(255,255,255)"}
             strokeWidth="2" strokeLinecap="round" fill="none"
+            style={{ pointerEvents: "none" }}
           >
             {open ? (
               <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
