@@ -27,10 +27,17 @@ export interface BlogPostData {
 // the editor's H2 button. Normalise those at render time so every post — past
 // and future — gets real, styled headings regardless of authoring habit.
 function normalizeBody(html: string): string {
-  return html.replace(
-    /<p>\s*<strong>([^<]{1,90}?)<\/strong>(?:&nbsp;|\s)*<\/p>/g,
-    (_, t: string) => `<h2>${t.trim()}</h2>`,
-  );
+  return html
+    .replace(
+      /<p>\s*<strong>([^<]{1,90}?)<\/strong>(?:&nbsp;|\s)*<\/p>/g,
+      (_, t: string) => `<h2>${t.trim()}</h2>`,
+    )
+    // Wrap tables so they scroll horizontally on narrow viewports instead of
+    // overflowing the page. Scoped to the blog body — see .blog-table-wrap CSS.
+    .replace(
+      /<table[\s\S]*?<\/table>/g,
+      (m: string) => `<div class="blog-table-wrap">${m}</div>`,
+    );
 }
 
 
@@ -83,6 +90,12 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
         .blog-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
         .blog-body th, .blog-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
         .blog-body th { background: #f9fafb; font-weight: 600; color: #111827; }
+        /* Table scroll container (added by normalizeBody). Owns the vertical
+           spacing so tables clear the following heading, and lets wide tables
+           scroll horizontally on mobile instead of overflowing the viewport.
+           min-width keeps columns readable: full-width on desktop, scroll below ~560px. */
+        .blog-body .blog-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
+        .blog-body .blog-table-wrap table { margin: 0; width: 100%; min-width: 560px; }
         .blog-divider {
           display: flex;
           align-items: center;
