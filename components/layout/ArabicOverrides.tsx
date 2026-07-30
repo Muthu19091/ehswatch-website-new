@@ -32,6 +32,11 @@ const EN_TO_AR: Record<string, string> = {
     "تحدث إلى فريقنا للعثور على الإعداد المناسب لمؤسستك.",
   "AI-powered EHS platform to streamline reporting everywhere.":
     "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
+  // Footer summary (both EHSQ and EHS wordings) — authored Arabic per client.
+  "AI-powered EHSQ platform helping teams stay safe, compliant, and in control.":
+    "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
+  "AI-powered EHS platform helping teams stay safe, compliant, and in control.":
+    "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
   "Why Traditional EHS Systems Fall Short": "لماذا تقصر أنظمة الصحة والسلامة والبيئة التقليدية؟",
   "What Sets EHSWatch Action Tracker Apart": "ما الذي يميز نظام EHSWatch Action Tracker؟",
