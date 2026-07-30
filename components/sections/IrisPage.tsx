@@ -1666,12 +1666,13 @@ export default function IrisPage({
         <div className="relative z-10 w-full max-w-[1100px]">
 
           {/* Top row: left 2 cards | IRIS circle | right 2 cards.
-              Below lg the cards can't flank the orb (no width), so the whole
-              group stacks into a centred column: orb first, then the cards. */}
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
+              Below lg the cards can't flank the orb, so the orb takes a full-width
+              row of its own and the two columns wrap beneath it into a 2-col grid
+              (they collapse to 1 col only when too narrow, e.g. small phones). */}
+          <div className="flex flex-wrap lg:flex-nowrap items-center justify-center gap-4 lg:gap-8">
 
             {/* Left column: 2 cards */}
-            <div className="flex flex-col gap-4 w-[220px] shrink-0 order-2 lg:order-none">
+            <div className="flex flex-col gap-4 w-[calc(50%-10px)] lg:w-[220px] shrink-0 order-2 lg:order-none">
               {/* Card 1: Hazard Intelligence */}
               <div className="iris-hero-card iris-card-left" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
                 <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Hazard Intelligence</p>
@@ -1697,38 +1698,41 @@ export default function IrisPage({
               </div>
             </div>
 
-            {/* Center: Orb + IRIS logo */}
-            <div className="relative shrink-0 order-1 lg:order-none" style={{ width: 280, height: 280 }}>
-              <Orb
-                hue={30}
-                hoverIntensity={0.5}
-                rotateOnHover={false}
-                forceHoverState={false}
-                backgroundColor="#ffffff"
-              />
-              {/* IRIS logo centred over orb */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  pointerEvents: "none",
-                }}
-              >
-                <Image
-                  src={`${basePath}/images/iris-logo.png`}
-                  alt="IRIS"
-                  width={90}
-                  height={90}
-                  style={{ objectFit: "contain" }}
+            {/* Center: Orb + IRIS logo. Full-width on mobile/tablet so it sits on
+                its own row and the card columns wrap into a grid beneath it. */}
+            <div className="order-1 lg:order-none basis-full lg:basis-auto flex justify-center">
+              <div className="relative shrink-0" style={{ width: 280, height: 280 }}>
+                <Orb
+                  hue={30}
+                  hoverIntensity={0.5}
+                  rotateOnHover={false}
+                  forceHoverState={false}
+                  backgroundColor="#ffffff"
                 />
+                {/* IRIS logo centred over orb */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <Image
+                    src={`${basePath}/images/iris-logo.png`}
+                    alt="IRIS"
+                    width={90}
+                    height={90}
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Right column: 2 cards */}
-            <div className="flex flex-col gap-4 w-[220px] shrink-0 order-3 lg:order-none">
+            <div className="flex flex-col gap-4 w-[calc(50%-10px)] lg:w-[220px] shrink-0 order-3 lg:order-none">
               {/* Card 3: Workflow Acceleration */}
               <div className="iris-hero-card iris-card-right" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
                 <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Workflow Acceleration</p>
@@ -1759,10 +1763,10 @@ export default function IrisPage({
 
           </div>
 
-          {/* Bottom row: 2 cards centred below the circle */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+          {/* Bottom row: 2 cards, kept 2-up on every width to match the grid above */}
+          <div className="flex flex-row items-stretch justify-center gap-4 mt-4">
             {/* Card 5: Smart Recommendations */}
-            <div className="iris-hero-card iris-card-bottom w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"560ms" }}>
+            <div className="iris-hero-card iris-card-bottom w-[calc(50%-10px)] lg:w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"560ms" }}>
               <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Smart Recommendations</p>
               {["Deploy safety barriers","Retrain 3 operators","Update risk register"].map((t,i) => (
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:7, marginBottom:6 }}>
@@ -1775,7 +1779,7 @@ export default function IrisPage({
             </div>
 
             {/* Card 6: Intelligent Data Synthesis */}
-            <div className="iris-hero-card iris-card-bottom w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"620ms" }}>
+            <div className="iris-hero-card iris-card-bottom w-[calc(50%-10px)] lg:w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"620ms" }}>
               <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Intelligent Data Synthesis</p>
               <div style={{ display:"flex", gap:12, marginBottom:8 }}>
                 {[["Incidents","247","#6366f1"],["Actions","89","#8b5cf6"],["Sites","14","#a78bfa"]].map(([l,v,c]) => (
