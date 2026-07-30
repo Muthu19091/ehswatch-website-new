@@ -643,6 +643,17 @@ export default function ProductHowItWorks({
 
   const fillH = activeStep === 0 ? 0 : (activeStep / (steps.length - 1)) * TRACK;
 
+  // Clicking a step icon scrolls to the middle of that step's scroll range, so
+  // the scroll-driven handler settles on it and the title/visual update (FE QA #5).
+  const goToStep = (i: number) => {
+    const el = sectionRef.current;
+    if (!el) { setActiveStep(i); return; }
+    const scrollable = el.offsetHeight - window.innerHeight;
+    if (scrollable <= 0) { setActiveStep(i); return; }
+    const sectionTop = window.scrollY + el.getBoundingClientRect().top;
+    window.scrollTo({ top: sectionTop + ((i + 0.5) / steps.length) * scrollable, behavior: "smooth" });
+  };
+
   return (
     <>
     {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
@@ -731,6 +742,11 @@ export default function ProductHowItWorks({
             {steps.map((step, i) => (
               <div
                 key={i}
+                role="button"
+                tabIndex={0}
+                aria-label={`Go to step ${step.n}`}
+                onClick={() => goToStep(i)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goToStep(i); } }}
                 className="relative z-10 flex items-center justify-center rounded-full text-[11px] font-bold"
                 style={{
                   width: CIRCLE, height: CIRCLE,
@@ -738,6 +754,7 @@ export default function ProductHowItWorks({
                   border:       `2px solid ${i <= activeStep ? "#155eef" : "#dde8f8"}`,
                   boxShadow:    i === activeStep ? "0 0 0 5px rgba(21,94,239,0.14)" : "none",
                   transition:   "background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
+                  cursor: "pointer",
                 }}
               >
                 {i < activeStep ? (

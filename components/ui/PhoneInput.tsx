@@ -90,8 +90,12 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
   const isSupport = variant === "support";
 
   return (
-    <span className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
+    <span dir="ltr" className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
       <style>{`
+        /* Phone numbers + the country dropdown are inherently LTR — force it so
+           the widget and its country list render correctly in Arabic/RTL (FE QA #16). */
+        .iti-wrap, .iti-wrap * { direction: ltr; }
+        .iti-wrap .iti__country-list, .iti-wrap .iti__dropdown-content { text-align: left; }
         .iti-support { display: block; width: 100%; }
         .iti-support .iti { width: 100%; }
         .iti-support input[type="tel"] {
