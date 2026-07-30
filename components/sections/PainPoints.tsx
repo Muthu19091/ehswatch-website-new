@@ -79,7 +79,7 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
 
       {/* Concentric rings — desktop only */}
       <div
-        className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none select-none"
+        className="hidden lg:flex absolute inset-0 items-center justify-center pointer-events-none select-none"
         aria-hidden
       >
         {RING_SIZES.map((size, i) => (
@@ -97,8 +97,9 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
       </div>
 
       <div className="relative max-w-[1100px] mx-auto z-10">
-        {/* Desktop layout */}
-        <div className="hidden md:flex flex-col gap-5 lg:gap-[24px] items-center py-3 lg:py-6">
+        {/* Desktop (lg+) floating layout — the chips are absolutely-spread and
+            nowrap, which only fits at lg width; tablet uses the stacked layout. */}
+        <div className="hidden lg:flex flex-col gap-5 lg:gap-[24px] items-center py-3 lg:py-6">
           <div className={`flex w-full max-w-[850px] ${many ? "flex-wrap justify-center gap-4 lg:gap-6" : "justify-between"}`}>
             {many
               ? topRow.map((p, i) => <PainPill key={`t-${i}`} {...p} />)
@@ -121,8 +122,8 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
           </div>
         </div>
 
-        {/* Mobile layout */}
-        <div className="md:hidden flex flex-col gap-6 items-center py-8">
+        {/* Mobile + tablet stacked layout (below lg) — chips wrap, no overflow */}
+        <div className="lg:hidden flex flex-col gap-6 items-center py-8">
           <div className="text-center">
             <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[30px] leading-tight text-[#1b1b1b] tracking-[-0.5px]">
               {headingLine1}
@@ -168,7 +169,7 @@ function PainPill({
       <div className="w-9 h-9 sm:w-[40px] sm:h-[40px] rounded-full bg-[#dbeafe] flex items-center justify-center shrink-0">
         <CmsIcon icon={icon} fallback={fallbackIcon} size={22} strokeWidth={2} color="#1d4ed8" />
       </div>
-      <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[11px] sm:text-[12px] lg:text-[14px] leading-normal text-[#0a0f1e] tracking-[-0.2px] lg:tracking-[-0.3px] whitespace-normal md:whitespace-nowrap">
+      <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[11px] sm:text-[12px] lg:text-[14px] leading-normal text-[#0a0f1e] tracking-[-0.2px] lg:tracking-[-0.3px] whitespace-normal lg:whitespace-nowrap">
         {label}
       </span>
     </div>
