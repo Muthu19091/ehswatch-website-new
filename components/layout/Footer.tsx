@@ -238,8 +238,11 @@ export default async function Footer() {
           </div>
         ))}
 
-        {/* ── Modules column — 2-column grid ── */}
-        <div className="flex flex-col gap-3 md:gap-[20px] items-start">
+        {/* ── Modules column — 2-column grid ──
+            On tablet the main footer grid is 2-col, which otherwise strands this
+            column alone on its own row with an empty half beside it. Span both
+            columns there so it fills the width; the lg template restores 1 col. */}
+        <div className="flex flex-col gap-3 md:gap-[20px] items-start sm:col-span-2 lg:col-span-1">
           <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
             {modulesHeading}
           </p>
