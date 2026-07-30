@@ -24,6 +24,7 @@ interface Industry {
   subcopy: string;
   video: string | null;
   gif: string | null;
+  risks: string[];
   solutions: Solution[];
 }
 
@@ -121,6 +122,7 @@ function MediaBlock({ industry }: { industry: Industry }) {
 export interface CmsIndustryCard {
   title: string;
   subheading?: string;
+  typical_risks?: string;
   video?: string | { url?: string | null } | null;
   accordion_items?: Record<string, { title?: string; description?: string }>;
 }
@@ -137,11 +139,17 @@ function cmsCardToIndustry(card: CmsIndustryCard): Industry {
   // jpg/webp) to <img>, which paints progressively and fires onLoad.
   const media = resolveVideoUrl(card.video ?? null);
   const isVideoFile = !!media && /\.(mp4|webm|ogg|mov|m4v)(?:[?#]|$)/i.test(media);
+  // typical_risks is a single newline-separated string in the CMS.
+  const risks = (card.typical_risks || "")
+    .split(/\r?\n/)
+    .map((r) => r.trim())
+    .filter(Boolean);
   return {
     label:     card.title,
     subcopy:   card.subheading || "",
     video:     isVideoFile ? media : null,
     gif:       media && !isVideoFile ? media : null,
+    risks,
     solutions: solutions.length > 0 ? solutions : [],
   };
 }
@@ -267,7 +275,9 @@ export default function SolutionsZigzag({
               className="font-[family-name:var(--font-gothic-a1)] font-bold leading-[1.15] text-[#0a0f1e]"
               style={{ fontSize: "clamp(20px, 1.9vw, 27px)" }}
             >
-              {industry.label}
+              {/* Number is derived from tab position (activeIdx), so reordering
+                  cards in the CMS auto-renumbers — not baked into the title. */}
+              {activeIdx + 1}. {industry.label}
             </h3>
             <p
               className="font-[family-name:var(--font-dm-sans)] mt-3 mb-7 text-[15px] md:text-[16px] leading-[1.7] text-[#6b7280] text-pretty"
@@ -275,6 +285,34 @@ export default function SolutionsZigzag({
             >
               {industry.subcopy}
             </p>
+
+            {/* Typical Risks — newline-separated list from the CMS card */}
+            {industry.risks.length > 0 && (
+              <div className="mb-7" style={{ maxWidth: 520 }}>
+                <p className="font-[family-name:var(--font-dm-sans)] font-semibold text-[12px] uppercase tracking-[0.14em] text-[#1d4ed8] mb-3">
+                  Typical Risks
+                </p>
+                <ul className="flex flex-col gap-2">
+                  {industry.risks.map((risk, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span
+                        className="flex-shrink-0 rounded-full mt-[8px]"
+                        style={{ width: 6, height: 6, background: "#FF6D00" }}
+                      />
+                      <span className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.6] text-[#6b7280] text-pretty">
+                        {risk}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {industry.solutions.length > 0 && (
+              <p className="font-[family-name:var(--font-dm-sans)] font-semibold text-[12px] uppercase tracking-[0.14em] text-[#1d4ed8] mb-2">
+                How EHSWatch Solves Them
+              </p>
+            )}
 
             <div className="flex flex-col">
               {industry.solutions.map((sol, i) => {
