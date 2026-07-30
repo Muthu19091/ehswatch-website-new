@@ -56,6 +56,11 @@ export interface ModuleTemplateProps {
     heading: string;
     modules: Array<{ name: string; slug: string; desc: string; icon?: string | null; href?: string }>;
   };
+  clientStrip?: {
+    heading: string;
+    subheading?: string;
+    logos: Array<{ name: string; url: string }>;
+  };
 }
 
 const FEATURE_COLORS = ["#155eef", "#059669", "#f59e0b", "#7c3aed", "#0891b2", "#6366f1"];
@@ -225,6 +230,7 @@ export default function ModuleTemplate({
   features,
   apart,
   faqs,
+  clientStrip,
   finalCta,
   moreModules,
 }: ModuleTemplateProps) {
@@ -449,6 +455,46 @@ export default function ModuleTemplate({
       )}
 
       {/* ── FAQ ── */}
+      {/* ── CLIENT STRIP (logo marquee) — above the FAQ ── */}
+      {clientStrip && clientStrip.logos.length > 0 && (
+        <section className="bg-white pt-14 md:pt-[72px] pb-8 md:pb-[52px] px-4 md:px-6">
+          <div className="max-w-[1160px] mx-auto flex flex-col items-center text-center gap-4 md:gap-6">
+            {clientStrip.heading && (
+              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[32px] leading-tight tracking-[-0.02em] text-[#0a0f1e] max-w-[780px]">
+                {clientStrip.heading}
+              </h2>
+            )}
+            {clientStrip.subheading && (
+              <p className="font-[family-name:var(--font-dm-sans)] text-[14px] md:text-[15px] leading-[1.7] text-[#6b7280] max-w-[640px] text-pretty">
+                {clientStrip.subheading}
+              </p>
+            )}
+            <div
+              dir="ltr"
+              translate="no"
+              className="notranslate relative overflow-hidden w-full mt-2"
+              style={{
+                maskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
+              }}
+            >
+              <div className="flex gap-10 md:gap-[56px] items-center animate-marquee-slow whitespace-nowrap w-max">
+                {[...clientStrip.logos, ...clientStrip.logos, ...clientStrip.logos].map((logo, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`${logo.name}-${i}`}
+                    src={logo.url}
+                    alt={logo.name}
+                    className="h-8 md:h-10 w-auto object-contain shrink-0"
+                    style={{ opacity: 0.55 }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {faqs && faqs.items.length > 0 && <FAQAccordion heading={faqs.heading} items={faqs.items} />}
 
       {/* ── FINAL CTA ── */}

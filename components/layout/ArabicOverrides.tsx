@@ -46,6 +46,21 @@ const EN_TO_AR: Record<string, string> = {
   "Case Studies": "دراسات",
   "Blogs": "مقالات",
   "Support": "الدعم",
+  // Contact/Support form heading + submit button (authored Arabic).
+  "Get in Touch with Our Team": "تواصل مع فريقنا",
+  "Submit": "إرسال",
+};
+
+// Form field labels — label-scoped so "Company" here → اسم الشركة (a form field),
+// distinct from the footer/nav "Company" → الشركة above. Applied to the label's
+// own text node so a required-field asterisk (a sibling <span>) is preserved.
+const LABEL_EN_TO_AR: Record<string, string> = {
+  "Your name": "الاسم الكامل",
+  "Full name": "الاسم الكامل",
+  "Full Name": "الاسم الكامل",
+  "Name": "الاسم الكامل",
+  "Company": "اسم الشركة",
+  "Company Name": "اسم الشركة",
 };
 
 // Overrides whose text starts with a Latin brand ("EHSWatch: …"): force the
@@ -91,6 +106,30 @@ export default function ArabicOverrides() {
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");
           return;
+        }
+
+        // Form field labels: translate ONLY the label's own text node so a
+        // trailing required-asterisk span survives, using the label-scoped map.
+        if (el.tagName === "LABEL") {
+          const tn = Array.from(el.childNodes).find(
+            (n) => n.nodeType === 3 && (n.textContent || "").trim(),
+          ) as Text | undefined;
+          const stored = el.getAttribute("data-ar-label");
+          const cur = tn ? norm(tn.textContent) : "";
+          const key =
+            stored && LABEL_EN_TO_AR[stored] !== undefined
+              ? stored
+              : LABEL_EN_TO_AR[cur] !== undefined
+                ? cur
+                : null;
+          if (tn && key) {
+            if (!stored) el.setAttribute("data-ar-label", key);
+            el.setAttribute("translate", "no");
+            el.classList.add("notranslate");
+            const want = ar ? LABEL_EN_TO_AR[key] : key;
+            if (norm(tn.textContent) !== want) tn.textContent = want;
+            return;
+          }
         }
 
         // English-keyed overrides.

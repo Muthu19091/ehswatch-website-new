@@ -270,5 +270,22 @@ export function buildModuleTemplateProps(
         }
       : undefined;
 
-  return { moduleName: name, hero, why, features, apart, faqs, finalCta, moreModules };
+  // Client Strip (logo marquee) — sits above the FAQ on every module page.
+  const clientStripBlock = findBlock<{ heading?: string; subheading?: string; items?: unknown }>(
+    blocks,
+    "trusted_logos",
+  );
+  const clientLogos = normalizeArray<{ name?: string; logo_url?: string }>(clientStripBlock?.items)
+    .filter((l) => stripHtmlOpt(l?.logo_url))
+    .map((l) => ({ name: stripHtml(l.name ?? ""), url: l.logo_url as string }));
+  const clientStrip: ModuleTemplateProps["clientStrip"] | undefined =
+    clientStripBlock && clientLogos.length > 0
+      ? {
+          heading: stripHtml(clientStripBlock.heading) || "",
+          subheading: stripHtmlOpt(clientStripBlock.subheading),
+          logos: clientLogos,
+        }
+      : undefined;
+
+  return { moduleName: name, hero, why, features, apart, faqs, clientStrip, finalCta, moreModules };
 }
