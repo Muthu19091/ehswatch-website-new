@@ -36,6 +36,12 @@ const getClient = (): AxiosInstance =>
 
 const _ssrCache = new Map<string, { data: unknown; expires: number }>();
 const _inflight = new Map<string, Promise<unknown>>();
+// Last-known-good responses, kept indefinitely. When the CMS briefly returns a
+// non-200 (deploy blip, cache clear, transient 5xx) the fetch resolves to null;
+// rather than 404 the page we fall back to the last successful payload. This is
+// the stale-while-error resilience an ISR layer would provide, implemented in
+// the fetch layer so it works with our dynamic, cookie-aware page rendering.
+const _lkg = new Map<string, unknown>();
 
 const DEFAULT_TTL = 10_000;
 // Reference data that changes rarely — cache longer to cut request volume
@@ -73,8 +79,19 @@ async function apiGet<T>(path: string): Promise<T | null> {
       // poison the cache and 404 the page for the whole TTL window.
       if (data !== null) {
         _ssrCache.set(resolvedPath, { data, expires: Date.now() + ttlFor(resolvedPath) });
+        // Remember the last good payload (except token-gated preview fetches,
+        // which are transient and per-request).
+        if (!resolvedPath.includes("/preview/")) _lkg.set(resolvedPath, data);
+        return data;
       }
-      return data;
+      // Fetch failed after retries — degrade to the last good payload if we
+      // have one, so a CMS blip serves slightly-stale content, not a 404.
+      const stale = _lkg.get(resolvedPath);
+      if (stale !== undefined) {
+        console.warn(`[CMS] GET ${resolvedPath} failed — serving last-known-good`);
+        return stale as T;
+      }
+      return data; // null: nothing to fall back to
     })
     .catch((err) => {
       _inflight.delete(resolvedPath);
