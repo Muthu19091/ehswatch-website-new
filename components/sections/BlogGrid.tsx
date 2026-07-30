@@ -37,8 +37,9 @@ function cmsToPost(p: CmsBlogPost): Post {
 
 
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
-// How many non-featured articles to reveal per "Load More" click (2 rows of 4 on desktop).
-const STD_STEP = 8;
+// Non-featured articles shown initially and revealed per "Load More" click.
+// Kept modest so pagination is exercised even on a small blog; raise for higher post volumes.
+const STD_STEP = 4;
 // Topic/Format options are derived from the actual posts (CMS categories) so
 // the dropdowns always match what editors set in the dashboard.
 
@@ -48,7 +49,7 @@ function FeaturedCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col sm:flex-row bg-white overflow-hidden h-full"
+      className="group flex flex-col lg:flex-row bg-white overflow-hidden h-full"
       style={{
         border: "1px solid #E5E7EB",
         borderRadius: 8,
@@ -61,7 +62,7 @@ function FeaturedCard({ post }: { post: Post }) {
       {/* Image — left ~47%. Covers upload at 3:2 or 16:9; an 8:5 box sits
           between them so object-cover fills fully with only edge-sliver crop */}
       <div
-        className="relative flex-shrink-0 overflow-hidden w-full sm:w-[47%]"
+        className="relative flex-shrink-0 overflow-hidden w-full lg:w-[47%]"
         style={{ aspectRatio: "8/5" }}
       >
         {post.img ? (
@@ -338,7 +339,7 @@ export default function BlogGrid({
 
             {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
             {standard.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {standard.map((p) => <StandardCard key={p.slug} post={p} />)}
               </div>
             )}
