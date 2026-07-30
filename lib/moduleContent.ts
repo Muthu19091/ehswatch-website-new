@@ -1,5 +1,5 @@
 import type { ModuleTemplateProps, ModuleCta } from "@/components/sections/ModuleTemplate";
-import type { CmsProductModule } from "@/lib/types";
+import type { CmsProductModule, CmsClientLogo } from "@/lib/types";
 import { stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, resolveCta as resolveCtaBlock, type PageMap } from "@/lib/blocks";
 
@@ -45,6 +45,7 @@ export function buildModuleTemplateProps(
   slug: string,
   allModules: CmsProductModule[],
   pageMap?: PageMap,
+  poolLogos: CmsClientLogo[] = [],
 ): ModuleTemplateProps {
   const blocks = mod.content ?? [];
   const name = stripHtml(mod.name);
@@ -53,6 +54,7 @@ export function buildModuleTemplateProps(
     eyebrow?: string;
     headline?: string;
     subheadline?: string;
+    bold_tagline?: string;
     primary_cta?: CtaShape;
     secondary_cta?: CtaShape;
   }>(blocks, "hero");
@@ -61,6 +63,7 @@ export function buildModuleTemplateProps(
     eyebrow: stripHtmlOpt(heroBlock?.eyebrow),
     headline: stripHtml(heroBlock?.headline) || name,
     subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
+    boldTagline: stripHtmlOpt(heroBlock?.bold_tagline),
     // CMS-only: no hardcoded default — the banner button appears only when the
     // CMS hero block has a configured CTA (label + link).
     primaryCta: resolveCta(heroBlock?.primary_cta, pageMap),
@@ -275,9 +278,16 @@ export function buildModuleTemplateProps(
     blocks,
     "trusted_logos",
   );
-  const clientLogos = normalizeArray<{ name?: string; logo_url?: string }>(clientStripBlock?.items)
+  const inlineLogos = normalizeArray<{ name?: string; logo_url?: string }>(clientStripBlock?.items)
     .filter((l) => stripHtmlOpt(l?.logo_url))
     .map((l) => ({ name: stripHtml(l.name ?? ""), url: l.logo_url as string }));
+  // The CMS block uses source "pool_all": logos are not stored inline, they come
+  // from the shared client-logo pool (the same one the home page renders). Fall
+  // back to that pool whenever the block carries no inline items.
+  const poolMapped = poolLogos
+    .map((l) => ({ name: l.attributes.name, url: l.attributes.logo?.attributes?.url }))
+    .filter((l): l is { name: string; url: string } => Boolean(l.url));
+  const clientLogos = inlineLogos.length > 0 ? inlineLogos : poolMapped;
   const clientStrip: ModuleTemplateProps["clientStrip"] | undefined =
     clientStripBlock && clientLogos.length > 0
       ? {

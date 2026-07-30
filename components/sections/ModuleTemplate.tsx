@@ -23,6 +23,7 @@ export interface ModuleTemplateProps {
     eyebrow?: string;
     headline: string;
     subheadline?: string;
+    boldTagline?: string;
     primaryCta?: ModuleCta;
     secondaryCta?: ModuleCta;
   };
@@ -325,6 +326,15 @@ export default function ModuleTemplate({
               style={{ animationDelay: "180ms" }}
             >
               {hero.subheadline}
+            </p>
+          )}
+
+          {hero.boldTagline && (
+            <p
+              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[17px] sm:text-[19px] md:text-[20px] text-[#0a0f1e] leading-snug max-w-[720px] animate-hero-rise text-pretty"
+              style={{ animationDelay: "240ms" }}
+            >
+              {hero.boldTagline}
             </p>
           )}
 
