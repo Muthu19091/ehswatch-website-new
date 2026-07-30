@@ -654,6 +654,30 @@ export default function ProductHowItWorks({
     window.scrollTo({ top: sectionTop + ((i + 0.5) / steps.length) * scrollable, behavior: "smooth" });
   };
 
+  // Keyboard: while the section is pinned (desktop scroll-jack), make one
+  // Arrow/Page press move exactly one step, so navigation is consistent
+  // instead of depending on how far a key-scroll happens to move (FE QA #3).
+  // At the first/last step we don't intercept, so the user can scroll out.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (window.innerWidth < 1024) return; // desktop sticky version only
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const pinned = rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+      if (!pinned) return;
+      const tag = (document.activeElement as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      const down = e.key === "ArrowDown" || e.key === "PageDown";
+      const up = e.key === "ArrowUp" || e.key === "PageUp";
+      if (down && activeStep < steps.length - 1) { e.preventDefault(); goToStep(activeStep + 1); }
+      else if (up && activeStep > 0) { e.preventDefault(); goToStep(activeStep - 1); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStep, steps.length]);
+
   return (
     <>
     {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
