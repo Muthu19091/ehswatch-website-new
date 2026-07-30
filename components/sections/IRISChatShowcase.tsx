@@ -350,11 +350,12 @@ function SmartInput({ step, voicePhase }: { step: number; voicePhase: 0|1|2 }) {
 
 // ─── Chat mockup ──────────────────────────────────────────────────────────────
 function ChatMockup({
-  step, showIris, voicePhase, singleStep = false,
+  step, showIris, voicePhase, singleStep = false, height = 560,
 }: {
   step: number;
   showIris: boolean;
   voicePhase: 0|1|2;
+  height?: number;
   // singleStep: show ONLY this step's exchange (no cumulative history). Used on
   // mobile/tablet where each feature has its own phone — cumulative + a
   // scroll-to-bottom is unreliable on iOS Safari, leaving every phone stuck at
@@ -390,7 +391,7 @@ function ChatMockup({
       background:"white", borderRadius:32, overflow:"hidden",
       border:"1px solid #E2E8F0",
       boxShadow:`0 0 0 8px rgba(226,232,240,0.45), 0 24px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06)`,
-      height:560, display:"flex", flexDirection:"column",
+      height, display:"flex", flexDirection:"column",
     }}>
 
       {/* Status bar */}
@@ -545,6 +546,7 @@ function splitShowcaseHeading(text: string): [string, string] {
 
 export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }: IRISChatShowcaseProps = {}) {
   const outerRef     = useRef<HTMLDivElement>(null);
+  const mobileRef    = useRef<HTMLDivElement>(null);
   const [step,       setStep]       = useState(0);
   const [showIris,   setShowIris]   = useState(false);
   const [voicePhase, setVoicePhase] = useState<0|1|2>(0);
@@ -634,7 +636,14 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
     };
 
     const onScroll = () => {
-      const el = outerRef.current;
+      // Drive from whichever scroll-track is currently displayed: the desktop
+      // 3-col track (lg+) or the mobile single-column track (below lg). The
+      // hidden one has offsetHeight 0.
+      const el = outerRef.current && outerRef.current.offsetHeight > 0
+        ? outerRef.current
+        : mobileRef.current && mobileRef.current.offsetHeight > 0
+          ? mobileRef.current
+          : null;
       if (!el) return;
       const scrolled = -el.getBoundingClientRect().top;
       const stepSize = window.innerHeight / 4; // ~2–3 scroll clicks per step (comfortable middle, not too quick)
@@ -734,19 +743,29 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
         </div>
       </div>
 
-      {/* Mobile / tablet — stacked & scrollable (no scroll-pinning): every
-          feature shows its full details AND its scene, so nothing is hidden. */}
-      <div className="lg:hidden px-5 pt-6 pb-14 flex flex-col gap-14 bg-white">
-        {features.map((f, i) => (
-          <div key={i} className="flex flex-col items-center gap-6">
-            <div className="self-start">
-              <FeatureCallout feat={f} active />
-            </div>
-            <div style={{ transform: "scale(0.92)", transformOrigin: "top center" }}>
-              <ChatMockup step={i} showIris voicePhase={2} singleStep />
-            </div>
+      {/* Mobile / tablet — same scroll-driven, single-phone experience as
+          desktop: the section pins and one phone advances through all six
+          agents as you scroll, instead of stacking six full-height phones. */}
+      <div ref={mobileRef} className="lg:hidden bg-white" style={{ height:"260vh" }}>
+        <div className="sticky top-0 h-screen overflow-hidden flex flex-col items-center justify-center gap-5 px-5">
+          <div className="w-full max-w-[360px] min-h-[132px] flex items-center">
+            <FeatureCallout feat={features[Math.max(0, Math.min(step, features.length - 1))]} active />
           </div>
-        ))}
+          <ChatMockup
+            step={Math.max(0, step)}
+            showIris={showIris}
+            voicePhase={voicePhase}
+            singleStep
+            height={390}
+          />
+          <div className="flex gap-2">
+            {features.map((_, i) => (
+              <div key={i} className="rounded-full transition-all duration-500"
+                style={{ width: step === i ? 24 : 6, height: 6,
+                  background: step === i ? "#ff6d00" : "#E2E8F0" }} />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
