@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
 import type { CmsBlogPost } from "@/lib/types";
@@ -37,6 +37,8 @@ function cmsToPost(p: CmsBlogPost): Post {
 
 
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
+// How many non-featured articles to reveal per "Load More" click (2 rows of 4 on desktop).
+const STD_STEP = 8;
 // Topic/Format options are derived from the actual posts (CMS categories) so
 // the dropdowns always match what editors set in the dashboard.
 
@@ -46,7 +48,7 @@ function FeaturedCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex bg-white overflow-hidden h-full"
+      className="group flex flex-col sm:flex-row bg-white overflow-hidden h-full"
       style={{
         border: "1px solid #E5E7EB",
         borderRadius: 8,
@@ -59,8 +61,8 @@ function FeaturedCard({ post }: { post: Post }) {
       {/* Image — left ~47%. Covers upload at 3:2 or 16:9; an 8:5 box sits
           between them so object-cover fills fully with only edge-sliver crop */}
       <div
-        className="relative flex-shrink-0 overflow-hidden"
-        style={{ width: "47%", aspectRatio: "8/5", borderRadius: "7px 0 0 7px" }}
+        className="relative flex-shrink-0 overflow-hidden w-full sm:w-[47%]"
+        style={{ aspectRatio: "8/5" }}
       >
         {post.img ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -161,7 +163,7 @@ function StandardCard({ post }: { post: Post }) {
           {post.readTime}
         </p>
         <h3
-          className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[17px] leading-[1.35] line-clamp-2 mb-2.5"
+          className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[17px] leading-[1.35] line-clamp-none sm:line-clamp-2 mb-2.5"
           style={{ color: "#111827" }}
         >
           {post.title}
@@ -250,6 +252,7 @@ export default function BlogGrid({
   const [timeline, setTimeline] = useState(TIMELINE_OPTIONS[0]);
   const [topic,    setTopic]    = useState("Topic: All topics");
   const [format,   setFormat]   = useState("Format: All formats");
+  const [visibleStd, setVisibleStd] = useState(STD_STEP);
 
   const filtered = useMemo(() => {
     const now = Date.now();
@@ -268,8 +271,14 @@ export default function BlogGrid({
     });
   }, [search, timeline, topic, format]);
 
+  // Reset pagination whenever the filters change so a narrowed result set
+  // doesn't inherit a large reveal count from the previous view.
+  useEffect(() => { setVisibleStd(STD_STEP); }, [search, timeline, topic, format]);
+
   const featured = filtered.slice(0, 2);
-  const standard = filtered.slice(2);
+  const standardAll = filtered.slice(2);
+  const standard = standardAll.slice(0, visibleStd);
+  const hasMoreStd = standardAll.length > visibleStd;
 
   // CMS-only: nothing to list → hide the section entirely.
   if (POSTS.length === 0) return null;
@@ -327,10 +336,25 @@ export default function BlogGrid({
               </div>
             )}
 
-            {/* Row 2 — standard 4-col */}
+            {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
             {standard.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 {standard.map((p) => <StandardCard key={p.slug} post={p} />)}
+              </div>
+            )}
+
+            {/* Load More — reveals the next batch of articles */}
+            {hasMoreStd && (
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => setVisibleStd((v) => v + STD_STEP)}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200"
+                >
+                  Load More Articles
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M7 2v10M2 7l5 5 5-5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               </div>
             )}
           </div>
