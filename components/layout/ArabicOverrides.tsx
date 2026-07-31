@@ -72,7 +72,12 @@ const LABEL_EN_TO_AR: Record<string, string> = {
 // Overrides whose text starts with a Latin brand ("EHSWatch: …"): force the
 // element to LTR so the brand stays on the left and the Arabic phrase follows,
 // instead of the brand being reordered to the right by the RTL page.
-const FORCE_LTR = new Set(["EHSWatch: One Platform for Everyday Safety"]);
+const FORCE_LTR = new Set([
+  "EHSWatch: One Platform for Everyday Safety",
+  // "عن IRIS" (About IRIS): keep the Arabic word first (left) and the Latin
+  // brand after it (right), as authored — not mirrored by the RTL layout.
+  "About IRIS",
+]);
 
 // Machine-Arabic → corrected Arabic (used when there's no stable English key).
 const AR_FIX: Record<string, string> = {

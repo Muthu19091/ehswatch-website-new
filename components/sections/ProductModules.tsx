@@ -217,6 +217,13 @@ export default function ProductModules({
   const visibleModules = modules.slice(0, visibleCount);
   const hasMore = visibleCount < modules.length;
 
+  // White filler cells to complete the last grid row, so an odd module count
+  // doesn't expose the grey grid background as an empty (grey) cell. The grid is
+  // 2-col at sm and 3-col at lg, so the number of trailing empties differs per
+  // breakpoint — compute both and render fillers with per-breakpoint visibility.
+  const fillSm = (2 - (visibleModules.length % 2)) % 2; // 0 or 1
+  const fillLg = (3 - (visibleModules.length % 3)) % 3; // 0, 1 or 2
+
   const handleViewMore = () => {
     setVisibleCount(Math.min(visibleCount + STEP, modules.length));
   };
@@ -267,6 +274,19 @@ export default function ProductModules({
             {visibleModules.map((mod) => (
               <ModuleCell key={mod.name} mod={mod} />
             ))}
+            {(fillSm >= 1 || fillLg >= 1) && (
+              <div
+                aria-hidden
+                className={`bg-white ${
+                  fillSm >= 1 && fillLg >= 1
+                    ? "hidden sm:block"
+                    : fillSm >= 1
+                      ? "hidden sm:block lg:hidden"
+                      : "hidden lg:block"
+                }`}
+              />
+            )}
+            {fillLg >= 2 && <div aria-hidden className="bg-white hidden lg:block" />}
           </div>
         </div>
 
