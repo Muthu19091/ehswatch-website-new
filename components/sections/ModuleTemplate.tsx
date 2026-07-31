@@ -130,6 +130,29 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+// "Why <module>?" illustration. Renders at the image's own aspect ratio
+// (measured on load) with object-contain, so tall flowchart diagrams aren't
+// cropped top/bottom and wide dashboards aren't blown up — replaces the old
+// fixed 16:9 + object-cover frame that clipped taller module images.
+function WhyImage({ src, alt }: { src: string; alt: string }) {
+  const [ratio, setRatio] = useState<number | null>(null);
+  return (
+    <div className="w-full lg:w-[60%] rounded-2xl overflow-hidden bg-white">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        onLoad={(e) => {
+          const t = e.currentTarget;
+          if (t.naturalWidth && t.naturalHeight) setRatio(t.naturalWidth / t.naturalHeight);
+        }}
+        className="block w-full object-contain"
+        style={{ aspectRatio: ratio ? String(ratio) : "16 / 9" }}
+      />
+    </div>
+  );
+}
+
 function MoreModuleCard({ mod, color, isLast }: {
   mod: { name: string; slug: string; desc: string; icon?: string | null; href?: string };
   color: string;
@@ -394,17 +417,7 @@ export default function ModuleTemplate({
               {why.cta && <ExploreLink href={why.cta.href} label={why.cta.label} />}
             </div>
             {why.imageUrl && (
-              <div className="w-full lg:w-[60%] rounded-2xl overflow-hidden">
-                {/* Fixed 16:9 frame + cover so portrait/odd-ratio CMS images
-                    render at a consistent size instead of blowing up the section. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={why.imageUrl}
-                  alt={`${moduleName} dashboard`}
-                  className="block w-full object-cover"
-                  style={{ aspectRatio: "16 / 9" }}
-                />
-              </div>
+              <WhyImage src={why.imageUrl} alt={`${moduleName} dashboard`} />
             )}
           </div>
         </section>
