@@ -170,3 +170,34 @@ html.gt-cloak body { visibility: hidden !important; }
 @media (hover: none), (pointer: coarse) {
   .cursor-dot { display: none !important; }
 }
+
+/* Hero box-grid readability veil.
+   The animated grid boxes pulse behind the centered hero copy and hurt
+   legibility. This ::after blends with the (white) hero background to dim the
+   boxes behind the text and fades to transparent toward the edges, so the boxes
+   stay lively around the copy. It's a child of the decorative grid container
+   (position:absolute inset-0, pointer-events:none) and the hero text is a later
+   sibling that paints above it, so the veil never dims the text itself. */
+.grid-container::after,
+.at-grid-container::after,
+.hero-grid-container::after,
+.iris-hero-grid-container::after,
+.mt-grid-container::after,
+.pricing-grid-container::after,
+.sol-grid::after,
+.cs-grid::after,
+.blog-grid::after,
+.sup-grid::after,
+.ct-grid::after,
+.post-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 62% at 50% 44%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.72) 38%,
+    rgba(255, 255, 255, 0) 74%
+  );
+}
