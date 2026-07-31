@@ -158,6 +158,21 @@ html[dir="rtl"] .wenv-hl {
   margin-inline: 0.28em;
 }
 
+/* Highlighted word-spans inside headings. In Arabic (RTL) the machine
+   translator drops the space at the highlight span's edge, gluing the adjacent
+   words ("النشاطمصمم" instead of "النشاط مصمم"). A layout margin can't be
+   stripped by the translator, so restore a small gap on both inline sides.
+   Scoped to spans INSIDE headings (h1–h4) so body text / labels using the same
+   colour class are untouched. Covers every highlight mechanism: headingHtml
+   (.hd-hl), the Tailwind blue class, and inline brand-blue colour spans.
+   RTL only — the English space renders fine. */
+html[dir="rtl"] :is(h1, h2, h3, h4) .hd-hl,
+html[dir="rtl"] :is(h1, h2, h3, h4) .text-\[\#155eef\],
+html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="1d4ed8"],
+html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="0060f9"] {
+  margin-inline: 0.22em;
+}
+
 /* Server-side Arabic translation: hide the page until the first translation
    pass swaps the text in, so the visitor never sees the English→Arabic reflow.
    An inline script in layout.tsx adds .gt-cloak before paint (only when Arabic)

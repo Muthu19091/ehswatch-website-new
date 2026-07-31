@@ -51,7 +51,10 @@ export function headingHtml(value: string | null | undefined): string {
     // Drop every tag except <span>/</span> (removes <p>, <strong>, scripts, …).
     .replace(/<(?!\/?span\b)[^>]*>/gi, "")
     // Sanitise span open tags (strip attributes) and recolour to brand blue.
-    .replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">')
+    // The .hd-hl class lets CSS restore the inline gap in Arabic (RTL), where
+    // the machine translator drops the space at the span's edge and glues the
+    // adjacent words together (e.g. "النشاطمصمم").
+    .replace(/<span\b[^>]*>/gi, '<span class="hd-hl" style="color:#1d4ed8">')
     .replace(/\s+/g, " ")
     .trim();
 }

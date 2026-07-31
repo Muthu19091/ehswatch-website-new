@@ -646,7 +646,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
           : null;
       if (!el) return;
       const scrolled = -el.getBoundingClientRect().top;
-      const stepSize = window.innerHeight / 4; // ~2–3 scroll clicks per step (comfortable middle, not too quick)
+      const stepSize = window.innerHeight / 2; // 2 scroll-lengths per agent (user-requested; /4 felt too quick)
       const newStep = scrolled < 0 ? -1 : Math.min(Math.floor(scrolled / stepSize), 5);
 
       if (newStep < 0) {
@@ -697,8 +697,8 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       </section>
       )}
 
-      {/* ~240vh sticky scroll — ~2–3 scroll clicks per step so each agent lingers (desktop only) */}
-      <div ref={outerRef} className="hidden lg:block" style={{ height:"240vh" }}>
+      {/* ~400vh sticky scroll — ~2–3 scroll clicks per step so each agent lingers (desktop only) */}
+      <div ref={outerRef} className="hidden lg:block" style={{ height:"400vh" }}>
         <div className="sticky top-0 bg-white overflow-hidden" style={{ height:"100vh" }}>
 
           {/* Desktop: 3-col */}
@@ -746,7 +746,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       {/* Mobile / tablet — same scroll-driven, single-phone experience as
           desktop: the section pins and one phone advances through all six
           agents as you scroll, instead of stacking six full-height phones. */}
-      <div ref={mobileRef} className="lg:hidden bg-white" style={{ height:"260vh" }}>
+      <div ref={mobileRef} className="lg:hidden bg-white" style={{ height:"400vh" }}>
         <div className="sticky top-0 h-screen overflow-hidden flex flex-col items-center justify-center gap-5 px-5">
           <div className="w-full max-w-[360px] min-h-[132px] flex items-center">
             <FeatureCallout feat={features[Math.max(0, Math.min(step, features.length - 1))]} active />
