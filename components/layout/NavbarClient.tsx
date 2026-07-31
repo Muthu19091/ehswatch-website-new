@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { basePath } from "@/lib/basePath";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
@@ -66,6 +67,10 @@ export default function NavbarClient({
   const logoHref = cmsLogo?.href || "/";
   const [open, setOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  // Mounted flag so the mobile menu can be portaled to <body> only on the
+  // client (document.body doesn't exist during SSR).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   // Desktop dropdowns open on hover (CSS) — this adds click/tap toggling so
   // they also work on touch screens, where hover never fires
   const [deskOpen, setDeskOpen] = useState<number | "more" | null>(null);
@@ -455,15 +460,18 @@ export default function NavbarClient({
       </nav>
 
       {/* ── Mobile menu ───────────────────────────────────────── */}
-      {/* Show/hide via display (hidden ↔ flex), NOT opacity: iOS Safari fails to
-          repaint this panel when it flips from a long-hidden opacity:0 state to
-          visible (it sits inside the fixed, backdrop-filtered header), leaving it
-          stuck invisible — a CSS transition/animation hit the same paint bug.
-          A display:none→flex change forces a fresh layout+paint, which WebKit
-          renders correctly. Kept mounted (not conditionally rendered) so tapping
-          a link isn't unmounted mid-navigation by the setOpen(false) it fires. */}
+      {/* Portaled to <body>, OUTSIDE the position:fixed + backdrop-filter header.
+          iOS Safari (incl. iOS 16) fails to repaint this panel when it becomes
+          visible while nested inside that header's compositing layer, so it
+          stayed invisible (opacity/transition/animation/display toggles inside
+          the header all hit the same paint bug). Rendering it as a top-level
+          fixed element gives it a clean compositing layer that paints reliably.
+          Show/hide via display (hidden ↔ flex); kept mounted (not conditionally
+          rendered) so tapping a link isn't unmounted mid-navigation. */}
+      {mounted && createPortal(
       <div
-        className={`lg:hidden absolute top-[72px] left-4 right-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 gap-1 origin-top z-50 ${
+        data-mobile-menu
+        className={`lg:hidden fixed top-[72px] left-4 right-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 gap-1 origin-top z-[60] ${
           open ? "flex flex-col" : "hidden"
         }`}
       >
@@ -505,7 +513,9 @@ export default function NavbarClient({
           className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[#ff6d00] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}
         </Link>
-      </div>
+      </div>,
+      document.body
+      )}
     </header>
   );
 }
