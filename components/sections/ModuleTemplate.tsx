@@ -305,6 +305,8 @@ export default function ModuleTemplate({
           position: absolute;
           width: 48px;
           height: 48px;
+          opacity: 0;               /* start invisible — no solid squares on load */
+          animation-fill-mode: both;
         }
         @keyframes mtDiffFadeUp {
           from { opacity: 0; transform: translateY(14px); }
@@ -344,8 +346,8 @@ export default function ModuleTemplate({
                   left: `${(i % 20) * 50 + 1}px`,
                   top: `${Math.floor(i / 20) * 50 + 1}px`,
                   backgroundColor: colors[i % 4],
-                  animation: `mtGridBoxFill ${4 + ((i * 2) % 6)}s ease-in-out infinite`,
-                  animationDelay: `${(i * 0.3) % 12}s`,
+                  animation: `mtGridBoxFill ${4 + ((i * 2) % 5)}s ease-in-out infinite`,
+                  animationDelay: `${(i * 0.37) % 4}s`,
                 }}
               />
             ) : null;

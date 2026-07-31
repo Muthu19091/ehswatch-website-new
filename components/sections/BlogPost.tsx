@@ -140,7 +140,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                     top: `${Math.floor(i / 20) * 50 + 1}px`,
                     backgroundColor: colors[i % 4],
                     animation: `postBoxFill ${4 + ((i * 2) % 6)}s ease-in-out infinite`,
-                    animationDelay: `${(i * 0.3) % 12}s`,
+                    animationDelay: `${(i * 0.45) % 4}s`,
                   }}
                 />
               ) : null;

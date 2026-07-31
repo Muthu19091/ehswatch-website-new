@@ -71,7 +71,7 @@ export default function ProductHero({
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
           const colorVariant = i % 4;
           const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD"];
-          const animationDelay = (i * 0.3) % 12;
+          const animationDelay = (i * 0.45) % 4;
           const animationDuration = 4 + ((i * 2) % 6);
           const row = Math.floor(i / 20);
           const col = i % 20;

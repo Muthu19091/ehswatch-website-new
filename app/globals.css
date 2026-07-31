@@ -201,3 +201,16 @@ html.gt-cloak body { visibility: hidden !important; }
     rgba(255, 255, 255, 0) 68%
   );
 }
+
+/* Hero box-grid: boxes must start invisible. Their keyframes go
+   0%/100% opacity:0 → 50% opacity:~0.6, but with no base opacity they show at the
+   default opacity:1 (solid squares) during their staggered animation-delay, then
+   drop into the faint pulse — which reads as a one-time "appears on load" flash,
+   not a smooth loop. A base opacity:0 holds during the delay (the inline
+   `animation` shorthand resets animation-fill-mode, so fill-mode alone is not
+   reliable — opacity is untouched by it), so boxes fade in and loop cleanly. */
+.grid-box, .pricing-grid-box, .hero-grid-box, .iris-hero-grid-box, .mt-grid-box,
+.at-grid-box, .sol-box, .cs-box, .blog-box, .sup-box, .ct-box, .post-box {
+  opacity: 0;
+  animation-fill-mode: both;
+}

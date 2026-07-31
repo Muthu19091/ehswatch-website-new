@@ -53,7 +53,7 @@ export default function HeroLight() {
           const shouldAnimate = (i * 10) % 17 === 0;
           const colorVariant = i % 4;
           const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD"];
-          const animationDelay = (i * 0.3) % 12;
+          const animationDelay = (i * 0.45) % 4;
           const animationDuration = 4 + ((i * 2) % 6);
           return shouldAnimate ? (
             <div

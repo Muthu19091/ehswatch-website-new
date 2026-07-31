@@ -54,7 +54,7 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
                 top: `${Math.floor(i / 20) * 50 + 1}px`,
                 backgroundColor: colors[i % 4],
                 animation: `blogBoxFill ${4 + ((i * 2) % 6)}s ease-in-out infinite`,
-                animationDelay: `${(i * 0.3) % 12}s`,
+                animationDelay: `${(i * 0.45) % 4}s`,
               }}
             />
           ) : null;
