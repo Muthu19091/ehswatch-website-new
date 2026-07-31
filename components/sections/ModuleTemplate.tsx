@@ -135,19 +135,17 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
 // cropped top/bottom and wide dashboards aren't blown up — replaces the old
 // fixed 16:9 + object-cover frame that clipped taller module images.
 function WhyImage({ src, alt }: { src: string; alt: string }) {
-  const [ratio, setRatio] = useState<number | null>(null);
   return (
-    <div className="w-full lg:w-[60%] rounded-2xl overflow-hidden bg-white">
+    <div className="w-full lg:w-[60%] flex justify-center">
+      {/* Render at natural size, capped by max-width (column) AND max-height so
+          nothing is cropped (object-contain) and tall/PORTRAIT diagrams don't
+          blow up when the column goes full-width on tablet/mobile. Wide diagrams
+          still fill the width; portrait ones are bounded by the height cap. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt={alt}
-        onLoad={(e) => {
-          const t = e.currentTarget;
-          if (t.naturalWidth && t.naturalHeight) setRatio(t.naturalWidth / t.naturalHeight);
-        }}
-        className="block w-full object-contain"
-        style={{ aspectRatio: ratio ? String(ratio) : "16 / 9" }}
+        className="block w-auto h-auto max-w-full max-h-[420px] sm:max-h-[500px] lg:max-h-[560px] rounded-2xl object-contain"
       />
     </div>
   );
