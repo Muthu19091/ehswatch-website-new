@@ -341,7 +341,7 @@ export default function SolutionsZigzag({
                   <div key={i} style={{ borderTop: i > 0 ? "1px solid #F0F0F0" : "none" }}>
                     <button
                       onClick={() => setOpenIdx(open ? -1 : i)}
-                      className="w-full flex items-start gap-3 py-[14px] text-left"
+                      className="w-full flex items-start gap-3 py-[14px] text-start"
                     >
                       <span
                         className="flex-shrink-0 rounded-full mt-[7px]"
@@ -363,7 +363,7 @@ export default function SolutionsZigzag({
                         transition: "max-height 0.4s ease, opacity 0.35s ease",
                       }}
                     >
-                      <p className="font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-[1.7] text-[#6b7280] pl-[19px] pb-[14px] text-pretty">
+                      <p className="font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-[1.7] text-[#6b7280] ps-[19px] pb-[14px] text-pretty">
                         {sol.body}
                       </p>
                     </div>

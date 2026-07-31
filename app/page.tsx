@@ -51,9 +51,19 @@ export default async function HomePage() {
     subheadline?: string;
     eyebrow?: string;
     primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
-    secondary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
+    secondary_cta?: { label?: string; url?: string; type?: string; anchor?: string; video_url?: string; video_file?: { url?: string } | string | null };
     tertiary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
   }>(blocks, "hero");
+
+  // Watch-Demo video popup: when the secondary CTA is a "video_popup", surface
+  // its video URL so the hero opens a modal player instead of navigating.
+  const heroSecondary = heroBlock?.secondary_cta;
+  const heroVideoUrl =
+    heroSecondary?.type === "video_popup"
+      ? (heroSecondary.video_url ||
+         (typeof heroSecondary.video_file === "string" ? heroSecondary.video_file : heroSecondary.video_file?.url) ||
+         undefined)
+      : undefined;
 
   // ── trusted_logos block (heading only; logos come from getClientLogos) ──────
   const trustedBlock = findBlock<{ heading?: string; subheading?: string }>(blocks, "trusted_logos");
@@ -175,6 +185,7 @@ export default async function HomePage() {
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
           cmsTertiaryCta={resolveCta(heroBlock?.tertiary_cta, pageMap) ?? undefined}
+          cmsHeroVideoUrl={heroVideoUrl}
         />
         <TrustedLogos
           cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined}

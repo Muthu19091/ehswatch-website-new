@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import HeroDashboard from "@/components/sections/HeroDashboard";
 import DotGrid from "@/components/ui/DotGrid";
 import GlareButton from "@/components/ui/GlareButton";
@@ -13,6 +15,32 @@ interface HeroProps {
   cmsPrimaryCta?: { label: string; url: string };
   cmsSecondaryCta?: { label: string; url: string };
   cmsTertiaryCta?: { label: string; url: string };
+  // When the CMS secondary CTA is a "video_popup", its video URL — the CTA
+  // then opens a modal player instead of navigating.
+  cmsHeroVideoUrl?: string;
+}
+
+// YouTube watch/short URL → privacy-friendly embed URL with autoplay (and start
+// time if the URL carried a t=/start= param). Returns null for non-YouTube URLs.
+function youTubeEmbed(url: string): string | null {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    let id = "";
+    if (host === "youtu.be") id = u.pathname.slice(1);
+    else if (host.endsWith("youtube.com"))
+      id = u.searchParams.get("v") || (u.pathname.startsWith("/embed/") ? u.pathname.split("/embed/")[1] : "");
+    if (!id) return null;
+    const params = new URLSearchParams({ autoplay: "1", rel: "0", modestbranding: "1" });
+    const t = u.searchParams.get("t") || u.searchParams.get("start");
+    if (t) {
+      const secs = parseInt(String(t).replace(/[^0-9]/g, ""), 10);
+      if (secs) params.set("start", String(secs));
+    }
+    return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
+  } catch {
+    return null;
+  }
 }
 
 export default function HeroV2({
@@ -22,6 +50,7 @@ export default function HeroV2({
   cmsPrimaryCta,
   cmsSecondaryCta,
   cmsTertiaryCta,
+  cmsHeroVideoUrl,
 }: HeroProps) {
   // CMS-only: no hardcoded copy. Empty CMS field → nothing rendered.
   const headline = cmsHeadline ?? "";
@@ -30,6 +59,25 @@ export default function HeroV2({
   const primaryCta = cmsPrimaryCta;
   const secondaryCta = cmsSecondaryCta;
   const tertiaryCta = cmsTertiaryCta;
+
+  // Video popup (CMS "video_popup" secondary CTA). Portaled to <body> so the
+  // fixed overlay isn't clipped by ContainerScroll's transforms.
+  const isVideoCta = !!cmsHeroVideoUrl;
+  const embedUrl = cmsHeroVideoUrl ? youTubeEmbed(cmsHeroVideoUrl) : null;
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    if (!videoOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setVideoOpen(false); };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [videoOpen]);
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
@@ -117,19 +165,29 @@ export default function HeroV2({
                 </GlareButton>
                 )}
 
-                {secondaryCta && (
-                <Link
-                  href={secondaryCta.url}
-                  className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a] whitespace-nowrap group"
-                >
-                  <span className="flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] rounded-full border border-[#0f172a]/25 group-hover:bg-[#0f172a]/5 transition-colors">
-                    <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-                      <polygon points="3,1 13,7 3,13" fill="#0f172a" />
-                    </svg>
-                  </span>
-                  {secondaryCta.label}
-                </Link>
-                )}
+                {secondaryCta && (() => {
+                  const inner = (
+                    <>
+                      <span className="flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] rounded-full border border-[#0f172a]/25 group-hover:bg-[#0f172a]/5 transition-colors">
+                        <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+                          <polygon points="3,1 13,7 3,13" fill="#0f172a" />
+                        </svg>
+                      </span>
+                      {secondaryCta.label}
+                    </>
+                  );
+                  const cls =
+                    "flex items-center gap-2 font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a] whitespace-nowrap group";
+                  return isVideoCta ? (
+                    <button type="button" onClick={() => setVideoOpen(true)} className={cls} style={{ cursor: "pointer" }}>
+                      {inner}
+                    </button>
+                  ) : (
+                    <Link href={secondaryCta.url} className={cls}>
+                      {inner}
+                    </Link>
+                  );
+                })()}
 
                 {tertiaryCta && (
                 <Link
@@ -147,6 +205,47 @@ export default function HeroV2({
           <HeroDashboard />
         </ContainerScroll>
       </div>
+
+      {/* Watch-Demo video modal — portaled to <body> to escape the hero's
+          transformed/overflow-hidden ancestors. */}
+      {mounted && videoOpen && cmsHeroVideoUrl && createPortal(
+        <div
+          onClick={() => setVideoOpen(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 2000,
+            background: "rgba(3,7,18,0.85)", backdropFilter: "blur(2px)",
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "20px",
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: "min(980px, 100%)", aspectRatio: "16 / 9" }}>
+            <button
+              type="button"
+              onClick={() => setVideoOpen(false)}
+              aria-label="Close video"
+              style={{
+                position: "absolute", top: -44, right: 0, width: 36, height: 36, borderRadius: "50%",
+                background: "rgba(255,255,255,0.15)", color: "#fff", fontSize: 22, lineHeight: 1,
+                border: "none", cursor: "pointer",
+              }}
+            >
+              ×
+            </button>
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title="Demo video"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
+                style={{ width: "100%", height: "100%", border: 0, borderRadius: 14, background: "#000" }}
+              />
+            ) : (
+              // eslint-disable-next-line jsx-a11y/media-has-caption
+              <video src={cmsHeroVideoUrl} controls autoPlay playsInline style={{ width: "100%", height: "100%", borderRadius: 14, background: "#000", objectFit: "contain" }} />
+            )}
+          </div>
+        </div>,
+        document.body,
+      )}
 
     </section>
   );
