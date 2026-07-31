@@ -169,14 +169,26 @@ export default function PricingCalculator({
     const check = () =>
       /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ||
       /(?:^|;\s*)locale=ar/.test(document.cookie) ||
-      document.documentElement.dir === "rtl";
-    setIsAr(check());
+      document.documentElement.dir === "rtl" ||
+      // The browser's own translate (e.g. Chrome) doesn't set our cookie/dir —
+      // it flags the <html> with a translated-rtl class for RTL targets.
+      document.documentElement.classList.contains("translated-rtl") ||
+      document.documentElement.lang === "ar";
+    const update = () => setIsAr(check());
+    update();
     const onLocale = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       setIsAr(detail === "ar" || (detail == null && check()));
     };
     window.addEventListener("ehs-locale", onLocale);
-    return () => window.removeEventListener("ehs-locale", onLocale);
+    // The browser translator flips <html> class/lang/dir after load — re-check
+    // so the self-rendered app-count label switches to Arabic then too.
+    const mo = new MutationObserver(update);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "dir", "lang"] });
+    return () => {
+      window.removeEventListener("ehs-locale", onLocale);
+      mo.disconnect();
+    };
   }, []);
 
   const isLastStep = step === wizardSteps.length - 1;
@@ -286,7 +298,7 @@ export default function PricingCalculator({
         {field.help_text && (
           <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af] mb-4">{field.help_text}</p>
         )}
-        <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 ${isAddon ? "gap-4" : "gap-3"}`}>
+        <div className={`grid grid-cols-2 xl:grid-cols-3 ${isAddon ? "gap-3 sm:gap-4" : "gap-2.5 sm:gap-3"}`}>
           {items.map((item) => {
             const sel = selected.has(item.id);
             return (
@@ -294,7 +306,7 @@ export default function PricingCalculator({
                 key={item.id}
                 type="button"
                 onClick={() => togglePick(field.key, item.id)}
-                className={`${isAddon ? "addon-card" : "calc-card"} text-left rounded-xl border transition-all duration-200 flex flex-col ${isAddon ? "p-5 gap-3" : "p-4 gap-2.5"} ${sel ? (isAddon ? "addon-card-sel" : "calc-card-sel") : ""}`}
+                className={`${isAddon ? "addon-card" : "calc-card"} text-left rounded-xl border transition-all duration-200 flex flex-col ${isAddon ? "p-4 sm:p-5 gap-2.5 sm:gap-3" : "p-3.5 sm:p-4 gap-2.5"} ${sel ? (isAddon ? "addon-card-sel" : "calc-card-sel") : ""}`}
                 style={{
                   borderColor: sel ? "#1d4ed8" : "#e5e7eb",
                   background: sel ? "#eff6ff" : "white",

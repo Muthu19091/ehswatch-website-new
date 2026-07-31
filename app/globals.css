@@ -173,6 +173,16 @@ html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="0060f9"] {
   margin-inline: 0.22em;
 }
 
+/* Bidi: resolve each heading's direction from its own content (first strong
+   character) instead of the page base direction. Arabic headings that embed a
+   Latin brand — e.g. "عن IRIS" — then order correctly (عن on the right, IRIS on
+   the left) even when the page is left-to-right, which happens when a visitor
+   uses the browser's own translate (it swaps text to Arabic but doesn't set
+   dir=rtl). English headings start with a Latin char → stay LTR, unchanged. */
+h1, h2, h3, h4, h5, h6 {
+  unicode-bidi: plaintext;
+}
+
 /* Server-side Arabic translation: hide the page until the first translation
    pass swaps the text in, so the visitor never sees the English→Arabic reflow.
    An inline script in layout.tsx adds .gt-cloak before paint (only when Arabic)

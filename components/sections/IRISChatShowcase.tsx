@@ -504,8 +504,8 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
         )}
         {feat.subItems.map((si, k) => (
           <div key={k} style={{ marginTop: 10 }}>
-            <p style={{ fontSize:10.5, fontWeight:700, textTransform:"uppercase",
-              letterSpacing:"0.12em", color:"#94a3b8", marginBottom:2,
+            <p style={{ fontSize:11, fontWeight:800, textTransform:"uppercase",
+              letterSpacing:"0.1em", color:"#1e293b", marginBottom:3,
               fontFamily:"var(--font-dm-sans,sans-serif)" }}>
               {si.title}
             </p>

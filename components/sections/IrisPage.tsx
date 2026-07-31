@@ -1568,7 +1568,7 @@ export default function IrisPage({
             opacity: 0;
             animation: irisCardFromBottom 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
           }
-          .iris-hero-card {
+          .iris-hero-card { min-height:160px;
             transition: transform 0.22s cubic-bezier(0.22,1,0.36,1), box-shadow 0.22s ease;
             cursor: default;
           }
