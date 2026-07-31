@@ -133,21 +133,20 @@ body {
 }
 .goog-text-highlight { background: none !important; box-shadow: none !important; }
 
-/* ── Hero animated square-grid backgrounds: soften the "blocks" ──
+/* ── Hero animated square-grid backgrounds ──
    Every page hero paints a faint grid of lines PLUS animated pale-blue squares
-   ("blocks") that pulse to 0.6 opacity. The grid itself should stay fully
-   visible, but the pulsing blocks were highlighting behind the centred hero
-   copy. Every block sets its animation inline with a name ending in "BoxFill"
-   (aboutGridBoxFill, solBoxFill, csBoxFill, …), so this one selector reaches
-   them all. We only reduce the blocks' peak opacity to a subtle level — the
-   grid lines (drawn on the container background) are untouched and remain
-   visible across the whole hero. */
+   ("blocks") that pulse in and out. Every block sets its animation inline with a
+   name ending in "BoxFill" (gridBoxFill, solBoxFill, csBoxFill, …), so this one
+   selector normalises them all to a single pulse. Peak 0.6 keeps the blocks
+   clearly visible/animating across the hero; readability behind the centred copy
+   is handled separately by the radial veil on the grid container (above), which
+   dims only the text zone — so the blocks no longer need to be globally faint. */
 [style*="BoxFill"] {
   animation-name: gridBoxSoft !important;
 }
 @keyframes gridBoxSoft {
   0%, 100% { opacity: 0; }
-  50%      { opacity: 0.14; }
+  50%      { opacity: 0.6; }
 }
 
 /* WorkEnvironments heading — the highlighted <span> sits between two runs of
