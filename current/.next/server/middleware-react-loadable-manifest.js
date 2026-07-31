@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST='{"components/sections/ContactPage.tsx -> @/lib/api":{"id":2356,"files":["static/chunks/356.6697fbafd024dfef.js"]}}';

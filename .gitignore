@@ -48,3 +48,30 @@ next-env.d.ts
 # Claude Code local workspace + old broken git backup
 /.claude
 /.git-broken-backup
+
+# ── Removed 2026-07: build output / static export / snapshots committed by
+#    mistake. Runtime always builds fresh (CI: npm ci + next build), never from
+#    these. Real routes/source live in app/, components/, lib/, public/.
+/current/
+/old/
+/_next/
+/404/
+/404.html
+/index.html
+/index.txt
+/__next.*
+/about/
+/pricing/
+/blog/
+/iris/
+/product/
+/modules/
+/contact-us/
+/case-studies/
+/support/
+/solutions/
+/solutions-v2/
+/home-v2/
+/_not-found/
+# stray deploy-skill doc that leaked a token (rotate the token)
+/SKILL-umme.md
