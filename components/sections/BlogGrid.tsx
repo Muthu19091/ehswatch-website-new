@@ -77,7 +77,13 @@ function FeaturedCard({ post }: { post: Post }) {
             style={{
               display: "block",
               objectPosition: "left center",
-              transform: hovered ? "scale(1.04)" : "scale(1)",
+              // Rest at `none`, not `scale(1)`: a resting transform promotes the
+              // <img> to its own compositing layer, and inside the card's rounded
+              // overflow-hidden clip iOS Safari then intermittently fails to paint
+              // the sibling text until a repaint (scroll/tap) — cards showed image
+              // only, text blank. `none` at rest keeps the card on one layer; the
+              // hover zoom (desktop-only, never fires on touch) still animates.
+              transform: hovered ? "scale(1.04)" : "none",
               transition: "transform 0.5s ease",
             }}
           />
@@ -150,7 +156,13 @@ function StandardCard({ post }: { post: Post }) {
             style={{
               display: "block",
               objectPosition: "left center",
-              transform: hovered ? "scale(1.04)" : "scale(1)",
+              // Rest at `none`, not `scale(1)`: a resting transform promotes the
+              // <img> to its own compositing layer, and inside the card's rounded
+              // overflow-hidden clip iOS Safari then intermittently fails to paint
+              // the sibling text until a repaint (scroll/tap) — cards showed image
+              // only, text blank. `none` at rest keeps the card on one layer; the
+              // hover zoom (desktop-only, never fires on touch) still animates.
+              transform: hovered ? "scale(1.04)" : "none",
               transition: "transform 0.5s ease",
             }}
           />
