@@ -158,6 +158,13 @@ html[dir="rtl"] .wenv-hl {
   margin-inline: 0.28em;
 }
 
+/* Blog Previous/Next arrows. dir=rtl mirrors the layout (Prev moves to the right,
+   Next to the left) but SVG icon geometry doesn't flip, so the arrows end up
+   pointing the wrong way in Arabic. Mirror them horizontally in RTL. */
+html[dir="rtl"] .blog-nav-arrow {
+  transform: scaleX(-1);
+}
+
 /* Highlighted word-spans inside headings. In Arabic (RTL) the machine
    translator drops the space at the highlight span's edge, gluing the adjacent
    words ("النشاطمصمم" instead of "النشاط مصمم"). A layout margin can't be
