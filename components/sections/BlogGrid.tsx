@@ -49,7 +49,7 @@ function FeaturedCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col lg:flex-row bg-white overflow-hidden h-full"
+      className="group flex flex-col xl:flex-row bg-white overflow-hidden h-full"
       style={{
         border: "1px solid #E5E7EB",
         borderRadius: 8,
@@ -59,10 +59,13 @@ function FeaturedCard({ post }: { post: Post }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image — left ~47%. Covers upload at 3:2 or 16:9; an 8:5 box sits
-          between them so object-cover fills fully with only edge-sliver crop */}
+      {/* Image. Row layout (image left ~47%) only kicks in at xl; below that the
+          card stacks so the wide landscape cover shows in a full-width 8:5 box.
+          In the row layout the flex row stretches this box to the card's height,
+          and at < xl widths the text wraps taller, turning the box portrait and
+          cropping the cover's right side off — hence stacking below xl. */}
       <div
-        className="relative flex-shrink-0 overflow-hidden w-full lg:w-[47%]"
+        className="relative flex-shrink-0 overflow-hidden w-full xl:w-[47%]"
         style={{ aspectRatio: "8/5" }}
       >
         {post.img ? (
