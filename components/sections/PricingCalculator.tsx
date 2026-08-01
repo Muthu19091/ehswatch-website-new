@@ -12,6 +12,20 @@ import PhoneInput, { isPhoneField } from "@/components/ui/PhoneInput";
 // Validation is derived from each field's `required` flag and `field_type`.
 // ─────────────────────────────────────────────────────────────────────────────
 
+/* Dropdown (<select>) options render alphabetically (A→Z), matching DynamicCmsForm.
+   Numeric collation keeps range dropdowns in natural order (Number of Employees /
+   Number of Sites), and catch-all values (Other, None, N/A …) sort last. Scoped to
+   select fields only — radio/checkbox/picker orders stay as authored in the CMS. */
+const CATCHALL_LAST = /^(others?|none|n\/?a|not applicable|prefer not)\b/i;
+function sortOptions(opts: string[]): string[] {
+  return [...opts].sort((a, b) => {
+    const ca = CATCHALL_LAST.test(a.trim());
+    const cb = CATCHALL_LAST.test(b.trim());
+    if (ca !== cb) return ca ? 1 : -1;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+  });
+}
+
 // ── Icon renderer — shared sitewide resolver (Lucide + heroicon-o-* slugs) ──
 function LucideIcon({ name, size = 18 }: { name?: string; size?: number }) {
   return <CmsIcon icon={name} size={size} strokeWidth={1.5} color="currentColor" fallback="square-check" />;
@@ -378,7 +392,7 @@ export default function PricingCalculator({
             onChange={(e) => setValue(field.key, e.target.value)}
           >
             <option value="">{field.placeholder || `Select ${field.label}`}</option>
-            {fieldOptions(field).map((o) => (
+            {sortOptions(fieldOptions(field)).map((o) => (
               <option key={o} value={o}>{o}</option>
             ))}
           </select>
