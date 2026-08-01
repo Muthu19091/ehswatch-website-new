@@ -7,6 +7,23 @@ import type { CmsForm, CmsFormField } from "@/lib/types";
 
 export type FormVariant = "contact" | "support";
 
+/* Dropdown (<select>) options are shown alphabetically (A→Z), with two guards:
+   - numeric collation keeps range/size values in their natural order
+     (1, 2–5, 6–20 … and < 50, 50–200, 201–1000 …), so those dropdowns aren't
+     scrambled into alphabetical nonsense;
+   - catch-all values (Other, None, N/A, "Prefer not to say" …) are pushed last.
+   Scoped to select fields only — radio/checkbox orders (e.g. Low→Urgent) are
+   semantic and stay exactly as authored in the CMS. */
+const CATCHALL_LAST = /^(others?|none|n\/?a|not applicable|prefer not)\b/i;
+function sortOptions(opts: string[]): string[] {
+  return [...opts].sort((a, b) => {
+    const ca = CATCHALL_LAST.test(a.trim());
+    const cb = CATCHALL_LAST.test(b.trim());
+    if (ca !== cb) return ca ? 1 : -1;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+  });
+}
+
 interface DynamicCmsFormProps {
   formAttrs: CmsForm["attributes"];
   slug: string;
@@ -114,7 +131,8 @@ function FieldWidget({
             <option value="" disabled>
               {field.placeholder ?? `Select ${field.label}`}
             </option>
-            {(field.options ?? []).map((opt) => (
+            {/* Options sorted A→Z (see sortOptions above). Placeholder is untouched. */}
+            {sortOptions(field.options ?? []).map((opt) => (
               <option key={opt} value={opt}>{opt}</option>
             ))}
           </select>
