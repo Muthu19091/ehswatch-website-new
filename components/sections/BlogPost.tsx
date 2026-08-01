@@ -180,13 +180,26 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
             {/* dir=ltr keeps this row fixed (date+read-time on the left, actions on
                 the right) so it doesn't swap sides when the page flips to RTL. */}
-            <div dir="ltr" className="flex items-center justify-between w-full max-w-[680px] py-3">
+            <div dir="ltr" className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0 w-full max-w-[680px] py-3">
               <div className="flex items-center gap-3">
                 <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{post.date}</span>
                 <span style={{ color: "#e5e7eb" }}>·</span>
                 <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{post.readTime}</span>
               </div>
-              <PostActions slug={slug} title={post.title} />
+              <div className="flex items-center gap-4 sm:gap-5">
+                {/* Back to the blog listing — mirrors the case-study template's
+                    "All Case Studies" link (same arrow + styling). */}
+                <Link
+                  href="/blog"
+                  className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5 no-underline whitespace-nowrap"
+                >
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  View All Blogs
+                </Link>
+                <PostActions slug={slug} title={post.title} />
+              </div>
             </div>
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
           </div>
