@@ -646,7 +646,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
           : null;
       if (!el) return;
       const scrolled = -el.getBoundingClientRect().top;
-      const stepSize = window.innerHeight / 2; // 2 scroll-lengths per agent (user-requested; /4 felt too quick)
+      const stepSize = window.innerHeight * 0.7; // ~2.8 scroll-lengths per agent (user asked to slow it further; /2 still felt fast)
       const newStep = scrolled < 0 ? -1 : Math.min(Math.floor(scrolled / stepSize), 5);
 
       if (newStep < 0) {
@@ -698,7 +698,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       )}
 
       {/* ~400vh sticky scroll — ~2–3 scroll clicks per step so each agent lingers (desktop only) */}
-      <div ref={outerRef} className="hidden lg:block" style={{ height:"400vh" }}>
+      <div ref={outerRef} className="hidden lg:block" style={{ height:"500vh" }}>
         <div className="sticky top-0 bg-white overflow-hidden" style={{ height:"100vh" }}>
 
           {/* Desktop: 3-col */}
@@ -746,18 +746,25 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       {/* Mobile / tablet — same scroll-driven, single-phone experience as
           desktop: the section pins and one phone advances through all six
           agents as you scroll, instead of stacking six full-height phones. */}
-      <div ref={mobileRef} className="lg:hidden bg-white" style={{ height:"400vh" }}>
-        <div className="sticky top-0 h-screen overflow-hidden flex flex-col items-center justify-center gap-5 px-5">
-          <div className="w-full max-w-[360px] min-h-[132px] flex items-center">
-            <FeatureCallout feat={features[Math.max(0, Math.min(step, features.length - 1))]} active />
+      <div ref={mobileRef} className="lg:hidden bg-white" style={{ height:"500vh" }}>
+        <div className="sticky top-0 h-screen overflow-hidden flex flex-col items-center justify-center gap-6 px-5 md:px-8">
+          {/* Below md: callout stacked above phone. md–lg (tablet/iPad): callout
+              beside the phone so the section fills the wider screen instead of a
+              narrow centred column. */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 w-full max-w-[760px]">
+            <div className="w-full max-w-[360px] min-h-[132px] flex items-center">
+              <FeatureCallout feat={features[Math.max(0, Math.min(step, features.length - 1))]} active />
+            </div>
+            <div className="flex-shrink-0">
+              <ChatMockup
+                step={Math.max(0, step)}
+                showIris={showIris}
+                voicePhase={voicePhase}
+                singleStep
+                height={390}
+              />
+            </div>
           </div>
-          <ChatMockup
-            step={Math.max(0, step)}
-            showIris={showIris}
-            voicePhase={voicePhase}
-            singleStep
-            height={390}
-          />
           <div className="flex gap-2">
             {features.map((_, i) => (
               <div key={i} className="rounded-full transition-all duration-500"
