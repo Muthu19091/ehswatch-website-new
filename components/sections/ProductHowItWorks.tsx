@@ -577,6 +577,84 @@ function Visual5({
 /* ── Visual registry ──────────────────────────────────────────────── */
 const STATIC_VISUALS = [Visual1, Visual2, Visual3, Visual4];
 
+/* ══════════════════════════════════════════════════════════════════
+   Mobile / tablet step
+   Same copy as the pinned desktop version, but each step now carries its
+   own animated visual and reveals it on scroll-into-view (IntersectionObserver)
+   — so the section actually "works" on touch (iPad + phone) instead of being a
+   flat, static list. We deliberately do NOT scroll-jack here: pinning + wheel
+   hijacking is unreliable on touch, so natural scrolling with a reveal-on-view
+   animation gives the same life without the jank. On md (iPad) the text and
+   visual sit side-by-side; on phones they stack.
+   ══════════════════════════════════════════════════════════════════ */
+function MobileStep({
+  step,
+  index,
+  isLast,
+}: {
+  step: { n: number; title: string; body: string; sub_items?: CmsStep["sub_items"] };
+  index: number;
+  isLast: boolean;
+}) {
+  const [active, setActive] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Fire once when the step scrolls a fifth of the way into view, then stop
+    // observing — the visual animates in and stays.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) { setActive(true); io.disconnect(); }
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -12% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Per-visual heights tuned so each mock fits without clipping or a tall empty
+  // gap. The last step always uses Visual5 (mirrors the desktop registry logic).
+  const visualH = isLast ? 440 : ([380, 470, 400, 370][index] ?? 400);
+
+  return (
+    <div ref={ref} className="relative pl-11 sm:pl-12 pb-12 last:pb-0">
+      {!isLast && (
+        <div className="absolute left-[13px] top-[30px] bottom-0 w-[2px] rounded-full bg-[#dde8f8]" />
+      )}
+      <div className="absolute left-0 top-0 z-10 flex items-center justify-center rounded-full w-7 h-7 text-[11px] font-bold bg-[#155eef] text-white">
+        {step.n}
+      </div>
+
+      <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
+        Step {step.n}
+      </span>
+      <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] sm:text-[22px] leading-snug mt-2 mb-2 text-[#0a0f1e]">
+        {step.title}
+      </h3>
+      <p className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.82] text-[#4b5563]">
+        {step.body}
+      </p>
+
+      {/* Animated visual — same components as desktop, `active` toggled on view */}
+      <div
+        className="mt-6 w-full flex items-center justify-center overflow-hidden"
+        style={{ height: visualH }}
+      >
+        {isLast ? (
+          <Visual5 active={active} subItems={step.sub_items} />
+        ) : (
+          (() => {
+            const V = STATIC_VISUALS[index] || STATIC_VISUALS[STATIC_VISUALS.length - 1];
+            return <V active={active} />;
+          })()
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ── Geometry ────────────────────────────────────────────────────── */
 const CIRCLE = 28;
 const GAP    = 36;
@@ -680,9 +758,10 @@ export default function ProductHowItWorks({
 
   return (
     <>
-    {/* Mobile: simple stacked steps — the scroll-pinned version below hides its
-        stepper and visuals under md, which left 7 near-empty screens of scroll */}
-    <section className="lg:hidden bg-[#f1f7ff] px-6 py-14">
+    {/* Phone only (< md): stacked steps, each visual revealed on scroll-into-view.
+        iPad + desktop use the pinned one-step-at-a-time version below — a phone is
+        too short to fit the longest step's text + visual in one pinned screen. */}
+    <section className="md:hidden bg-[#f1f7ff] px-6 py-14">
       {(headingPlain || subheading) && (
       <div className="text-center mb-10">
         {headingPlain && (
@@ -699,33 +778,19 @@ export default function ProductHowItWorks({
         )}
       </div>
       )}
-      <div className="flex flex-col max-w-[480px] mx-auto">
+      <div className="flex flex-col max-w-[520px] mx-auto">
         {steps.map((step, i) => (
-          <div key={i} className="relative pl-12 pb-10 last:pb-0">
-            {i < steps.length - 1 && (
-              <div className="absolute left-[13px] top-[30px] bottom-0 w-[2px] rounded-full bg-[#dde8f8]" />
-            )}
-            <div className="absolute left-0 top-0 z-10 flex items-center justify-center rounded-full w-7 h-7 text-[11px] font-bold bg-[#155eef] text-white">
-              {step.n}
-            </div>
-            <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
-              Step {step.n}
-            </span>
-            <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] leading-snug mt-2 mb-2 text-[#0a0f1e]">
-              {step.title}
-            </h3>
-            <p className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.82] text-[#4b5563]">
-              {step.body}
-            </p>
-          </div>
+          <MobileStep key={i} step={step} index={i} isLast={i === steps.length - 1} />
         ))}
       </div>
     </section>
 
     <section
       ref={sectionRef}
-      className="hidden lg:block bg-[#f1f7ff]"
-      /* Per-step scroll distance: (55 - 100/steps)vh ≈ 30vh (~1.5–2 wheel
+      className="hidden md:block bg-[#f1f7ff]"
+      /* Pinned, one-step-at-a-time on scroll — now from md up (iPad + desktop),
+         so a tablet gets the same experience as desktop instead of a flat list.
+         Per-step scroll distance: (55 - 100/steps)vh ≈ 30vh (~1.5–2 wheel
          notches) for a 4-step section — was 100 (~75vh, ~4 scrolls per step). */
       style={{ height: `${steps.length * 55}vh` }}
     >
@@ -751,7 +816,7 @@ export default function ProductHowItWorks({
         )}
 
         {/* Main row */}
-        <div className="flex-1 flex items-center gap-8 md:gap-12 max-w-[1200px] mx-auto w-full px-6 md:px-10 pt-[1vh] pb-[5vh]">
+        <div className="flex-1 flex items-center gap-6 md:gap-8 lg:gap-12 max-w-[1200px] mx-auto w-full px-6 md:px-8 lg:px-10 pt-[1vh] pb-[5vh]">
 
           {/* Vertical stepper */}
           <div
@@ -798,7 +863,7 @@ export default function ProductHowItWorks({
               short CSS fade-in on each change. */}
           <div
             key={activeStep}
-            className="flex-1 md:flex-none md:flex-[0_0_260px] lg:flex-[0_0_330px] md:shrink-0 flex flex-col justify-center min-w-0"
+            className="flex-1 md:flex-[0_0_236px] lg:flex-[0_0_330px] md:shrink-0 flex flex-col justify-center min-w-0"
             style={{ animation: "howStepFade 0.32s ease both" }}
           >
             <div className="flex items-center gap-2 mb-4">
