@@ -178,7 +178,9 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 
             {/* Date + Share/Bookmark — between two separator lines */}
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
-            <div className="flex items-center justify-between w-full max-w-[680px] py-3">
+            {/* dir=ltr keeps this row fixed (date+read-time on the left, actions on
+                the right) so it doesn't swap sides when the page flips to RTL. */}
+            <div dir="ltr" className="flex items-center justify-between w-full max-w-[680px] py-3">
               <div className="flex items-center gap-3">
                 <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{post.date}</span>
                 <span style={{ color: "#e5e7eb" }}>·</span>
