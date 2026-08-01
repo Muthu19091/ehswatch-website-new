@@ -88,10 +88,11 @@ export default async function HomePage() {
     heading?: string;
     body?: string;
     eyebrow?: string;
-    cta?: {
-      cta?: { label?: string; url?: string; type?: string };
-    };
+    // CMS stores the CTA flat: { type, label, url | page_id | anchor } — resolve
+    // it via the page map (page_id → path) like every other block CTA.
+    cta?: { label?: string; url?: string; type?: string; page_id?: string; anchor?: string };
   }>(blocks, "image_text");
+  const aiCta = resolveCta(imageTextBlock?.cta, pageMap);
 
   // ── solution_carousel block (WorkEnvironments) ──────────────────────────────
   const solutionBlock = findBlock<{
@@ -223,8 +224,8 @@ export default async function HomePage() {
         <AISection
           cmsHeading={imageTextBlock?.heading || undefined}
           cmsBody={imageTextBlock?.body || undefined}
-          cmsCtaLabel={imageTextBlock?.cta?.cta?.label || undefined}
-          cmsCtaUrl={imageTextBlock?.cta?.cta?.url || undefined}
+          cmsCtaLabel={aiCta?.label || undefined}
+          cmsCtaUrl={aiCta?.url || undefined}
         />
         <WorkEnvironments
           cmsHeading={solutionBlock?.heading || undefined}
