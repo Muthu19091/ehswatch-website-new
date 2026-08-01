@@ -108,7 +108,9 @@ export default function Stats({ cmsItems, cmsHeading }: StatsCmsProps = {}) {
             duration={700}
             className="flex flex-col gap-2 md:gap-[13.3px] items-center px-2 md:px-[40px] py-2 md:py-[16px]"
           >
-            <div className="flex items-baseline tabular-nums" translate="no">
+            {/* dir=ltr keeps the number and its suffix in order (e.g. 60%, 25K+)
+                instead of flipping to %60 / +K25 when the page is Arabic (RTL). */}
+            <div dir="ltr" className="flex items-baseline tabular-nums" translate="no">
               <span className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[34px] sm:text-[44px] md:text-[56px] lg:text-[66px] leading-none tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2.97px] text-[#0a1628]">
                 <Counter target={stat.target} display={stat.display} start={inView} delay={i * 120} />
               </span>
