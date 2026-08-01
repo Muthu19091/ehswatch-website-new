@@ -550,6 +550,19 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
   const [step,       setStep]       = useState(0);
   const [showIris,   setShowIris]   = useState(false);
   const [voicePhase, setVoicePhase] = useState<0|1|2>(0);
+  // Phone height for the mobile/tablet track: on tablet (md–lg / iPad) size it to
+  // the viewport so the pinned section fills the height instead of leaving a big
+  // empty band; phones keep a fixed 390.
+  const [mobilePhoneH, setMobilePhoneH] = useState(390);
+  useEffect(() => {
+    const sync = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      setMobilePhoneH(w >= 768 && w < 1024 ? Math.min(Math.round(h * 0.66), 660) : 390);
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
 
   // Titles/descriptions are CMS-only (number_steps); the chat scenes and
   // callout positions stay design-owned. No hardcoded fallback copy.
@@ -761,7 +774,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
                 showIris={showIris}
                 voicePhase={voicePhase}
                 singleStep
-                height={390}
+                height={mobilePhoneH}
               />
             </div>
           </div>
