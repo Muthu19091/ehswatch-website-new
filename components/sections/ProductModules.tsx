@@ -274,9 +274,15 @@ export default function ProductModules({
             {visibleModules.map((mod) => (
               <ModuleCell key={mod.name} mod={mod} />
             ))}
+            {/* White fillers cover the grid's grey background in the last row's
+                empty slots. The box-shadow paints over the 1px grey gaps on the
+                filler's inner (left/top) sides so it blends seamlessly into
+                white instead of looking like a bordered empty cell; the grid's
+                outer border still frames the right/bottom edges. */}
             {(fillSm >= 1 || fillLg >= 1) && (
               <div
                 aria-hidden
+                style={{ boxShadow: "-1px 0 0 0 #fff, 0 -1px 0 0 #fff" }}
                 className={`bg-white ${
                   fillSm >= 1 && fillLg >= 1
                     ? "hidden sm:block"
@@ -286,7 +292,9 @@ export default function ProductModules({
                 }`}
               />
             )}
-            {fillLg >= 2 && <div aria-hidden className="bg-white hidden lg:block" />}
+            {fillLg >= 2 && (
+              <div aria-hidden style={{ boxShadow: "-1px 0 0 0 #fff, 0 -1px 0 0 #fff" }} className="bg-white hidden lg:block" />
+            )}
           </div>
         </div>
 
