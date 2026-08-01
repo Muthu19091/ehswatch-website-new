@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
 import { useInView } from "@/hooks/useInView";
 import { basePath } from "@/lib/basePath";
@@ -285,15 +286,20 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
               ))}
             </div>
             )}
-            {ctaLabel && (
-            <a
-              href={ctaUrl || "#"}
-              {...(isExternalUrl(ctaUrl) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="self-start mt-1 font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors"
-            >
-              {ctaLabel}
-            </a>
-            )}
+            {ctaLabel && (() => {
+              const ctaClass = "self-start mt-1 font-[family-name:var(--font-dm-sans)] text-[13px] md:text-[14px] font-semibold text-[#f97316] hover:text-[#ea6c00] transition-colors";
+              // External URL → plain anchor in a new tab. Internal → Next Link so
+              // the app basePath (/ehswatch-stage) is prepended (a plain <a> is not).
+              return isExternalUrl(ctaUrl) ? (
+                <a href={ctaUrl || "#"} target="_blank" rel="noopener noreferrer" className={ctaClass}>
+                  {ctaLabel}
+                </a>
+              ) : (
+                <Link href={ctaUrl || "#"} className={ctaClass}>
+                  {ctaLabel}
+                </Link>
+              );
+            })()}
             </div>
           </Reveal>
 
