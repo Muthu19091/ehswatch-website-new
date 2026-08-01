@@ -1665,11 +1665,11 @@ export default function IrisPage({
         {/* ── Cards + IRIS logo ── */}
         <div className="relative z-10 w-full max-w-[1100px]">
 
-          {/* Top row: left 2 cards | IRIS circle | right 2 cards.
-              Below lg the cards can't flank the orb, so the orb takes a full-width
-              row of its own and the two columns wrap beneath it into a 2-col grid
-              (they collapse to 1 col only when too narrow, e.g. small phones). */}
-          <div className="flex flex-wrap lg:flex-nowrap items-center justify-center gap-4 lg:gap-8">
+          {/* Desktop (lg+): left 2 cards | IRIS orb | right 2 cards. Below lg this
+              flanking layout doesn't fit, so it's hidden and a flat card grid
+              (orb on top, 2-col on phone / 3-col on iPad) renders instead — see
+              the lg:hidden block below. */}
+          <div className="hidden lg:flex items-center justify-center lg:gap-8">
 
             {/* Left column: 2 cards */}
             <div className="flex flex-col gap-4 w-[calc(50%-10px)] lg:w-[220px] shrink-0 order-2 lg:order-none">
@@ -1763,8 +1763,8 @@ export default function IrisPage({
 
           </div>
 
-          {/* Bottom row: 2 cards, kept 2-up on every width to match the grid above */}
-          <div className="flex flex-row items-stretch justify-center gap-4 mt-4">
+          {/* Bottom row (desktop only): 2 cards under the flanking layout */}
+          <div className="hidden lg:flex items-stretch justify-center gap-4 mt-4">
             {/* Card 5: Smart Recommendations */}
             <div className="iris-hero-card iris-card-bottom w-[calc(50%-10px)] lg:w-[220px]" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"560ms" }}>
               <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Smart Recommendations</p>
@@ -1788,6 +1788,90 @@ export default function IrisPage({
                     <p style={{ fontSize:9, color:"#6b7280", fontFamily:"var(--font-dm-sans,sans-serif)", marginTop:3, textTransform:"uppercase", letterSpacing:"0.06em" }}>{l}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile / tablet (<lg): orb on top, then all six cards in a flat grid
+              — 2 columns on phones, 3 columns on iPad. */}
+          <div className="lg:hidden flex flex-col items-center gap-6">
+            <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
+              <Orb hue={30} hoverIntensity={0.5} rotateOnHover={false} forceHoverState={false} backgroundColor="#ffffff" />
+              <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}>
+                <Image src={`${basePath}/images/iris-logo.png`} alt="IRIS" width={78} height={78} style={{ objectFit:"contain" }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full">
+              {/* Hazard Intelligence */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Hazard Intelligence</p>
+                {[["Chemical exposure","#ef4444",78],["Height work","#f97316",54],["Electrical","#eab308",35]].map(([l,c,w]) => (
+                  <div key={String(l)} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                    <span style={{ fontSize:10, color:"#6b7280", width:88, flexShrink:0, fontFamily:"var(--font-dm-sans,sans-serif)" }}>{l}</span>
+                    <div style={{ flex:1, height:4, background:"#f3f4f6", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${w}%`, background:String(c), borderRadius:2 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Workflow Acceleration */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"410ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Workflow Acceleration</p>
+                {[["Investigation","92%","#f59e0b"],["Actions closed","78%","#f97316"],["Reports filed","100%","#10b981"]].map(([l,v,c]) => (
+                  <div key={String(l)} style={{ marginBottom:7 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                      <span style={{ fontSize:10, color:"#6b7280", fontFamily:"var(--font-dm-sans,sans-serif)" }}>{l}</span>
+                      <span style={{ fontSize:10, fontWeight:700, color:String(c), fontFamily:"var(--font-dm-sans,sans-serif)" }}>{v}</span>
+                    </div>
+                    <div style={{ height:4, background:"#f3f4f6", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:v, background:String(c), borderRadius:2 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Predictive Analytics */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"470ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Predictive Analytics</p>
+                <div style={{ display:"flex", alignItems:"flex-end", gap:3, height:40 }}>
+                  {[14,22,18,30,26,38,34,44].map((h,i) => (
+                    <div key={i} style={{ flex:1, height:`${h}px`, background:`rgba(59,130,246,${0.25+i*0.09})`, borderRadius:"3px 3px 0 0" }} />
+                  ))}
+                </div>
+                <p style={{ fontSize:10, color:"#3b82f6", marginTop:6, fontFamily:"var(--font-dm-sans,sans-serif)", fontWeight:600 }}>↓ 23% risk reduction</p>
+              </div>
+              {/* Natural Language Query */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"530ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Natural Language Query</p>
+                <div style={{ background:"#f3f4f6", borderRadius:8, padding:"7px 10px", marginBottom:7 }}>
+                  <p style={{ fontSize:10, color:"#374151", fontFamily:"var(--font-dm-sans,sans-serif)", fontStyle:"italic" }}>&ldquo;Top risks this quarter?&rdquo;</p>
+                </div>
+                <div style={{ background:"#eff6ff", borderRadius:8, padding:"7px 10px" }}>
+                  <p style={{ fontSize:10, color:"#1d4ed8", fontFamily:"var(--font-dm-sans,sans-serif)", fontWeight:500 }}>3 critical trends detected in Site A ↗</p>
+                </div>
+              </div>
+              {/* Smart Recommendations */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"590ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Smart Recommendations</p>
+                {["Deploy safety barriers","Retrain 3 operators","Update risk register"].map((t,i) => (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:7, marginBottom:6 }}>
+                    <div style={{ width:15, height:15, borderRadius:4, background:i===0?"#10b981":"transparent", border:i===0?"none":"1.5px solid #d1d5db", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      {i===0 && <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-3.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <span style={{ fontSize:10, color:i===0?"#9ca3af":"#374151", fontFamily:"var(--font-dm-sans,sans-serif)", textDecoration:i===0?"line-through":"none" }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Intelligent Data Synthesis */}
+              <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"650ms" }}>
+                <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Intelligent Data Synthesis</p>
+                <div style={{ display:"flex", gap:12, marginBottom:8 }}>
+                  {[["Incidents","247","#6366f1"],["Actions","89","#8b5cf6"],["Sites","14","#a78bfa"]].map(([l,v,c]) => (
+                    <div key={String(l)} style={{ flex:1, textAlign:"center" }}>
+                      <p style={{ fontSize:20, fontWeight:800, color:String(c), fontFamily:"var(--font-gothic-a1,sans-serif)", lineHeight:1 }}>{v}</p>
+                      <p style={{ fontSize:9, color:"#6b7280", fontFamily:"var(--font-dm-sans,sans-serif)", marginTop:3, textTransform:"uppercase", letterSpacing:"0.06em" }}>{l}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
