@@ -216,7 +216,7 @@ export default function ContactPage({
             </div>
           )}
 
-          <div className={`grid grid-cols-1 gap-14${formAttrs ? " lg:grid-cols-[280px_1fr] lg:gap-24" : ""}`}>
+          <div className={`contact-cols grid grid-cols-1 gap-14${formAttrs ? " lg:grid-cols-[280px_1fr] lg:gap-24" : ""}`}>
 
             {/* ── Left: office items from icon_features block ── */}
             <div className="flex flex-col gap-8">
@@ -273,8 +273,14 @@ export default function ContactPage({
               ))}
             </div>
 
-            {/* ── Right: dynamic CMS form — only rendered when CMS form is enabled ── */}
-            {formAttrs && <DynamicCmsForm formAttrs={formAttrs} slug={formSlug} variant="contact" />}
+            {/* ── Right: dynamic CMS form — only rendered when CMS form is enabled ──
+                Wrapped so the RTL override can keep the FORM right-to-left while the
+                grid column order is locked (see .contact-cols in globals.css). */}
+            {formAttrs && (
+              <div className="ct-form-col">
+                <DynamicCmsForm formAttrs={formAttrs} slug={formSlug} variant="contact" />
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -165,6 +165,19 @@ html[dir="rtl"] .blog-nav-arrow {
   transform: scaleX(-1);
 }
 
+/* Contact section (offices | form). In Arabic the whole 2-column grid mirrors,
+   sending the office-address column from the left to the right. Keep it in place:
+   lock the grid's column order to LTR so offices stay left / form stays right,
+   exactly like English. The offices column inherits LTR so it reads like the
+   English layout (icon-left), while the form is switched back to RTL so its
+   Arabic labels/inputs still align right-to-left. RTL only — English is untouched. */
+html[dir="rtl"] .contact-cols {
+  direction: ltr;
+}
+html[dir="rtl"] .contact-cols > .ct-form-col {
+  direction: rtl;
+}
+
 /* Highlighted word-spans inside headings. In Arabic (RTL) the machine
    translator drops the space at the highlight span's edge, gluing the adjacent
    words ("النشاطمصمم" instead of "النشاط مصمم"). A layout margin can't be
