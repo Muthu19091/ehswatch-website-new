@@ -27,6 +27,10 @@ const RESOURCES_ITEMS = [
 ];
 
 const SCROLL_END = 480;  // px over which the full morph completes (higher = slower/smoother)
+// Must match Tailwind's `lg:` breakpoint (min-width: 1024px) exactly. The desktop
+// nav row is `hidden lg:flex`, so at *exactly* 1024 the desktop layout is showing
+// and the scroll morph below has to run — hence `< DESKTOP_MIN`, not `<=`.
+const DESKTOP_MIN = 1024;
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 function ease(p: number) {
   // ease-in-out-sine — very gentle start and end, no harsh jump
@@ -107,14 +111,53 @@ export default function NavbarClient({
       const nav    = navRef.current;
       if (!header || !nav) { raf = 0; return; }
 
-      // On mobile/tablet, always use a solid white background — skip the scroll animation
-      if (window.innerWidth <= 1024) {
+      // On mobile/tablet, always use a solid white background — skip the scroll animation.
+      // Everything the desktop branch below writes must be reset here, or rotating an
+      // iPad from landscape (mid-morph pill) to portrait strands the pill shape and the
+      // filled CTA on the tablet bar.
+      if (window.innerWidth < DESKTOP_MIN) {
+        header.style.paddingLeft = header.style.paddingRight = header.style.paddingTop = "0px";
+
         nav.style.background     = "rgba(255,255,255,0.97)";
         nav.style.boxShadow      = "0 2px 12px rgba(0,0,0,0.07)";
         nav.style.backdropFilter = "blur(12px)";
+        nav.style.paddingLeft    = nav.style.paddingRight  = "40px";
+        nav.style.paddingTop     = nav.style.paddingBottom = "14px";
+        nav.style.maxWidth       = "2400px";
+        nav.style.borderRadius   = "0px";
+
+        // Solid white bar → always the dark logo, whatever the hero is
+        if (logoWhiteRef.current) logoWhiteRef.current.style.opacity = "0";
+        if (logoDarkRef.current)  logoDarkRef.current.style.opacity  = "1";
+
+        linkRefs.current.forEach((el) => {
+          if (!el) return;
+          el.style.color        = "rgb(30,30,30)";
+          el.style.textShadow   = "none";
+          el.style.opacity      = "1";
+          el.style.maxWidth     = "none";
+          el.style.paddingLeft  = el.style.paddingRight = "9px";
+          el.style.pointerEvents = "auto";
+        });
+
+        if (ctaRef.current) {
+          const cta = ctaRef.current;
+          cta.style.background    = "rgba(255,109,0,0)";
+          cta.style.color         = "rgb(255,109,0)";
+          cta.style.borderColor   = "rgba(255,109,0,0.65)";
+          cta.style.paddingLeft   = cta.style.paddingRight  = "20px";
+          cta.style.paddingTop    = cta.style.paddingBottom = "9px";
+          cta.style.fontSize      = "15px";
+        }
+
         if (hamburgerStrokeRef.current) {
           hamburgerStrokeRef.current.setAttribute("stroke", "rgb(40,40,40)");
         }
+
+        // Force the desktop branch to re-apply from scratch on the way back up —
+        // otherwise rotating to landscape at an unchanged scrollY hits the
+        // `t === lastT` early-return below and the tablet styles stay stuck.
+        lastT = -1;
         raf = 0; return;
       }
 
@@ -204,10 +247,18 @@ export default function NavbarClient({
     };
 
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply); };
+    // Crossing the DESKTOP_MIN boundary (iPad rotation, desktop window resize) swaps
+    // which branch of apply() is correct, so width changes must re-run it too — scroll
+    // alone would leave the old branch's styles in place until the user happened to scroll.
+    const onResize = () => { lastT = -1; onScroll(); };
     apply();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps

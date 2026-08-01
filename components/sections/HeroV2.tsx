@@ -98,9 +98,14 @@ export default function HeroV2({
         }}
       />
 
-      {/* Bottom fade into next section */}
+      {/* Bottom fade into next section — md and up only.
+          This sits at z-30, above the dashboard card (z-20), and is a fixed 220px
+          tall at every width. Below md the card is h-[30rem] (394px rendered), so
+          the same 220px whited out ~54% of it — the bar chart and axis labels
+          disappeared. From md up the card is h-[40rem] (666px) and 220px covers
+          only ~12%, which reads as the intended soft rim, so it stays there. */}
       <div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none z-30"
+        className="hidden md:block absolute bottom-0 left-0 right-0 pointer-events-none z-30"
         style={{
           height: "220px",
           background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, #ffffff 100%)",
