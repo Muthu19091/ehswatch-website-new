@@ -123,7 +123,7 @@ interface Module {
 
 const INITIAL_ROWS = 2;
 const COLS = 3;
-const STEP = COLS;
+const STEP = COLS * 2; // reveal full rows on both 2-col (tablet) and 3-col (desktop) so no half-filled row appears mid-expansion
 
 // ── Module cell ────────────────────────────────────────────────────────────
 
