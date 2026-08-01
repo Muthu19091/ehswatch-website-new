@@ -23,7 +23,10 @@ const isArabic = () =>
 
 const SKIP_TAGS = new Set([
   "SCRIPT", "STYLE", "NOSCRIPT", "IFRAME", "SVG", "CANVAS",
-  "CODE", "PRE", "TEXTAREA", "INPUT", "SELECT", "OPTION",
+  "CODE", "PRE", "TEXTAREA", "INPUT",
+  // NOTE: SELECT/OPTION are intentionally NOT skipped — we translate an option's
+  // DISPLAY text only; its value attribute (what forms submit / filters compare)
+  // is left untouched, so form logic keeps working.
 ]);
 const KEEP = new Set(["IRIS", "EHSWatch", "EN", "AR"]);
 const hasLetters = (s: string) => /[A-Za-z]/.test(s);
@@ -59,6 +62,10 @@ export default function GoogleTranslate() {
     let cancelled = false;
     const dict = new Map<string, string>();        // trimmed EN -> AR
     const swapped = new Set<MTNode>();             // nodes we translated (for revert)
+    // Elements whose `placeholder` we translated. Attributes aren't text nodes,
+    // so the TreeWalker never sees them — handled separately here.
+    type PhEl = HTMLElement & { __enPh?: string; __mtPh?: string };
+    const swappedPh = new Set<PhEl>();
 
     const collect = (): MTNode[] => {
       const out: MTNode[] = [];
@@ -95,9 +102,41 @@ export default function GoogleTranslate() {
       }
     };
 
-    const run = async (nodes: MTNode[]) => {
+    // Collect / swap translatable `placeholder` attributes (search inputs etc.).
+    const collectPh = (): PhEl[] => {
+      const out: PhEl[] = [];
+      document.querySelectorAll<HTMLElement>("[placeholder]").forEach((el) => {
+        const e = el as PhEl;
+        const ph = el.getAttribute("placeholder") || "";
+        const t = ph.trim();
+        if (!t || !hasLetters(t) || KEEP.has(t)) return;
+        if (e.__mtPh && ph === e.__mtPh) return; // already ours
+        if (el.closest('[translate="no"], .notranslate')) return;
+        out.push(e);
+      });
+      return out;
+    };
+
+    const swapPh = (els: PhEl[]) => {
+      for (const el of els) {
+        const ph = el.getAttribute("placeholder") || "";
+        const ar = dict.get(ph.trim());
+        if (!ar || ar === ph.trim()) continue;
+        if (el.__enPh === undefined) el.__enPh = ph; // remember English
+        el.setAttribute("placeholder", ar);
+        el.__mtPh = ar;
+        swappedPh.add(el);
+      }
+    };
+
+    const run = async (nodes: MTNode[], phEls: PhEl[] = []) => {
       const need = [
-        ...new Set(nodes.map((n) => (n.nodeValue || "").trim()).filter((t) => t && !dict.has(t))),
+        ...new Set(
+          [
+            ...nodes.map((n) => (n.nodeValue || "").trim()),
+            ...phEls.map((el) => (el.getAttribute("placeholder") || "").trim()),
+          ].filter((t) => t && !dict.has(t)),
+        ),
       ];
       if (need.length) {
         try {
@@ -113,19 +152,22 @@ export default function GoogleTranslate() {
           need.forEach((t) => dict.set(t, t));
         }
       }
-      if (!cancelled) swap(nodes);
+      if (!cancelled) { swap(nodes); swapPh(phEls); }
     };
 
     // useCloak: true only for the first paint, so the initial view never shows
     // the English→Arabic reflow. A manual toggle swaps live (no cloak/blank).
     const applyAr = async (useCloak: boolean) => {
       if (useCloak) cloak();
-      try { await run(collect()); } finally { if (useCloak) reveal(); }
+      try { await run(collect(), collectPh()); } finally { if (useCloak) reveal(); }
     };
 
     const revertEn = () => {
       swapped.forEach((n) => {
         if (n.__en !== undefined) { n.nodeValue = n.__en; n.__mt = undefined; }
+      });
+      swappedPh.forEach((el) => {
+        if (el.__enPh !== undefined) { el.setAttribute("placeholder", el.__enPh); el.__mtPh = undefined; }
       });
       reveal();
     };
@@ -146,7 +188,7 @@ export default function GoogleTranslate() {
     let raf = 0;
     const schedule = () => {
       if (raf || !isArabic()) return;
-      raf = window.requestAnimationFrame(() => { raf = 0; if (isArabic()) run(collect()); });
+      raf = window.requestAnimationFrame(() => { raf = 0; if (isArabic()) run(collect(), collectPh()); });
     };
     const mo = new MutationObserver(schedule);
     mo.observe(document.body, { childList: true, subtree: true, characterData: true });
