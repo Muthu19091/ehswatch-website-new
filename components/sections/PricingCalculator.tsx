@@ -298,7 +298,7 @@ export default function PricingCalculator({
         {field.help_text && (
           <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af] mb-4">{field.help_text}</p>
         )}
-        <div className={`grid grid-cols-2 md:grid-cols-3 ${isAddon ? "gap-3 sm:gap-4" : "gap-2.5 sm:gap-3"}`}>
+        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ${isAddon ? "gap-3 sm:gap-4" : "gap-2.5 sm:gap-3"}`}>
           {items.map((item) => {
             const sel = selected.has(item.id);
             return (

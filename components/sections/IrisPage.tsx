@@ -1794,14 +1794,14 @@ export default function IrisPage({
 
           {/* Mobile / tablet (<lg): orb on top, then all six cards in a flat grid
               — 2 columns on phones, 3 columns on iPad. */}
-          <div className="lg:hidden flex flex-col items-center gap-6">
-            <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
+          <div className="lg:hidden flex flex-col items-center gap-4">
+            <div className="relative shrink-0" style={{ width: 280, height: 280 }}>
               <Orb hue={30} hoverIntensity={0.5} rotateOnHover={false} forceHoverState={false} backgroundColor="#ffffff" />
               <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}>
-                <Image src={`${basePath}/images/iris-logo.png`} alt="IRIS" width={78} height={78} style={{ objectFit:"contain" }} />
+                <Image src={`${basePath}/images/iris-logo.png`} alt="IRIS" width={90} height={90} style={{ objectFit:"contain" }} />
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
               {/* Hazard Intelligence */}
               <div className="iris-hero-card iris-card-bottom w-full" style={{ background:"white", border:"1px solid #e8edf5", borderRadius:14, padding:"14px 16px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", animationDelay:"350ms" }}>
                 <p style={{ fontSize:10, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:"0.14em", marginBottom:10, fontFamily:"var(--font-dm-sans,sans-serif)" }}>Hazard Intelligence</p>
