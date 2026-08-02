@@ -151,7 +151,7 @@ function ComplianceMockup() {
 
               {/* name + sub */}
               <div className="min-w-0 flex-[0_0_88px] sm:flex-[0_0_clamp(110px,13vw,165px)]">
-                <p className="font-semibold text-[#141f38] text-[13px] leading-tight truncate">{row.name}</p>
+                <p className="font-semibold text-[#141f38] text-[13px] leading-tight truncate notranslate" translate="no">{row.name}</p>
                 <p className="text-[#808ca6] text-[10px] leading-tight mt-0.5 truncate">{row.sub}</p>
               </div>
 
@@ -279,10 +279,10 @@ function UsersMockup() {
         <div className="mx-4 bg-white rounded-xl overflow-hidden mb-3 divide-y divide-[#eef1f6]">
           {USERS.map((u, i) => (
             <div key={u.name} className="flex items-center gap-3 px-4 py-2.5" style={{ opacity: 0, animation: `op-fade-up 0.4s ease-out ${0.2 + i * 0.1}s forwards` }}>
-              <div className="shrink-0 rounded-full flex items-center justify-center font-bold text-white text-[10px]" style={{ width: 32, height: 32, background: u.bg }}>{u.initials}</div>
+              <div className="shrink-0 rounded-full flex items-center justify-center font-bold text-white text-[10px] notranslate" translate="no" style={{ width: 32, height: 32, background: u.bg }}>{u.initials}</div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[#1a2440] text-[11px] truncate">{u.name}</p>
-                <p className="text-[#808ca6] text-[9px] truncate">{u.email}</p>
+                <p className="font-semibold text-[#1a2440] text-[11px] truncate notranslate" translate="no">{u.name}</p>
+                <p className="text-[#808ca6] text-[9px] truncate notranslate" translate="no">{u.email}</p>
               </div>
               <span className="shrink-0 font-bold rounded text-[8px]" style={{ background: u.roleBg, color: u.roleColor, padding: "3px 7px" }}>{u.role}</span>
             </div>
@@ -649,7 +649,7 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
               )}
             </div>
             {/* right — mockup, fills remaining space */}
-            <div className="flex-1 overflow-hidden" translate="no">
+            <div className="flex-1 overflow-hidden">
               {tabs[active].cmsImage ? (
                 <div className="flex items-center justify-center h-full p-6">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
