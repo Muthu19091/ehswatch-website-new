@@ -557,11 +557,11 @@ function Visual5({
             </div>
 
             {i < insightSteps.length - 1 && (
-              <div style={{ paddingLeft: 44, height: 20, display: "flex", alignItems: "center" }}>
+              <div style={{ paddingLeft: 44, height: 12, display: "flex", alignItems: "center" }}>
                 <div
                   style={{
                     width: 2, borderRadius: 2,
-                    height: active ? 20 : 0,
+                    height: active ? 12 : 0,
                     background: "repeating-linear-gradient(to bottom, #93c5fd 0, #93c5fd 4px, transparent 4px, transparent 9px)",
                     backgroundSize: "2px 18px",
                     opacity: active ? 0.8 : 0,
