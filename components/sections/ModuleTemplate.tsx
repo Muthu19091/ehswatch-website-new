@@ -1,6 +1,6 @@
 "use client";
 
-import { unescapeTypedTags } from "@/lib/text";
+import { unescapeTypedTags, keepBrandsEnglish, escapeHtmlText } from "@/lib/text";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
@@ -212,9 +212,10 @@ function FAQAccordion({ heading, items }: { heading: string; items: Array<{ ques
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
                 className="w-full flex items-center justify-between gap-4 text-left"
               >
-                <span className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] sm:text-[16px] text-[#0a0f1e]">
-                  {faq.question}
-                </span>
+                <span
+                  className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] sm:text-[16px] text-[#0a0f1e]"
+                  dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(escapeHtmlText(faq.question)) }}
+                />
                 <div
                   className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center transition-colors duration-200"
                   style={{ background: openIdx === i ? "#1d4ed8" : "#e5eaf2" }}
@@ -231,7 +232,7 @@ function FAQAccordion({ heading, items }: { heading: string; items: Array<{ ques
                 /* CMS answers may contain HTML (paragraphs, lists, links) */
                 <div
                   className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.8] text-[#6b7280] mt-3 text-pretty [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-[#FF6D00] [&_a]:underline"
-                  dangerouslySetInnerHTML={{ __html: unescapeTypedTags(faq.answer) }}
+                  dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(unescapeTypedTags(faq.answer)) }}
                 />
               )}
             </div>
