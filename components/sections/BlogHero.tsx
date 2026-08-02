@@ -22,7 +22,7 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
 
   return (
     <section
-      className="relative overflow-hidden flex items-center justify-center px-6 pt-[148px] pb-[72px]"
+      className="relative overflow-hidden flex items-center justify-center px-6 pt-[112px] pb-[24px] md:pt-[148px] md:pb-[72px]"
       style={{
         background: "linear-gradient(to bottom, white 0%, white 70%, #FFFFFF 100%)",
       }}

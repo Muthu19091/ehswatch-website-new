@@ -279,7 +279,7 @@ export default function ContactPage({
             {formAttrs && (
               /* mt-14 gives space between the offices block and the form when they
                  stack (below lg); on lg they sit side-by-side so no top margin. */
-              <div className="ct-form-col mt-14 lg:mt-0">
+              <div className="ct-form-col mt-20 lg:mt-0">
                 <DynamicCmsForm formAttrs={formAttrs} slug={formSlug} variant="contact" />
               </div>
             )}
