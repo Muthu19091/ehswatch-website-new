@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { ReactElement } from "react";
 import Link from "next/link";
 import CmsIcon from "@/components/ui/CmsIcon";
@@ -197,6 +197,9 @@ export default function ProductModules({
 }: ProductModulesProps = {}) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_ROWS * COLS);
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
+  // Set by a "View less" tap, consumed by the scroll effect once the grid has
+  // collapsed and re-rendered.
+  const pendingScroll = useRef(false);
 
   // CMS-only: modules come solely from the CMS product-modules collection.
   const modules: Module[] =
@@ -229,11 +232,22 @@ export default function ProductModules({
   };
 
   const handleViewLess = () => {
+    pendingScroll.current = true;
     setVisibleCount(INITIAL_ROWS * COLS);
-    if (sectionEl) {
-      sectionEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
   };
+
+  // Scroll back to the top of the section after "View less" — but only once the
+  // grid has actually collapsed and re-rendered. Scrolling in the same tick as
+  // setVisibleCount leaves a smooth-scroll animation in flight while the grid
+  // shrinks, so the reader is stranded in the next section (WebKit especially).
+  // Offset by the fixed navbar so the heading isn't hidden behind it.
+  useEffect(() => {
+    if (!pendingScroll.current) return;
+    pendingScroll.current = false;
+    if (!sectionEl) return;
+    const y = sectionEl.getBoundingClientRect().top + window.scrollY - 96;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  }, [visibleCount, sectionEl]);
 
   // Resolve heading — CMS-only, strip HTML tags and split on <span> for styled portion
   const rawHeading = cmsHeading?.trim() || "";
