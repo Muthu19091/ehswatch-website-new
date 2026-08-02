@@ -292,3 +292,19 @@ html.gt-cloak body { visibility: hidden !important; }
 .blog-body table td p,
 .blog-body table td span,
 .blog-body table th p { margin: 0 !important; }
+
+/* ── RTL blog fixes ──────────────────────────────────────────────────────── */
+/* BUG-034: blog article lists use physical padding-left for the bullet gutter,
+   so under RTL the markers sit on the right with no buffer and touch the edge.
+   Move the gutter to the start side (right) in Arabic. */
+html[dir="rtl"] .blog-body ul,
+html[dir="rtl"] .blog-body ol {
+  padding-left: 0;
+  padding-right: 1.4rem;
+}
+/* BUG-035: the numbered pager keeps its chevron SVGs pointing the LTR way, so in
+   Arabic the prev/next arrows point backwards. Mirror them under RTL so "next"
+   points toward the next page (left) and "prev" toward the previous (right). */
+html[dir="rtl"] nav[aria-label="Blog pagination"] button svg {
+  transform: scaleX(-1);
+}

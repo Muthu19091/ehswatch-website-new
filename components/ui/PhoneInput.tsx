@@ -125,6 +125,11 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
            dial-code sit on the RIGHT of the field (matching the other RTL form
            fields) instead of always on the left. */
         .iti-wrap .iti { direction: inherit; }
+        /* Keep the flag + chevron + dial-code cluster in its natural LTR order so
+           the gaps between them are correct even in Arabic (otherwise RTL leaves
+           an uneven gap between the chevron and the flag). The cluster is still
+           positioned on the RIGHT of the field in RTL by rtlFix() above. */
+        .iti-wrap .iti__country-container { direction: ltr; }
         .iti-wrap input[type="tel"] { direction: ltr; }
         .iti-wrap .iti__country-list,
         .iti-wrap .iti__dropdown-content { direction: ltr; text-align: left; }
