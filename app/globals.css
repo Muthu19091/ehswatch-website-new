@@ -21,6 +21,21 @@ button:disabled,
   height: 100%;
 }
 
+/* Fallback orb shown when WebGL is unavailable (GPU disabled, VM / remote
+   session, driver issue). Orb.tsx adds .orb-fallback instead of mounting the
+   WebGL canvas, so a soft gradient blob renders in place of the shader — and,
+   crucially, the page no longer crashes. */
+.orb-fallback {
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(139, 92, 246, 0.55) 0%,
+    rgba(99, 102, 241, 0.45) 34%,
+    rgba(34, 211, 238, 0.35) 60%,
+    rgba(34, 211, 238, 0) 74%
+  );
+}
+
 /* Prevent overscroll flash — keep html bg white so pull-down reveals white */
 /* overflow-x:clip used instead of hidden — clip does not create a scroll container */
 html {

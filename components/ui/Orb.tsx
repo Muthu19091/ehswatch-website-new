@@ -195,7 +195,29 @@ export default function Orb({
     const container = ctnDom.current;
     if (!container) return;
 
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+    // WebGL may be unavailable (GPU disabled, VM / remote-desktop session,
+    // driver issue, some privacy settings). OGL's Renderer does `gl.renderer = this`
+    // in its constructor, so when getContext returns null it throws
+    // "Cannot set properties of null (setting 'renderer')" — an uncaught error that
+    // crashes the whole page ("This page couldn't load"). Detect support first and,
+    // if it's missing, fall back to a CSS gradient orb instead of the WebGL canvas.
+    const probe = document.createElement("canvas");
+    const webglOk = !!(
+      window.WebGLRenderingContext &&
+      (probe.getContext("webgl") || probe.getContext("experimental-webgl"))
+    );
+    if (!webglOk) {
+      container.classList.add("orb-fallback");
+      return;
+    }
+
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+    } catch {
+      container.classList.add("orb-fallback");
+      return;
+    }
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     container.appendChild(gl.canvas);
