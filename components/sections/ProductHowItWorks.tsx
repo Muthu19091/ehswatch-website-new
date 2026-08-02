@@ -601,6 +601,8 @@ function MobileStep({
 }) {
   const [active, setActive] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const el = ref.current;
@@ -617,9 +619,22 @@ function MobileStep({
     return () => io.disconnect();
   }, []);
 
-  // Per-visual heights tuned so each mock fits without clipping or a tall empty
-  // gap. The last step always uses Visual5 (mirrors the desktop registry logic).
-  const visualH = isLast ? 440 : ([380, 470, 400, 370][index] ?? 400);
+  // Each mock is built at a fixed "design" width for the desktop panel; on the
+  // narrow mobile column that width overflows and the right edge gets clipped
+  // (BUG-026/033). Render each visual at its design width and scale it down to
+  // fit the column so nothing is cut. Heights are the rendered (post-scale) box.
+  const DESIGN_W = isLast ? 440 : ([520, 242, 450, 530][index] ?? 450);
+  const visualH  = isLast ? 370 : ([300, 410, 330, 275][index] ?? 330);
+
+  useEffect(() => {
+    const measure = () => {
+      const w = wrapRef.current?.clientWidth ?? DESIGN_W;
+      setScale(Math.min(1, w / DESIGN_W));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [DESIGN_W]);
 
   return (
     <div ref={ref} className="relative pl-11 sm:pl-12 pb-12 last:pb-0">
@@ -640,19 +655,31 @@ function MobileStep({
         {step.body}
       </p>
 
-      {/* Animated visual — same components as desktop, `active` toggled on view */}
+      {/* Animated visual — rendered at its design width and scaled to fit the
+          narrow mobile column so nothing is clipped on the right. */}
       <div
+        ref={wrapRef}
         className="mt-6 w-full flex items-center justify-center overflow-hidden"
         style={{ height: visualH }}
       >
-        {isLast ? (
-          <Visual5 active={active} subItems={step.sub_items} />
-        ) : (
-          (() => {
-            const V = STATIC_VISUALS[index] || STATIC_VISUALS[STATIC_VISUALS.length - 1];
-            return <V active={active} />;
-          })()
-        )}
+        <div
+          style={{
+            width: DESIGN_W,
+            height: scale < 1 ? visualH / scale : visualH,
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+            flexShrink: 0,
+          }}
+        >
+          {isLast ? (
+            <Visual5 active={active} subItems={step.sub_items} />
+          ) : (
+            (() => {
+              const V = STATIC_VISUALS[index] || STATIC_VISUALS[STATIC_VISUALS.length - 1];
+              return <V active={active} />;
+            })()
+          )}
+        </div>
       </div>
     </div>
   );
