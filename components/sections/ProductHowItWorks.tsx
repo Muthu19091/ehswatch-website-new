@@ -155,7 +155,10 @@ function Visual2({ active }: { active: boolean }) {
           src={`${S2}/Mobile%20App.svg`}
           alt="EHSWatch field capture"
           style={{
-            height: "clamp(330px, 55vw, 473px)",
+            // Cap by viewport height (min(..., 56vh)) so the phone fits inside the
+            // 62vh visual panel on short screens (< ~700px tall) instead of being
+            // clipped at the bottom by the panel's overflow:hidden.
+            height: "min(clamp(330px, 55vw, 473px), 56vh)",
             width: "auto",
             maxWidth: 242,
             display: "block",
