@@ -122,11 +122,11 @@ function FieldWidget({
     return (
       <div>
         {label}
-        <div className={wrapClass}>
+        <div className={`relative ${wrapClass}`}>
           <select
             name={field.key}
             defaultValue=""
-            className={inputBase + " cursor-pointer appearance-none"}
+            className={inputBase + " cursor-pointer appearance-none pr-10"}
           >
             <option value="" disabled>
               {field.placeholder ?? `Select ${field.label}`}
@@ -136,6 +136,10 @@ function FieldWidget({
               <option key={opt} value={opt}>{opt}</option>
             ))}
           </select>
+          {/* Custom chevron — appearance-none hides the native one. */}
+          <svg className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 4.5L6 8l3.5-3.5" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
         {helpText}
         <FieldError message={error} />

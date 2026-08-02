@@ -385,17 +385,23 @@ export default function PricingCalculator({
       return (
         <div key={field.key} className="flex flex-col gap-2">
           {label}
-          <select
-            className={inputClass + " appearance-none bg-white"}
-            style={{ borderColor }}
-            value={values[field.key] ?? ""}
-            onChange={(e) => setValue(field.key, e.target.value)}
-          >
-            <option value="">{field.placeholder || `Select ${field.label}`}</option>
-            {sortOptions(fieldOptions(field)).map((o) => (
-              <option key={o} value={o}>{o}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              className={inputClass + " appearance-none bg-white pr-10"}
+              style={{ borderColor }}
+              value={values[field.key] ?? ""}
+              onChange={(e) => setValue(field.key, e.target.value)}
+            >
+              <option value="">{field.placeholder || `Select ${field.label}`}</option>
+              {sortOptions(fieldOptions(field)).map((o) => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
+            {/* Custom chevron — appearance-none hides the native one. */}
+            <svg className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 4.5L6 8l3.5-3.5" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
           {help}
           <FieldError msg={err} />
         </div>
