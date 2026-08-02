@@ -38,9 +38,14 @@ export const metadata: Metadata = {
   title: "EHSWatch — From Manual Chaos to Smart Safety",
   description: "AI-powered EHS platform to streamline reporting everywhere.",
   icons: {
-    icon:     BASE + "/images/EHS%20fav%20icon.svg",
-    shortcut: BASE + "/images/EHS%20fav%20icon.svg",
-    apple:    BASE + "/images/EHS%20fav%20icon.svg",
+    // SVG for modern browsers, PNG fallback for iOS/iPad Safari (which doesn't
+    // render SVG tab favicons and requires a PNG apple-touch-icon).
+    icon: [
+      { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
+      { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
+    ],
+    shortcut: BASE + "/images/favicon-96.png",
+    apple:    BASE + "/images/apple-touch-icon.png",
   },
 };
 
