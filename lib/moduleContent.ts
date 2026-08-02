@@ -107,15 +107,15 @@ export function buildModuleTemplateProps(
     cta?: CtaShape;
   }>(blocks, "image_text");
 
-  // "See … in Action" CTA. Only render it when the CMS supplies a label; a
-  // label with no configured link falls back to the contact page (BUG-028) so
-  // it never renders as a dead link, and a CTA with no label renders nothing
-  // (BUG-029) instead of an empty/invisible link.
+  // "See … in Action" CTA. Always shown on the Why section: the label defaults
+  // to "See {module} in Action" when the CMS has none (BUG-029), and the link
+  // defaults to the contact page when the CMS has none or "#" (BUG-028) — so it
+  // never renders as a dead link and every module's Why section gets a CTA.
   const whyCta = (() => {
     const c = resolveCta(imageTextBlock?.cta, pageMap);
-    if (!c || !c.label) return undefined;
-    const href = c.href && c.href !== "#" ? c.href : "/contact-us";
-    return { label: c.label, href };
+    const label = (c?.label || "").trim() || `See ${name} in Action`;
+    const href = c?.href && c.href !== "#" ? c.href : "/contact-us";
+    return { label, href };
   })();
 
   const why: ModuleTemplateProps["why"] | undefined =
