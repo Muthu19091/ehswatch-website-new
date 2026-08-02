@@ -107,13 +107,24 @@ export function buildModuleTemplateProps(
     cta?: CtaShape;
   }>(blocks, "image_text");
 
+  // "See … in Action" CTA. Only render it when the CMS supplies a label; a
+  // label with no configured link falls back to the contact page (BUG-028) so
+  // it never renders as a dead link, and a CTA with no label renders nothing
+  // (BUG-029) instead of an empty/invisible link.
+  const whyCta = (() => {
+    const c = resolveCta(imageTextBlock?.cta, pageMap);
+    if (!c || !c.label) return undefined;
+    const href = c.href && c.href !== "#" ? c.href : "/contact-us";
+    return { label: c.label, href };
+  })();
+
   const why: ModuleTemplateProps["why"] | undefined =
     imageTextBlock?.heading && imageTextBlock?.body
       ? {
           heading: stripHtml(imageTextBlock.heading),
           bodyHtml: imageTextBlock.body,
           imageUrl: imageTextBlock.image?.url || undefined,
-          cta: resolveCta(imageTextBlock.cta, pageMap),
+          cta: whyCta,
         }
       : undefined;
 

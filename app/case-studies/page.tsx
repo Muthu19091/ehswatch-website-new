@@ -64,7 +64,7 @@ export default async function CaseStudiesPage() {
       <main>
         <CaseStudiesHero
           cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
-          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(heroBlock?.headline)}
           cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
