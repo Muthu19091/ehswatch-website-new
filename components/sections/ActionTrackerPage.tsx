@@ -25,7 +25,7 @@ function ActionTrackerDiagram() {
   }, []);
 
   const v = vis;
-  const A = `${basePath}/images/Action%20tracker%20/Assest`;
+  const A = `${basePath}/images/Action%20tracker/Assest`;
 
   return (
     <div ref={ref} className="w-full select-none">
@@ -610,7 +610,7 @@ export default function ActionTrackerPage() {
           <div className="w-full lg:w-[60%] rounded-2xl overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`${basePath}/images/Action%20tracker%20/Action.png`}
+              src={`${basePath}/images/Action%20tracker/Action.png`}
               alt="Action Tracker dashboard"
               className="w-full h-auto"
             />

@@ -743,7 +743,10 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
                   </div>
                 ) : null
               )}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-2.5">
+              {/* Progress dots — nudged into the grid's px-8 gutter. At right-0 they
+                  sat on the callout's right edge (both at the column edge), which
+                  the LTR text cleared but the right-aligned Arabic text ran into. */}
+              <div className="absolute -right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2.5">
                 {features.map((_, i) => (
                   <div key={i} className="rounded-full transition-all duration-500"
                     style={{ width:6, height:step===i?24:6,
