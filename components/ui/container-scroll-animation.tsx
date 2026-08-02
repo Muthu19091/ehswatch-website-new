@@ -44,7 +44,7 @@ export const ContainerScroll = ({
   return (
     <div
       ref={containerRef}
-      className="h-[60rem] md:h-[80rem] flex items-start justify-center relative px-2 md:px-20 pt-[77px] md:pt-[98px]"
+      className="h-[80rem] md:h-[80rem] flex items-start justify-center relative px-2 md:px-20 pt-[77px] md:pt-[98px]"
     >
       <div className="w-full relative" style={{ perspective: "1200px" }}>
         <Header translate={translate} titleComponent={titleComponent} />
