@@ -638,13 +638,15 @@ export default function PricingCalculator({
           </p>
         </div>
 
-        {/* Main layout: content + sidebar */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Main layout: content + sidebar. items-start only from lg (top-align the
+            two columns); below lg the content must stretch full-width so the form
+            can centre within it instead of hugging the left. */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
 
           {/* ── Content area ── */}
           <div className="flex-1 min-w-0">
             {!submitted ? (
-              <div className={stepHasPicker ? "" : "max-w-[560px]"}>
+              <div className={stepHasPicker ? "" : "max-w-[560px] mx-auto lg:mx-0"}>
                 <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] text-[#0a0f1e] mb-2">
                   {current.title}
                 </h3>
@@ -688,8 +690,8 @@ export default function PricingCalculator({
                 )}
               </div>
             ) : (
-              /* Success state */
-              <div className="max-w-[560px] text-center py-12 flex flex-col items-center gap-5">
+              /* Success state — sidebar is hidden here, so centre the panel */
+              <div className="max-w-[560px] mx-auto text-center py-12 flex flex-col items-center gap-5">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "#ecfdf5" }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <path d="M5 14l6 6 12-12" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
