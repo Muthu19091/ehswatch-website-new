@@ -36,15 +36,17 @@ export const ContainerScroll = ({
     setIsFlat(v > 0.85);
   });
 
-  // Tilt flattens over first 75% of scroll
-  const rotate    = useTransform(scrollYProgress, [0, 0.75], isMobile ? [10, 0] : [14, 0]);
-  const scale     = useTransform(scrollYProgress, [0, 0.75], isMobile ? [0.8, 0.95] : [1.03, 1]);
+  // Tilt flattens over first 75% of scroll. On mobile the card is static (no
+  // tilt/scale) so the section doesn't need the tall scroll runway that left a
+  // large empty gap below the dashboard (BUG-032); desktop keeps the animation.
+  const rotate    = useTransform(scrollYProgress, [0, 0.75], isMobile ? [0, 0] : [14, 0]);
+  const scale     = useTransform(scrollYProgress, [0, 0.75], isMobile ? [1, 1] : [1.03, 1]);
   const translate = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   return (
     <div
       ref={containerRef}
-      className="h-[80rem] md:h-[80rem] flex items-start justify-center relative px-2 md:px-20 pt-[77px] md:pt-[98px]"
+      className="h-auto md:h-[80rem] flex items-start justify-center relative px-2 md:px-20 pt-[77px] md:pt-[98px] pb-12 md:pb-0"
     >
       <div className="w-full relative" style={{ perspective: "1200px" }}>
         <Header translate={translate} titleComponent={titleComponent} />
