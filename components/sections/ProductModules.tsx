@@ -202,16 +202,20 @@ export default function ProductModules({
   const pendingScroll = useRef(false);
 
   // CMS-only: modules come solely from the CMS product-modules collection.
+  // Drop empties (no name) so a blank/placeholder record doesn't render as an
+  // empty bordered card.
   const modules: Module[] =
     cmsModules && cmsModules.length > 0
-      ? cmsModules.map((m, i) => ({
-          name: m.name,
-          href: `/modules/${m.slug}`,
-          desc: m.desc,
-          color: MODULE_COLORS[i % MODULE_COLORS.length],
-          icon: "check-circle",
-          cmsIcon: m.icon ?? null,
-        }))
+      ? cmsModules
+          .filter((m) => (m.name ?? "").trim())
+          .map((m, i) => ({
+            name: m.name,
+            href: `/modules/${m.slug}`,
+            desc: m.desc,
+            color: MODULE_COLORS[i % MODULE_COLORS.length],
+            icon: "check-circle",
+            cmsIcon: m.icon ?? null,
+          }))
       : [];
 
   // Nothing configured → hide the whole section.
