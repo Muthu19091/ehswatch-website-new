@@ -96,6 +96,9 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
            the widget and its country list render correctly in Arabic/RTL (FE QA #16). */
         .iti-wrap, .iti-wrap * { direction: ltr; }
         .iti-wrap .iti__country-list, .iti-wrap .iti__dropdown-content { text-align: left; }
+        /* intl-tel-input renders the "+91" dial-code prefix at 16px, larger than
+           the 14px input/placeholder — match it so it isn't oversized. */
+        .iti-wrap .iti__selected-dial-code { font-size: 14px; }
         .iti-support { display: block; width: 100%; }
         .iti-support .iti { width: 100%; }
         .iti-support input[type="tel"] {
