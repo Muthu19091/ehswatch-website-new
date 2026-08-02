@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 
@@ -154,6 +154,19 @@ function IndustryCard({ card }: { card: Card }) {
 export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow, cmsCards, cmsCta }: WorkEnvironmentsProps) {
   const cards = buildCards(cmsCards);
   const [expanded, setExpanded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Set when "View less" collapses the list, consumed by the scroll effect once
+  // the grid has re-rendered (scrolling in the same tick strands the reader below).
+  const pendingScroll = useRef(false);
+
+  useEffect(() => {
+    if (!pendingScroll.current) return;
+    pendingScroll.current = false;
+    const el = sectionRef.current;
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - 96; // offset the fixed navbar
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  }, [expanded]);
 
   // CMS-only: hide the whole section when there are no cards.
   if (cards.length === 0) return null;
@@ -179,7 +192,7 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
   const headingBlue  = headingWords.slice(-highlightCount).join(" ");
 
   return (
-    <section className="bg-[#f8fbff] pt-[60px] md:pt-[80px] lg:pt-[106px] pb-[60px] md:pb-[80px]">
+    <section ref={sectionRef} className="bg-[#f8fbff] pt-[60px] md:pt-[80px] lg:pt-[106px] pb-[60px] md:pb-[80px]">
       <div className="max-w-[1180px] mx-auto px-4 md:px-6">
 
         <div className="text-center max-w-[820px] mx-auto">
@@ -242,7 +255,7 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
         {hasMore && (
           <div className="flex justify-center mt-8">
             <button
-              onClick={() => setExpanded((e) => !e)}
+              onClick={() => { if (expanded) pendingScroll.current = true; setExpanded((e) => !e); }}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#d3ddeb] bg-white font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200 cursor-pointer"
             >
               {expanded ? "View less" : "View more"}
