@@ -158,13 +158,6 @@ html[dir="rtl"] .wenv-hl {
   margin-inline: 0.28em;
 }
 
-/* Blog Previous/Next arrows. dir=rtl mirrors the layout (Prev moves to the right,
-   Next to the left) but SVG icon geometry doesn't flip, so the arrows end up
-   pointing the wrong way in Arabic. Mirror them horizontally in RTL. */
-html[dir="rtl"] .blog-nav-arrow {
-  transform: scaleX(-1);
-}
-
 /* Contact section (offices | form). In Arabic the whole 2-column grid mirrors,
    sending the office-address column from the left to the right. Keep it in place:
    lock the grid's column order to LTR so offices stay left / form stays right,

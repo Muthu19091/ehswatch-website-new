@@ -239,13 +239,16 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
         <div className="px-4 sm:px-6 pb-20">
           <div className="max-w-[720px] mx-auto">
 
-            <div className={`grid py-8 ${prev && next ? "grid-cols-2 divide-x divide-[#e5e7eb]" : "grid-cols-1"}`}>
+            {/* dir=ltr keeps Previous on the left / Next on the right in Arabic too,
+                matching English (the grid + logical padding/text-end otherwise
+                mirror). Arrows stay as authored — no RTL flip needed. */}
+            <div dir="ltr" className={`grid py-8 ${prev && next ? "grid-cols-2 divide-x divide-[#e5e7eb]" : "grid-cols-1"}`}>
               {/* Prev */}
               {prev && (
                 <div className={next ? "pe-8" : ""}>
                   <Link href={`/blog/${prev.slug}`} className="flex flex-col gap-2 group no-underline">
                     <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
-                      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="blog-nav-arrow">
+                      <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                         <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       Previous Article
@@ -260,7 +263,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                   <Link href={`/blog/${next.slug}`} className="flex flex-col gap-2 items-end group no-underline">
                     <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
                       Next Article
-                      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="blog-nav-arrow">
+                      <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                         <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </span>
