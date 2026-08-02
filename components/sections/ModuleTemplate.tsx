@@ -207,10 +207,10 @@ function FAQAccordion({ heading, items }: { heading: string; items: Array<{ ques
         )}
         <div className="flex flex-col divide-y divide-[#e5eaf2]">
           {items.map((faq, i) => (
-            <div key={i} className="py-5">
+            <div key={i} dir="auto" className="py-5">
               <button
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 text-left"
+                className="w-full flex items-center justify-between gap-4 text-start"
               >
                 <span
                   className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] sm:text-[16px] text-[#0a0f1e]"
