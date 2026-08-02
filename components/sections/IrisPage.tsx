@@ -1618,7 +1618,9 @@ export default function IrisPage({
           )}
           {heroHeadline && (
             <h1
-              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.06] tracking-[-0.03em] text-[#0a0f1e]"
+              /* max-w + text-balance make the long headline wrap onto two
+                 balanced lines on desktop instead of one full-width line. */
+              className="font-[family-name:var(--font-gothic-a1)] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.06] tracking-[-0.03em] text-[#0a0f1e] md:max-w-[880px] md:mx-auto text-balance"
               dangerouslySetInnerHTML={{ __html: heroHeadline }}
             />
           )}
