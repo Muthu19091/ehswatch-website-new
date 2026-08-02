@@ -266,3 +266,29 @@ html.gt-cloak body { visibility: hidden !important; }
   opacity: 0;
   animation-fill-mode: both;
 }
+
+/* Blog body tables — visual styling only. The scroll wrapper (.blog-table-wrap,
+   overflow-x:auto), the table width/min-width and the surrounding spacing are all
+   handled in BlogPost.tsx. Here we just replace the CMS-pasted inline styling
+   (black borders, no header emphasis) with clean borders + a header row. The
+   CMS table uses <td> for the header row (no <th>), hence tr:first-child.
+   !important beats the per-cell inline styles from the word-processor paste. */
+.blog-body table { border-collapse: collapse !important; font-size: 0.95rem; line-height: 1.55; }
+.blog-body table td,
+.blog-body table th {
+  border: 1px solid #e5e7eb !important;
+  padding: 0.7rem 1rem !important;
+  text-align: left;
+  vertical-align: top;
+  white-space: normal !important;
+  color: #374151;
+}
+.blog-body table tr:first-child td,
+.blog-body table th {
+  background: #f8fafc !important;
+  font-weight: 700;
+  color: #0a0f1e;
+}
+.blog-body table td p,
+.blog-body table td span,
+.blog-body table th p { margin: 0 !important; }
