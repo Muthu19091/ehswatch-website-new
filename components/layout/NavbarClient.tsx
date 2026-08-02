@@ -270,7 +270,6 @@ export default function NavbarClient({
   return (
     <header
       ref={headerRef}
-      dir="ltr"
       className="fixed top-0 left-0 right-0 z-50 flex justify-center"
       style={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
     >

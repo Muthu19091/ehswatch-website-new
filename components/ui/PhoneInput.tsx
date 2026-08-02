@@ -68,20 +68,46 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
       if (defaultValue) {
         try { iti.setNumber(defaultValue); } catch { /* ignore */ }
       }
+      requestAnimationFrame(rtlFix);
     });
+
+    // intl-tel-input pins the flag/dial-code container to the LEFT
+    // (.iti__country-container { left: 0 }) and sets the input's padding-left
+    // inline to the container's width — so `direction: rtl` alone can't move it.
+    // Under RTL we want the country code on the RIGHT, matching the rest of the
+    // Arabic form, so after init (and whenever the country changes, which resizes
+    // the container) we flip the container to the right and move the reserved
+    // space over to padding-right. No-op in LTR / English.
+    const rtlFix = () => {
+      const itiEl = el.closest(".iti") as HTMLElement | null;
+      const container = itiEl?.querySelector(".iti__country-container") as HTMLElement | null;
+      if (!itiEl || !container) return;
+      if (getComputedStyle(itiEl).direction !== "rtl") return;
+      container.style.left = "auto";
+      container.style.right = "0";
+      const w = container.offsetWidth;
+      if (w > 0) {
+        el.style.paddingRight = `${w}px`;
+        el.style.paddingLeft = "16px";
+      }
+    };
 
     const sync = () => {
       const v = itiRef.current?.getNumber() ?? "";
       setFullNumber(v);
       onValueRef.current?.(v);
+      requestAnimationFrame(rtlFix);
     };
 
     el.addEventListener("input", sync);
     el.addEventListener("countrychange", sync);
+    // Catch the async country lookup + flag render settling after mount.
+    const rtlTimers = [200, 600, 1200].map((t) => window.setTimeout(rtlFix, t));
 
     return () => {
       el.removeEventListener("input", sync);
       el.removeEventListener("countrychange", sync);
+      rtlTimers.forEach(clearTimeout);
       itiRef.current?.destroy();
       itiRef.current = null;
     };
@@ -90,15 +116,23 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
   const isSupport = variant === "support";
 
   return (
-    <span dir="ltr" className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
+    <span className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
       <style>{`
-        /* Phone numbers + the country dropdown are inherently LTR — force it so
-           the widget and its country list render correctly in Arabic/RTL (FE QA #16). */
-        .iti-wrap, .iti-wrap * { direction: ltr; }
-        .iti-wrap .iti__country-list, .iti-wrap .iti__dropdown-content { text-align: left; }
+        /* The number entry, the "+NN" dial-code prefix, and the country dropdown
+           are inherently LTR — force those PARTS so digits, the prefix, and the
+           country list always read correctly even in Arabic/RTL (FE QA #16).
+           The WRAPPER itself follows the page direction, so under RTL the flag +
+           dial-code sit on the RIGHT of the field (matching the other RTL form
+           fields) instead of always on the left. */
+        .iti-wrap .iti { direction: inherit; }
+        .iti-wrap input[type="tel"] { direction: ltr; }
+        .iti-wrap .iti__country-list,
+        .iti-wrap .iti__dropdown-content { direction: ltr; text-align: left; }
+        .iti-wrap .iti__country { text-align: left; }
         /* intl-tel-input renders the "+91" dial-code prefix at 16px, larger than
-           the 14px input/placeholder — match it so it isn't oversized. */
-        .iti-wrap .iti__selected-dial-code { font-size: 14px; }
+           the 14px input/placeholder — match it (and keep it LTR) so it isn't
+           oversized or reversed. */
+        .iti-wrap .iti__selected-dial-code { direction: ltr; font-size: 14px; }
         .iti-support { display: block; width: 100%; }
         .iti-support .iti { width: 100%; }
         .iti-support input[type="tel"] {
