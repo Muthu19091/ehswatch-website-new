@@ -531,7 +531,7 @@ export default function NavbarClient({
               <button
                 type="button"
                 onClick={() => setResourcesOpen((o) => !o)}
-                className="w-full px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)] cursor-pointer flex items-center justify-between"
+                className="w-full px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)] cursor-pointer flex items-center gap-1.5"
               >
                 {link.label}
                 <svg
