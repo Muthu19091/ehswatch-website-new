@@ -83,6 +83,24 @@ function splitTail(text: string, words = 2): [string, string] {
   return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
 }
 
+// Canonicalise CMS HTML so it matches what the browser produces after parsing,
+// before injecting via dangerouslySetInnerHTML — otherwise React throws a
+// hydration mismatch (#418) on the IRIS page. Two round-trip differences bite:
+//   1. a bare "&" (e.g. the "Risk & Insight" hero) re-serialises to "&amp;";
+//   2. apostrophe/quote entities (&#x27; &#39; &apos; &quot;) that rich-text
+//      editors emit re-serialise to literal ' / ".
+// So decode ' and " to literals, then escape any remaining bare "&". Real
+// entities (&amp;, &nbsp;, &mdash; …) are left as-is.
+const normalizeCmsHtml = (html: string) =>
+  html
+    .replace(/&#0*39;/g, "'")
+    .replace(/&#x0*27;/gi, "'")
+    .replace(/&apos;/gi, "'")
+    .replace(/&#0*34;/g, '"')
+    .replace(/&#x0*22;/gi, '"')
+    .replace(/&quot;/gi, '"')
+    .replace(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#\d+|#x[0-9a-fA-F]+);)/g, "&amp;");
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Inline SVG Icons — one per capability
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1443,8 +1461,8 @@ export default function IrisPage({
   cmsPageMap,
 }: IrisCmsProps = {}) {
   // ── Derived CMS values — CMS-only, no hardcoded content fallbacks ─────────
-  const heroHeadline    = cmsHero?.headline    || "";
-  const heroSubheadline = cmsHero?.subheadline || undefined;
+  const heroHeadline    = normalizeCmsHtml(cmsHero?.headline || "");
+  const heroSubheadline = cmsHero?.subheadline ? normalizeCmsHtml(cmsHero.subheadline) : undefined;
   const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap);
   const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap);
   const ctaBannerHeadline = cmsCtaBanner?.headline?.trim() || "";
@@ -1894,18 +1912,18 @@ export default function IrisPage({
         <div className="max-w-[760px] mx-auto text-center flex flex-col gap-5 iris-reveal-target">
           {cmsTextCta?.title?.trim() && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-              <span dangerouslySetInnerHTML={{ __html: cmsTextCta.title }} />
+              <span dangerouslySetInnerHTML={{ __html: normalizeCmsHtml(cmsTextCta.title) }} />
             </h2>
           )}
 
           {cmsTextCta?.description?.trim() && (
-            <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty">
-              {/* CMS rich-text HTML — render it, don't print the tags */}
-              <span
-                className="[&_p+p]:mt-4 [&_p]:inline-block"
-                dangerouslySetInnerHTML={{ __html: cmsTextCta.description }}
-              />
-            </p>
+            // CMS rich-text HTML (contains <p> tags). Render straight into a <div>
+            // so the block <p>s aren't nested inside an inline <span>/<p> — that
+            // invalid nesting is restructured by the browser and breaks hydration.
+            <div
+              className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty [&_p+p]:mt-4"
+              dangerouslySetInnerHTML={{ __html: normalizeCmsHtml(cmsTextCta.description) }}
+            />
           )}
         </div>
       </section>
