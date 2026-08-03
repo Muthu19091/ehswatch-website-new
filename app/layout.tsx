@@ -68,7 +68,7 @@ export default async function RootLayout({
         <script
           data-cfasync="false"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(/(?:^|;\\s*)(googtrans=\\/en\\/ar|locale=ar)/.test(document.cookie)){document.documentElement.classList.add("gt-cloak");setTimeout(function(){document.documentElement.classList.remove("gt-cloak");},3000);}}catch(e){}})();`,
+            __html: `(function(){try{if(/(?:^|;\\s*)locale=ar/.test(document.cookie)){document.documentElement.classList.add("gt-cloak");setTimeout(function(){document.documentElement.classList.remove("gt-cloak");},3000);}}catch(e){}})();`,
           }}
         />
         {/* Pre-hydration language-switch fallback: on slow devices a click can
@@ -80,7 +80,7 @@ export default async function RootLayout({
         <script
           data-cfasync="false"
           dangerouslySetInnerHTML={{
-            __html: `(function(){var h=function(e){if(window.__lsHydrated||window.__lsFallbackFired)return;var t=e.target;var btn=t&&t.closest?t.closest("[data-lang-switch]"):null;if(!btn)return;window.__lsFallbackFired=true;e.preventDefault();var toAr=!/(?:^|;\\s*)googtrans=\\/en\\/ar/.test(document.cookie);var host=window.location.hostname;if(toAr){document.cookie="locale=ar; path=/; max-age=31536000; SameSite=Lax";document.cookie="googtrans=/en/ar; path=/; SameSite=Lax";document.cookie="googtrans=/en/ar; path=/; domain="+host+"; SameSite=Lax";}else{document.cookie="locale=en; path=/; max-age=31536000; SameSite=Lax";var ds=["","; domain="+host,"; domain=."+host];for(var i=0;i<ds.length;i++){document.cookie="googtrans=; path=/; max-age=0"+ds[i];}}setTimeout(function(){window.location.reload();},50);};document.addEventListener("click",h,true);document.addEventListener("pointerup",h,true);document.addEventListener("touchend",h,true);})();`,
+            __html: `(function(){var h=function(e){if(window.__lsHydrated||window.__lsFallbackFired)return;var t=e.target;var btn=t&&t.closest?t.closest("[data-lang-switch]"):null;if(!btn)return;window.__lsFallbackFired=true;e.preventDefault();var toAr=!/(?:^|;\\s*)locale=ar/.test(document.cookie);var host=window.location.hostname;if(toAr){document.cookie="locale=ar; path=/; max-age=31536000; SameSite=Lax";document.cookie="googtrans=/en/ar; path=/; SameSite=Lax";document.cookie="googtrans=/en/ar; path=/; domain="+host+"; SameSite=Lax";}else{document.cookie="locale=en; path=/; max-age=31536000; SameSite=Lax";var ds=["","; domain="+host,"; domain=."+host];for(var i=0;i<ds.length;i++){document.cookie="googtrans=; path=/; max-age=0"+ds[i];}}setTimeout(function(){window.location.reload();},50);};document.addEventListener("click",h,true);document.addEventListener("pointerup",h,true);document.addEventListener("touchend",h,true);})();`,
           }}
         />
         <UtmCapture />

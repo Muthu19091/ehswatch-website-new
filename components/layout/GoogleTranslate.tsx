@@ -17,9 +17,15 @@ import { basePath } from "@/lib/basePath";
    the saved English (back to English).
    ──────────────────────────────────────────────────────────────────────── */
 
-const isArabic = () =>
-  /(?:^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ||
-  /(?:^|;\s*)locale=ar/.test(document.cookie);
+// Single source of truth = the `locale` cookie — the SAME signal the language
+// button (LanguageSwitcher) and the server's dir/lang read. We intentionally do
+// NOT also treat a stray `googtrans` cookie as "Arabic": googtrans is set/cleared
+// under several domain scopes and with a different lifetime than `locale`, so on
+// some devices (e.g. Safari's 7-day cap on script-set cookies, or a leftover
+// dot-domain googtrans) it can survive when `locale` does not — which translated
+// the page to Arabic while the button and text direction stayed English. Keying
+// only on `locale` keeps button, direction and content in sync everywhere.
+const isArabic = () => /(?:^|;\s*)locale=ar/.test(document.cookie);
 
 const SKIP_TAGS = new Set([
   "SCRIPT", "STYLE", "NOSCRIPT", "IFRAME", "SVG", "CANVAS",
