@@ -285,7 +285,25 @@ export default function ModuleTemplate({
   } else {
     [headStart, headHighlight] = splitHeadline(hero.headline);
   }
-  const [apartStart, apartHighlight] = apart ? splitHeadline(apart.heading, 2) : ["", ""];
+  // Highlight the module name inside the "What Sets … Apart" heading (e.g.
+  // "What Sets EHSWatch [File Management] Apart"), matching the ActionTracker
+  // design — instead of an arbitrary last-two-words split that would colour
+  // "… Management Apart" and vary per module (client FE QA: keep it consistent).
+  let apartStart = "", apartHighlight = "", apartEnd = "";
+  if (apart?.heading) {
+    const h = apart.heading;
+    const idx = moduleName ? h.toLowerCase().indexOf(moduleName.toLowerCase()) : -1;
+    if (idx >= 0) {
+      apartStart = h.slice(0, idx);
+      apartHighlight = h.slice(idx, idx + moduleName.length);
+      apartEnd = h.slice(idx + moduleName.length);
+    } else {
+      // Fallbacks: keep a trailing "Apart" un-highlighted; else last word.
+      const m = h.match(/^(.*?)(\s+Apart\s*)$/i);
+      if (m) { apartHighlight = m[1]; apartEnd = m[2]; }
+      else { [apartStart, apartHighlight] = splitHeadline(h); }
+    }
+  }
 
   return (
     <>
@@ -477,8 +495,13 @@ export default function ModuleTemplate({
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {apart.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                {apartStart}
-                <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
+                {isArabic ? apart.heading : (
+                  <>
+                    {apartStart}
+                    <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
+                    {apartEnd}
+                  </>
+                )}
               </h2>
             )}
             {apart.items.length > 0 ? (
