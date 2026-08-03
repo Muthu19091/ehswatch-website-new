@@ -592,8 +592,11 @@ export default function PricingCalculator({
         <div className="w-full max-w-[640px] mx-auto mb-10 md:mb-14">
           <div className="flex items-center pb-2 sm:pb-8">
             {stepLabels.map((label, i) => {
-              const done   = i < step;
-              const active = i === step;
+              // After submit, every step is complete: mark all as done (blue
+              // label + check) and none active, so the last step ("Get Proposal")
+              // matches the others instead of staying black.
+              const done   = submitted || i < step;
+              const active = !submitted && i === step;
               const isLast = i === stepLabels.length - 1;
               return (
                 <div key={i} className={`flex items-center ${isLast ? "" : "flex-1"}`}>

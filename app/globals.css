@@ -302,6 +302,14 @@ html[dir="rtl"] .blog-body ol {
   padding-left: 0;
   padding-right: 1.4rem;
 }
+/* CMS-pasted comparison tables (Office paste, class "Ltr") carry an inline
+   text-align:left on every cell and its <p>/<span>. Under Arabic/RTL that pins
+   all cell text to the left edge, so the table reads inconsistently against the
+   right-aligned prose around it. Force cell content to the start (right) side in
+   RTL — !important beats the non-important inline. LTR/English is untouched. */
+html[dir="rtl"] .blog-body table :is(td, th, p, span) {
+  text-align: right !important;
+}
 /* BUG-035: the numbered pager keeps its chevron SVGs pointing the LTR way, so in
    Arabic the prev/next arrows point backwards. Mirror them under RTL so "next"
    points toward the next page (left) and "prev" toward the previous (right). */
