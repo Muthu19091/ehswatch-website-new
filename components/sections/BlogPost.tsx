@@ -45,9 +45,12 @@ function getPrevNext(slug: string, cmsSlugs?: string[]) {
   const list = cmsSlugs && cmsSlugs.length > 0 ? cmsSlugs : [];
   const idx = list.indexOf(slug);
   if (idx === -1) return { prev: null, next: null };
+  // cmsSlugs is newest-first, so idx-1 is the post above in the listing (newer)
+  // and idx+1 the one below (older). Prev/Next follow that reading order, not
+  // chronology, so the back/forward arrows match the direction of the list.
   return {
-    prev: idx < list.length - 1 ? { slug: list[idx + 1] } : null,
-    next: idx > 0 ? { slug: list[idx - 1] } : null,
+    prev: idx > 0 ? { slug: list[idx - 1] } : null,
+    next: idx < list.length - 1 ? { slug: list[idx + 1] } : null,
   };
 }
 
@@ -176,7 +179,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
               {post.title}
             </h1>
 
-            {/* Date + Share/Bookmark — between two separator lines */}
+            {/* Date + Share — between two separator lines */}
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
             {/* dir=ltr keeps this row fixed (date+read-time on the left, actions on
                 the right) so it doesn't swap sides when the page flips to RTL. */}
@@ -198,7 +201,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                   </svg>
                   View All Blogs
                 </Link>
-                <PostActions slug={slug} title={post.title} />
+                <PostActions title={post.title} />
               </div>
             </div>
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
@@ -284,21 +287,10 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 }
 
 
-/* ── Share + Bookmark actions ─────────────────────────────────────────────
-   Share: Web Share API on supported devices, clipboard copy as fallback.
-   Bookmark: persisted per-slug in localStorage (no account needed).        */
-function PostActions({ slug, title }: { slug: string; title: string }) {
+/* ── Share action ─────────────────────────────────────────────────────────
+   Web Share API on supported devices, clipboard copy as fallback.          */
+function PostActions({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
-
-  const KEY = "ehswatch_bookmarks";
-  const readMarks = (): string[] => {
-    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; }
-  };
-
-  useEffect(() => {
-    setBookmarked(readMarks().includes(slug));
-  }, [slug]);
 
   const onShare = async () => {
     const url = window.location.href;
@@ -312,13 +304,6 @@ function PostActions({ slug, title }: { slug: string; title: string }) {
     } catch { /* clipboard blocked — no-op */ }
   };
 
-  const onBookmark = () => {
-    const marks = readMarks();
-    const next = marks.includes(slug) ? marks.filter((s) => s !== slug) : [...marks, slug];
-    try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* storage full/blocked */ }
-    setBookmarked(next.includes(slug));
-  };
-
   return (
     <div className="flex items-center gap-4">
       <button
@@ -330,17 +315,6 @@ function PostActions({ slug, title }: { slug: string; title: string }) {
           <path d="M14 4l2 3-2 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         {copied ? "Link copied" : "Share"}
-      </button>
-      <button
-        onClick={onBookmark}
-        aria-pressed={bookmarked}
-        className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
-        style={{ color: bookmarked ? "#1d4ed8" : "#6b7280" }}
-      >
-        <svg width="15" height="15" viewBox="0 0 16 16" fill={bookmarked ? "currentColor" : "none"}>
-          <path d="M5 3h6a1 1 0 0 1 1 1v10l-4-2.5L4 14V4a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-        </svg>
-        {bookmarked ? "Bookmarked" : "Bookmark"}
       </button>
     </div>
   );
