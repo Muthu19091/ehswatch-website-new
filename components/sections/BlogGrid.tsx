@@ -369,9 +369,15 @@ export default function BlogGrid({
           </div>
         ) : (
           <div ref={gridRef} className="flex flex-col gap-6 scroll-mt-24">
+            {/* Both rows are a flex COLUMN on phones and only become a CSS grid
+                from the breakpoint up (md/sm). A phone shows a single column
+                either way, but iOS 17 Safari mis-sizes a `h-full` card whose
+                image uses `aspect-ratio` inside an auto grid row — the card
+                inflates and the text below the image stops painting (fine on
+                iOS 18 / Chromium). Flexbox avoids that grid track-sizing bug. */}
             {/* Row 1 — featured 2-col */}
             {featured.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
                 {featured.map((p) => <FeaturedCard key={p.slug} post={p} />)}
                 {featured.length === 1 && <div className="hidden md:block" />}
               </div>
@@ -379,7 +385,7 @@ export default function BlogGrid({
 
             {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
             {standard.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {standard.map((p) => <StandardCard key={p.slug} post={p} />)}
               </div>
             )}
