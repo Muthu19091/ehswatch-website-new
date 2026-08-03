@@ -68,46 +68,20 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
       if (defaultValue) {
         try { iti.setNumber(defaultValue); } catch { /* ignore */ }
       }
-      requestAnimationFrame(rtlFix);
     });
-
-    // intl-tel-input pins the flag/dial-code container to the LEFT
-    // (.iti__country-container { left: 0 }) and sets the input's padding-left
-    // inline to the container's width — so `direction: rtl` alone can't move it.
-    // Under RTL we want the country code on the RIGHT, matching the rest of the
-    // Arabic form, so after init (and whenever the country changes, which resizes
-    // the container) we flip the container to the right and move the reserved
-    // space over to padding-right. No-op in LTR / English.
-    const rtlFix = () => {
-      const itiEl = el.closest(".iti") as HTMLElement | null;
-      const container = itiEl?.querySelector(".iti__country-container") as HTMLElement | null;
-      if (!itiEl || !container) return;
-      if (getComputedStyle(itiEl).direction !== "rtl") return;
-      container.style.left = "auto";
-      container.style.right = "0";
-      const w = container.offsetWidth;
-      if (w > 0) {
-        el.style.paddingRight = `${w}px`;
-        el.style.paddingLeft = "16px";
-      }
-    };
 
     const sync = () => {
       const v = itiRef.current?.getNumber() ?? "";
       setFullNumber(v);
       onValueRef.current?.(v);
-      requestAnimationFrame(rtlFix);
     };
 
     el.addEventListener("input", sync);
     el.addEventListener("countrychange", sync);
-    // Catch the async country lookup + flag render settling after mount.
-    const rtlTimers = [200, 600, 1200].map((t) => window.setTimeout(rtlFix, t));
 
     return () => {
       el.removeEventListener("input", sync);
       el.removeEventListener("countrychange", sync);
-      rtlTimers.forEach(clearTimeout);
       itiRef.current?.destroy();
       itiRef.current = null;
     };
@@ -121,14 +95,12 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
         /* The number entry, the "+NN" dial-code prefix, and the country dropdown
            are inherently LTR — force those PARTS so digits, the prefix, and the
            country list always read correctly even in Arabic/RTL (FE QA #16).
-           The WRAPPER itself follows the page direction, so under RTL the flag +
-           dial-code sit on the RIGHT of the field (matching the other RTL form
-           fields) instead of always on the left. */
-        .iti-wrap .iti { direction: inherit; }
-        /* Keep the flag + chevron + dial-code cluster in its natural LTR order so
-           the gaps between them are correct even in Arabic (otherwise RTL leaves
-           an uneven gap between the chevron and the flag). The cluster is still
-           positioned on the RIGHT of the field in RTL by rtlFix() above. */
+           The whole widget is forced LTR so the flag + dial-code stay on the
+           LEFT of the field and the number reads left-to-right, even in Arabic
+           (a phone number is inherently LTR; the client asked the country code
+           NOT to shift to the right in RTL). */
+        .iti-wrap .iti { direction: ltr; }
+        /* Keep the flag + chevron + dial-code cluster in its natural LTR order. */
         .iti-wrap .iti__country-container { direction: ltr; }
         .iti-wrap input[type="tel"] { direction: ltr; }
         .iti-wrap .iti__country-list,
