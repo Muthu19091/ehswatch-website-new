@@ -37,7 +37,8 @@ function cmsToPost(p: CmsBlogPost): Post {
 
 
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
-// Posts per page — shown as a stacked list of full-width post blocks (not a grid).
+// Posts per page. Each page renders its first 2 as large featured cards and the
+// next 4 in the standard grid — one clean featured row + one grid row (2 + 4).
 const PAGE_SIZE = 6;
 
 // Windowed page list for the pager: 1 … (cur-1) cur (cur+1) … N. Keeps the
@@ -280,8 +281,6 @@ export default function BlogGrid({
   const [format,   setFormat]   = useState("Format: All formats");
   const [page,     setPage]     = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
-  // Set by a pager tap, consumed by the scroll effect once the page re-renders.
-  const pendingScroll = useRef(false);
 
   const filtered = useMemo(() => {
     const now = Date.now();
@@ -308,28 +307,19 @@ export default function BlogGrid({
   const currentPage = Math.min(page, totalPages); // guard against a stale page
   const pageStart   = (currentPage - 1) * PAGE_SIZE;
   const pagePosts   = filtered.slice(pageStart, pageStart + PAGE_SIZE);
+  const featured    = pagePosts.slice(0, 2);
+  const standard    = pagePosts.slice(2);
 
   const goToPage = (n: number) => {
     const target = Math.min(Math.max(1, n), totalPages);
     if (target === currentPage) return;
-    pendingScroll.current = true;
     setPage(target);
+    // Start the new page from the top of the list (offset for the fixed navbar).
+    if (gridRef.current) {
+      const y = gridRef.current.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   };
-
-  // Start the new page from the top of the list (offset for the fixed navbar).
-  // This has to wait until the new page has actually rendered: scrolling in the
-  // same tick as setPage leaves a smooth-scroll animation in flight while the
-  // list shrinks (the last page holds fewer cards), and iOS Safari then clamps
-  // the animation to the now-shorter document and strands the reader in the
-  // footer instead of at the results. Chromium happens to survive it; WebKit
-  // does not. Only fires for pager taps — never on mount or a filter reset.
-  useEffect(() => {
-    if (!pendingScroll.current) return;
-    pendingScroll.current = false;
-    if (!gridRef.current) return;
-    const y = gridRef.current.getBoundingClientRect().top + window.scrollY - 96;
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-  }, [currentPage]);
 
   // CMS-only: nothing to list → hide the section entirely.
   if (POSTS.length === 0) return null;
@@ -379,11 +369,20 @@ export default function BlogGrid({
           </div>
         ) : (
           <div ref={gridRef} className="flex flex-col gap-6 scroll-mt-24">
-            {/* Block list — one full-width post block per row (image left, text
-                right; stacks on mobile), instead of the multi-column card grid. */}
-            <div className="flex flex-col gap-6">
-              {pagePosts.map((p) => <FeaturedCard key={p.slug} post={p} />)}
-            </div>
+            {/* Row 1 — featured 2-col */}
+            {featured.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {featured.map((p) => <FeaturedCard key={p.slug} post={p} />)}
+                {featured.length === 1 && <div className="hidden md:block" />}
+              </div>
+            )}
+
+            {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
+            {standard.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {standard.map((p) => <StandardCard key={p.slug} post={p} />)}
+              </div>
+            )}
 
             {/* Pagination — numbered pager (Prev · 1 … N · Next) */}
             {totalPages > 1 && (
