@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { stripHtml } from "@/lib/text";
 
 
 function resolveVideoUrl(video: unknown): string | null {
@@ -151,7 +152,7 @@ function cmsCardToIndustry(card: CmsIndustryCard): Industry {
   const solutions: Solution[] = card.accordion_items
     ? Object.values(card.accordion_items)
         .filter((a) => a.title)
-        .map((a) => ({ heading: a.title!, body: a.description || "" }))
+        .map((a) => ({ heading: stripHtml(a.title!), body: stripHtml(a.description) }))
     : [];
   // A CMS "video" field can actually hold an animated GIF. A <video> element
   // cannot decode a GIF, so its canplay event never fires and the panel spins

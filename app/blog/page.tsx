@@ -12,6 +12,7 @@ import type { Metadata } from "next";
 import { getBlogPosts, getPage, getForm, getPageList } from "@/lib/api";
 import { buildPageMap, resolveCta } from "@/lib/blocks";
 import { robotsFrom } from "@/lib/seo";
+import { stripHtmlOpt } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -126,7 +127,7 @@ export default async function BlogPage() {
   // Extract hero block
   const heroBlock = blocks.find((b) => b.type === "hero")?.data ?? {};
   const heroHeadline = (heroBlock.headline as string | undefined) || undefined;
-  const heroSubheadline = (heroBlock.subheadline as string | undefined) || undefined;
+  const heroSubheadline = stripHtmlOpt(heroBlock.subheadline as string | undefined);
   const heroEyebrow = (heroBlock.eyebrow as string | undefined) || undefined;
 
   // Extract blog_highlights block — controls the listing's search/filters

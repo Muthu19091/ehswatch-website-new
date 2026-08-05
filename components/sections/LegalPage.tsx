@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getPage } from "@/lib/api";
 import { findBlock, findBlocks } from "@/lib/blocks";
+import { stripHtml } from "@/lib/text";
 
 type HeroBlock = { headline?: string; subheadline?: string };
 type RichTextBlock = { body?: string };
@@ -57,11 +58,14 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
             <h1 className="font-[family-name:var(--font-dm-sans)] text-[32px] md:text-[44px] font-bold leading-[1.15] text-[#111827]">
               {headline}
             </h1>
-            {hero?.subheadline?.trim() ? (
+            {(() => {
+              const sub = stripHtml(hero?.subheadline);
+              return sub ? (
               <p className="mt-4 font-[family-name:var(--font-dm-sans)] text-[16px] md:text-[17px] leading-relaxed text-[#6b7280]">
-                {hero.subheadline}
+                {sub}
               </p>
-            ) : null}
+              ) : null;
+            })()}
           </div>
         </section>
 

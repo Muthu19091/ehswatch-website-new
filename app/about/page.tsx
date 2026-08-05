@@ -45,7 +45,7 @@ export default async function AboutPage() {
 
   const heroEyebrow = heroData?.eyebrow || undefined;
   const heroHeadline = heroData?.headline || undefined;
-  const heroSubheadline = heroData?.subheadline || undefined;
+  const heroSubheadline = stripHtmlOpt(heroData?.subheadline);
   const heroCtaRaw = heroData?.primary_cta;
   const heroCtaLabel = heroCtaRaw?.label || undefined;
   const heroCtaUrl =
