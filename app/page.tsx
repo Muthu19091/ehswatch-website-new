@@ -14,7 +14,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import { getTestimonials, getClientLogos, getPage, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("home");
   const meta = pageData?.data?.attributes?.meta;
   return {
+    ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "EHSWatch — From Manual Chaos to Smart Safety",
     description:

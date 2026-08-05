@@ -11,7 +11,7 @@ import { getPage, getProductModules, getPageList } from "@/lib/api";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   return {
+    ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "Product — EHSWatch",
     description:

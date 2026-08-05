@@ -6,7 +6,7 @@ import { getForm, getPage, getPageList } from "@/lib/api";
 import { findBlock, normalizeArray, resolveHref, resolveCta, buildPageMap } from "@/lib/blocks";
 import { stripHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
   return {
+    ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
     title: meta?.meta_title || "Support — EHSWatch",
     description:

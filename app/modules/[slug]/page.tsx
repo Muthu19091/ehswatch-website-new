@@ -8,7 +8,7 @@ import ModuleTemplate from "@/components/sections/ModuleTemplate";
 import { getProductModule, getProductModules, getPageList } from "@/lib/api";
 import { buildModuleTemplateProps } from "@/lib/moduleContent";
 import { buildPageMap } from "@/lib/blocks";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -20,6 +20,7 @@ export async function generateMetadata({
   const mod = res?.data?.attributes;
   if (!mod) return { title: "Module | EHSWatch" };
   return {
+    ...seoExtras(mod.meta),
     robots: robotsFrom(mod.meta?.robots),
     title: mod.meta?.meta_title || `${mod.name.trim()} | EHSWatch`,
     description: mod.meta?.meta_description || mod.tagline || mod.description || undefined,

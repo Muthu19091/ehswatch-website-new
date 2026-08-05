@@ -10,7 +10,7 @@ import { getPage, getForm, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { Metadata } from "next";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
   return {
+    ...seoExtras(attrs.meta),
     robots: robotsFrom(attrs.meta?.robots),
     title: attrs.meta?.meta_title || "Pricing — EHSWatch",
     description: attrs.meta?.meta_description || "Simple, flexible pricing for enterprise-grade EHS management. Pay only for the modules you need.",

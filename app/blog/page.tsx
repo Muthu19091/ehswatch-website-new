@@ -11,7 +11,7 @@ import { basePath } from "@/lib/basePath";
 import type { Metadata } from "next";
 import { getBlogPosts, getPage, getForm, getPageList } from "@/lib/api";
 import { buildPageMap, resolveCta } from "@/lib/blocks";
-import { robotsFrom } from "@/lib/seo";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 import { stripHtmlOpt } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await getPage("blog").catch(() => null);
   const attrs = (pageData?.data as any)?.attributes ?? {};
   return {
+    ...seoExtras(attrs.meta),
     robots: robotsFrom(attrs.meta?.robots),
     title: attrs.meta?.meta_title || "Blog — EHSWatch",
     description: attrs.meta?.meta_description || "Practical guidance, regulatory updates and operational insights for EHSQ professionals. Written by safety practitioners, for safety practitioners.",
