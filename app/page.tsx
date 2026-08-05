@@ -132,7 +132,7 @@ export default async function HomePage() {
         badge:       t.badge       || null,
         cmsImage:    t.image       || null,
         ctaLabel:    t.cta?.label  || "",
-        ctaUrl:      t.cta?.url    || "",
+        ctaUrl:      resolveCta(t.cta, pageMap)?.url || "",
       }))
     : undefined;
 

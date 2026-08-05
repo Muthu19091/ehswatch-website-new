@@ -49,10 +49,16 @@ export default async function PricingPage() {
   const heroEyebrow       = heroBlock?.eyebrow || undefined;
   const heroHeadline      = heroBlock?.headline || undefined;
   const heroSubheadline   = heroBlock?.subheadline || undefined;
-  const primaryCtaLabel   = heroBlock?.primary_cta?.label || undefined;
-  const primaryCtaHref    = heroBlock?.primary_cta?.anchor || heroBlock?.primary_cta?.url || "#calculator";
-  const secondaryCtaLabel = heroBlock?.secondary_cta?.label || undefined;
-  const secondaryCtaHref  = heroBlock?.secondary_cta?.url || undefined;
+  // Resolve hero CTAs through resolveCta so Page (page_id) links work — the
+  // old url/anchor-only reads dropped internal Page links (e.g. the secondary
+  // "Book a Demo" → button hidden). Primary still defaults to the on-page
+  // calculator anchor when no link is configured.
+  const primaryCtaResolved   = resolveCta(heroBlock?.primary_cta, pageMap);
+  const secondaryCtaResolved = resolveCta(heroBlock?.secondary_cta, pageMap);
+  const primaryCtaLabel   = primaryCtaResolved?.label || undefined;
+  const primaryCtaHref    = primaryCtaResolved && primaryCtaResolved.url !== "#" ? primaryCtaResolved.url : "#calculator";
+  const secondaryCtaLabel = secondaryCtaResolved?.label || undefined;
+  const secondaryCtaHref  = secondaryCtaResolved?.url || undefined;
 
   // ── text_checklist block ────────────────────────────────────────────────────
   const overviewBlock = findBlock<{

@@ -47,10 +47,12 @@ export default async function AboutPage() {
   const heroEyebrow = heroData?.eyebrow || undefined;
   const heroHeadline = heroData?.headline || undefined;
   const heroSubheadline = stripHtmlOpt(heroData?.subheadline);
-  const heroCtaRaw = heroData?.primary_cta;
-  const heroCtaLabel = heroCtaRaw?.label || undefined;
-  const heroCtaUrl =
-    (heroCtaRaw?.type === "anchor" ? heroCtaRaw?.anchor : heroCtaRaw?.url) || undefined;
+  // Resolve the hero CTA through resolveCta so Page (page_id) links work too —
+  // the old anchor/url-only extraction dropped internal Page links (no href →
+  // button hidden). pageMap is built above from getPageList.
+  const heroCta = resolveCta(heroData?.primary_cta, pageMap);
+  const heroCtaLabel = heroCta?.label || undefined;
+  const heroCtaUrl = heroCta?.url || undefined;
 
   // ── image_text block (AboutStory) ───────────────────────────────────────────
   const imageTextData = findBlock<{
