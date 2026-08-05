@@ -450,7 +450,10 @@ export default function ModuleTemplate({
               {features.heading && (
                 <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
                   {(() => {
-                    const [s, h] = splitHeadline(features.heading, 2);
+                    // Highlight the full module name (FE-QA: 3-word names like
+                    // "Permit to Work" were split by the last-2-words fallback).
+                    const m = features.heading.match(/^(key features of\s+)(.+)$/i);
+                    const [s, h] = m ? [m[1], m[2]] : splitHeadline(features.heading, 2);
                     return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
                   })()}
                 </h2>
