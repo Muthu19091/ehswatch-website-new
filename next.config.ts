@@ -27,10 +27,9 @@ const nextConfig: NextConfig = {
       { source: "/solutions/", destination: "/industries/", permanent: true },
       { source: "/solutions-v2", destination: "/industries", permanent: true },
       { source: "/solutions-v2/", destination: "/industries/", permanent: true },
-      // Contact Us was consolidated into the Support page (CMS slug renamed
-      // contact-us → support). Keep old /contact-us links working.
-      { source: "/contact-us", destination: "/support", permanent: true },
-      { source: "/contact-us/", destination: "/support/", permanent: true },
+      // The Contact-Us page lives at /contact-us. Redirect old /support links.
+      { source: "/support", destination: "/contact-us", permanent: true },
+      { source: "/support/", destination: "/contact-us/", permanent: true },
     ];
   },
   images: {

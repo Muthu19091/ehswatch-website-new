@@ -27,7 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 
 export default async function ContactUsPage() {
-  /* Step 1: fetch the page to read the CMS-configured form slug */
+  /* The Contact-Us page (ContactPage design), driven by the CMS
+     "contact-us" page content. /support redirects here. */
   const [pageRes, pageListRes] = await Promise.all([
     getPage("contact-us").catch(() => null),
     getPageList().catch(() => null),
@@ -57,11 +58,19 @@ export default async function ContactUsPage() {
     form_slug?: string;
   }>(blocks, "form_embed");
 
-  /* Step 2: fetch the form schema using the CMS-defined slug */
-  const formSlug = formEmbed?.form_slug ?? "contact";
-  /* null means the CMS form is disabled — ContactPage will hide the form */
-  const formRes = await getForm(formSlug).catch(() => null);
-  const formAttrs = formRes?.data?.attributes ?? null;
+  /* Fetch BOTH the Support and Contact forms so this page (the Contact-Us
+     page — /contact-us redirects here) can offer them as a tab switch. */
+  const [supportRes, contactRes] = await Promise.all([
+    getForm("support").catch(() => null),
+    getForm("contact").catch(() => null),
+  ]);
+  const formTabs = [
+    supportRes?.data?.attributes && { key: "support", label: "Support", slug: "support", formAttrs: supportRes.data.attributes },
+    contactRes?.data?.attributes && { key: "contact", label: "Contact", slug: "contact", formAttrs: contactRes.data.attributes },
+  ].filter(Boolean) as { key: string; label: string; slug: string; formAttrs: any }[];
+  /* First tab drives the layout + single-form fallback. */
+  const formSlug = formTabs[0]?.slug ?? (formEmbed?.form_slug ?? "support");
+  const formAttrs = formTabs[0]?.formAttrs ?? null;
 
   /* ── icon_features block (offices) ── */
   const officesBlock = findBlock<{
@@ -166,6 +175,7 @@ export default async function ContactUsPage() {
         <ContactPage
           formAttrs={formAttrs}
           formSlug={formSlug}
+          formTabs={formTabs}
           heroEyebrow={heroBlock?.eyebrow || undefined}
           heroHeadline={heroBlock?.headline || undefined}
           heroSubheadline={heroBlock?.subheadline || undefined}
