@@ -62,6 +62,14 @@ const EN_TO_AR: Record<string, string> = {
 // Form field labels — label-scoped so "Company" here → اسم الشركة (a form field),
 // distinct from the footer/nav "Company" → الشركة above. Applied to the label's
 // own text node so a required-field asterisk (a sibling <span>) is preserved.
+// Curated HTML titles: keyed on the English textContent, value is the Arabic
+// innerHTML. Applied ONLY in Arabic (English keeps its server-rendered markup),
+// so we can render a multi-line heading with its highlight span intact.
+const EN_TO_AR_HTML: Record<string, string> = {
+  "EHSQ Insights, Beyond The Dashboard":
+    '\u0645\u0642\u0627\u0644\u0627\u062a EHSQ<br /><span style="color:#1d4ed8">\u0645\u0627 \u0648\u0631\u0627\u0621 \u0644\u0648\u062d\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a</span>',
+};
+
 const LABEL_EN_TO_AR: Record<string, string> = {
   "Your name": "الاسم الكامل",
   "Full name": "الاسم الكامل",
@@ -143,6 +151,17 @@ export default function ArabicOverrides() {
             if (norm(tn.textContent) !== want) tn.textContent = want;
             return;
           }
+        }
+
+        // Curated HTML overrides (multi-line titles w/ highlight) — Arabic only.
+        if (ar && Object.prototype.hasOwnProperty.call(EN_TO_AR_HTML, text)) {
+          if (el.getAttribute("data-ar-html") !== "1") {
+            el.setAttribute("translate", "no");
+            el.classList.add("notranslate");
+            el.setAttribute("data-ar-html", "1");
+            el.innerHTML = EN_TO_AR_HTML[text];
+          }
+          return;
         }
 
         // English-keyed overrides.
