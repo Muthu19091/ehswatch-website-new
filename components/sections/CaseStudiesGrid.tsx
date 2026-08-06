@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/blocks";
 import type { CmsCaseStudy } from "@/lib/types";
@@ -228,6 +228,19 @@ interface CaseStudiesGridProps {
   cmsStudies?: CmsCaseStudy[];
 }
 
+// Case studies per page: one wide "lead" card + a 2-col grid of the rest.
+const PAGE_SIZE = 5;
+
+// Windowed pager list: 1 … (cur-1) cur (cur+1) … N (same pattern as the blog).
+function pageItems(current: number, total: number): (number | "…")[] {
+  const out: (number | "…")[] = [];
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - current) <= 1) out.push(i);
+    else if (out[out.length - 1] !== "…") out.push("…");
+  }
+  return out;
+}
+
 export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
   // CMS-only: no hardcoded fallback studies.
   const cards: Card[] =
@@ -235,34 +248,85 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
       ? cmsStudies.map(cmsToCard)
       : [];
 
+  const [page, setPage] = useState(1);
+  const gridRef = useRef<HTMLDivElement>(null);
+
   // Nothing configured → hide the whole section.
   if (cards.length === 0) return null;
 
-  // Layout: first card wide, middle pair square, rest wide; last 2 in another pair
-  const [first, second, third, ...rest] = cards;
+  const totalPages  = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages); // guard against a stale page
+  const pageStart   = (currentPage - 1) * PAGE_SIZE;
+  const pageCards   = cards.slice(pageStart, pageStart + PAGE_SIZE);
+  const [lead, ...others] = pageCards;
+
+  const goToPage = (n: number) => {
+    const target = Math.min(Math.max(1, n), totalPages);
+    if (target === currentPage) return;
+    setPage(target);
+    if (gridRef.current) {
+      const y = gridRef.current.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
 
   return (
     <section id="case-studies" className="pt-10 pb-16 px-5 md:px-8 lg:px-12" style={{ background: "#FFFFFF" }}>
-      <div className="max-w-[1200px] mx-auto flex flex-col gap-4">
+      <div ref={gridRef} className="max-w-[1200px] mx-auto flex flex-col gap-4 scroll-mt-24">
 
-        {first && <WideCard card={first} index={0} />}
+        {lead && <WideCard card={lead} index={0} />}
 
-        {(second || third) && (
+        {others.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {second && <SquareCard card={second} index={1} />}
-            {third && <SquareCard card={third} index={2} />}
+            {others.map((card, i) => (
+              <SquareCard key={card.slug} card={card} index={i + 1} />
+            ))}
           </div>
         )}
 
-        {rest.map((card, i) =>
-          i % 3 === 0 ? (
-            <WideCard key={card.slug} card={card} index={i + 3} />
-          ) : (
-            <div key={card.slug} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <SquareCard card={card} index={i + 3} />
-              {rest[i + 1] && <SquareCard card={rest[i + 1]} index={i + 4} />}
-            </div>
-          )
+        {/* Pagination — numbered pager (Prev · 1 … N · Next) */}
+        {totalPages > 1 && (
+          <nav className="flex justify-center items-center gap-1.5 mt-6" aria-label="Case studies pagination">
+            <button
+              type="button"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              aria-label="Previous page"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[#FF6D00] enabled:hover:text-[#FF6D00]"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+
+            {pageItems(currentPage, totalPages).map((it, i) =>
+              it === "…" ? (
+                <span key={`e${i}`} className="inline-flex items-center justify-center w-9 h-9 text-[#9ca3af] text-[14px] select-none">…</span>
+              ) : (
+                <button
+                  key={it}
+                  type="button"
+                  onClick={() => goToPage(it)}
+                  aria-current={it === currentPage ? "page" : undefined}
+                  className={`inline-flex items-center justify-center w-9 h-9 rounded-full text-[14px] font-[family-name:var(--font-dm-sans)] font-medium border transition-colors ${
+                    it === currentPage
+                      ? "bg-[#FF6D00] border-[#FF6D00] text-white"
+                      : "border-[#e5e7eb] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00]"
+                  }`}
+                >
+                  {it}
+                </button>
+              )
+            )}
+
+            <button
+              type="button"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              aria-label="Next page"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[#FF6D00] enabled:hover:text-[#FF6D00]"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          </nav>
         )}
 
       </div>
