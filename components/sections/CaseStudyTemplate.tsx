@@ -47,6 +47,7 @@ export default function CaseStudyTemplate({
   const summary = attrs.summary || "";
   const bodyHtml = attrs.body?.trim() ? attrs.body : "";
   const results = attrs.results?.length ? attrs.results : [];
+  const applications = ((attrs as { applications?: { name: string; slug: string }[] }).applications) ?? [];
   // Only use a real uploaded cover — no generic blog-image fallback (it read as
   // a random stock photo on every study). When absent, the cover band is hidden
   // and the green "at a glance" card becomes the lead visual.
@@ -247,6 +248,28 @@ export default function CaseStudyTemplate({
                 {clientName} · {industry}
               </p>
             </blockquote>
+
+            {/* ── EHSWatch Applications ─ modules the customer used (CMS) ── */}
+            {applications.length > 0 && (
+              <section className="my-14">
+                <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] leading-tight text-[#0a0f1e] mb-5">
+                  EHSWatch Applications
+                </h2>
+                <div className="flex flex-wrap gap-3">
+                  {applications.map((app) => (
+                    <Link
+                      key={app.slug}
+                      href={`/modules/${app.slug}`}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl no-underline transition-colors hover:border-[#059669]"
+                      style={{ border: "1px solid #e5e7eb", background: "#f9fafb", color: "#0a0f1e" }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
+                      <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[14px]">{app.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* CTA */}
             <div
