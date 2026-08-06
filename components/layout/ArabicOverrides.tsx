@@ -55,6 +55,8 @@ const EN_TO_AR: Record<string, string> = {
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
+  // Home WorkEnvironments CTA — client-authored Arabic (machine output was weaker).
+  "See How EHSWatch Fits Your Industry": "انظر كيف يناسب EHSWatch صناعتك.",
 };
 
 // Form field labels — label-scoped so "Company" here → اسم الشركة (a form field),
