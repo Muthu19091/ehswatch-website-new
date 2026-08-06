@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { basePath } from "@/lib/basePath";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import BookmarksMenu from "@/components/layout/BookmarksMenu";
 
 /* ── Nav config ────────────────────────────────────────────────────
    hideOnScroll: true  → fades out when navbar collapses to pill
@@ -433,6 +434,7 @@ export default function NavbarClient({
 
         {/* ── Right cluster: Language Switcher + CTA ───────── */}
         <div className="hidden sm:flex items-center gap-3 shrink-0">
+          <BookmarksMenu lightHero={lightHero} />
           <LanguageSwitcher lightHero={lightHero} />
 
         {/* ── Desktop CTA ─────────────────────────────────── */}

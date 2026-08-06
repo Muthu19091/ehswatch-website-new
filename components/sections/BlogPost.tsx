@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { isBookmarked, toggleBookmark, subscribeBookmarks } from "@/lib/bookmarks";
 import { mediaUrl } from "@/lib/blocks";
 import Link from "next/link";
 import type { CmsBlogPost } from "@/lib/types";
@@ -201,7 +202,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
                   </svg>
                   View All Blogs
                 </Link>
-                <PostActions title={post.title} />
+                <PostActions title={post.title} slug={post.slug} />
               </div>
             </div>
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
@@ -289,9 +290,16 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
 
 /* ── Share action ─────────────────────────────────────────────────────────
    Web Share API on supported devices, clipboard copy as fallback.          */
-function PostActions({ title }: { title: string }) {
+function PostActions({ title, slug }: { title: string; slug: string }) {
   const [copied, setCopied] = useState(false);
-  const [bookmarkHint, setBookmarkHint] = useState("");
+  const [marked, setMarked] = useState(false);
+
+  // Reflect the persisted bookmark state and stay in sync with the header menu
+  // (and other tabs) via the shared bookmark store.
+  useEffect(() => {
+    setMarked(isBookmarked(slug));
+    return subscribeBookmarks(() => setMarked(isBookmarked(slug)));
+  }, [slug]);
 
   const onShare = async () => {
     const url = window.location.href;
@@ -306,21 +314,8 @@ function PostActions({ title }: { title: string }) {
   };
 
   const onBookmark = () => {
-    const url = window.location.href;
-    const w = window as unknown as {
-      sidebar?: { addPanel?: (t: string, u: string, e: string) => void };
-      external?: { AddFavorite?: (u: string, t: string) => void };
-    };
-    // Legacy browsers that still permit programmatic bookmarking.
-    if (typeof w.sidebar?.addPanel === "function") { w.sidebar.addPanel(title, url, ""); return; }
-    if (typeof w.external?.AddFavorite === "function") {
-      try { w.external.AddFavorite(url, title); return; } catch { /* fall through */ }
-    }
-    // Modern browsers: JS cannot add a bookmark — prompt the native shortcut,
-    // which the user presses to open the browser's Add-bookmark dialog.
-    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
-    setBookmarkHint(isMac ? "Press ⌘ + D" : "Press Ctrl + D");
-    setTimeout(() => setBookmarkHint(""), 3000);
+    toggleBookmark({ slug, title, url: window.location.href });
+    // `marked` updates via the subscription above.
   };
 
   const btn =
@@ -335,11 +330,11 @@ function PostActions({ title }: { title: string }) {
         </svg>
         {copied ? "Link copied" : "Share"}
       </button>
-      <button onClick={onBookmark} className={btn} title="Bookmark this page" aria-label="Bookmark this page">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <button onClick={onBookmark} className={btn} title={marked ? "Remove bookmark" : "Bookmark this page"} aria-label={marked ? "Remove bookmark" : "Bookmark this page"}>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill={marked ? "#FF6D00" : "none"}>
+          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke={marked ? "#FF6D00" : "currentColor"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        {bookmarkHint || "Bookmark"}
+        {marked ? "Bookmarked" : "Bookmark"}
       </button>
     </div>
   );
