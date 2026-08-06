@@ -304,7 +304,7 @@ function PostActions({ title, slug }: { title: string; slug: string }) {
   const onShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
-      try { await navigator.share({ title, url }); return; } catch { /* cancelled → fall through */ }
+      try { await navigator.share({ title, text: `${title}\n${url}`, url }); return; } catch { /* cancelled → fall through */ }
     }
     try {
       await navigator.clipboard.writeText(url);
