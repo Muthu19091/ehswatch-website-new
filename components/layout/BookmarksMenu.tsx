@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { getBookmarks, removeBookmark, subscribeBookmarks, type Bookmark } from "@/lib/bookmarks";
 
+// Show at most this many bookmarks in the dropdown before collapsing the rest
+// behind a "View all" CTA.
+const PREVIEW_COUNT = 3;
+
 /**
  * Header bookmarks dropdown. Reads the localStorage bookmark store and stays in
  * sync via subscribeBookmarks (same tab + cross tab). Renders nothing until
@@ -11,6 +15,7 @@ import { getBookmarks, removeBookmark, subscribeBookmarks, type Bookmark } from 
 export default function BookmarksMenu({ lightHero = false }: { lightHero?: boolean }) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [items, setItems] = useState<Bookmark[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -19,6 +24,9 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
     setItems(getBookmarks());
     return subscribeBookmarks(() => setItems(getBookmarks()));
   }, []);
+
+  // Collapse back to the preview whenever the menu is closed.
+  useEffect(() => { if (!open) setExpanded(false); }, [open]);
 
   // Close on outside click / Escape.
   useEffect(() => {
@@ -39,6 +47,8 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
 
   const count = items.length;
   const iconColor = lightHero ? "#0a0f1e" : "#0a0f1e";
+  const visible = expanded ? items : items.slice(0, PREVIEW_COUNT);
+  const hiddenCount = count - PREVIEW_COUNT;
 
   return (
     <div ref={wrapRef} className="relative shrink-0">
@@ -76,28 +86,54 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
               No bookmarks yet. Tap “Bookmark” on any article to save it here.
             </p>
           ) : (
-            <ul className="flex flex-col">
-              {items.map((b) => (
-                <li key={b.slug} className="group flex items-start gap-2 px-4 py-2 hover:bg-[#f9fafb]">
-                  <a href={b.url} className="flex-1 min-w-0 no-underline">
-                    <span className="block font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-snug line-clamp-2" style={{ color: "#111827" }}>
-                      {b.title}
-                    </span>
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => removeBookmark(b.slug)}
-                    aria-label={`Remove bookmark: ${b.title}`}
-                    className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/5 cursor-pointer"
-                    style={{ color: "#9ca3af" }}
-                  >
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="flex flex-col">
+                {visible.map((b) => (
+                  <li key={b.slug} className="group flex items-start gap-2 px-4 py-2 hover:bg-[#f9fafb]">
+                    <a href={b.url} className="flex-1 min-w-0 no-underline">
+                      <span className="block font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-snug line-clamp-2" style={{ color: "#111827" }}>
+                        {b.title}
+                      </span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => removeBookmark(b.slug)}
+                      aria-label={`Remove bookmark: ${b.title}`}
+                      className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/5 cursor-pointer"
+                      style={{ color: "#9ca3af" }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              {count > PREVIEW_COUNT && !expanded && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(true)}
+                  className="mt-1 w-full flex items-center justify-center gap-1.5 px-4 py-2.5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold cursor-pointer hover:bg-[#f9fafb] transition-colors"
+                  style={{ color: "#FF6D00", borderTop: "1px solid #F3F4F6" }}
+                >
+                  View all ({count})
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <path d="M2.5 7h9M8 3.5l3.5 3.5L8 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
+              {expanded && hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(false)}
+                  className="mt-1 w-full flex items-center justify-center px-4 py-2.5 font-[family-name:var(--font-dm-sans)] text-[13px] font-medium cursor-pointer hover:bg-[#f9fafb] transition-colors"
+                  style={{ color: "#6b7280", borderTop: "1px solid #F3F4F6" }}
+                >
+                  Show less
+                </button>
+              )}
+            </>
           )}
         </div>
       )}
