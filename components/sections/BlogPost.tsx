@@ -291,6 +291,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
    Web Share API on supported devices, clipboard copy as fallback.          */
 function PostActions({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
+  const [bookmarkHint, setBookmarkHint] = useState("");
 
   const onShare = async () => {
     const url = window.location.href;
@@ -304,17 +305,41 @@ function PostActions({ title }: { title: string }) {
     } catch { /* clipboard blocked — no-op */ }
   };
 
+  const onBookmark = () => {
+    const url = window.location.href;
+    const w = window as unknown as {
+      sidebar?: { addPanel?: (t: string, u: string, e: string) => void };
+      external?: { AddFavorite?: (u: string, t: string) => void };
+    };
+    // Legacy browsers that still permit programmatic bookmarking.
+    if (typeof w.sidebar?.addPanel === "function") { w.sidebar.addPanel(title, url, ""); return; }
+    if (typeof w.external?.AddFavorite === "function") {
+      try { w.external.AddFavorite(url, title); return; } catch { /* fall through */ }
+    }
+    // Modern browsers: JS cannot add a bookmark — prompt the native shortcut,
+    // which the user presses to open the browser's Add-bookmark dialog.
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+    setBookmarkHint(isMac ? "Press ⌘ + D" : "Press Ctrl + D");
+    setTimeout(() => setBookmarkHint(""), 3000);
+  };
+
+  const btn =
+    "font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5 cursor-pointer";
+
   return (
     <div className="flex items-center gap-4">
-      <button
-        onClick={onShare}
-        className="font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#6b7280] hover:text-[#0a0f1e] transition-colors flex items-center gap-1.5 cursor-pointer"
-      >
+      <button onClick={onShare} className={btn}>
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
           <path d="M4 12v-1a4 4 0 0 1 4-4h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
           <path d="M14 4l2 3-2 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         {copied ? "Link copied" : "Share"}
+      </button>
+      <button onClick={onBookmark} className={btn} title="Bookmark this page" aria-label="Bookmark this page">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        {bookmarkHint || "Bookmark"}
       </button>
     </div>
   );
