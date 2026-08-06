@@ -9,6 +9,7 @@ import Orb from "@/components/ui/Orb";
 import GlareButton from "@/components/ui/GlareButton";
 import CmsIcon from "@/components/ui/CmsIcon";
 import { resolveCta, type PageMap } from "@/lib/blocks";
+import { keepBrandsEnglish } from "@/lib/text";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -1461,8 +1462,8 @@ export default function IrisPage({
   cmsPageMap,
 }: IrisCmsProps = {}) {
   // ── Derived CMS values — CMS-only, no hardcoded content fallbacks ─────────
-  const heroHeadline    = normalizeCmsHtml(cmsHero?.headline || "");
-  const heroSubheadline = cmsHero?.subheadline ? normalizeCmsHtml(cmsHero.subheadline) : undefined;
+  const heroHeadline    = keepBrandsEnglish(normalizeCmsHtml(cmsHero?.headline || ""));
+  const heroSubheadline = cmsHero?.subheadline ? keepBrandsEnglish(normalizeCmsHtml(cmsHero.subheadline)) : undefined;
   const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap);
   const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap);
   const ctaBannerHeadline = cmsCtaBanner?.headline?.trim() || "";
@@ -1912,7 +1913,7 @@ export default function IrisPage({
         <div className="max-w-[760px] mx-auto text-center flex flex-col gap-5 iris-reveal-target">
           {cmsTextCta?.title?.trim() && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-              <span dangerouslySetInnerHTML={{ __html: normalizeCmsHtml(cmsTextCta.title) }} />
+              <span dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(normalizeCmsHtml(cmsTextCta.title)) }} />
             </h2>
           )}
 
@@ -1922,7 +1923,7 @@ export default function IrisPage({
             // invalid nesting is restructured by the browser and breaks hydration.
             <div
               className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#1b1b1b] text-pretty [&_p+p]:mt-4"
-              dangerouslySetInnerHTML={{ __html: normalizeCmsHtml(cmsTextCta.description) }}
+              dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(normalizeCmsHtml(cmsTextCta.description)) }}
             />
           )}
         </div>

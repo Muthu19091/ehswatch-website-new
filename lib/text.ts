@@ -83,7 +83,7 @@ export function unescapeTypedTags(value: string | null | undefined): string {
  * others. Wrapping each occurrence in a notranslate span (which the translator
  * skips, see GoogleTranslate.tsx) keeps it in English everywhere.
  */
-const KEEP_ENGLISH_TERMS = ["Action Tracker"];
+const KEEP_ENGLISH_TERMS = ["Action Tracker", "IRIS"];
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
