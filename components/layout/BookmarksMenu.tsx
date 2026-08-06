@@ -93,7 +93,7 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
                 {visible.map((b) => (
                   <li key={b.slug} className="group flex items-start gap-2 px-4 py-2 hover:bg-[#f9fafb]">
                     <a href={b.url} className="flex-1 min-w-0 no-underline">
-                      <span className="block font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-snug line-clamp-2" style={{ color: "#111827" }}>
+                      <span className="block font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-snug line-clamp-1" style={{ color: "#111827" }}>
                         {b.title}
                       </span>
                     </a>
