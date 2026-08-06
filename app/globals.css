@@ -173,16 +173,10 @@ html[dir="rtl"] .wenv-hl {
   margin-inline: 0.28em;
 }
 
-/* Contact section (offices | form). In Arabic the whole 2-column grid mirrors,
-   sending the office-address column from the left to the right. Keep it in place:
-   lock the grid's column order to LTR so offices stay left / form stays right,
-   exactly like English. The offices column inherits LTR so it reads like the
-   English layout (icon-left), while the form is switched back to RTL so its
-   Arabic labels/inputs still align right-to-left. RTL only — English is untouched. */
+/* Contact section (offices | form). In Arabic it flows naturally RTL: the office
+   column (icons + headings) sits on the RIGHT and reads right-to-left, the form
+   on the left — a native Arabic layout. RTL only; English is untouched. */
 html[dir="rtl"] .contact-cols {
-  direction: ltr;
-}
-html[dir="rtl"] .contact-cols > .ct-form-col {
   direction: rtl;
 }
 
