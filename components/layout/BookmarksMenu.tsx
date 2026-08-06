@@ -46,6 +46,8 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
   if (!mounted) return null;
 
   const count = items.length;
+  // Only surface the header bookmark icon once at least one post is saved.
+  if (count === 0) return null;
   const iconColor = lightHero ? "#0a0f1e" : "#0a0f1e";
   const visible = expanded ? items : items.slice(0, PREVIEW_COUNT);
   const hiddenCount = count - PREVIEW_COUNT;
