@@ -1,4 +1,5 @@
 import DynamicCmsForm from "@/components/ui/DynamicCmsForm";
+import ContactFormTabs, { type FormTab } from "@/components/ui/ContactFormTabs";
 import CmsIcon from "@/components/ui/CmsIcon";
 import CmsSlider from "@/components/ui/CmsSlider";
 import type { CmsForm } from "@/lib/types";
@@ -40,6 +41,7 @@ interface CmsGalleryData {
 export interface ContactPageProps {
   formAttrs: CmsForm["attributes"] | null;
   formSlug?: string;
+  formTabs?: FormTab[];
   heroEyebrow?: string;
   heroHeadline?: string;
   heroSubheadline?: string;
@@ -57,6 +59,7 @@ export interface ContactPageProps {
 export default function ContactPage({
   formAttrs,
   formSlug = "contact",
+  formTabs,
   heroEyebrow,
   heroHeadline,
   heroSubheadline,
@@ -216,7 +219,7 @@ export default function ContactPage({
             </div>
           )}
 
-          <div className={`contact-cols grid grid-cols-1 gap-14${formAttrs ? " lg:grid-cols-[280px_1fr] lg:gap-24" : ""}`}>
+          <div className={`contact-cols grid grid-cols-1 gap-14${(formAttrs || (formTabs && formTabs.length)) ? " lg:grid-cols-[280px_1fr] lg:gap-24" : ""}`}>
 
             {/* ── Left: office items from icon_features block ── */}
             <div className="flex flex-col gap-8">
@@ -276,13 +279,15 @@ export default function ContactPage({
             {/* ── Right: dynamic CMS form — only rendered when CMS form is enabled ──
                 Wrapped so the RTL override can keep the FORM right-to-left while the
                 grid column order is locked (see .contact-cols in globals.css). */}
-            {formAttrs && (
+            {formTabs && formTabs.length > 0 ? (
+              <ContactFormTabs forms={formTabs} />
+            ) : formAttrs ? (
               /* mt-14 gives space between the offices block and the form when they
                  stack (below lg); on lg they sit side-by-side so no top margin. */
               <div className="ct-form-col mt-20 lg:mt-0">
                 <DynamicCmsForm formAttrs={formAttrs} slug={formSlug} variant="contact" />
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>

@@ -58,11 +58,19 @@ export default async function SupportPage() {
     form_slug?: string;
   }>(blocks, "form_embed");
 
-  /* Fetch the form schema using the CMS-defined slug */
-  const formSlug = formEmbed?.form_slug ?? "support";
-  /* null means the CMS form is disabled — ContactPage will hide the form */
-  const formRes = await getForm(formSlug).catch(() => null);
-  const formAttrs = formRes?.data?.attributes ?? null;
+  /* Fetch BOTH the Support and Contact forms so this page (the Contact-Us
+     page — /contact-us redirects here) can offer them as a tab switch. */
+  const [supportRes, contactRes] = await Promise.all([
+    getForm("support").catch(() => null),
+    getForm("contact").catch(() => null),
+  ]);
+  const formTabs = [
+    supportRes?.data?.attributes && { key: "support", label: "Support", slug: "support", formAttrs: supportRes.data.attributes },
+    contactRes?.data?.attributes && { key: "contact", label: "Contact", slug: "contact", formAttrs: contactRes.data.attributes },
+  ].filter(Boolean) as { key: string; label: string; slug: string; formAttrs: any }[];
+  /* First tab drives the layout + single-form fallback. */
+  const formSlug = formTabs[0]?.slug ?? (formEmbed?.form_slug ?? "support");
+  const formAttrs = formTabs[0]?.formAttrs ?? null;
 
   /* ── icon_features block (offices) ── */
   const officesBlock = findBlock<{
@@ -167,6 +175,7 @@ export default async function SupportPage() {
         <ContactPage
           formAttrs={formAttrs}
           formSlug={formSlug}
+          formTabs={formTabs}
           heroEyebrow={heroBlock?.eyebrow || undefined}
           heroHeadline={heroBlock?.headline || undefined}
           heroSubheadline={heroBlock?.subheadline || undefined}
