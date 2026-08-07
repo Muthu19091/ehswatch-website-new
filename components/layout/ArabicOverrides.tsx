@@ -93,6 +93,13 @@ const FORCE_LTR = new Set([
   // puts عن on the right and IRIS on the left, as the client wants.
 ]);
 
+// Some ancestor forces LTR on the IRIS "About" heading, which lays "عن IRIS"
+// the wrong way (عن on the left). Pin these to RTL so عن sits on the right and
+// IRIS on the left when translating.
+const FORCE_RTL = new Set([
+  "About IRIS",
+]);
+
 // Machine-Arabic → corrected Arabic (used when there's no stable English key).
 const AR_FIX: Record<string, string> = {
   "تعرّف على كيف يناسب برنامج EHSWatch قطاعك الصناعي":
@@ -178,6 +185,7 @@ export default function ArabicOverrides() {
           el.classList.add("notranslate");
           // Keep a Latin-brand-led header reading left-to-right in both languages.
           if (FORCE_LTR.has(enHit)) el.setAttribute("dir", "ltr");
+          else if (FORCE_RTL.has(enHit)) el.setAttribute("dir", "rtl");
           const want = ar ? EN_TO_AR[enHit] : enHit;
           if (norm(el.textContent) !== want) el.textContent = want;
           return;
