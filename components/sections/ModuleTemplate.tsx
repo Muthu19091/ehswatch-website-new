@@ -467,11 +467,11 @@ export default function ModuleTemplate({
 
             {/* Single responsive grid with gap dividers — renders clean borders
                 at 1 / 2 / 3 columns (was a rows-of-3 grid that broke on iPad). */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
+            <div className="flex flex-wrap justify-center gap-4">
               {features.items.map((feat, i) => {
                 const color = FEATURE_COLORS[i % FEATURE_COLORS.length];
                 return (
-                  <div key={i} className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
+                  <div key={i} className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px]">
                     <div
                       className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
                       style={{ background: color + "14", color }}
@@ -487,21 +487,6 @@ export default function ModuleTemplate({
                   </div>
                 );
               })}
-              {/* White fillers complete an incomplete last row so the grey grid
-                  background never shows through empty cells. Counts are computed
-                  per breakpoint (2 / 3 columns); the 1-col layout never needs any. */}
-              {(() => {
-                const n = features.items.length;
-                const c3 = (3 - (n % 3)) % 3;
-                const c2 = (2 - (n % 2)) % 2;
-                return Array.from({ length: Math.max(c2, c3) }).map((_, j) => (
-                  <div
-                    key={`kf-filler-${j}`}
-                    aria-hidden
-                    className={`hidden bg-white ${j < c2 ? "sm:block" : "sm:hidden"} ${j < c3 ? "lg:block" : "lg:hidden"}`}
-                  />
-                ));
-              })()}
             </div>
           </div>
         </section>
