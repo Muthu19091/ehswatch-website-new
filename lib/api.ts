@@ -121,7 +121,25 @@ async function apiGet<T>(path: string): Promise<T | null> {
 
 async function _doGet<T>(path: string, attempt = 0): Promise<T | null> {
   try {
-    const res = await getClient().get<T>(path);
+    // Accept the CMS "slug moved" 301 so we can FOLLOW it to the new slug —
+    // renaming a page/blog/module/case-study slug in the CMS then keeps its
+    // route working (the CMS records the old slug in its history and 301s).
+    const res = await getClient().get<T>(path, {
+      validateStatus: (st) => (st >= 200 && st < 300) || st === 301,
+    });
+    if (res.status === 301) {
+      const body = res.data as { errors?: Array<{ redirect_to?: string }>; redirect_to?: string };
+      const to = body?.errors?.[0]?.redirect_to ?? body?.redirect_to;
+      if (typeof to === "string" && attempt < 3) {
+        const newSlug = to.replace(/^\/+/, "").split(/[?#]/)[0].split("/").filter(Boolean).pop();
+        if (newSlug) {
+          const [base, query] = path.split("?");
+          const newBase = base.replace(/[^/]+$/, encodeURIComponent(newSlug));
+          return _doGet<T>(query ? `${newBase}?${query}` : newBase, attempt + 1);
+        }
+      }
+      return null;
+    }
     return normalizeTiptapDeep(res.data) as T;
   } catch (err) {
     const e = err as AxiosError;
