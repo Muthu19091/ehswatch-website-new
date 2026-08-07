@@ -78,7 +78,7 @@ function normalizeTiptapDeep(node: unknown): unknown {
 }
 
 async function apiGet<T>(path: string): Promise<T | null> {
-  if (typeof window !== "undefined") return _doGet<T>(path);
+  if (typeof window !== "undefined") return _doGet<T>(path).catch(() => null);
 
   const resolvedPath = await withLocale(path);
 
@@ -101,18 +101,23 @@ async function apiGet<T>(path: string): Promise<T | null> {
         if (!resolvedPath.includes("/preview/")) _lkg.set(resolvedPath, data);
         return data;
       }
-      // Fetch failed after retries — degrade to the last good payload if we
-      // have one, so a CMS blip serves slightly-stale content, not a 404.
-      const stale = _lkg.get(resolvedPath);
-      if (stale !== undefined) {
-        console.warn(`[CMS] GET ${resolvedPath} failed — serving last-known-good`);
-        return stale as T;
-      }
-      return data; // null: nothing to fall back to
+      // Genuine not-found (404/410): the record was unpublished/deleted — DROP
+      // the last-known-good so drafted/deleted content stops rendering. Do NOT
+      // serve stale here (fixes "draft/deleted page still shows").
+      if (!resolvedPath.includes("/preview/")) _lkg.delete(resolvedPath);
+      return null;
     })
     .catch((err) => {
       _inflight.delete(resolvedPath);
-      throw err;
+      // Transient failure (429 / 5xx / network) — degrade to last-known-good if
+      // one exists, so a CMS blip serves slightly-stale content, not a 404.
+      const stale = _lkg.get(resolvedPath);
+      if (stale !== undefined) {
+        console.warn(`[CMS] GET ${resolvedPath} transient failure — serving last-known-good`);
+        return stale as T;
+      }
+      void err;
+      return null;
     });
 
   _inflight.set(resolvedPath, promise);
@@ -144,9 +149,12 @@ async function _doGet<T>(path: string, attempt = 0): Promise<T | null> {
   } catch (err) {
     const e = err as AxiosError;
     const status = e.response?.status;
-    // Retry transient rate-limits (429) and 503s with short backoff so a burst
-    // against the CMS's 60 req/min limit doesn't 404 an otherwise-valid page.
-    if ((status === 429 || status === 503) && attempt < 3) {
+    // Transient = rate-limit / server error / network. Retry, then THROW so
+    // apiGet can degrade to last-known-good. A genuine 4xx (404/410/…) means the
+    // record is gone/unpublished — return null so the page 404s and the stale
+    // copy is dropped, instead of being served from cache.
+    const transient = status === 429 || status === 503 || (status !== undefined && status >= 500) || status === undefined;
+    if (transient && attempt < 3) {
       const wait = 250 * (attempt + 1) + Math.floor(Math.random() * 150);
       await new Promise((r) => setTimeout(r, wait));
       return _doGet<T>(path, attempt + 1);
@@ -156,6 +164,7 @@ async function _doGet<T>(path: string, attempt = 0): Promise<T | null> {
       status ?? "network error",
       e.response?.data ?? e.message,
     );
+    if (transient) throw e;
     return null;
   }
 }
