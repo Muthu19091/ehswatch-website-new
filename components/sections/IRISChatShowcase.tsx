@@ -746,12 +746,12 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
               {/* Progress dots — nudged into the grid's px-8 gutter. At right-0 they
                   sat on the callout's right edge (both at the column edge), which
                   the LTR text cleared but the right-aligned Arabic text ran into. */}
-              <div className="absolute -right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2.5">
-                {features.map((_, i) => (
-                  <div key={i} className="rounded-full transition-all duration-500"
-                    style={{ width:6, height:step===i?24:6,
-                      background:step===i?"#ff6d00":"#E2E8F0" }} />
-                ))}
+              {/* Vertical progress bar through the conversation (was dots, which
+                  read as pagination / a swipeable carousel). */}
+              <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-[6px] h-[200px] rounded-full overflow-hidden" style={{ background:"#E2E8F0" }}>
+                <div className="w-full rounded-full transition-all duration-500 ease-out"
+                  style={{ height:`${((Math.max(0, Math.min(step, features.length - 1)) + 1) / features.length) * 100}%`,
+                    background:"#ff6d00" }} />
               </div>
             </div>
           </div>
@@ -781,12 +781,11 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
               />
             </div>
           </div>
-          <div className="flex gap-2">
-            {features.map((_, i) => (
-              <div key={i} className="rounded-full transition-all duration-500"
-                style={{ width: step === i ? 24 : 6, height: 6,
-                  background: step === i ? "#ff6d00" : "#E2E8F0" }} />
-            ))}
+          {/* Horizontal progress bar (was pagination dots). */}
+          <div className="w-[220px] max-w-[72%] h-[6px] rounded-full overflow-hidden" style={{ background: "#E2E8F0" }}>
+            <div className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${((Math.max(0, Math.min(step, features.length - 1)) + 1) / features.length) * 100}%`,
+                background: "#ff6d00" }} />
           </div>
         </div>
       </div>
