@@ -247,6 +247,14 @@ export default function PricingCalculator({
     document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [step]);
 
+  // On submit the form content is replaced by the confirmation, but the viewport
+  // stays where the submit button was (deep in the wizard / near the FAQ), so the
+  // "Proposal Request Sent!" message landed under the banner. Snap back to the
+  // top of the calculator (scroll-mt-20 clears the fixed navbar).
+  useEffect(() => {
+    if (submitted) document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [submitted]);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError(null);
