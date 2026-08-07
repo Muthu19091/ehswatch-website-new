@@ -68,6 +68,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       // All nav links stay visible when the navbar collapses on scroll
       // (the last link, e.g. Support, must remain in the header).
       hideOnScroll: false,
+      newTab: item.open_in_new_tab === true,
       children,
     };
   });
@@ -76,12 +77,24 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   const cmsCta = firstCta
     ? { label: firstCta.label as string, href: firstCta.url ? normalizeUrl(firstCta.url as string) : "#" }
     : undefined;
+  // ALL header CTAs (not just the first) so multiple CTAs render.
+  const cmsCtas = (ctas as any[])
+    .filter((c) => (c?.label ?? "").toString().trim())
+    .map((c) => ({
+      label: c.label as string,
+      href: c.url ? normalizeUrl(c.url as string) : "#",
+      style: (c.style as string) || "primary",
+      newTab: c.open_in_new_tab === true,
+    }));
+  const shrinkOnScroll = (header?.data as any)?.attributes?.behaviour?.shrink_on_scroll !== false;
 
   /* Logo: CMS header editor first; otherwise the Site Settings brand header
      logo (both resolved to URLs by the CMS). No hardcoded logo fallback. */
   const attrs = (header?.data as any)?.attributes;
   const brand = (settingsRes?.data as any)?.brand;
-  const logoUrl = attrs?.logo?.attributes?.url ?? attrs?.logo?.url ?? brand?.header_logo;
+  // header logo URL only — the Settings brand.header_logo is a media ID, not a
+  // URL, so it can never be a valid <img src>; drop it as a fallback.
+  const logoUrl = attrs?.logo?.attributes?.url ?? attrs?.logo?.url;
   const cmsLogo = logoUrl
     ? {
         url: logoUrl as string,
@@ -95,7 +108,9 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       lightHero={lightHero}
       cmsNav={cmsNav.length > 0 ? cmsNav : undefined}
       cmsCta={cmsCta}
+      cmsCtas={cmsCtas.length > 0 ? cmsCtas : undefined}
       cmsLogo={cmsLogo}
+      shrinkOnScroll={shrinkOnScroll}
     />
   );
 }

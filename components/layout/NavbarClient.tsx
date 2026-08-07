@@ -41,6 +41,7 @@ function ease(p: number) {
 interface CmsNavItem {
   label: string;
   href: string;
+  newTab?: boolean;
   hideOnScroll?: boolean;
   hasDropdown: boolean;
   children?: { label: string; href: string; desc?: string; img?: string }[];
@@ -50,12 +51,16 @@ export default function NavbarClient({
   lightHero = false,
   cmsNav,
   cmsCta,
+  cmsCtas,
   cmsLogo,
+  shrinkOnScroll = true,
 }: {
   lightHero?: boolean;
   cmsNav?: CmsNavItem[];
   cmsCta?: { label: string; href: string };
+  cmsCtas?: { label: string; href: string; style?: string; newTab?: boolean }[];
   cmsLogo?: { url: string; alt?: string; href?: string };
+  shrinkOnScroll?: boolean;
 }) {
   const allNavItems = cmsNav && cmsNav.length > 0 ? cmsNav : ALL_NAV;
   // Keep the row from overflowing the logo/CTA: show a safe number of items
@@ -65,8 +70,13 @@ export default function NavbarClient({
   const collapse = allNavItems.length > MAX_INLINE;
   const navItems = collapse ? allNavItems.slice(0, MAX_INLINE - 1) : allNavItems;
   const overflowItems = collapse ? allNavItems.slice(MAX_INLINE - 1) : [];
-  const ctaLabel = cmsCta?.label || "Book Demo";
-  const ctaHref  = cmsCta?.href  || "#";
+  const ctaList = (cmsCtas && cmsCtas.length > 0)
+    ? cmsCtas
+    : (cmsCta ? [{ label: cmsCta.label, href: cmsCta.href } as { label: string; href: string; newTab?: boolean }] : []);
+  const primaryCta = ctaList[0];
+  const secondaryCtas = ctaList.slice(1);
+  const ctaLabel = primaryCta?.label || "Book Demo";
+  const ctaHref  = primaryCta?.href  || "#";
   const logoSrc  = cmsLogo?.url;
   const logoAlt  = cmsLogo?.alt  || "EHSWatch";
   const logoHref = cmsLogo?.href || "/";
@@ -168,17 +178,22 @@ export default function NavbarClient({
       if (Math.abs(t - lastT) < 0.001) { raf = 0; return; }
       lastT = t;
 
+      // Shrink-on-scroll OFF (CMS) → keep the bar full-size (no padding/width/
+      // radius shrink) but still solidify for readability: size uses sizeT
+      // (pinned to 0), colour/background keep the real t.
+      const sizeT = shrinkOnScroll ? t : 0;
+
       // ── Header outer padding ──────────────────────────────────
-      header.style.paddingLeft  = `${lerp(0, 20, t)}px`;
-      header.style.paddingRight = `${lerp(0, 20, t)}px`;
-      header.style.paddingTop   = `${lerp(0, 12, t)}px`;
+      header.style.paddingLeft  = `${lerp(0, 20, sizeT)}px`;
+      header.style.paddingRight = `${lerp(0, 20, sizeT)}px`;
+      header.style.paddingTop   = `${lerp(0, 12, sizeT)}px`;
 
       // ── Nav pill shape ────────────────────────────────────────
-      nav.style.paddingLeft    = `${lerp(40, 16, t)}px`;
-      nav.style.paddingRight   = `${lerp(40, 10, t)}px`;
-      nav.style.paddingTop     = nav.style.paddingBottom = `${lerp(14, 7, t)}px`;
-      nav.style.maxWidth       = `${lerp(2400, 1160, t)}px`;   // wide enough to keep all nav links (incl. Support) visible in the collapsed pill
-      nav.style.borderRadius   = `${lerp(0, 9999, t)}px`;
+      nav.style.paddingLeft    = `${lerp(40, 16, sizeT)}px`;
+      nav.style.paddingRight   = `${lerp(40, 10, sizeT)}px`;
+      nav.style.paddingTop     = nav.style.paddingBottom = `${lerp(14, 7, sizeT)}px`;
+      nav.style.maxWidth       = `${lerp(2400, 1160, sizeT)}px`;   // wide enough to keep all nav links (incl. Support) visible in the collapsed pill
+      nav.style.borderRadius   = `${lerp(0, 9999, sizeT)}px`;
       nav.style.gap            = `${lerp(0, 0, t)}px`;   // gap handled per-link via padding
       nav.style.background     = `rgba(255,255,255,${lerp(0, 0.92, t)})`;
       nav.style.boxShadow      = `0 8px 32px rgba(0,0,0,${lerp(0, 0.10, t)})`;
@@ -381,6 +396,8 @@ export default function NavbarClient({
               <Link
                 key={link.label}
                 href={link.href}
+                target={(link as { newTab?: boolean }).newTab ? "_blank" : undefined}
+                rel={(link as { newTab?: boolean }).newTab ? "noopener noreferrer" : undefined}
                 ref={(el) => { linkRefs.current[i] = el; }}
                 className="py-2 font-medium tracking-[-0.24px] rounded-[40px] whitespace-nowrap font-[family-name:var(--font-dm-sans)] hover:opacity-75 transition-opacity shrink-0"
                 style={{
@@ -419,6 +436,8 @@ export default function NavbarClient({
                   <Link
                     key={item.label}
                     href={item.href || "#"}
+                    target={(item as { newTab?: boolean }).newTab ? "_blank" : undefined}
+                    rel={(item as { newTab?: boolean }).newTab ? "noopener noreferrer" : undefined}
                     onClick={() => setDeskOpen(null)}
                     className="block px-3 py-2 rounded-lg font-[family-name:var(--font-dm-sans)] text-[14px] font-medium text-[#0f172a] hover:bg-[#f1f5f9] transition-colors whitespace-nowrap"
                   >
@@ -436,6 +455,20 @@ export default function NavbarClient({
         <div className="hidden sm:flex items-center gap-3 shrink-0">
           <BookmarksMenu lightHero={lightHero} />
           <LanguageSwitcher lightHero={lightHero} />
+
+          {/* Secondary CTAs (any header CTA beyond the first) */}
+          {secondaryCtas.map((c, i) => (
+            <Link
+              key={`sec-cta-${i}`}
+              href={c.href}
+              target={c.newTab ? "_blank" : undefined}
+              rel={c.newTab ? "noopener noreferrer" : undefined}
+              className="hidden lg:inline-flex shrink-0 items-center rounded-full whitespace-nowrap font-medium tracking-[-0.24px] border-[1.5px] border-[#ff6d00]/40 text-[#ff6d00] hover:bg-[#ff6d00]/5 transition-colors font-[family-name:var(--font-dm-sans)]"
+              style={{ paddingLeft: "16px", paddingRight: "16px", paddingTop: "8px", paddingBottom: "8px", fontSize: "14px" }}
+            >
+              {c.label}
+            </Link>
+          ))}
 
         {/* ── Desktop CTA ─────────────────────────────────── */}
         <Link
@@ -555,7 +588,7 @@ export default function NavbarClient({
               )}
             </div>
           ) : (
-            <Link key={link.label} href={link.href} onClick={() => setOpen(false)}
+            <Link key={link.label} href={link.href} target={(link as { newTab?: boolean }).newTab ? "_blank" : undefined} rel={(link as { newTab?: boolean }).newTab ? "noopener noreferrer" : undefined} onClick={() => setOpen(false)}
               className="px-4 py-3 text-[15px] font-medium text-[#404143] rounded-lg hover:bg-gray-50 font-[family-name:var(--font-dm-sans)]">
               {link.label}
             </Link>
