@@ -75,19 +75,53 @@ export function normalizeUrl(url: string): string {
 }
 
 /**
- * Resolve any CTA shape to an href. Handles anchor links, internal page_id
- * references (via pageMap), and plain URLs (scheme-normalised).
+ * Resolve any CTA shape to an href. TYPE-DRIVEN so that changing the link type
+ * in the CMS is honoured even when an old field (e.g. a stale page_id) is still
+ * populated. Supports every LinkPicker type:
+ *   internal  → page_id via pageMap        module/external → url
+ *   anchor    → #anchor                     email  → mailto:  phone → tel:
+ *   video_popup → video_url (popup itself is handled by the rendering component)
+ * Falls back to whatever field is present for legacy CTAs with no explicit type.
  */
 export function resolveHref(cta: unknown, pageMap?: PageMap): string {
   const c = unwrapCta(cta);
   if (!c) return "#";
-  if (c.type === "anchor") return (c.anchor as string) || "#";
-  if ((c.type === "internal" || c.page_id) && c.page_id != null) {
-    const slug = pageMap?.[String(c.page_id)];
-    if (slug) return slugToPath(slug);
+
+  const type = typeof c.type === "string" ? c.type : "";
+  const url = typeof c.url === "string" ? c.url.trim() : "";
+  const anchorRaw = typeof c.anchor === "string" ? c.anchor.trim() : "";
+  const pageId = c.page_id != null ? String(c.page_id) : "";
+  const videoUrl = typeof c.video_url === "string" ? c.video_url.trim() : "";
+
+  const pageHref = (): string => {
+    const slug = pageId ? pageMap?.[pageId] : undefined;
+    return slug ? slugToPath(slug) : "";
+  };
+  const anchorHref = (): string =>
+    anchorRaw ? (anchorRaw.startsWith("#") ? anchorRaw : `#${anchorRaw}`) : "";
+  const mailHref = (): string => {
+    const e = url.replace(/^mailto:/i, "").trim();
+    return e ? `mailto:${e}` : "#";
+  };
+  const telHref = (): string => {
+    const t = url.replace(/^tel:/i, "").replace(/[^\d+]/g, "");
+    return t ? `tel:${t}` : "#";
+  };
+
+  switch (type) {
+    case "internal":  return pageHref() || (url ? normalizeUrl(url) : "#");
+    case "module":
+    case "external":  return url ? normalizeUrl(url) : "#";
+    case "anchor":    return anchorHref() || "#";
+    case "email":     return mailHref();
+    case "phone":
+    case "tel":       return telHref();
+    case "video_popup": return videoUrl || (url ? normalizeUrl(url) : "#");
+    default: break;
   }
-  const url = (c.url as string) || "";
-  return url ? normalizeUrl(url) : "#";
+
+  // No / unknown type — legacy CTA: honour whichever field is populated.
+  return anchorHref() || pageHref() || (url ? normalizeUrl(url) : "#");
 }
 
 /** True for links that should open in a new tab (off-site absolute URLs). */
