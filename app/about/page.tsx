@@ -9,7 +9,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import type { Metadata } from "next";
 import { getPage, getPageList } from "@/lib/api";
 import { findBlock, findBlocks, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
-import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
+import { stripHtmlOpt, headingHtmlOpt, richHtml } from "@/lib/text";
 import { robotsFrom, seoExtras } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +64,7 @@ export default async function AboutPage() {
 
   const storyHeading = imageTextData?.heading || undefined;
   const storySubheading = stripHtmlOpt(imageTextData?.subheading);
-  const storyBody = imageTextData?.body || undefined;
+  const storyBody = richHtml(imageTextData?.body) || undefined;
   const storyImage =
     (typeof imageTextData?.image === "string"
       ? imageTextData.image

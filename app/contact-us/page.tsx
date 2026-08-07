@@ -178,7 +178,7 @@ export default async function ContactUsPage() {
           formTabs={formTabs}
           heroEyebrow={heroBlock?.eyebrow || undefined}
           heroHeadline={heroBlock?.headline || undefined}
-          heroSubheadline={heroBlock?.subheadline || undefined}
+          heroSubheadline={stripHtmlOpt(heroBlock?.subheadline) || undefined}
           heroPrimaryCtaLabel={heroPrimaryCtaLabel || undefined}
           heroPrimaryCtaHref={heroPrimaryCtaHref || undefined}
           formHeading={formEmbed?.heading || undefined}

@@ -34,13 +34,17 @@ export function seoExtras(
   ogType: "website" | "article" = "website",
 ): Metadata {
   const md: Metadata = {};
-  const keywords = meta?.meta_keywords?.trim();
-  if (keywords) md.keywords = keywords;
-  const canonical = meta?.canonical_url?.trim();
+  // Guard every field: CMS values are not guaranteed strings (e.g. meta_keywords
+  // is cast to an array), so .trim() on a raw value would crash the page.
+  const str = (v: unknown): string => (typeof v === "string" ? v.trim() : "");
+  const kw: unknown = (meta as { meta_keywords?: unknown } | null | undefined)?.meta_keywords;
+  const keywords = Array.isArray(kw) ? kw.map((k) => str(k)).filter(Boolean) : str(kw);
+  if (Array.isArray(keywords) ? keywords.length > 0 : Boolean(keywords)) md.keywords = keywords;
+  const canonical = str(meta?.canonical_url);
   if (canonical) md.alternates = { canonical };
   const ogImage = meta?.og_image?.url || undefined;
-  const ogTitle = meta?.meta_title?.trim() || undefined;
-  const ogDesc = meta?.meta_description?.trim() || undefined;
+  const ogTitle = str(meta?.meta_title) || undefined;
+  const ogDesc = str(meta?.meta_description) || undefined;
   md.openGraph = {
     type: ogType,
     ...(ogTitle ? { title: ogTitle } : {}),

@@ -9,9 +9,49 @@
  * NOT for rich-text fields (bodies, FAQ answers, text_cta blocks) — those
  * render their HTML via dangerouslySetInnerHTML.
  */
-export function stripHtml(value: string | null | undefined): string {
-  if (!value) return "";
-  return value
+/**
+ * Normalise a CMS rich-text value to an HTML string. The dashboard editor may
+ * store a field either as an HTML string (legacy) or a TipTap/ProseMirror doc
+ * ({type:"doc", content:[...]}). Passing the doc OBJECT to string methods
+ * (.trim/.replace) or rendering it as a React child crashes the page, so
+ * convert docs to HTML here. Non-string / non-doc values become "".
+ */
+export function richHtml(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (!value || typeof value !== "object") return "";
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const render = (n: any): string => {
+    if (n == null) return "";
+    if (typeof n === "string") return escapeHtmlText(n);
+    if (Array.isArray(n)) return n.map(render).join("");
+    const kids = Array.isArray(n.content) ? n.content.map(render).join("") : "";
+    switch (n.type) {
+      case "text": {
+        let t = escapeHtmlText(n.text ?? "");
+        for (const m of (n.marks ?? [])) {
+          if (m?.type === "bold" || m?.type === "strong") t = `<strong>${t}</strong>`;
+          else if (m?.type === "italic" || m?.type === "em") t = `<em>${t}</em>`;
+          else if (m?.type === "link" && m?.attrs?.href) t = `<a href="${m.attrs.href}">${t}</a>`;
+        }
+        return t;
+      }
+      case "paragraph": return `<p>${kids}</p>`;
+      case "heading": { const l = Math.min(Math.max(Number(n.attrs?.level) || 3, 1), 6); return `<h${l}>${kids}</h${l}>`; }
+      case "bulletList": return `<ul>${kids}</ul>`;
+      case "orderedList": return `<ol>${kids}</ol>`;
+      case "listItem": return `<li>${kids}</li>`;
+      case "hardBreak": return "<br/>";
+      default: return kids;
+    }
+  };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+  return render(value);
+}
+
+export function stripHtml(value: unknown): string {
+  const html = richHtml(value);
+  if (!html) return "";
+  return html
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<")
@@ -39,7 +79,7 @@ export function stripHtmlOpt(value: string | null | undefined): string | undefin
  * dangerouslySetInnerHTML (only a bare, recoloured <span> can survive).
  */
 export function headingHtml(value: string | null | undefined): string {
-  if (!value) return "";
+  if (typeof value !== "string") return "";
   const decoded = value
     .replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<")
@@ -72,7 +112,7 @@ export function headingHtmlOpt(value: string | null | undefined): string | undef
  * like HTML — while leaving other escaped text (e.g. "5 &lt; 10") alone.
  */
 export function unescapeTypedTags(value: string | null | undefined): string {
-  if (!value) return "";
+  if (typeof value !== "string") return "";
   return value.replace(/&lt;(\/?[a-zA-Z][a-zA-Z0-9]*(?:\s[^&<>]*?)?\/?)&gt;/g, "<$1>");
 }
 
@@ -89,7 +129,7 @@ const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** Minimal HTML-escape for plain-text fields before we inject notranslate spans. */
 export function escapeHtmlText(value: string | null | undefined): string {
-  if (!value) return "";
+  if (typeof value !== "string") return "";
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
@@ -102,7 +142,7 @@ export function escapeHtmlText(value: string | null | undefined): string {
  * other modules are unaffected.
  */
 export function keepBrandsEnglish(html: string | null | undefined): string {
-  if (!html) return "";
+  if (typeof html !== "string") return "";
   return html.replace(/<[^>]+>|[^<]+/g, (chunk) => {
     if (chunk.startsWith("<")) return chunk;
     return KEEP_ENGLISH_TERMS.reduce(
