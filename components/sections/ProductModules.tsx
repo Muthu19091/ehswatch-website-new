@@ -127,7 +127,7 @@ const STEP = COLS * 2; // reveal full rows on both 2-col (tablet) and 3-col (des
 
 // ── Module cell ────────────────────────────────────────────────────────────
 
-function ModuleCell({ mod }: { mod: Module }) {
+function ModuleCell({ mod, linkText }: { mod: Module; linkText?: string }) {
   const [linkHovered, setLinkHovered] = useState(false);
 
   return (
@@ -162,7 +162,7 @@ function ModuleCell({ mod }: { mod: Module }) {
           transform: linkHovered ? "translateX(3px)" : "translateX(0)",
         }}
       >
-        <span>Explore</span>
+        <span>{linkText || "Explore"}</span>
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -182,6 +182,8 @@ interface ProductModulesProps {
     desc: string;
     icon?: string | null;
   }>;
+  cmsVisibleCount?: number;
+  cmsLinkText?: string;
 }
 
 // Palette cycled across CMS modules (mirrors the hardcoded design colours)
@@ -194,8 +196,12 @@ export default function ProductModules({
   cmsHeading,
   cmsSubheading,
   cmsModules,
+  cmsVisibleCount,
+  cmsLinkText,
 }: ProductModulesProps = {}) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_ROWS * COLS);
+  // Initial cards shown before "View more" — CMS visible_count drives it.
+  const initialCount = cmsVisibleCount && cmsVisibleCount > 0 ? cmsVisibleCount : INITIAL_ROWS * COLS;
+  const [visibleCount, setVisibleCount] = useState(initialCount);
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
   // Set by a "View less" tap, consumed by the scroll effect once the grid has
   // collapsed and re-rendered.
@@ -237,7 +243,7 @@ export default function ProductModules({
 
   const handleViewLess = () => {
     pendingScroll.current = true;
-    setVisibleCount(INITIAL_ROWS * COLS);
+    setVisibleCount(initialCount);
   };
 
   // Scroll back to the top of the section after "View less" — but only once the
@@ -290,7 +296,7 @@ export default function ProductModules({
         <div className="w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
             {visibleModules.map((mod) => (
-              <ModuleCell key={mod.name} mod={mod} />
+              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
             ))}
             {/* White fillers cover the grid's grey background in the last row's
                 empty slots. The box-shadow paints over the 1px grey gaps on the

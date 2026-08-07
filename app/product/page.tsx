@@ -88,6 +88,7 @@ export default async function ProductPage() {
     heading?: string;
     subheading?: string;
     visible_count?: number;
+    link_text?: string;
   }>(blocks, "product_modules");
 
   // ── stats_row block ───────────────────────────────────────────────────────
@@ -146,6 +147,8 @@ export default async function ProductPage() {
           cmsHeading={productModulesBlock?.heading || undefined}
           cmsSubheading={productModulesBlock?.subheading || undefined}
           cmsModules={cmsModules.length > 0 ? cmsModules : undefined}
+          cmsVisibleCount={productModulesBlock?.visible_count}
+          cmsLinkText={productModulesBlock?.link_text || undefined}
         />
         <CTABanner
           cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
