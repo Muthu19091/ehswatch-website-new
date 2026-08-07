@@ -121,7 +121,7 @@ export default async function Footer() {
   const logoLargeSrc = attrs?.brand?.logo_large?.attributes?.url ?? attrs?.brand?.logo_large?.url ?? logoSrc;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
   const tagline     = attrs?.brand?.tagline || (settingsRes?.data as any)?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
-  const copyright   = attrs?.bottom?.copyright_text || "© 2026 EHSWatch. All rights reserved.";
+  const copyright   = attrs?.bottom?.copyright_text || (settingsRes?.data as any)?.footer?.copyright || "© 2026 EHSWatch. All rights reserved.";
   const legalLinks  = (attrs?.bottom?.legal_links ?? []) as { label: string; url: string; open_in_new_tab?: boolean }[];
   const badges      = (attrs?.bottom?.badges ?? []) as Array<{ image?: { url?: string } | string | null; url?: string | null; label?: string | null; alt?: string | null }>;
   const subFooterHtml = (attrs?.bottom?.sub_footer_html || "").trim();

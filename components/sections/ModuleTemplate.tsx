@@ -16,6 +16,7 @@ import CmsIcon from "@/components/ui/CmsIcon";
 export interface ModuleCta {
   label: string;
   href: string;
+  videoUrl?: string;
 }
 
 export interface ModuleTemplateProps {
@@ -76,11 +77,12 @@ function splitHeadline(text: string, words = 1): [string, string] {
   return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
 }
 
-function CTAButton({ href, label, variant = "primary" }: { href: string; label: string; variant?: "primary" | "ghost" }) {
+function CTAButton({ href, label, variant = "primary", videoUrl }: { href: string; label: string; variant?: "primary" | "ghost"; videoUrl?: string }) {
   if (variant === "primary") {
     return (
       <GlareButton
         href={href}
+        videoUrl={videoUrl}
         className="gap-2 px-8 py-[12px] rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[15px] text-white transition-all duration-200 hover:shadow-lg"
         style={{
           backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
@@ -97,6 +99,7 @@ function CTAButton({ href, label, variant = "primary" }: { href: string; label: 
   return (
     <GlareButton
       href={href}
+      videoUrl={videoUrl}
       fillColor="#FFA660"
       hoverTextColor="#ffffff"
       className="gap-2 px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] border transition-all duration-200"
@@ -393,8 +396,8 @@ export default function ModuleTemplate({
 
           {(hero.primaryCta || hero.secondaryCta) && (
             <div className="flex flex-col sm:flex-row gap-3 animate-hero-rise" style={{ animationDelay: "300ms" }}>
-              {hero.primaryCta && <CTAButton href={hero.primaryCta.href} label={hero.primaryCta.label} variant="primary" />}
-              {hero.secondaryCta && <CTAButton href={hero.secondaryCta.href} label={hero.secondaryCta.label} variant="ghost" />}
+              {hero.primaryCta && <CTAButton href={hero.primaryCta.href} label={hero.primaryCta.label} videoUrl={hero.primaryCta.videoUrl} variant="primary" />}
+              {hero.secondaryCta && <CTAButton href={hero.secondaryCta.href} label={hero.secondaryCta.label} videoUrl={hero.secondaryCta.videoUrl} variant="ghost" />}
             </div>
           )}
         </div>
@@ -572,8 +575,8 @@ export default function ModuleTemplate({
             )}
             {(finalCta.cta || finalCta.secondaryCta) && (
               <div className="flex flex-col sm:flex-row gap-3">
-                {finalCta.cta && <CTAButton href={finalCta.cta.href} label={finalCta.cta.label} variant="primary" />}
-                {finalCta.secondaryCta && <CTAButton href={finalCta.secondaryCta.href} label={finalCta.secondaryCta.label} variant="ghost" />}
+                {finalCta.cta && <CTAButton href={finalCta.cta.href} label={finalCta.cta.label} videoUrl={finalCta.cta.videoUrl} variant="primary" />}
+                {finalCta.secondaryCta && <CTAButton href={finalCta.secondaryCta.href} label={finalCta.secondaryCta.label} videoUrl={finalCta.secondaryCta.videoUrl} variant="ghost" />}
               </div>
             )}
           </div>

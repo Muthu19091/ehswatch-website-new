@@ -41,7 +41,7 @@ interface CtaShape {
 
 function resolveCta(raw?: CtaShape | null, pageMap?: PageMap): ModuleCta | undefined {
   const c = resolveCtaBlock(raw, pageMap);
-  return c ? { label: c.label, href: c.url } : undefined;
+  return c ? { label: c.label, href: c.url, videoUrl: c.videoUrl } : undefined;
 }
 
 // Pull each <li> out of a rich_text body, keeping inline formatting

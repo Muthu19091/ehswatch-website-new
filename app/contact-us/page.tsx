@@ -80,7 +80,7 @@ export default async function ContactUsPage() {
   const tabLabel = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
   const formTabs = tabForms
     .filter((t) => t.attrs)
-    .map((t) => ({ key: t.slug, label: tabLabel(t.slug), slug: t.slug, formAttrs: t.attrs })) as
+    .map((t) => ({ key: t.slug, label: (((t.attrs as any)?.name || "").trim() || tabLabel(t.slug)), slug: t.slug, formAttrs: t.attrs })) as
       { key: string; label: string; slug: string; formAttrs: any }[];
 
   /* First tab drives the layout + single-form fallback. */
