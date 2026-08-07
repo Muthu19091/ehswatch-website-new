@@ -89,9 +89,8 @@ const LABEL_EN_TO_AR: Record<string, string> = {
 // instead of the brand being reordered to the right by the RTL page.
 const FORCE_LTR = new Set([
   "EHSWatch: One Platform for Everyday Safety",
-  // "عن IRIS" (About IRIS): keep the Arabic word first (left) and the Latin
-  // brand after it (right), as authored — not mirrored by the RTL layout.
-  "About IRIS",
+  // NB: "About IRIS" (→ عن IRIS) is intentionally NOT forced LTR — natural RTL
+  // puts عن on the right and IRIS on the left, as the client wants.
 ]);
 
 // Machine-Arabic → corrected Arabic (used when there's no stable English key).
@@ -191,6 +190,23 @@ export default function ArabicOverrides() {
           el.textContent = AR_FIX[text];
         }
       });
+
+      // Brand consistency: the machine transliterates "IRIS" to "ايريس" inside
+      // sentences (KEEP_ENGLISH only catches a standalone "IRIS"). Replace every
+      // "ايريس" back to "IRIS" and pin the node so it is not re-transliterated.
+      if (ar) {
+        const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const hits: Text[] = [];
+        let node: Node | null;
+        while ((node = tw.nextNode())) {
+          if (node.nodeValue && node.nodeValue.indexOf("ايريس") !== -1) hits.push(node as Text);
+        }
+        hits.forEach((t) => {
+          t.nodeValue = (t.nodeValue as string).replace(/ايريس/g, "IRIS");
+          const pe = t.parentElement;
+          if (pe) { pe.setAttribute("translate", "no"); pe.classList.add("notranslate"); }
+        });
+      }
     };
 
     const schedule = () => {
