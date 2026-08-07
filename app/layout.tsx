@@ -66,20 +66,32 @@ export default async function RootLayout({
   const siteUrl = (settings?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
   const headerAttrs = (headerRes?.data as any)?.attributes;
   const orgLogo = headerAttrs?.logo?.attributes?.url || headerAttrs?.logo?.url || `${siteUrl}/images/favicon-96.png`;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        name: brandName,
-        url: siteUrl,
-        logo: orgLogo,
-        ...(settings?.contact?.email ? { email: settings.contact.email } : {}),
-        ...(settings?.contact?.phone ? { telephone: settings.contact.phone } : {}),
-      },
-      { "@type": "WebSite", name: brandName, url: siteUrl },
-    ],
+  // Prefer CMS-authored structured data (Settings → structured_data) so schema
+  // is fully editable in the dashboard; resolve any bare media-id logo/image to
+  // a real URL. Fall back to a constructed Organization + WebSite graph.
+  const resolveSchemaNode = (node: unknown): unknown => {
+    if (!node || typeof node !== "object") return node;
+    const n = { ...(node as Record<string, unknown>) };
+    for (const k of ["logo", "image"]) {
+      if (typeof n[k] === "string" && /^\d+$/.test(n[k] as string)) n[k] = orgLogo;
+    }
+    return n;
   };
+  const cmsSchema = Array.isArray(settings?.structured_data) ? (settings!.structured_data as unknown[]) : [];
+  const jsonLdNodes: unknown[] = cmsSchema.length > 0
+    ? cmsSchema.map(resolveSchemaNode)
+    : [
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: brandName,
+          url: siteUrl,
+          logo: orgLogo,
+          ...(settings?.contact?.email ? { email: settings.contact.email } : {}),
+          ...(settings?.contact?.phone ? { telephone: settings.contact.phone } : {}),
+        },
+        { "@context": "https://schema.org", "@type": "WebSite", name: brandName, url: siteUrl },
+      ];
   return (
     <html
       lang={locale}
@@ -88,11 +100,14 @@ export default async function RootLayout({
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
     >
       <body className="antialiased">
-        {/* Organization + WebSite structured data (JSON-LD), CMS-driven. */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {/* Structured data (JSON-LD) — CMS-authored (Settings → structured_data). */}
+        {jsonLdNodes.map((node, i) => (
+          <script
+            key={`ld-${i}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(node) }}
+          />
+        ))}
         {/* Cloak (before paint): when Arabic is active, hide the page until the
             first-party translator has swapped the text in, so the visitor never
             sees the English→Arabic reflow. Force-reveal after 3s so the page can
