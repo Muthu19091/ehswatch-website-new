@@ -47,7 +47,7 @@ export default async function PricingPage() {
   // hrefs keep functional defaults so a CMS-configured button still targets the
   // calculator when no explicit link is set.
   const heroEyebrow       = heroBlock?.eyebrow || undefined;
-  const heroHeadline      = heroBlock?.headline || undefined;
+  const heroHeadline      = headingHtmlOpt(heroBlock?.headline);
   const heroSubheadline   = heroBlock?.subheadline || undefined;
   // Resolve hero CTAs through resolveCta so Page (page_id) links work — the
   // old url/anchor-only reads dropped internal Page links (e.g. the secondary

@@ -1463,7 +1463,10 @@ export default function IrisPage({
   cmsPageMap,
 }: IrisCmsProps = {}) {
   // ── Derived CMS values — CMS-only, no hardcoded content fallbacks ─────────
-  const heroHeadline    = keepBrandsEnglish(normalizeCmsHtml(cmsHero?.headline || ""));
+  const heroHeadline    = keepBrandsEnglish(normalizeCmsHtml(cmsHero?.headline || ""))
+    // Colour the CMS accent <span> brand-blue (double-colour heading) without
+    // touching the notranslate brand spans keepBrandsEnglish injects.
+    .replace(/<span(?![^>]*notranslate)([^>]*)>/i, '<span$1 style="color:#1d4ed8">');
   const heroSubheadline = cmsHero?.subheadline ? keepBrandsEnglish(normalizeCmsHtml(cmsHero.subheadline)) : undefined;
   const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap);
   const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap);
