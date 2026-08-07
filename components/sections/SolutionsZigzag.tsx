@@ -296,9 +296,7 @@ export default function SolutionsZigzag({
               className="font-[family-name:var(--font-gothic-a1)] font-bold leading-[1.15] text-[#0a0f1e]"
               style={{ fontSize: "clamp(20px, 1.9vw, 27px)" }}
             >
-              {/* Number is derived from tab position (activeIdx), so reordering
-                  cards in the CMS auto-renumbers — not baked into the title. */}
-              {activeIdx + 1}. {industry.label}
+              {industry.label}
             </h3>
             <p
               className="font-[family-name:var(--font-dm-sans)] mt-3 mb-7 text-[15px] md:text-[16px] leading-[1.7] text-[#6b7280] text-pretty"
