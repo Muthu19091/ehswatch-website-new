@@ -1724,7 +1724,7 @@ export default function IrisPage({
             <div className="order-1 lg:order-none basis-full lg:basis-auto flex justify-center">
               <div className="relative shrink-0" style={{ width: 280, height: 280 }}>
                 <Orb
-                  hue={30}
+                  hue={0}
                   hoverIntensity={0.5}
                   rotateOnHover={false}
                   forceHoverState={false}
@@ -1817,7 +1817,7 @@ export default function IrisPage({
               — 2 columns on phones, 3 columns on iPad. */}
           <div className="lg:hidden flex flex-col items-center gap-4">
             <div className="relative shrink-0" style={{ width: 280, height: 280 }}>
-              <Orb hue={30} hoverIntensity={0.5} rotateOnHover={false} forceHoverState={false} backgroundColor="#ffffff" />
+              <Orb hue={0} hoverIntensity={0.5} rotateOnHover={false} forceHoverState={false} backgroundColor="#ffffff" />
               <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}>
                 <Image src={`${basePath}/images/iris-logo.png`} alt="IRIS" width={90} height={90} style={{ objectFit:"contain" }} />
               </div>
