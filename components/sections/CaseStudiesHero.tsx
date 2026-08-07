@@ -1,7 +1,7 @@
 "use client";
 
 import GlareButton from "@/components/ui/GlareButton";
-import DotGrid from "@/components/ui/DotGrid";
+import HeroDotBackground from "@/components/ui/HeroDotBackground";
 
 interface Props {
   cmsEyebrow?: string;
@@ -35,7 +35,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
         .cs-box { position: absolute; width: 48px; height: 48px; }
       `}</style>
 
-      <div className="absolute inset-0 z-0"><DotGrid /></div>
+      <HeroDotBackground />
       <div className="absolute inset-0 overflow-hidden cs-grid pointer-events-none hidden">
         {Array.from({ length: 200 }, (_, i) => {
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;

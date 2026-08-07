@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 // basePath is imported for future image assets; unused in this file but kept per project conventions.
 import { basePath } from "@/lib/basePath";
+import HeroDotBackground from "@/components/ui/HeroDotBackground";
 import IRISChatShowcase from "@/components/sections/IRISChatShowcase";
 import Orb from "@/components/ui/Orb";
 import GlareButton from "@/components/ui/GlareButton";
@@ -1596,37 +1597,7 @@ export default function IrisPage({
             box-shadow: 0 10px 32px rgba(0,0,0,0.10) !important;
           }
         `}</style>
-        <div className="absolute inset-0 overflow-hidden iris-hero-grid-container pointer-events-none">
-          {Array.from({ length: 120 }, (_, i) => {
-            const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
-            const colorVariant = i % 4;
-            const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD"];
-            const animationDelay = (i * 0.45) % 4;
-            const animationDuration = 4 + ((i * 2) % 6);
-            const row = Math.floor(i / 20);
-            const col = i % 20;
-            return shouldAnimate ? (
-              <div
-                key={`iris-hero-grid-box-${i}`}
-                className="iris-hero-grid-box"
-                style={{
-                  left: `${col * 50 + 1}px`,
-                  top: `${row * 50 + 1}px`,
-                  backgroundColor: colors[colorVariant],
-                  animation: `irisHeroGridBoxFill ${animationDuration}s ease-in-out infinite`,
-                  animationDelay: `${animationDelay}s`,
-                }}
-              />
-            ) : null;
-          })}
-          {/* Bottom fade overlay */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-            style={{
-              background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.8) 70%, white 100%)",
-            }}
-          />
-        </div>
+        <HeroDotBackground />
 
         {/* ── Title ── */}
         <div className="relative z-10 text-center mb-2 animate-hero-rise" style={{ animationDelay:"60ms" }}>

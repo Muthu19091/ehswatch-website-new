@@ -1,5 +1,5 @@
 "use client";
-import DotGrid from "@/components/ui/DotGrid";
+import HeroDotBackground from "@/components/ui/HeroDotBackground";
 
 interface BlogHeroProps {
   headline?: string;
@@ -42,7 +42,7 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
         .blog-box { position: absolute; width: 48px; height: 48px; }
       `}</style>
 
-      <div className="absolute inset-0 z-0"><DotGrid /></div>
+      <HeroDotBackground />
       <div className="absolute inset-0 overflow-hidden blog-grid pointer-events-none hidden">
         {Array.from({ length: 200 }, (_, i) => {
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;

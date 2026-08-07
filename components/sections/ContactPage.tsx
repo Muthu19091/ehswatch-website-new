@@ -1,4 +1,5 @@
 import DynamicCmsForm from "@/components/ui/DynamicCmsForm";
+import HeroDotBackground from "@/components/ui/HeroDotBackground";
 import ContactFormTabs, { type FormTab } from "@/components/ui/ContactFormTabs";
 import CmsIcon from "@/components/ui/CmsIcon";
 import CmsSlider from "@/components/ui/CmsSlider";
@@ -96,33 +97,7 @@ export default function ContactPage({
           .ct-box { position:absolute; width:48px; height:48px; }
         `}</style>
 
-        <div className="absolute inset-0 overflow-hidden ct-grid pointer-events-none">
-          {Array.from({ length: 200 }, (_, i) => {
-            const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
-            const colors = ["#EFF6FF", "#DBEAFE", "#BFDBFE", "#93C5FD"];
-            return shouldAnimate ? (
-              <div
-                key={i}
-                className="ct-box"
-                style={{
-                  left: `${(i % 20) * 50 + 1}px`,
-                  top: `${Math.floor(i / 20) * 50 + 1}px`,
-                  backgroundColor: colors[i % 4],
-                  animation: `ctBoxFill ${4 + ((i * 2) % 6)}s ease-in-out infinite`,
-                  animationDelay: `${(i * 0.45) % 4}s`,
-                }}
-              />
-            ) : null;
-          })}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-            style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.9) 60%, #fff 100%)" }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: "radial-gradient(ellipse 75% 75% at 50% 45%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 50%, transparent 100%)" }}
-          />
-        </div>
+        <HeroDotBackground />
 
         <div className="relative z-20 max-w-[700px] w-full mx-auto text-center flex flex-col items-center gap-4">
           {/* Eyebrow */}
