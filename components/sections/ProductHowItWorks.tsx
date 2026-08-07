@@ -724,9 +724,10 @@ export default function ProductHowItWorks({
         n: i + 1,
         title: s.title || DEFAULT_STEPS[i]?.title || `Step ${i + 1}`,
         body: s.description || DEFAULT_STEPS[i]?.body || "",
+        image: s.image ?? null,
         sub_items: s.sub_items,
       }))
-    : DEFAULT_STEPS.map(s => ({ ...s, sub_items: undefined }));
+    : DEFAULT_STEPS.map(s => ({ ...s, image: null, sub_items: undefined }));
 
   const TRACK = (steps.length - 1) * (CIRCLE + GAP);
 
@@ -935,7 +936,17 @@ export default function ProductHowItWorks({
                       pointerEvents: i === activeStep ? "auto" : "none",
                     }}
                   >
-                    {isLast ? (
+                    {(step as { image?: { url?: string } | null }).image?.url ? (
+                      /* A CMS-uploaded step image wins over the built-in visuals
+                         (matches the mobile view) — fixes added/extra steps that
+                         otherwise reused a hardcoded dashboard ("random image"). */
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={(step as { image?: { url?: string } | null }).image!.url}
+                        alt={step.title || ""}
+                        style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                      />
+                    ) : isLast ? (
                       <Visual5 active={i === activeStep} subItems={step.sub_items} />
                     ) : (
                       (() => {
