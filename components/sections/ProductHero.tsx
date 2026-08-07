@@ -8,7 +8,7 @@ interface ProductHeroProps {
   cmsEyebrow?: string;
   cmsHeadline?: string;
   cmsSubheadline?: string;
-  cmsPrimaryCta?: { label: string; url: string };
+  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string };
 }
 
 export default function ProductHero({
@@ -135,6 +135,7 @@ export default function ProductHero({
         {showCta && (
         <GlareButton
           href={ctaHref}
+          videoUrl={cmsPrimaryCta?.videoUrl}
           className="inline-flex items-center gap-2 px-8 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white transition-all duration-200 animate-hero-rise hover:shadow-lg"
           style={{
             animationDelay: "320ms",

@@ -7,8 +7,8 @@ interface SolutionsHeroProps {
   cmsEyebrow?: string;
   cmsHeadline?: string;
   cmsSubheadline?: string;
-  cmsPrimaryCta?: { label: string; url: string };
-  cmsSecondaryCta?: { label: string; url: string };
+  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string };
+  cmsSecondaryCta?: { label: string; url: string; videoUrl?: string };
 }
 
 export default function SolutionsHero({
@@ -109,6 +109,7 @@ export default function SolutionsHero({
             {cmsPrimaryCta && (
               <GlareButton
                 href={cmsPrimaryCta.url}
+                videoUrl={cmsPrimaryCta.videoUrl}
                 className="px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white transition-all duration-200 hover:shadow-lg"
                 style={{
                   backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
@@ -124,6 +125,7 @@ export default function SolutionsHero({
             {cmsSecondaryCta && (
               <GlareButton
                 href={cmsSecondaryCta.url}
+                videoUrl={cmsSecondaryCta.videoUrl}
                 fillColor="#FFA660"
                 hoverTextColor="#ffffff"
                 className="px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-[#1b1b1b] border border-[#d1d5db] hover:border-[#9ca3af]"

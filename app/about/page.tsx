@@ -53,6 +53,20 @@ export default async function AboutPage() {
   const heroCta = resolveCta(heroData?.primary_cta, pageMap);
   const heroCtaLabel = heroCta?.label || undefined;
   const heroCtaUrl = heroCta?.url || undefined;
+  // Video popup: when the hero CTA is a "video_popup", surface its video URL
+  // so the button opens a modal player instead of navigating (like the home hero).
+  const heroPrimaryRaw = heroData?.primary_cta as
+    | { type?: string | null; video_url?: string | null; video_file?: { url?: string } | string | null }
+    | null
+    | undefined;
+  const heroVideoUrl =
+    heroPrimaryRaw?.type === "video_popup"
+      ? heroPrimaryRaw.video_url ||
+        (typeof heroPrimaryRaw.video_file === "string"
+          ? heroPrimaryRaw.video_file
+          : heroPrimaryRaw.video_file?.url) ||
+        undefined
+      : undefined;
 
   // ── image_text block (AboutStory) ───────────────────────────────────────────
   const imageTextData = findBlock<{
@@ -145,6 +159,7 @@ export default async function AboutPage() {
           cmsSubheadline={heroSubheadline}
           cmsPrimaryCtaLabel={heroCtaLabel}
           cmsPrimaryCtaUrl={heroCtaUrl}
+          cmsHeroVideoUrl={heroVideoUrl}
         />
         <AboutStory
           cmsHeading={storyHeading}

@@ -138,13 +138,28 @@ export function isExternalUrl(href: string): boolean {
  * no label renders nothing (instead of a hardcoded fallback).
  * Labels are stripped of stray HTML like every other short CMS text field.
  */
-export function resolveCta(cta: unknown, pageMap?: PageMap): { label: string; url: string } | null {
+export function resolveCta(
+  cta: unknown,
+  pageMap?: PageMap,
+): { label: string; url: string; videoUrl?: string } | null {
   const c = unwrapCta(cta);
   if (!c) return null;
   const label = stripHtml(c.label as string | null | undefined);
   if (!label) return null;
   const url = resolveHref(c, pageMap) || "#";
-  return { label, url };
+  // video_popup link type → surface the video URL so the CTA opens a modal
+  // player (handled by GlareButton) instead of navigating. Works for ANY CTA.
+  let videoUrl: string | undefined;
+  if ((typeof c.type === "string" ? c.type : "") === "video_popup") {
+    const vf = c.video_file as { url?: string } | string | null | undefined;
+    videoUrl =
+      (typeof c.video_url === "string" && c.video_url.trim()
+        ? c.video_url.trim()
+        : typeof vf === "string"
+          ? vf
+          : vf?.url) || undefined;
+  }
+  return videoUrl ? { label, url, videoUrl } : { label, url };
 }
 
 // Aliases used by page routes

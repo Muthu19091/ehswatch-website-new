@@ -7,8 +7,8 @@ interface Props {
   cmsEyebrow?: string;
   cmsHeadline?: string;
   cmsSubheadline?: string;
-  cmsPrimaryCta?: { label: string; url: string };
-  cmsSecondaryCta?: { label: string; url: string };
+  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string };
+  cmsSecondaryCta?: { label: string; url: string; videoUrl?: string };
 }
 
 export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadline, cmsPrimaryCta, cmsSecondaryCta }: Props) {
@@ -94,6 +94,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
           {primaryCta && (
           <GlareButton
             href={primaryCta.url}
+            videoUrl={primaryCta.videoUrl}
             className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-white"
             style={{
               backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
@@ -105,6 +106,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
           {cmsSecondaryCta && (
             <GlareButton
               href={cmsSecondaryCta.url}
+              videoUrl={cmsSecondaryCta.videoUrl}
               fillColor="#FFA660"
               hoverTextColor="#ffffff"
               className="gap-2 px-7 py-[11px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[14px] border"
