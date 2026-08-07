@@ -94,7 +94,6 @@ export default function PricingOverview({
               <div>
                 <h3
                   className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] md:text-[22px] leading-snug text-[#0a0f1e] text-balance"
-                  /* CMS may include a <br> to control the line split (visual balance). */
                   dangerouslySetInnerHTML={{ __html: checklistLabel }}
                 />
               </div>
