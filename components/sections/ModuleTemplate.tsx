@@ -487,6 +487,21 @@ export default function ModuleTemplate({
                   </div>
                 );
               })}
+              {/* White fillers complete an incomplete last row so the grey grid
+                  background never shows through empty cells. Counts are computed
+                  per breakpoint (2 / 3 columns); the 1-col layout never needs any. */}
+              {(() => {
+                const n = features.items.length;
+                const c3 = (3 - (n % 3)) % 3;
+                const c2 = (2 - (n % 2)) % 2;
+                return Array.from({ length: Math.max(c2, c3) }).map((_, j) => (
+                  <div
+                    key={`kf-filler-${j}`}
+                    aria-hidden
+                    className={`hidden bg-white ${j < c2 ? "sm:block" : "sm:hidden"} ${j < c3 ? "lg:block" : "lg:hidden"}`}
+                  />
+                ));
+              })()}
             </div>
           </div>
         </section>
