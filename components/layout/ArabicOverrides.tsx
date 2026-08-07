@@ -55,6 +55,8 @@ const EN_TO_AR: Record<string, string> = {
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
+  // Industries CTA heading — use قطاعك (sector), not عملك (work), per client.
+  "Does EHSWatch work for your industry?": "هل يعمل EHSWatch في قطاعك؟",
   // Footer copyright — keep © 2026 EHSWatch, translate the rest.
   "© 2026 EHSWatch. All rights reserved.":
     "© 2026 EHSWatch. جميع الحقوق محفوظة.",
