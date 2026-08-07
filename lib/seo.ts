@@ -25,7 +25,9 @@ export interface CmsMeta {
   meta_description?: string | null;
   meta_keywords?: string | null;
   canonical_url?: string | null;
-  og_image?: { url?: string | null } | null;
+  // CMS serialises og_image as a MediaResource ({ attributes: { url } }); some
+  // older fields are flat ({ url }). Support both.
+  og_image?: { url?: string | null; attributes?: { url?: string | null } | null } | null;
   robots?: string | null;
 }
 
@@ -42,7 +44,7 @@ export function seoExtras(
   if (Array.isArray(keywords) ? keywords.length > 0 : Boolean(keywords)) md.keywords = keywords;
   const canonical = str(meta?.canonical_url);
   if (canonical) md.alternates = { canonical };
-  const ogImage = meta?.og_image?.url || undefined;
+  const ogImage = meta?.og_image?.attributes?.url || meta?.og_image?.url || undefined;
   const ogTitle = str(meta?.meta_title) || undefined;
   const ogDesc = str(meta?.meta_description) || undefined;
   md.openGraph = {
