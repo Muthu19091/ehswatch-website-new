@@ -44,12 +44,16 @@ const _inflight = new Map<string, Promise<unknown>>();
 // the fetch layer so it works with our dynamic, cookie-aware page rendering.
 const _lkg = new Map<string, unknown>();
 
-const DEFAULT_TTL = 10_000;
-// Reference data that changes rarely — cache longer to cut request volume
-// against the CMS's 60 req/min limit (all SSR shares one IP).
+const DEFAULT_TTL = 5_000;
+// Short TTLs so CMS dashboard edits reflect quickly on stage/QA. Request bursts
+// are still bounded by the inflight-dedup + retry/last-known-good-on-transient
+// below, which protect the CMS's 60 req/min limit (all SSR shares one IP).
 function ttlFor(path: string): number {
+  // Layout singletons + the page list change less often — a slightly longer
+  // TTL, but far shorter than the previous 60s so header/footer/settings edits
+  // reflect within ~10s instead of a minute.
   if (path === "/pages" || path === "/header" || path === "/footer" || path === "/settings") {
-    return 60_000;
+    return 10_000;
   }
   return DEFAULT_TTL;
 }
