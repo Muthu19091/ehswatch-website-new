@@ -1,6 +1,7 @@
 "use client";
 
 import GlareButton from "@/components/ui/GlareButton";
+import DotGrid from "@/components/ui/DotGrid";
 
 interface PricingHeroProps {
   eyebrow?: string;
@@ -53,7 +54,8 @@ export default function PricingHero({
       `}</style>
 
       {/* Animated grid */}
-      <div className="absolute inset-0 overflow-hidden pricing-grid-container pointer-events-none">
+      <div className="absolute inset-0 z-0"><DotGrid /></div>
+      <div className="absolute inset-0 overflow-hidden pricing-grid-container pointer-events-none hidden">
         {Array.from({ length: 200 }, (_, i) => {
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
           const colorVariant = i % 4;

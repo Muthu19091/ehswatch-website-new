@@ -1,4 +1,5 @@
 "use client";
+import DotGrid from "@/components/ui/DotGrid";
 
 interface SupportHeroProps {
   cmsEyebrow?: string;
@@ -37,7 +38,8 @@ export default function SupportHero({ cmsEyebrow, cmsHeadline, cmsSubheadline }:
       `}</style>
 
       {/* Animated grid */}
-      <div className="absolute inset-0 overflow-hidden sup-grid pointer-events-none">
+      <div className="absolute inset-0 z-0"><DotGrid /></div>
+      <div className="absolute inset-0 overflow-hidden sup-grid pointer-events-none hidden">
         {Array.from({ length: 200 }, (_, i) => {
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
           const colorVariant = i % 4;

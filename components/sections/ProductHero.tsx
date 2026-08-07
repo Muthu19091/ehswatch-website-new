@@ -1,6 +1,7 @@
 "use client";
 
 import { basePath } from "@/lib/basePath";
+import DotGrid from "@/components/ui/DotGrid";
 import GlareButton from "@/components/ui/GlareButton";
 
 interface ProductHeroProps {
@@ -66,7 +67,8 @@ export default function ProductHero({
       `}</style>
 
       {/* Static grid background with animated squares */}
-      <div className="absolute inset-0 overflow-hidden grid-container pointer-events-none">
+      <div className="absolute inset-0 z-0"><DotGrid /></div>
+      <div className="absolute inset-0 overflow-hidden grid-container pointer-events-none hidden">
         {Array.from({ length: 200 }, (_, i) => {
           const shouldAnimate = (i * 7 + i * 3) % 17 === 0;
           const colorVariant = i % 4;
