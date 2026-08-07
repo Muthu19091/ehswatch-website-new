@@ -40,7 +40,7 @@ const EN_TO_AR: Record<string, string> = {
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
   "Why Traditional EHS Systems Fall Short": "لماذا تقصر أنظمة الصحة والسلامة والبيئة التقليدية؟",
   "What Sets EHSWatch Action Tracker Apart": "ما الذي يميز نظام EHSWatch Action Tracker؟",
-  "About IRIS": "عن IRIS",
+  "About IRIS": "IRIS عن",
   "EHSWatch: One Platform for Everyday Safety": "EHSWatch: منصة واحدة للسلامة اليومية",
   // Header / footer navigation labels (authored Arabic).
   "Company": "الشركة",
@@ -89,15 +89,13 @@ const LABEL_EN_TO_AR: Record<string, string> = {
 // instead of the brand being reordered to the right by the RTL page.
 const FORCE_LTR = new Set([
   "EHSWatch: One Platform for Everyday Safety",
-  // NB: "About IRIS" (→ عن IRIS) is intentionally NOT forced LTR — natural RTL
-  // puts عن on the right and IRIS on the left, as the client wants.
+  // "About IRIS" is forced LTR with the brand first ("IRIS عن") so it always
+  // renders IRIS on the left and عن on the right. A bare dir="rtl" on the inline
+  // span was overridden by an ancestor and put عن on the left instead.
+  "About IRIS",
 ]);
 
-// Some ancestor forces LTR on the IRIS "About" heading, which lays "عن IRIS"
-// the wrong way (عن on the left). Pin these to RTL so عن sits on the right and
-// IRIS on the left when translating.
-const FORCE_RTL = new Set([
-  "About IRIS",
+const FORCE_RTL = new Set<string>([
 ]);
 
 // Machine-Arabic → corrected Arabic (used when there's no stable English key).
