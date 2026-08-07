@@ -112,6 +112,12 @@ export default async function ContactUsPage() {
       }))
     : null;
 
+  /* ── pain_points block → hero trust badges (icon + label) ── */
+  const trustBlock = findBlock<{ items?: unknown }>(blocks, "pain_points");
+  const trustBadges = normalizeArray<{ label?: string | null; icon?: string | null }>(trustBlock?.items)
+    .map((b) => ({ label: (b.label ?? "").toString().trim(), icon: b.icon ?? null }))
+    .filter((b) => b.label);
+
   /* ── slider block ── */
   const sliderBlock = findBlock<{
     heading?: string | null;
@@ -201,6 +207,7 @@ export default async function ContactUsPage() {
           formDescription={formEmbed?.description || undefined}
           officesHeading={officesBlock?.heading || undefined}
           officeItems={officeItems}
+          trustBadges={trustBadges.length > 0 ? trustBadges : undefined}
           sliderData={sliderData}
           galleryData={galleryData}
         />

@@ -53,9 +53,16 @@ export interface ContactPageProps {
   formDescription?: string;
   officesHeading?: string;
   officeItems?: CmsOfficeItem[] | null;
+  trustBadges?: { label: string; icon?: string | null }[];
   sliderData?: CmsSliderData | null;
   galleryData?: CmsGalleryData | null;
 }
+
+const DEFAULT_TRUST_BADGES: { label: string; icon?: string | null }[] = [
+  { label: "Rapid Deployment", icon: null },
+  { label: "4-Hour SLA Response", icon: null },
+  { label: "ISO 27001 Certified", icon: null },
+];
 
 export default function ContactPage({
   formAttrs,
@@ -71,6 +78,7 @@ export default function ContactPage({
   formDescription,
   officesHeading,
   officeItems,
+  trustBadges,
   sliderData,
   galleryData,
 }: ContactPageProps) {
@@ -134,16 +142,20 @@ export default function ContactPage({
             className="flex flex-wrap items-center gap-x-6 gap-y-2 animate-hero-rise"
             style={{ animationDelay: "230ms" }}
           >
-            {["Rapid Deployment", "4-Hour SLA Response", "ISO 27001 Certified"].map((t) => (
+            {(trustBadges && trustBadges.length > 0 ? trustBadges : DEFAULT_TRUST_BADGES).map((badge, i) => (
               <span
-                key={t}
+                key={`${badge.label}-${i}`}
                 className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#0a0f1e]"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-                  <circle cx="8" cy="8" r="8" fill="#ff7812" />
-                  <path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {t}
+                {badge.icon ? (
+                  <CmsIcon icon={badge.icon} size={16} strokeWidth={2} color="#ff7812" fallback="check" className="shrink-0" />
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
+                    <circle cx="8" cy="8" r="8" fill="#ff7812" />
+                    <path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+                {badge.label}
               </span>
             ))}
           </div>
