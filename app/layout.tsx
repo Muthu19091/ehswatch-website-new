@@ -7,6 +7,8 @@ import GoogleTranslate from "@/components/layout/GoogleTranslate";
 import ArabicOverrides from "@/components/layout/ArabicOverrides";
 import UtmCapture from "@/components/UtmCapture";
 import { getLocale } from "@/lib/locale";
+import { getSettings, getHeader } from "@/lib/api";
+import TrackingScripts from "@/components/layout/TrackingScripts";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -52,7 +54,32 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale();
+  const [locale, settingsRes, headerRes] = await Promise.all([
+    getLocale(),
+    getSettings().catch(() => null),
+    getHeader().catch(() => null),
+  ]);
+  // Site-wide analytics + JSON-LD, both CMS-driven (Settings → tracking / brand / seo).
+  const settings = ((settingsRes?.data ?? null) as unknown) as Record<string, any> | null;
+  const tracking = settings?.tracking ?? {};
+  const brandName = settings?.brand?.name || "EHSWatch";
+  const siteUrl = (settings?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  const headerAttrs = (headerRes?.data as any)?.attributes;
+  const orgLogo = headerAttrs?.logo?.attributes?.url || headerAttrs?.logo?.url || `${siteUrl}/images/favicon-96.png`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: brandName,
+        url: siteUrl,
+        logo: orgLogo,
+        ...(settings?.contact?.email ? { email: settings.contact.email } : {}),
+        ...(settings?.contact?.phone ? { telephone: settings.contact.phone } : {}),
+      },
+      { "@type": "WebSite", name: brandName, url: siteUrl },
+    ],
+  };
   return (
     <html
       lang={locale}
@@ -61,6 +88,11 @@ export default async function RootLayout({
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
     >
       <body className="antialiased">
+        {/* Organization + WebSite structured data (JSON-LD), CMS-driven. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {/* Cloak (before paint): when Arabic is active, hide the page until the
             first-party translator has swapped the text in, so the visitor never
             sees the English→Arabic reflow. Force-reveal after 3s so the page can
@@ -89,13 +121,10 @@ export default async function RootLayout({
         <ArabicOverrides />
         <PagePreviewBanner />
         {children}
-        {/* Odigma preview/embed overlay — loaded site-wide (all pages).
-            data-cfasync="false" keeps Cloudflare Rocket Loader from deferring it. */}
-        <script
-          src="https://preview.odigma.ooo/embed.js?project=ehswatch-stage&key=qe_f675d8908bf1b5c6cfcaad4f"
-          data-cfasync="false"
-          defer
-        />
+        {/* Analytics / tracking (GTM etc.) + embed overlay — injected from the
+            CMS (Settings → tracking.head_script / body_script), so editing the
+            tag in the dashboard reflects site-wide with no code change. */}
+        <TrackingScripts head={tracking?.head_script} body={tracking?.body_script} />
       </body>
     </html>
   );

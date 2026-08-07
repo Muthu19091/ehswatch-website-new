@@ -117,10 +117,14 @@ export default async function Footer() {
   // Footer's own CMS logo first, else the Site Settings brand footer logo
   // (resolved to a URL by the CMS). No hardcoded logo fallback.
   const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? (settingsRes?.data as any)?.brand?.footer_logo ?? undefined;
+  // The large wordmark uses a dedicated CMS field when present, else the brand logo.
+  const logoLargeSrc = attrs?.brand?.logo_large?.attributes?.url ?? attrs?.brand?.logo_large?.url ?? logoSrc;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
-  const tagline     = attrs?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
+  const tagline     = attrs?.brand?.tagline || (settingsRes?.data as any)?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
   const copyright   = attrs?.bottom?.copyright_text || "© 2026 EHSWatch. All rights reserved.";
-  const legalLinks  = (attrs?.bottom?.legal_links ?? []) as { label: string; url: string }[];
+  const legalLinks  = (attrs?.bottom?.legal_links ?? []) as { label: string; url: string; open_in_new_tab?: boolean }[];
+  const badges      = (attrs?.bottom?.badges ?? []) as Array<{ image?: { url?: string } | string | null; url?: string | null; label?: string | null; alt?: string | null }>;
+  const subFooterHtml = (attrs?.bottom?.sub_footer_html || "").trim();
   // CTA column is fully CMS-controlled: honour the `enabled` flag and only
   // render when there's real content. No hardcoded "Book a Demo" fallback — an
   // admin disabling or emptying the CTA in the CMS hides the whole column.
@@ -199,7 +203,10 @@ export default async function Footer() {
           )}
           <div className="flex gap-[10px] pt-2 md:pt-[10px]">
             {socialLinks.map(({ platform, url, icon: iconSlug }) => {
-              const brandIcon = SOCIAL_ICONS[platform.toLowerCase()];
+              // The CMS `icon` field drives the glyph (so changing/adding an
+              // icon in the dashboard reflects); falls back to the platform.
+              const iconKey = String(iconSlug || platform).toLowerCase();
+              const brandIcon = SOCIAL_ICONS[iconKey];
               return (
                 <Link
                   key={platform}
@@ -210,7 +217,7 @@ export default async function Footer() {
                   aria-label={platform}
                 >
                   {brandIcon ?? (
-                    <CmsIcon icon={iconSlug || platform} size={13} strokeWidth={2} color="white" fallback="link" />
+                    <CmsIcon icon={iconKey} size={13} strokeWidth={2} color="white" fallback="link" />
                   )}
                 </Link>
               );
@@ -309,14 +316,29 @@ export default async function Footer() {
 
       {/* Wordmark fade row */}
       <div className="relative w-full h-[100px] md:h-[180px] z-[2] overflow-hidden mt-8">
-        {logoSrc && (
+        {logoLargeSrc && (
         <div className="absolute bottom-3 md:bottom-[19.5px] left-6 md:left-[128px] w-[280px] md:w-[455px] h-[80px] md:h-[125px] opacity-30 md:opacity-40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logoSrc} alt="" className="w-full h-full object-contain object-left" />
+          <img src={logoLargeSrc} alt="" className="w-full h-full object-contain object-left" />
         </div>
         )}
         <div className="absolute inset-0 top-[40px]" style={{ background: "linear-gradient(to bottom, transparent, #0a1628)" }} />
       </div>
+
+      {/* Trust badges (CMS-driven; hidden when none) */}
+      {badges.length > 0 && (
+        <div className="relative z-[1] w-full max-w-[1216px] px-6 md:px-8 flex flex-wrap items-center gap-4 md:gap-6 pb-2">
+          {badges.map((b, i) => {
+            const src = typeof b.image === "string" ? b.image : b.image?.url;
+            if (!src) return null;
+            /* eslint-disable-next-line @next/next/no-img-element */
+            const img = <img src={src} alt={b.alt || b.label || ""} className="h-9 md:h-11 w-auto object-contain opacity-80" />;
+            return b.url
+              ? <a key={i} href={b.url} target="_blank" rel="noopener noreferrer" className="inline-flex">{img}</a>
+              : <span key={i} className="inline-flex">{img}</span>;
+          })}
+        </div>
+      )}
 
       {/* Bottom bar */}
       <div className="border-t border-[rgba(255,255,255,0.06)] flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 pb-6 md:pb-[28px] pt-5 md:pt-[21px] w-full max-w-[1216px] px-6 md:px-8 z-[1]">
@@ -329,6 +351,8 @@ export default async function Footer() {
                 <Link
                   key={link.label}
                   href={link.url || "#"}
+                  target={link.open_in_new_tab ? "_blank" : undefined}
+                  rel={link.open_in_new_tab ? "noopener noreferrer" : undefined}
                   className="font-[family-name:var(--font-inter)] text-[11px] md:text-[12px] text-[rgba(255,255,255,0.3)] hover:text-white/60 transition-colors"
                 >
                   {link.label}
@@ -349,6 +373,13 @@ export default async function Footer() {
               ))}
         </div>
       </div>
+
+      {subFooterHtml && (
+        <div
+          className="relative z-[1] w-full max-w-[1216px] px-6 md:px-8 pb-6 text-[11px] md:text-[12px] text-[rgba(255,255,255,0.35)] [&_a]:underline [&_a:hover]:text-white/70"
+          dangerouslySetInnerHTML={{ __html: subFooterHtml }}
+        />
+      )}
     </footer>
   );
 }
