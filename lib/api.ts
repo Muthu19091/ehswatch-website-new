@@ -4,6 +4,7 @@ import type {
   CmsHeader, CmsPage, CmsProductModule, CmsSettings, CmsTestimonial,
   CollectionResponse, FormSubmitResult, SingletonResponse,
 } from "@/lib/types";
+import { richHtml } from "@/lib/text";
 
 // ─── Axios instances ──────────────────────────────────────────────────────────
 
@@ -60,6 +61,22 @@ async function withLocale(path: string): Promise<string> {
   return path;
 }
 
+// The dashboard editor stores rich-text fields as TipTap/ProseMirror docs
+// ({type:"doc",content:[...]}). The whole frontend expects HTML strings there,
+// so convert every such doc to HTML right at the fetch boundary — one place
+// fixes all pages/fields instead of guarding each render site.
+function normalizeTiptapDeep(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(normalizeTiptapDeep);
+  if (node && typeof node === "object") {
+    const n = node as Record<string, unknown>;
+    if (n.type === "doc" && Array.isArray(n.content)) return richHtml(n);
+    const out: Record<string, unknown> = {};
+    for (const k of Object.keys(n)) out[k] = normalizeTiptapDeep(n[k]);
+    return out;
+  }
+  return node;
+}
+
 async function apiGet<T>(path: string): Promise<T | null> {
   if (typeof window !== "undefined") return _doGet<T>(path);
 
@@ -105,7 +122,7 @@ async function apiGet<T>(path: string): Promise<T | null> {
 async function _doGet<T>(path: string, attempt = 0): Promise<T | null> {
   try {
     const res = await getClient().get<T>(path);
-    return res.data;
+    return normalizeTiptapDeep(res.data) as T;
   } catch (err) {
     const e = err as AxiosError;
     const status = e.response?.status;
