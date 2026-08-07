@@ -229,6 +229,8 @@ export default async function Footer() {
                 <li key={`${link.label}-${li}`}>
                   <Link
                     href={link.url || "#"}
+                    target={(link as { open_in_new_tab?: boolean }).open_in_new_tab ? "_blank" : undefined}
+                    rel={(link as { open_in_new_tab?: boolean }).open_in_new_tab ? "noopener noreferrer" : undefined}
                     className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
@@ -253,6 +255,8 @@ export default async function Footer() {
                 <li key={mod.label}>
                   <Link
                     href={(mod as any).url || (mod as any).href || "#"}
+                    target={(mod as any).open_in_new_tab ? "_blank" : undefined}
+                    rel={(mod as any).open_in_new_tab ? "noopener noreferrer" : undefined}
                     className="font-[family-name:var(--font-inter)] text-[12.5px] text-white/60 hover:text-white transition-colors leading-snug"
                   >
                     {mod.label}
@@ -265,6 +269,8 @@ export default async function Footer() {
                 <li key={mod.label}>
                   <Link
                     href={(mod as any).url || (mod as any).href || "#"}
+                    target={(mod as any).open_in_new_tab ? "_blank" : undefined}
+                    rel={(mod as any).open_in_new_tab ? "noopener noreferrer" : undefined}
                     className="font-[family-name:var(--font-inter)] text-[12.5px] text-white/60 hover:text-white transition-colors leading-snug"
                   >
                     {mod.label}

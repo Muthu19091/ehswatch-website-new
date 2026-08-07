@@ -671,7 +671,16 @@ function MobileStep({
             flexShrink: 0,
           }}
         >
-          {isLast ? (
+          {(step as { image?: { url?: string } | null }).image?.url ? (
+            /* A CMS-uploaded step image wins over the built-in visuals — fixes
+               added steps (e.g. a 6th) that otherwise reused a hardcoded one. */
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={(step as { image?: { url?: string } | null }).image!.url}
+              alt={step.title || ""}
+              style={{ width: "100%", height: "auto", objectFit: "contain", display: "block", borderRadius: 12 }}
+            />
+          ) : isLast ? (
             <Visual5 active={active} subItems={step.sub_items} />
           ) : (
             (() => {
