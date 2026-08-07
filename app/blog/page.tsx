@@ -142,6 +142,7 @@ export default async function BlogPage() {
     showTimeline: asBool(highlightsBlock.show_timeline_filter),
     showTopic:    asBool(highlightsBlock.show_topic_filter),
     showFormat:   asBool(highlightsBlock.show_format_filter),
+    perPage:      Number(highlightsBlock.max_count) || undefined,
   };
 
   // Extract form_embed block — read form_slug dynamically
@@ -177,6 +178,7 @@ export default async function BlogPage() {
         />
         <BlogGrid
           cmsPosts={cmsPosts.length > 0 ? cmsPosts : undefined}
+          cmsPageSize={listingControls.perPage}
           showSearch={listingControls.showSearch}
           showTimeline={listingControls.showTimeline}
           showTopic={listingControls.showTopic}

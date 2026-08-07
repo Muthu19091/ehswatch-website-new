@@ -39,7 +39,7 @@ function cmsToPost(p: CmsBlogPost): Post {
 const TIMELINE_OPTIONS = ["Timeline: All time", "Last month", "Last 3 months", "This year"];
 // Posts per page. Each page renders its first 2 as large featured cards and the
 // next 4 in the standard grid — one clean featured row + one grid row (2 + 4).
-const PAGE_SIZE = 6;
+const DEFAULT_PAGE_SIZE = 6;
 
 // Windowed page list for the pager: 1 … (cur-1) cur (cur+1) … N. Keeps the
 // control compact as the blog grows; returns page numbers with "…" separators.
@@ -243,12 +243,14 @@ function FilterSelect({ value, onChange, options }: { value: string; onChange: (
 /* ── Section ─────────────────────────────────────────────────── */
 export default function BlogGrid({
   cmsPosts,
+  cmsPageSize,
   showSearch = true,
   showTimeline = true,
   showTopic = true,
   showFormat = true,
 }: {
   cmsPosts?: CmsBlogPost[];
+  cmsPageSize?: number;
   showSearch?: boolean;
   showTimeline?: boolean;
   showTopic?: boolean;
@@ -256,6 +258,8 @@ export default function BlogGrid({
 }) {
   // CMS-only: no hardcoded fallback posts.
   const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : [];
+  // Posts per page — CMS blog_highlights.max_count when set, else the default.
+  const PAGE_SIZE = cmsPageSize && cmsPageSize > 0 ? cmsPageSize : DEFAULT_PAGE_SIZE;
 
   // Dedupe case-insensitively (categories are free text in the CMS) —
   // first-seen casing wins as the display value

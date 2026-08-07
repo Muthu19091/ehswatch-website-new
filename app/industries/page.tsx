@@ -58,7 +58,9 @@ export default async function IndustriesPage() {
   const ctaSecondary = resolveCta(ctaData?.secondary_cta, pageMap);
 
   /* Testimonials section header — from the industries CMS testimonials block */
-  const testimonialsData = findBlock<{ heading?: string; subheading?: string }>(industryBlocks, "testimonials");
+  const testimonialsData = findBlock<{ heading?: string; subheading?: string; visible_count?: number | string | null }>(industryBlocks, "testimonials");
+  const testimonialsLimit = Number(testimonialsData?.visible_count) || undefined;
+  const limitedTestimonials = testimonialsLimit ? cmsTestimonials.slice(0, testimonialsLimit) : cmsTestimonials;
 
   // ── solution_carousel block → SolutionsZigzag ─────────────────────────────
   const solutionCarousel = findBlock<{
@@ -98,7 +100,7 @@ export default async function IndustriesPage() {
           <Testimonials
             title={headingHtmlOpt(testimonialsData?.heading)}
             subtitle={stripHtmlOpt(testimonialsData?.subheading) ?? ""}
-            cmsItems={cmsTestimonials}
+            cmsItems={limitedTestimonials}
           />
         )}
         {ctaData?.headline && (
