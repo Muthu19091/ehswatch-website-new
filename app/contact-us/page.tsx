@@ -50,26 +50,41 @@ export default async function ContactUsPage() {
   const heroPrimaryCtaLabel = heroCta?.label;
   const heroPrimaryCtaHref  = heroCta?.url;
 
-  /* ── form_embed block — contains the form_slug the CMS admin chose ── */
+  /* ── form_embed block — the CMS admin picks which form(s) drive the tabs:
+     form_slug = first/primary tab, form_slug_2 = optional second tab. ── */
   const formEmbed = findBlock<{
     heading?: string;
     subheading?: string;
     description?: string;
     form_slug?: string;
+    form_slug_2?: string;
   }>(blocks, "form_embed");
 
-  /* Fetch BOTH the Support and Contact forms so this page (the Contact-Us
-     page — /contact-us redirects here) can offer them as a tab switch. */
-  const [supportRes, contactRes] = await Promise.all([
-    getForm("support").catch(() => null),
-    getForm("contact").catch(() => null),
-  ]);
-  const formTabs = [
-    supportRes?.data?.attributes && { key: "support", label: "Support", slug: "support", formAttrs: supportRes.data.attributes },
-    contactRes?.data?.attributes && { key: "contact", label: "Contact", slug: "contact", formAttrs: contactRes.data.attributes },
-  ].filter(Boolean) as { key: string; label: string; slug: string; formAttrs: any }[];
+  /* Tab slugs come from the CMS (form_slug, then form_slug_2), de-duped.
+     Falls back to the legacy support+contact pair only if the CMS set neither. */
+  const cmsTabSlugs = [formEmbed?.form_slug, formEmbed?.form_slug_2]
+    .map((v) => (typeof v === "string" ? v.trim() : ""))
+    .filter(Boolean)
+    .filter((v, i, a) => a.indexOf(v) === i);
+  const tabSlugs = cmsTabSlugs.length ? cmsTabSlugs : ["support", "contact"];
+
+  /* Fetch each configured form and build the tab list IN CMS ORDER.
+     A slug that 404s (e.g. a soft-deleted form) is simply dropped. */
+  const tabForms = await Promise.all(
+    tabSlugs.map((slug) =>
+      getForm(slug)
+        .then((r) => ({ slug, attrs: r?.data?.attributes ?? null }))
+        .catch(() => ({ slug, attrs: null })),
+    ),
+  );
+  const tabLabel = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
+  const formTabs = tabForms
+    .filter((t) => t.attrs)
+    .map((t) => ({ key: t.slug, label: tabLabel(t.slug), slug: t.slug, formAttrs: t.attrs })) as
+      { key: string; label: string; slug: string; formAttrs: any }[];
+
   /* First tab drives the layout + single-form fallback. */
-  const formSlug = formTabs[0]?.slug ?? (formEmbed?.form_slug ?? "support");
+  const formSlug = formTabs[0]?.slug ?? formEmbed?.form_slug ?? "contact";
   const formAttrs = formTabs[0]?.formAttrs ?? null;
 
   /* ── icon_features block (offices) ── */
