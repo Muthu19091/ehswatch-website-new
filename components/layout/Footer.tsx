@@ -136,8 +136,8 @@ export default async function Footer() {
 
   // Empty list in CMS = admin removed them all; hardcoded fallback only when
   // the footer API itself is unreachable.
-  const socialLinks: { platform: string; url: string; icon?: string | null }[] = attrs
-    ? ((attrs.social_links ?? []) as { platform: string; url: string; icon?: string | null }[])
+  const socialLinks: { platform: string; url: string; icon?: string | null; icon_svg?: string | null }[] = attrs
+    ? ((attrs.social_links ?? []) as { platform: string; url: string; icon?: string | null; icon_svg?: string | null }[])
     : FALLBACK_SOCIALS;
 
   const columns = (attrs?.columns ?? []) as { heading?: string; title?: string; links: { label: string; url: string }[] }[];
@@ -202,7 +202,7 @@ export default async function Footer() {
             </div>
           )}
           <div className="flex gap-[10px] pt-2 md:pt-[10px]">
-            {socialLinks.map(({ platform, url, icon: iconSlug }) => {
+            {socialLinks.map(({ platform, url, icon: iconSlug, icon_svg: iconSvg }) => {
               // The CMS `icon` field drives the glyph (so changing/adding an
               // icon in the dashboard reflects); falls back to the platform.
               const iconKey = String(iconSlug || platform).toLowerCase();
@@ -216,7 +216,12 @@ export default async function Footer() {
                   className="w-[30px] h-[30px] rounded-full border border-[rgba(255,255,255,0.8)] flex items-center justify-center hover:bg-white/10 transition-colors"
                   aria-label={platform}
                 >
-                  {brandIcon ?? (
+                  {iconSvg ? (
+                    <span
+                      className="w-[13px] h-[13px] text-white [&_svg]:w-full [&_svg]:h-full [&_svg]:fill-current"
+                      dangerouslySetInnerHTML={{ __html: iconSvg }}
+                    />
+                  ) : brandIcon ?? (
                     <CmsIcon icon={iconKey} size={13} strokeWidth={2} color="white" fallback="link" />
                   )}
                 </Link>
