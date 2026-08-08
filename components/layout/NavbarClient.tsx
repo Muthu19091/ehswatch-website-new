@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+// Isomorphic layout effect: use the real layout effect on the client (measures
+// before paint, so the overflow collapse never flashes) and fall back to a
+// no-warn effect during SSR.
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 import { createPortal } from "react-dom";
 import { basePath } from "@/lib/basePath";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
@@ -66,10 +71,18 @@ export default function NavbarClient({
   // Keep the row from overflowing the logo/CTA: show a safe number of items
   // inline and collapse the rest into a "More" dropdown. Beyond this the header
   // would overlap regardless of viewport.
-  const MAX_INLINE = 7;
-  const collapse = allNavItems.length > MAX_INLINE;
-  const navItems = collapse ? allNavItems.slice(0, MAX_INLINE - 1) : allNavItems;
-  const overflowItems = collapse ? allNavItems.slice(MAX_INLINE - 1) : [];
+  // BUG-130 — Priority+ nav: never hide a heading behind a fixed cap. Every
+  // item renders inline on the server and first paint (inlineCount defaults to
+  // the full list); on the client we measure how many actually fit the current
+  // width and collapse ONLY the genuine overflow into the "More" dropdown.
+  const [inlineCount, setInlineCount] = useState(allNavItems.length);
+  const [measuring, setMeasuring] = useState(true);
+  // While measuring we render the FULL list so every item is measurable; the
+  // layout effect below computes how many fit and collapses the overflow BEFORE
+  // the browser paints, so there's no visible flash of the full row.
+  const renderCount = measuring ? allNavItems.length : Math.min(inlineCount, allNavItems.length);
+  const navItems = allNavItems.slice(0, renderCount);
+  const overflowItems = allNavItems.slice(renderCount);
   const ctaList = (cmsCtas && cmsCtas.length > 0)
     ? cmsCtas
     : (cmsCta ? [{ label: cmsCta.label, href: cmsCta.href } as { label: string; href: string; newTab?: boolean }] : []);
@@ -107,11 +120,120 @@ export default function NavbarClient({
 
   const headerRef          = useRef<HTMLElement>(null);
   const navRef             = useRef<HTMLElement>(null);
+  const navListRef         = useRef<HTMLDivElement>(null);
   const logoWhiteRef       = useRef<HTMLImageElement>(null);
+  const rightClusterRef    = useRef<HTMLDivElement>(null);
   const logoDarkRef        = useRef<HTMLImageElement>(null);
   const linkRefs           = useRef<(HTMLElement | null)[]>([]);
   const ctaRef             = useRef<HTMLAnchorElement>(null);
   const hamburgerStrokeRef = useRef<SVGSVGElement>(null);
+
+  // BUG-130 — priority+ nav. Measured in a LAYOUT effect (runs after commit,
+  // before paint) so there is no race with React's render and no flash: when
+  // `measuring` is true the full list is in the DOM, we read each item's width
+  // against the width-constrained links container, then collapse only the true
+  // overflow into "More". Budget is the links container (the outer bar grows
+  // with its own overflow, so it never reports overflow).
+  useIsoLayoutEffect(() => {
+    if (!measuring) return;
+    if (allNavItems.length === 0) { setMeasuring(false); return; }
+    const MORE_RESERVE = 88; // approx px width of the "More" button incl. padding
+    const box = navListRef.current;
+    const els = linkRefs.current;
+    if (!box) { setMeasuring(false); return; }
+    // Stable budget: the outer bar AND the links container both grow with their
+    // own overflow, so their clientWidth is unusable. Derive the space actually
+    // available to the links from the viewport minus the fixed logo + right
+    // cluster (their offsetWidth is position-independent, so a spilling row
+    // doesn't corrupt it). Assume symmetric header padding via the logo's left.
+    const vw = document.documentElement.clientWidth || window.innerWidth;
+    if (vw < 1024) { setMeasuring(false); return; } // desktop nav hidden below lg
+    // The pill is width:auto (shrinks to content) with a scroll-driven maxWidth
+    // that morphs 2400px (top) -> 1160px (scrolled), so its own clientWidth is
+    // useless as a budget. The real space the links can take is the pill's
+    // achievable width -- min(current maxWidth, viewport - header padding) --
+    // minus the fixed logo and right cluster. All inputs are stable offsetWidths
+    // / the computed maxWidth (never corrupted by a spilling row), so the fit is
+    // monotonic in width and follows the scroll morph.
+    const HPAD = 24; // header horizontal padding per side (approx, desktop)
+    let pillMax = Infinity;
+    const navEl = navRef.current;
+    if (navEl) {
+      const mw = parseFloat(getComputedStyle(navEl).maxWidth);
+      if (Number.isFinite(mw) && mw > 0) pillMax = mw;
+    }
+    const pillAvail = Math.min(pillMax, vw - HPAD * 2);
+    const logoBox = logoWhiteRef.current?.parentElement as HTMLElement | null;
+    const logoW = logoBox?.offsetWidth ?? 120;
+    const ctaW = rightClusterRef.current?.offsetWidth ?? 0;
+    const GAP = 32; // breathing room so the last item never touches the CTA
+    const budget = pillAvail - logoW - ctaW - GAP;
+    if (budget <= 0) { setMeasuring(false); return; }
+    const widths: number[] = [];
+    for (let k = 0; k < allNavItems.length; k++) {
+      const el = els[k];
+      if (!el) { setMeasuring(false); return; }
+      widths.push(el.getBoundingClientRect().width);
+    }
+    const total = widths.reduce((a, b) => a + b, 0);
+    let count = allNavItems.length;
+    if (total > budget) {
+      let used = MORE_RESERVE;
+      count = 0;
+      for (let k = 0; k < widths.length; k++) {
+        if (used + widths[k] <= budget) { used += widths[k]; count += 1; }
+        else break;
+      }
+      count = Math.max(1, count);
+    }
+    setInlineCount(count);
+    setMeasuring(false);
+  }, [measuring, allNavItems.length]);
+
+  // Re-measure when the available width settles after a resize or the header's
+  // scroll-morph transition. A ResizeObserver on the links container fires every
+  // frame during the CSS width transition, so debounce until it stops moving.
+  useEffect(() => {
+    let timer = 0;
+    const remeasure = () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(() => setMeasuring(true), 140) as unknown as number;
+    };
+    const ro = typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(() => remeasure())
+      : null;
+    // Observe the STABLE full-width header, not the links container: collapsing
+    // items changes the container width (the top-state pill is width:auto), which
+    // would re-fire the observer and oscillate back to the full list.
+    if (ro && headerRef.current) ro.observe(headerRef.current);
+    window.addEventListener("resize", remeasure);
+    // First paint can measure before web fonts load, when every item is ~0px
+    // wide (so nothing looks like overflow and the collapse is skipped). Force
+    // fresh measures once fonts are ready and after a couple of settle delays,
+    // so the correct collapse never waits for a user scroll/resize.
+    if (typeof document !== "undefined" && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => setMeasuring(true)).catch(() => {});
+    }
+    window.addEventListener("load", remeasure);
+    // Re-measure a handful of times over the first ~1.8s. The first paint may
+    // land before fonts load or before the pill morph settles (item widths then
+    // read small, so the collapse is skipped); repeated passes converge to the
+    // settled layout at every width. useLayoutEffect measures before paint, so
+    // these extra passes never flash the full row.
+    let passes = 0;
+    const settle = window.setInterval(() => {
+      setMeasuring(true);
+      passes += 1;
+      if (passes >= 6) window.clearInterval(settle);
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(settle);
+      ro?.disconnect();
+      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("load", remeasure);
+    };
+  }, []);
 
   useEffect(() => {
     let raf = 0;
@@ -323,7 +445,7 @@ export default function NavbarClient({
         )}
 
         {/* ── Desktop links ─────────────────────────────────── */}
-        <div className="hidden lg:flex items-center justify-center flex-1 min-w-0">
+        <div ref={navListRef} className="hidden lg:flex items-center justify-center flex-1 min-w-0">
           {navItems.map((link, i) =>
             link.hasDropdown ? (
               /* Resources — hover dropdown */
@@ -452,7 +574,7 @@ export default function NavbarClient({
         <div className="flex-1 lg:hidden" />
 
         {/* ── Right cluster: Language Switcher + CTA ───────── */}
-        <div className="hidden sm:flex items-center gap-3 shrink-0">
+        <div ref={rightClusterRef} className="hidden sm:flex items-center gap-3 shrink-0">
           <BookmarksMenu lightHero={lightHero} />
           <LanguageSwitcher lightHero={lightHero} />
 
