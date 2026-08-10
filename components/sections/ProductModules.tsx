@@ -131,7 +131,7 @@ function ModuleCell({ mod, linkText }: { mod: Module; linkText?: string }) {
   const [linkHovered, setLinkHovered] = useState(false);
 
   return (
-    <div className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
+    <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px]">
 
       <div
         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
@@ -230,13 +230,6 @@ export default function ProductModules({
   const visibleModules = modules.slice(0, visibleCount);
   const hasMore = visibleCount < modules.length;
 
-  // White filler cells to complete the last grid row, so an odd module count
-  // doesn't expose the grey grid background as an empty (grey) cell. The grid is
-  // 2-col at sm and 3-col at lg, so the number of trailing empties differs per
-  // breakpoint — compute both and render fillers with per-breakpoint visibility.
-  const fillSm = (2 - (visibleModules.length % 2)) % 2; // 0 or 1
-  const fillLg = (3 - (visibleModules.length % 3)) % 3; // 0, 1 or 2
-
   const handleViewMore = () => {
     setVisibleCount(Math.min(visibleCount + STEP, modules.length));
   };
@@ -293,33 +286,13 @@ export default function ProductModules({
         {/* Grid — one responsive grid with 1px gaps over a grey background so
             the dividers render correctly at 1 / 2 / 3 columns (was a per-row
             grid whose borders broke on iPad/mobile). */}
-        <div className="w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
-            {visibleModules.map((mod) => (
-              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
-            ))}
-            {/* White fillers cover the grid's grey background in the last row's
-                empty slots. The box-shadow paints over the 1px grey gaps on the
-                filler's inner (left/top) sides so it blends seamlessly into
-                white instead of looking like a bordered empty cell; the grid's
-                outer border still frames the right/bottom edges. */}
-            {(fillSm >= 1 || fillLg >= 1) && (
-              <div
-                aria-hidden
-                style={{ boxShadow: "-1px 0 0 0 #fff, 0 -1px 0 0 #fff" }}
-                className={`bg-white ${
-                  fillSm >= 1 && fillLg >= 1
-                    ? "hidden sm:block"
-                    : fillSm >= 1
-                      ? "hidden sm:block lg:hidden"
-                      : "hidden lg:block"
-                }`}
-              />
-            )}
-            {fillLg >= 2 && (
-              <div aria-hidden style={{ boxShadow: "-1px 0 0 0 #fff, 0 -1px 0 0 #fff" }} className="bg-white hidden lg:block" />
-            )}
-          </div>
+        {/* Flex-wrap of individually-bordered cards (matches the iris/features
+            module grids). Rows fill left-to-right and simply stop — an odd
+            count never leaves a bordered empty cell (BUG-185). */}
+        <div className="flex flex-wrap justify-center gap-4">
+          {visibleModules.map((mod) => (
+            <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
+          ))}
         </div>
 
         {/* View more / View less */}
