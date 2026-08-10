@@ -70,7 +70,9 @@ export default async function HomePage() {
   const trustedBlock = findBlock<{ heading?: string; subheading?: string }>(blocks, "trusted_logos");
 
   // ── testimonials block (section heading/subheading; items from getTestimonials) ──
-  const testimonialsBlock = findBlock<{ heading?: string; subheading?: string }>(blocks, "testimonials");
+  const testimonialsBlock = findBlock<{ heading?: string; subheading?: string; visible_count?: number | string | null }>(blocks, "testimonials");
+  const testimonialsLimit = Number(testimonialsBlock?.visible_count) || undefined;
+  const limitedTestimonials = testimonialsLimit ? cmsTestimonials.slice(0, testimonialsLimit) : cmsTestimonials;
 
   // ── stats_row block ─────────────────────────────────────────────────────────
   const statsBlock = findBlock<{
@@ -236,7 +238,7 @@ export default async function HomePage() {
           cmsCta={resolveCta(solutionBlock?.cta, pageMap) ?? undefined}
         />
         <Testimonials
-          cmsItems={cmsTestimonials.length > 0 ? cmsTestimonials : undefined}
+          cmsItems={limitedTestimonials.length > 0 ? limitedTestimonials : undefined}
           title={headingHtmlOpt(testimonialsBlock?.heading)}
           subtitle={stripHtmlOpt(testimonialsBlock?.subheading) ?? ""}
         />
