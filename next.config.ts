@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
       // The Contact-Us page lives at /contact-us. Redirect old /support links.
       { source: "/support", destination: "/contact-us", permanent: true },
       { source: "/support/", destination: "/contact-us/", permanent: true },
+      // The home page is served at the site root; the CMS "home" slug builds a
+      // /home preview/view URL which would otherwise 404 (BUG-135/194).
+      { source: "/home", destination: "/", permanent: true },
+      { source: "/home/", destination: "/", permanent: true },
     ];
   },
   images: {
