@@ -31,10 +31,14 @@ export default function CaseStudyTemplate({
   slug,
   cmsStudy,
   allSlugs,
+  applications: applicationsProp,
+  applicationsHeading,
 }: {
   slug: string;
   cmsStudy?: CmsCaseStudy;
   allSlugs?: string[];
+  applications?: { name: string; slug: string }[];
+  applicationsHeading?: string;
 }) {
   // CMS-only: the detail route 404s when the study is missing, so there is
   // always a real record here — no DUMMY placeholder content.
@@ -47,7 +51,11 @@ export default function CaseStudyTemplate({
   const summary = attrs.summary || "";
   const bodyHtml = attrs.body?.trim() ? attrs.body : "";
   const results = attrs.results?.length ? attrs.results : [];
-  const applications = ((attrs as { applications?: { name: string; slug: string }[] }).applications) ?? [];
+  // Modules the customer used. New API sends product_modules_section.curated_ids
+  // (resolved to name/slug in the page); legacy studies used attrs.applications.
+  const applications = (applicationsProp && applicationsProp.length > 0)
+    ? applicationsProp
+    : (((attrs as { applications?: { name: string; slug: string }[] }).applications) ?? []);
   // Only use a real uploaded cover — no generic blog-image fallback (it read as
   // a random stock photo on every study). When absent, the cover band is hidden
   // and the green "at a glance" card becomes the lead visual.
@@ -253,7 +261,7 @@ export default function CaseStudyTemplate({
             {applications.length > 0 && (
               <section className="my-14">
                 <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] leading-tight text-[#0a0f1e] mb-5">
-                  EHSWatch Applications
+                  {applicationsHeading || "EHSWatch Applications"}
                 </h2>
                 <div className="flex flex-wrap gap-3">
                   {applications.map((app) => (
