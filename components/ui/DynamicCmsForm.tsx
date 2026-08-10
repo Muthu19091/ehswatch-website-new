@@ -75,10 +75,12 @@ function FieldWidget({
   field,
   variant,
   error,
+  pickerCatalogues,
 }: {
   field: CmsFormField;
   variant: FormVariant;
   error?: string;
+  pickerCatalogues?: Record<string, Array<{ slug: string; name: string }>>;
 }) {
   const { inputBase, wrapBase, wrapError, labelClass, showLabel } = STYLES[variant];
   const wrapClass = error ? wrapError : wrapBase;
@@ -230,6 +232,93 @@ function FieldWidget({
     );
   }
 
+  if (field.field_type === "date") {
+    return (
+      <div>
+        {label}
+        <div className={wrapClass}>
+          <input type="date" name={field.key} className={inputClass} />
+        </div>
+        {helpText}
+        <FieldError message={error} />
+      </div>
+    );
+  }
+
+  /* Plain phone — no country picker (the `phone` type gets the intl widget
+     above via isPhoneField). type="tel" gives a numeric keypad on mobile. */
+  if (field.field_type === "phone_plain") {
+    return (
+      <div>
+        {label}
+        <div className={wrapClass}>
+          <input type="tel" name={field.key} placeholder={placeholder} className={inputClass} />
+        </div>
+        {helpText}
+        <FieldError message={error} />
+      </div>
+    );
+  }
+
+  if (field.field_type === "file") {
+    return (
+      <div>
+        {label}
+        <div className={wrapClass}>
+          <input
+            type="file"
+            name={field.key}
+            className={inputClass + " cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-[#eef2f7] file:px-3 file:py-1.5 file:text-[13px] file:font-medium file:text-[#374151]"}
+          />
+        </div>
+        {helpText}
+        <FieldError message={error} />
+      </div>
+    );
+  }
+
+  /* Pricing/catalogue pickers — multi-select from the inlined picker_catalogues
+     (application_picker -> applications, addon_picker -> addons,
+     catalogue_picker -> the field's catalogue_slug). Submits an array of slugs. */
+  if (
+    field.field_type === "application_picker" ||
+    field.field_type === "addon_picker" ||
+    field.field_type === "catalogue_picker"
+  ) {
+    const catKey =
+      field.field_type === "application_picker" ? "applications"
+      : field.field_type === "addon_picker" ? "addons"
+      : (field.catalogue_slug ?? "");
+    const items = pickerCatalogues?.[catKey] ?? [];
+    return (
+      <div>
+        <label className={labelClass}>
+          {field.label}
+          {field.required && <span className="text-[#e53e3e] ml-0.5">*</span>}
+        </label>
+        {items.length === 0 ? (
+          <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280]">
+            No options available.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {items.map((it) => (
+              <label
+                key={it.slug}
+                className="flex items-center gap-2 font-[family-name:var(--font-dm-sans)] text-[14px] text-[#374151] cursor-pointer"
+              >
+                <input type="checkbox" name={field.key} value={it.slug} className="accent-[#155eef]" />
+                {it.name}
+              </label>
+            ))}
+          </div>
+        )}
+        {helpText}
+        <FieldError message={error} />
+      </div>
+    );
+  }
+
   /* text, email, url, number */
   const htmlType =
     field.field_type === "email" ? "email"
@@ -256,7 +345,7 @@ function FieldWidget({
 
 /* Group fields into rows: full-width / multi-line fields get their own row; others pair up */
 function buildRows(fields: CmsFormField[]): CmsFormField[][] {
-  const SOLO_TYPES = new Set(["textarea", "radio", "checkboxes", "consent"]);
+  const SOLO_TYPES = new Set(["textarea", "radio", "checkboxes", "consent", "file", "application_picker", "addon_picker", "catalogue_picker"]);
   const rows: CmsFormField[][] = [];
   let i = 0;
   while (i < fields.length) {
@@ -291,7 +380,7 @@ function validateFields(
 
     const label = field.label || field.key;
 
-    if (field.field_type === "checkboxes") {
+    if (["checkboxes", "application_picker", "addon_picker", "catalogue_picker"].includes(field.field_type)) {
       if (fd.getAll(field.key).length === 0) {
         errors[field.key] = `Please select at least one option for ${label}.`;
       }
@@ -419,12 +508,19 @@ export default function DynamicCmsForm({
        CMS records lead source (extractUtm reads these top-level keys). */
     const { getStoredUtm } = await import("@/lib/utm");
     const data: Record<string, unknown> = { captcha_token: captchaToken, ...getStoredUtm() };
+    const ARRAY_TYPES = new Set(["checkboxes", "application_picker", "addon_picker", "catalogue_picker"]);
     for (const field of allFields) {
-      if (field.field_type === "checkboxes") {
+      if (ARRAY_TYPES.has(field.field_type)) {
         data[field.key] = fd.getAll(field.key);
       } else {
         const val = fd.get(field.key);
-        if (val !== null) data[field.key] = val;
+        if (val instanceof File) {
+          // JSON transport can't carry the bytes; record the filename so the
+          // submission at least notes the attachment (server validates a string).
+          if (val.name) data[field.key] = val.name;
+        } else if (val !== null) {
+          data[field.key] = val;
+        }
       }
     }
 
@@ -503,6 +599,7 @@ export default function DynamicCmsForm({
             field={field}
             variant={variant}
             error={errors[field.key]}
+            pickerCatalogues={formAttrs.picker_catalogues}
           />
         ))}
       </div>
@@ -555,6 +652,15 @@ export default function DynamicCmsForm({
       ) : (
         renderRows(visibleFields)
       )}
+
+      {/* Hidden fields render as real <input type="hidden"> (they are filtered
+          out of the visible rows) so their configured default value is captured
+          by FormData at submit. */}
+      {allFields
+        .filter((f) => f.field_type === "hidden")
+        .map((f) => (
+          <input key={f.key} type="hidden" name={f.key} defaultValue={f.default_value ?? ""} />
+        ))}
 
       <div className={isLastStep ? "" : "hidden"}>
         <TurnstileField
