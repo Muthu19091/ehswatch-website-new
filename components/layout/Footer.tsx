@@ -116,7 +116,10 @@ export default async function Footer() {
 
   // Footer's own CMS logo first, else the Site Settings brand footer logo
   // (resolved to a URL by the CMS). No hardcoded logo fallback.
-  const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? (settingsRes?.data as any)?.brand?.footer_logo ?? undefined;
+  const settingsBrand = (settingsRes?.data as any)?.brand ?? {};
+  // Footer’s own CMS logo first, else the Site Settings brand footer logo, else
+  // the settings header logo — all resolved to URLs by the CMS (fallback chain).
+  const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? settingsBrand?.footer_logo?.attributes?.url ?? settingsBrand?.footer_logo?.url ?? settingsBrand?.header_logo?.attributes?.url ?? settingsBrand?.header_logo?.url ?? undefined;
   // The large wordmark uses a dedicated CMS field when present, else the brand logo.
   const logoLargeSrc = attrs?.brand?.logo_large?.attributes?.url ?? attrs?.brand?.logo_large?.url ?? logoSrc;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
