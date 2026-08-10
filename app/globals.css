@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Brand primary color — overridden per-request on <html> from Site Settings
+   (appearance.primary_color); this is the fallback. Solid brand accents use
+   var(--brand-primary); the multi-stop CTA gradients stay hardcoded. */
+:root { --brand-primary: #ff6d00; }
+
 /* All buttons / clickable CTAs use a pointer cursor (Tailwind's reset leaves
    native <button> on the default arrow). Disabled controls keep not-allowed. */
 button:not(:disabled),

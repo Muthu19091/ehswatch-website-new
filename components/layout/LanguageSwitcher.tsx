@@ -184,7 +184,7 @@ export default function LanguageSwitcher({ lightHero = false }: { lightHero?: bo
                   {l.short}
                   {active && (
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8.5l3.5 3.5L13 4.5" stroke="#FF6D00" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M3 8.5l3.5 3.5L13 4.5" stroke="var(--brand-primary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </span>

@@ -198,9 +198,9 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
           <div className="flex justify-center mt-10 md:mt-12">
             <GlareButton
               href={cmsViewAllCta.url}
-              fillColor="#FF6D00"
+              fillColor="var(--brand-primary)"
               hoverTextColor="#ffffff"
-              className="gap-2 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-[#ff6d00] border border-[#ffd9b8] bg-white rounded-full px-7 py-3"
+              className="gap-2 font-[family-name:var(--font-dm-sans)] font-semibold text-[14px] text-[var(--brand-primary)] border border-[#ffd9b8] bg-white rounded-full px-7 py-3"
             >
               {cmsViewAllCta.label}
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

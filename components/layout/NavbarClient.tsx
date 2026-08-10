@@ -585,7 +585,7 @@ export default function NavbarClient({
               href={c.href}
               target={c.newTab ? "_blank" : undefined}
               rel={c.newTab ? "noopener noreferrer" : undefined}
-              className="hidden lg:inline-flex shrink-0 items-center rounded-full whitespace-nowrap font-medium tracking-[-0.24px] border-[1.5px] border-[#ff6d00]/40 text-[#ff6d00] hover:bg-[#ff6d00]/5 transition-colors font-[family-name:var(--font-dm-sans)]"
+              className="hidden lg:inline-flex shrink-0 items-center rounded-full whitespace-nowrap font-medium tracking-[-0.24px] border-[1.5px] border-[#ff6d00]/40 text-[var(--brand-primary)] hover:bg-[#ff6d00]/5 transition-colors font-[family-name:var(--font-dm-sans)]"
               style={{ paddingLeft: "16px", paddingRight: "16px", paddingTop: "8px", paddingBottom: "8px", fontSize: "14px" }}
             >
               {c.label}
@@ -622,7 +622,7 @@ export default function NavbarClient({
               position: "absolute",
               left: ctaFill.x, top: ctaFill.y,
               width: 260, height: 260, marginLeft: -130, marginTop: -130,
-              borderRadius: "9999px", background: "#FF6D00",
+              borderRadius: "9999px", background: "var(--brand-primary)",
               transform: `scale(${ctaFill.on ? 1 : 0})`,
               transition: "transform 0.45s cubic-bezier(0.22,1,0.36,1)",
               pointerEvents: "none", zIndex: 0,
@@ -717,7 +717,7 @@ export default function NavbarClient({
           )
         )}
         <Link href={ctaHref} onClick={() => setOpen(false)}
-          className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[#ff6d00] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
+          className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[var(--brand-primary)] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}
         </Link>
       </div>,

@@ -36,20 +36,31 @@ const instrumentSans = Instrument_Sans({
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-export const metadata: Metadata = {
-  title: "EHSWatch — From Manual Chaos to Smart Safety",
-  description: "AI-powered EHS platform to streamline reporting everywhere.",
-  icons: {
-    // SVG for modern browsers, PNG fallback for iOS/iPad Safari (which doesn't
-    // render SVG tab favicons and requires a PNG apple-touch-icon).
-    icon: [
-      { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
-      { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
-    ],
-    shortcut: BASE + "/images/favicon-96.png",
-    apple:    BASE + "/images/apple-touch-icon.png",
-  },
-};
+// Site-wide metadata. Favicon + apple-touch icon come from Site Settings
+// (brand.favicon / brand.apple_touch_icon) when set, falling back to the bundled
+// assets — so changing the icon in the CMS reflects on the site (BUG-154).
+export async function generateMetadata(): Promise<Metadata> {
+  const settingsRes = await getSettings().catch(() => null);
+  const brand = (settingsRes?.data as { brand?: Record<string, { attributes?: { url?: string } }> } | null)?.brand;
+  const faviconUrl = brand?.favicon?.attributes?.url;
+  const appleUrl = brand?.apple_touch_icon?.attributes?.url;
+
+  return {
+    title: "EHSWatch — From Manual Chaos to Smart Safety",
+    description: "AI-powered EHS platform to streamline reporting everywhere.",
+    icons: {
+      icon: faviconUrl
+        ? [{ url: faviconUrl }]
+        : [
+            // Bundled fallback: SVG for modern browsers, PNG for iOS/iPad Safari.
+            { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
+            { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
+          ],
+      shortcut: faviconUrl || BASE + "/images/favicon-96.png",
+      apple: appleUrl || BASE + "/images/apple-touch-icon.png",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -64,6 +75,8 @@ export default async function RootLayout({
   const tracking = settings?.tracking ?? {};
   const brandName = settings?.brand?.name || "EHSWatch";
   const siteUrl = (settings?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  // Brand primary color from Site Settings drives --brand-primary site-wide.
+  const primaryColor = settings?.appearance?.primary_color || settings?.brand?.primary_color || "var(--brand-primary)";
   const headerAttrs = (headerRes?.data as any)?.attributes;
   const orgLogo = headerAttrs?.logo?.attributes?.url || headerAttrs?.logo?.url || `${siteUrl}/images/favicon-96.png`;
   // Prefer CMS-authored structured data (Settings → structured_data) so schema
@@ -98,6 +111,7 @@ export default async function RootLayout({
       dir={locale === "ar" ? "rtl" : "ltr"}
       suppressHydrationWarning
       className={`${dmSans.variable} ${gothicA1.variable} ${inter.variable} ${instrumentSans.variable}`}
+      style={{ "--brand-primary": primaryColor } as React.CSSProperties}
     >
       <body className="antialiased">
         {/* Structured data (JSON-LD) — CMS-authored (Settings → structured_data). */}

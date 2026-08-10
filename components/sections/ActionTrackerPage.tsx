@@ -43,7 +43,7 @@ function ActionTrackerDiagram() {
         <defs>
           <marker id="ar-r"  markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="#EF4444"/></marker>
           <marker id="ar-g"  markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="#059669"/></marker>
-          <marker id="ar-o"  markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="#FF6D00"/></marker>
+          <marker id="ar-o"  markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="var(--brand-primary)"/></marker>
           <marker id="ar-b"  markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="#155EEF"/></marker>
           <marker id="ar-gr" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 1 L6 3.5 L0 6Z" fill="#9CA3AF"/></marker>
           <marker id="ar-gl" markerWidth="7" markerHeight="7" refX="1.5" refY="3.5" orient="auto"><path d="M6 1 L0 3.5 L6 6Z" fill="#9CA3AF"/></marker>
@@ -67,9 +67,9 @@ function ActionTrackerDiagram() {
 
         {/* Audit Finding (right edge 180, y=296) → center left (340, 228) — ORANGE */}
         <g className={`atd-c${v?" v":""}`} style={{animationDelay:"0.32s"}}>
-          <circle cx="180" cy="296" r="4.5" fill="#FF6D00"/>
+          <circle cx="180" cy="296" r="4.5" fill="var(--brand-primary)"/>
           <path d="M180 296 H248 Q260 296 260 284 V240 Q260 228 272 228 H340"
-            stroke="#FF6D00" strokeWidth="1.8" fill="none" strokeLinecap="round" markerEnd="url(#ar-o)"/>
+            stroke="var(--brand-primary)" strokeWidth="1.8" fill="none" strokeLinecap="round" markerEnd="url(#ar-o)"/>
         </g>
 
         {/* Observation (right edge 180, y=412) → center left (340, 228) — BLUE */}
@@ -337,7 +337,7 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
       onMouseLeave={() => setHovered(false)}
       className="self-start inline-flex items-center gap-1.5 font-[family-name:var(--font-dm-sans)] font-medium text-[14px] no-underline transition-all duration-200"
       style={{
-        color: hovered ? "#cc5700" : "#FF6D00",
+        color: hovered ? "#cc5700" : "var(--brand-primary)",
         transform: hovered ? "translateX(4px)" : "translateX(0)",
       }}
     >
@@ -374,7 +374,7 @@ function ModuleCard({ mod, isLast }: { mod: typeof MORE_MODULES[number]; isLast:
         onMouseLeave={() => setHovered(false)}
         className="mt-1 self-start inline-flex items-center gap-1 font-[family-name:var(--font-dm-sans)] font-medium text-[13px] no-underline transition-all duration-200"
         style={{
-          color: hovered ? "#cc5700" : "#FF6D00",
+          color: hovered ? "#cc5700" : "var(--brand-primary)",
           transform: hovered ? "translateX(3px)" : "translateX(0)",
         }}
       >

@@ -292,7 +292,7 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
               aria-label="Previous page"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[#FF6D00] enabled:hover:text-[#FF6D00]"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[var(--brand-primary)] enabled:hover:text-[var(--brand-primary)]"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
@@ -308,8 +308,8 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
                   aria-current={it === currentPage ? "page" : undefined}
                   className={`inline-flex items-center justify-center w-9 h-9 rounded-full text-[14px] font-[family-name:var(--font-dm-sans)] font-medium border transition-colors ${
                     it === currentPage
-                      ? "bg-[#FF6D00] border-[#FF6D00] text-white"
-                      : "border-[#e5e7eb] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00]"
+                      ? "bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white"
+                      : "border-[#e5e7eb] text-[#4b5563] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
                   }`}
                 >
                   {it}
@@ -322,7 +322,7 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
               aria-label="Next page"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[#FF6D00] enabled:hover:text-[#FF6D00]"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[#e5e7eb] text-[#4b5563] transition-colors disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:border-[var(--brand-primary)] enabled:hover:text-[var(--brand-primary)]"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>

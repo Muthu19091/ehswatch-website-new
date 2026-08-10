@@ -72,7 +72,7 @@ export default function CTABanner({
                 videoUrl={cmsSecondaryCta.videoUrl}
                 fillColor="#FFA660"
                 hoverTextColor="#ffffff"
-                className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] font-medium text-[14px] text-[#ff6d00] whitespace-nowrap"
+                className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] font-medium text-[14px] text-[var(--brand-primary)] whitespace-nowrap"
               >
                 {cmsSecondaryCta.label}
               </GlareButton>

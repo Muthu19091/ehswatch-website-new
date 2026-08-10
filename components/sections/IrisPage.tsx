@@ -2021,7 +2021,7 @@ export default function IrisPage({
               fillColor="#FFA660"
               hoverTextColor="#ffffff"
               href={ctaBannerSecondary.href}
-              className="flex items-center justify-center px-7 md:px-[31.5px] py-3 md:py-[10px] rounded-full border font-[family-name:var(--font-dm-sans)] text-[14px] text-[#ff6d00]"
+              className="flex items-center justify-center px-7 md:px-[31.5px] py-3 md:py-[10px] rounded-full border font-[family-name:var(--font-dm-sans)] text-[14px] text-[var(--brand-primary)]"
               style={{ background: "rgba(255,120,44,0.1)", borderColor: "rgba(255,120,44,0.2)" }}
             >
               {ctaBannerSecondary.label}

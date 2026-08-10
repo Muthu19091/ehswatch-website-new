@@ -68,7 +68,7 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
         {count > 0 && (
           <span
             className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] px-1 flex items-center justify-center rounded-full text-white font-[family-name:var(--font-dm-sans)] font-semibold"
-            style={{ background: "#FF6D00", fontSize: "10px", lineHeight: 1 }}
+            style={{ background: "var(--brand-primary)", fontSize: "10px", lineHeight: 1 }}
           >
             {count}
           </span>
@@ -117,7 +117,7 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
                   type="button"
                   onClick={() => setExpanded(true)}
                   className="mt-1 w-full flex items-center justify-center gap-1.5 px-4 py-2.5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold cursor-pointer hover:bg-[#f9fafb] transition-colors"
-                  style={{ color: "#FF6D00", borderTop: "1px solid #F3F4F6" }}
+                  style={{ color: "var(--brand-primary)", borderTop: "1px solid #F3F4F6" }}
                 >
                   View all ({count})
                   <svg width="13" height="13" viewBox="0 0 14 14" fill="none">

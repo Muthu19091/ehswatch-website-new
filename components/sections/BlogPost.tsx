@@ -331,8 +331,8 @@ function PostActions({ title, slug }: { title: string; slug: string }) {
         {copied ? "Link copied" : "Share"}
       </button>
       <button onClick={onBookmark} className={btn} title={marked ? "Remove bookmark" : "Bookmark this page"} aria-label={marked ? "Remove bookmark" : "Bookmark this page"}>
-        <svg width="15" height="15" viewBox="0 0 16 16" fill={marked ? "#FF6D00" : "none"}>
-          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke={marked ? "#FF6D00" : "currentColor"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill={marked ? "var(--brand-primary)" : "none"}>
+          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke={marked ? "var(--brand-primary)" : "currentColor"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         {marked ? "Bookmarked" : "Bookmark"}
       </button>

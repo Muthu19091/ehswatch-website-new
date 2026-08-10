@@ -158,7 +158,7 @@ function ModuleCell({ mod, linkText }: { mod: Module; linkText?: string }) {
         onMouseLeave={() => setLinkHovered(false)}
         className="mt-1 self-start flex items-center gap-1 font-[family-name:var(--font-dm-sans)] font-medium text-[13px] transition-all duration-200 no-underline"
         style={{
-          color: linkHovered ? "#cc5700" : "#FF6D00",
+          color: linkHovered ? "#cc5700" : "var(--brand-primary)",
           transform: linkHovered ? "translateX(3px)" : "translateX(0)",
         }}
       >
@@ -331,7 +331,7 @@ export default function ProductModules({
           {hasMore ? (
             <button
               onClick={handleViewMore}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors duration-200"
             >
               View more
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -341,7 +341,7 @@ export default function ProductModules({
           ) : (
             <button
               onClick={handleViewLess}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors duration-200"
             >
               View less
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

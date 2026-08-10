@@ -239,7 +239,7 @@ export default function SolutionsZigzag({
                 className="px-[15px] py-[7px] rounded-full text-[13px] font-medium transition-all duration-200"
                 style={isActive ? {
                   background: "#FFF3EC",
-                  color: "#FF6D00",
+                  color: "var(--brand-primary)",
                   border: "1.5px solid #FF9A5C",
                   fontWeight: 600,
                 } : {
@@ -266,7 +266,7 @@ export default function SolutionsZigzag({
                   className="flex-shrink-0 px-[14px] py-[7px] rounded-full text-[12.5px] font-medium whitespace-nowrap transition-all duration-200"
                   style={isActive ? {
                     background: "#FFF3EC",
-                    color: "#FF6D00",
+                    color: "var(--brand-primary)",
                     border: "1.5px solid #FF9A5C",
                     fontWeight: 600,
                   } : {
@@ -316,7 +316,7 @@ export default function SolutionsZigzag({
                     <li key={i} className="flex items-start gap-3">
                       <span
                         className="flex-shrink-0 rounded-full mt-[8px]"
-                        style={{ width: 6, height: 6, background: "#FF6D00" }}
+                        style={{ width: 6, height: 6, background: "var(--brand-primary)" }}
                       />
                       <span className="font-[family-name:var(--font-dm-sans)] text-[14px] leading-[1.6] text-[#6b7280] text-pretty">
                         {risk}
@@ -344,7 +344,7 @@ export default function SolutionsZigzag({
                     >
                       <span
                         className="flex-shrink-0 rounded-full mt-[7px]"
-                        style={{ width: 7, height: 7, background: "#FF6D00", opacity: open ? 1 : 0.55 }}
+                        style={{ width: 7, height: 7, background: "var(--brand-primary)", opacity: open ? 1 : 0.55 }}
                       />
                       <span
                         className="font-[family-name:var(--font-gothic-a1)] font-bold text-[15px] flex-1"

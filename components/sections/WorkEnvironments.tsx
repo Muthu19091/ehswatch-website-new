@@ -242,7 +242,7 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
           <div className="flex justify-center mt-8">
             <button
               onClick={() => { if (expanded) pendingScroll.current = true; setExpanded((e) => !e); }}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#d3ddeb] bg-white font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[#FF6D00] hover:text-[#FF6D00] transition-colors duration-200 cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#d3ddeb] bg-white font-[family-name:var(--font-dm-sans)] font-medium text-[14px] text-[#4b5563] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors duration-200 cursor-pointer"
             >
               {expanded ? "View less" : "View more"}
               <svg

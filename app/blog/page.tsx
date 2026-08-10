@@ -99,7 +99,7 @@ function BlogCTA({
             href={secondaryUrl!}
             fillColor="#FFA660"
             hoverTextColor="#ffffff"
-            className="w-full sm:w-auto px-7 md:px-[31.5px] py-3 md:py-[15.5px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] text-[14px] text-[#ff6d00] whitespace-nowrap"
+            className="w-full sm:w-auto px-7 md:px-[31.5px] py-3 md:py-[15.5px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] text-[14px] text-[var(--brand-primary)] whitespace-nowrap"
           >
             {secondaryLabel}
           </GlareButton>

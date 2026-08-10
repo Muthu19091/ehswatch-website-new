@@ -119,7 +119,7 @@ function ExploreLink({ href, label }: { href: string; label: string }) {
       onMouseLeave={() => setHovered(false)}
       className="self-start inline-block font-[family-name:var(--font-dm-sans)] font-medium text-[14px] leading-[1.6] no-underline transition-all duration-200"
       style={{
-        color: hovered ? "#cc5700" : "#FF6D00",
+        color: hovered ? "#cc5700" : "var(--brand-primary)",
         transform: hovered ? "translateX(4px)" : "translateX(0)",
       }}
     >
@@ -184,7 +184,7 @@ function MoreModuleCard({ mod, color, isLast }: {
         onMouseLeave={() => setHovered(false)}
         className="mt-1 self-start inline-flex items-center gap-1 font-[family-name:var(--font-dm-sans)] font-medium text-[13px] no-underline transition-all duration-200"
         style={{
-          color: hovered ? "#cc5700" : "#FF6D00",
+          color: hovered ? "#cc5700" : "var(--brand-primary)",
           transform: hovered ? "translateX(3px)" : "translateX(0)",
         }}
       >
@@ -235,7 +235,7 @@ function FAQAccordion({ heading, items }: { heading: string; items: Array<{ ques
               {openIdx === i && (
                 /* CMS answers may contain HTML (paragraphs, lists, links) */
                 <div
-                  className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.8] text-[#6b7280] mt-3 text-pretty [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-[#FF6D00] [&_a]:underline"
+                  className="font-[family-name:var(--font-dm-sans)] text-[14px] sm:text-[15px] leading-[1.8] text-[#6b7280] mt-3 text-pretty [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-[var(--brand-primary)] [&_a]:underline"
                   dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(unescapeTypedTags(faq.answer)) }}
                 />
               )}

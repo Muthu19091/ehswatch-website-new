@@ -488,7 +488,7 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
       }} />
       <div>
         <p style={{ fontSize:10.5, fontWeight:600, textTransform:"uppercase",
-          letterSpacing:"0.16em", color:"#ff6d00", marginBottom:6,
+          letterSpacing:"0.16em", color:"var(--brand-primary)", marginBottom:6,
           fontFamily:"var(--font-dm-sans,sans-serif)" }}>
           FEATURE {feat.num}
         </p>
@@ -751,7 +751,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
               <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-[6px] h-[200px] rounded-full overflow-hidden" style={{ background:"#E2E8F0" }}>
                 <div className="w-full rounded-full transition-all duration-500 ease-out"
                   style={{ height:`${((Math.max(0, Math.min(step, features.length - 1)) + 1) / features.length) * 100}%`,
-                    background:"#ff6d00" }} />
+                    background:"var(--brand-primary)" }} />
               </div>
             </div>
           </div>
@@ -785,7 +785,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
           <div className="w-[220px] max-w-[72%] h-[6px] rounded-full overflow-hidden" style={{ background: "#E2E8F0" }}>
             <div className="h-full rounded-full transition-all duration-500 ease-out"
               style={{ width: `${((Math.max(0, Math.min(step, features.length - 1)) + 1) / features.length) * 100}%`,
-                background: "#ff6d00" }} />
+                background: "var(--brand-primary)" }} />
           </div>
         </div>
       </div>
