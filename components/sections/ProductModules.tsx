@@ -131,7 +131,7 @@ function ModuleCell({ mod, linkText }: { mod: Module; linkText?: string }) {
   const [linkHovered, setLinkHovered] = useState(false);
 
   return (
-    <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px]">
+    <div className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
 
       <div
         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
@@ -230,6 +230,12 @@ export default function ProductModules({
   const visibleModules = modules.slice(0, visibleCount);
   const hasMore = visibleCount < modules.length;
 
+  // Trailing empty cells in the last grid row get white filler cells so an odd
+  // module count never leaves a bordered empty box. 2-col (sm) and 3-col (lg)
+  // need different fill counts.
+  const fillSm = (2 - (visibleModules.length % 2)) % 2; // 0 or 1
+  const fillLg = (3 - (visibleModules.length % 3)) % 3; // 0, 1 or 2
+
   const handleViewMore = () => {
     setVisibleCount(Math.min(visibleCount + STEP, modules.length));
   };
@@ -286,13 +292,34 @@ export default function ProductModules({
         {/* Grid — one responsive grid with 1px gaps over a grey background so
             the dividers render correctly at 1 / 2 / 3 columns (was a per-row
             grid whose borders broke on iPad/mobile). */}
-        {/* Flex-wrap of individually-bordered cards (matches the iris/features
-            module grids). Rows fill left-to-right and simply stop — an odd
-            count never leaves a bordered empty cell (BUG-185). */}
-        <div className="flex flex-wrap justify-center gap-4">
-          {visibleModules.map((mod) => (
-            <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
-          ))}
+        {/* Connected grid: 1px hairline dividers (grey bg showing through the
+            gap-px). Trailing empty cells in the last row are covered by white
+            filler cells pulled -1px up/left with a NEGATIVE MARGIN, so their
+            opaque background physically paints over the grey gap (the old
+            box-shadow filler was unreliable). The last row blends to white with
+            no bordered empty box (BUG-185). */}
+        <div className="w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
+            {visibleModules.map((mod) => (
+              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
+            ))}
+            {(fillSm >= 1 || fillLg >= 1) && (
+              <div
+                aria-hidden
+                className={`bg-white relative z-[1] ${
+                  fillSm >= 1 && fillLg >= 1
+                    ? "hidden sm:block"
+                    : fillSm >= 1
+                      ? "hidden sm:block lg:hidden"
+                      : "hidden lg:block"
+                }`}
+                style={{ marginTop: -1, marginLeft: -1 }}
+              />
+            )}
+            {fillLg >= 2 && (
+              <div aria-hidden className="bg-white relative z-[1] hidden lg:block" style={{ marginTop: -1, marginLeft: -1 }} />
+            )}
+          </div>
         </div>
 
         {/* View more / View less */}
