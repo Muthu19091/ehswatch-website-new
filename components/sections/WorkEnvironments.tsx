@@ -2,11 +2,6 @@
 
 import { useState, useRef, useEffect, type CSSProperties } from "react";
 import Link from "next/link";
-import { basePath } from "@/lib/basePath";
-
-const panel = (file: string) =>
-  `${basePath}/images/work-environments/panels/${file}`;
-
 interface Card {
   key: string;
   title: string;
@@ -18,7 +13,7 @@ interface Card {
   il: number;   /* image left % */
   idx?: number; /* image left px offset (construction only) */
   noFade?: boolean;
-  imgSrc: string;
+  imgSrc?: string;
   videoSrc?: string; /* CMS card video — takes over the panel when present */
 }
 
@@ -56,18 +51,6 @@ const CARD_LAYOUT: Omit<Card, "title" | "desc" | "imgSrc">[] = [
   { key: "facilities",   tx: 4.8, ty: 11.3, tw: 58, iw: 91,   il: 2.7  },
 ];
 
-// Map title keywords to panel image filenames
-function inferPanelImage(title: string): string {
-  const t = title.toLowerCase();
-  if (t.includes("construct")) return panel("Construction%20%26%20Infrastructure%20Projects.png");
-  if (t.includes("manufactur") || t.includes("engineer")) return panel("Manufacturing%20%26%20Engineering.png");
-  if (t.includes("oil") || t.includes("gas") || t.includes("energy")) return panel("Oil%2C%20Gas%20%26%20Energy.png");
-  if (t.includes("logistic") || t.includes("warehouse") || t.includes("transport")) return panel("Logistics%2C%20Warehousing%20%26%20Transport.png");
-  if (t.includes("utilit") || t.includes("public")) return panel("Utilities%20and%20Public%20Services.png");
-  if (t.includes("facilit") || t.includes("property")) return panel("Facilities%20%26%20Property%20Management.png");
-  return panel("Construction%20%26%20Infrastructure%20Projects.png");
-}
-
 function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
   // CMS-only: no hardcoded fallback cards. Text comes from the CMS; the
   // industry panel illustration is a design asset used when a card has no
@@ -85,7 +68,10 @@ function buildCards(cmsCards?: SolutionCarouselCard[]): Card[] {
       key: `${layout.key}-${i}`,
       title: c.title || "",
       desc:  c.subheading || c.description || "",
-      imgSrc: cardMediaUrl(c.image) ?? (media && !isVideoFile ? media : inferPanelImage(c.title || "")),
+      // CMS-only: a card with no uploaded image/video shows NO image (was a
+      // hardcoded "panel" illustration inferred from the title, so removing the
+      // image in the CMS still showed a picture — BUG-143).
+      imgSrc: cardMediaUrl(c.image) ?? (media && !isVideoFile ? media : undefined),
       videoSrc: isVideoFile ? media : undefined,
     };
   });
@@ -142,10 +128,10 @@ function IndustryCard({ card }: { card: Card }) {
             playsInline
             style={mediaStyle}
           />
-        ) : (
+        ) : card.imgSrc ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img src={card.imgSrc} alt="" draggable={false} style={mediaStyle} />
-        );
+        ) : null;
       })()}
     </div>
   );

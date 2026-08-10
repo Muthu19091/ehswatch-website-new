@@ -928,7 +928,7 @@ export default function ProductHowItWorks({
                 return (
                   <div
                     key={i}
-                    className="absolute inset-0"
+                    className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-10 py-3"
                     style={{
                       opacity:       i === activeStep ? 1 : 0,
                       transform:     i === activeStep ? "translateY(0) scale(1)" : "translateY(12px) scale(0.98)",
