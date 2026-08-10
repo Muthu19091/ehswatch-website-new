@@ -335,7 +335,14 @@ export function buildModuleTemplateProps(
   const poolMapped = poolLogos
     .map((l) => ({ name: l.attributes.name, url: l.attributes.logo?.attributes?.url }))
     .filter((l): l is { name: string; url: string } => Boolean(l.url));
-  const clientLogos = inlineLogos.length > 0 ? inlineLogos : poolMapped;
+  // When the block's source is "pool_all" always render the LIVE shared pool so
+  // new client-logo uploads reflect on EVERY module page. Some blocks also store
+  // an inline SNAPSHOT of the pool — ignore it for pool_all (otherwise the page
+  // shows a stale static copy). Only genuinely-inline blocks use their items.
+  const logoSource = ((clientStripBlock as { source?: string })?.source ?? "").toLowerCase();
+  const clientLogos = logoSource === "pool_all"
+    ? poolMapped
+    : (inlineLogos.length > 0 ? inlineLogos : poolMapped);
   const clientStrip: ModuleTemplateProps["clientStrip"] | undefined =
     clientStripBlock && clientLogos.length > 0
       ? {
