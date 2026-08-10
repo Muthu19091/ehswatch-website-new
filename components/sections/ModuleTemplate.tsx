@@ -58,6 +58,7 @@ export interface ModuleTemplateProps {
   };
   moreModules?: {
     heading: string;
+    linkText?: string;
     modules: Array<{ name: string; slug: string; desc: string; icon?: string | null; href?: string }>;
   };
   clientStrip?: {
@@ -155,10 +156,11 @@ function WhyImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function MoreModuleCard({ mod, color, isLast }: {
+function MoreModuleCard({ mod, color, isLast, linkText }: {
   mod: { name: string; slug: string; desc: string; icon?: string | null; href?: string };
   color: string;
   isLast: boolean;
+  linkText?: string;
 }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -188,7 +190,7 @@ function MoreModuleCard({ mod, color, isLast }: {
           transform: hovered ? "translateX(3px)" : "translateX(0)",
         }}
       >
-        <span>Explore</span>
+        <span>{linkText || "Explore"}</span>
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -602,6 +604,7 @@ export default function ModuleTemplate({
                   mod={mod}
                   color={MODULE_COLORS[i % MODULE_COLORS.length]}
                   isLast={i === moreModules.modules.length - 1}
+                  linkText={moreModules.linkText}
                 />
               ))}
             </div>

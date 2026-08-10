@@ -306,10 +306,17 @@ export function buildModuleTemplateProps(
           .map(toCard);
   }
 
+  // Respect the editor's visible_count on BOTH the curated and auto-listed sets
+  // (curated was uncapped before, so "show 4" still rendered all 5).
+  if (typeof modulesBlock?.visible_count === "number" && modulesBlock.visible_count > 0) {
+    otherModules = otherModules.slice(0, modulesBlock.visible_count);
+  }
+
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
       ? {
           heading: stripHtml(modulesBlock?.heading) || "",
+          linkText: stripHtmlOpt((modulesBlock as { link_text?: string })?.link_text) || undefined,
           modules: otherModules,
         }
       : undefined;

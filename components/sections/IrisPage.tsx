@@ -1941,17 +1941,17 @@ export default function IrisPage({
                 key={p.title}
                 className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px] iris-reveal-target"
               >
-                {/* Icon — CMS Lucide icon when set, hardcoded SVG otherwise */}
-                <div
-                  className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: p.color + "14", color: p.color }}
-                >
-                  {p.cmsIcon ? (
+                {/* Icon — ONLY when the CMS item has an icon set. No hardcoded
+                    default (the section previously showed a default SVG even when
+                    the editor added no icon). */}
+                {p.cmsIcon && (
+                  <div
+                    className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: p.color + "14", color: p.color }}
+                  >
                     <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
-                  ) : (
-                    p.icon
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Title */}
                 <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
