@@ -273,12 +273,16 @@ export async function getForm(slug: string) {
 
 export async function submitForm(
   slug: string,
-  data: Record<string, unknown>,
+  data: Record<string, unknown> | FormData,
 ): Promise<FormSubmitResult> {
   try {
+    // FormData (forms with a file field) must go as multipart so the browser
+    // sets the boundary — override the client's default application/json.
+    const isMultipart = typeof FormData !== "undefined" && data instanceof FormData;
     const res = await publicClient.post<{ data: { attributes: { id: number; message: string; redirect_url: string | null } } }>(
       `/forms/${slug}/submit`,
       data,
+      isMultipart ? { headers: { "Content-Type": "multipart/form-data" } } : undefined,
     );
     return { ok: true, data: res.data.data?.attributes };
   } catch (err) {

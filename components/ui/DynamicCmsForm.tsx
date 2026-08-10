@@ -507,27 +507,50 @@ export default function DynamicCmsForm({
     /* Build payload — seed with captured first-touch UTM/attribution so the
        CMS records lead source (extractUtm reads these top-level keys). */
     const { getStoredUtm } = await import("@/lib/utm");
-    const data: Record<string, unknown> = { captcha_token: captchaToken, ...getStoredUtm() };
+    const utm = getStoredUtm();
     const ARRAY_TYPES = new Set(["checkboxes", "application_picker", "addon_picker", "catalogue_picker"]);
-    for (const field of allFields) {
-      if (ARRAY_TYPES.has(field.field_type)) {
-        data[field.key] = fd.getAll(field.key);
-      } else {
-        const val = fd.get(field.key);
-        if (val instanceof File) {
-          // JSON transport can't carry the bytes; record the filename so the
-          // submission at least notes the attachment (server validates a string).
-          if (val.name) data[field.key] = val.name;
-        } else if (val !== null) {
-          data[field.key] = val;
+    const hasFileField = allFields.some((f) => f.field_type === "file");
+
+    let payload: Record<string, unknown> | FormData;
+    if (hasFileField) {
+      // A file field is present — send multipart so the actual bytes reach the
+      // server (FormSubmitController stores them on the private disk). Arrays go
+      // as key[] (Laravel parses them back into an array), files as the File.
+      const p = new FormData();
+      p.append("captcha_token", captchaToken);
+      for (const [k, v] of Object.entries(utm)) {
+        if (v != null && v !== "") p.append(k, String(v));
+      }
+      for (const field of allFields) {
+        if (ARRAY_TYPES.has(field.field_type)) {
+          for (const v of fd.getAll(field.key)) p.append(`${field.key}[]`, v as string | Blob);
+        } else {
+          const val = fd.get(field.key);
+          if (val instanceof File) {
+            if (val.size > 0 && val.name) p.append(field.key, val, val.name);
+          } else if (val !== null) {
+            p.append(field.key, val as string);
+          }
         }
       }
+      payload = p;
+    } else {
+      const data: Record<string, unknown> = { captcha_token: captchaToken, ...utm };
+      for (const field of allFields) {
+        if (ARRAY_TYPES.has(field.field_type)) {
+          data[field.key] = fd.getAll(field.key);
+        } else {
+          const val = fd.get(field.key);
+          if (val !== null && !(val instanceof File)) data[field.key] = val;
+        }
+      }
+      payload = data;
     }
 
     setSubmitting(true);
     try {
       const { submitForm } = await import("@/lib/api");
-      const result = await submitForm(slug, data);
+      const result = await submitForm(slug, payload);
 
       if (!result.ok && result.errors) {
         /* Map server validation errors back to fields */
