@@ -126,7 +126,10 @@ export default async function Footer() {
   // the settings header logo — all resolved to URLs by the CMS (fallback chain).
   const logoSrc     = attrs?.brand?.logo?.attributes?.url ?? attrs?.brand?.logo?.url ?? settingsBrand?.footer_logo?.attributes?.url ?? settingsBrand?.footer_logo?.url ?? settingsBrand?.header_logo?.attributes?.url ?? settingsBrand?.header_logo?.url ?? undefined;
   // The large wordmark uses a dedicated CMS field when present, else the brand logo.
-  const logoLargeSrc = attrs?.brand?.logo_large?.attributes?.url ?? attrs?.brand?.logo_large?.url ?? logoSrc;
+  // The large watermark logo is independent — when logo_large is removed it
+  // should disappear, NOT fall back to the small logo (that made a removed
+  // watermark keep showing).
+  const logoLargeSrc = attrs?.brand?.logo_large?.attributes?.url ?? attrs?.brand?.logo_large?.url ?? undefined;
   const logoAlt     = attrs?.brand?.logo_alt || "EHSWatch";
   const tagline     = attrs?.brand?.tagline || (settingsRes?.data as any)?.brand?.tagline || "AI-powered EHS platform helping teams stay safe, compliant, and in control.";
   const copyright   = attrs?.bottom?.copyright_text || (settingsRes?.data as any)?.footer?.copyright || "© 2026 EHSWatch. All rights reserved.";
