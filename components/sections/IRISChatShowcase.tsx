@@ -467,6 +467,7 @@ function ChatMockup({
 interface FeatureItem {
   side: "left" | "right";
   num: string;
+  eyebrow: string;
   title: string;
   desc: string;
   subItems: { title: string; description: string }[];
@@ -490,7 +491,7 @@ function FeatureCallout({ feat, active }: { feat: FeatureItem; active: boolean }
         <p style={{ fontSize:10.5, fontWeight:600, textTransform:"uppercase",
           letterSpacing:"0.16em", color:"var(--brand-primary)", marginBottom:6,
           fontFamily:"var(--font-dm-sans,sans-serif)" }}>
-          FEATURE {feat.num}
+          {feat.eyebrow || `FEATURE ${feat.num}`}
         </p>
         <h3 style={{ fontSize:18, fontWeight:700, color:"#1e293b", lineHeight:1.25,
           marginBottom:8, fontFamily:"var(--font-gothic-a1,sans-serif)" }}>
@@ -525,6 +526,7 @@ interface IRISChatShowcaseProps {
   cmsHeading?: string;
   cmsSubheading?: string;
   cmsSteps?: Array<{
+    eyebrow?: string;
     title?: string;
     description?: string;
     sub_items?: Array<{ title?: string; description?: string; icon?: string }>;
@@ -573,6 +575,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
   const features: FeatureItem[] = (cmsSteps ?? []).map((s, i) => ({
     side: FEATURES[i]?.side ?? (i % 2 === 0 ? "left" : "right"),
     num: FEATURES[i]?.num ?? String(i + 1).padStart(2, "0"),
+    eyebrow: s?.eyebrow?.trim() || "",
     title: s?.title?.trim() || "",
     desc: s?.description?.trim() || "",
     subItems: (s?.sub_items ?? [])
