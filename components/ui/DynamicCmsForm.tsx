@@ -508,6 +508,21 @@ export default function DynamicCmsForm({
        CMS records lead source (extractUtm reads these top-level keys). */
     const { getStoredUtm } = await import("@/lib/utm");
     const utm = getStoredUtm();
+    // Hidden UTM/attribution fields carry CMS placeholder tokens like
+    // "{utm_source}". Resolve them against the captured first-touch
+    // attribution; drop any token that stays unresolved so we never submit
+    // the literal "{utm_source}" string (which would clobber the real value
+    // seeded from getStoredUtm()).
+    const resolveVal = (key: string, raw: FormDataEntryValue | null): FormDataEntryValue | null => {
+      if (typeof raw === "string") {
+        const m = raw.trim().match(/^\{([a-zA-Z_][\w]*)\}$/);
+        if (m) {
+          const u = utm as Record<string, string | undefined>;
+          return u[m[1]] ?? u[key] ?? null;
+        }
+      }
+      return raw;
+    };
     const ARRAY_TYPES = new Set(["checkboxes", "application_picker", "addon_picker", "catalogue_picker"]);
     const hasFileField = allFields.some((f) => f.field_type === "file");
 
@@ -525,7 +540,7 @@ export default function DynamicCmsForm({
         if (ARRAY_TYPES.has(field.field_type)) {
           for (const v of fd.getAll(field.key)) p.append(`${field.key}[]`, v as string | Blob);
         } else {
-          const val = fd.get(field.key);
+          const val = resolveVal(field.key, fd.get(field.key));
           if (val instanceof File) {
             if (val.size > 0 && val.name) p.append(field.key, val, val.name);
           } else if (val !== null) {
@@ -540,7 +555,7 @@ export default function DynamicCmsForm({
         if (ARRAY_TYPES.has(field.field_type)) {
           data[field.key] = fd.getAll(field.key);
         } else {
-          const val = fd.get(field.key);
+          const val = resolveVal(field.key, fd.get(field.key));
           if (val !== null && !(val instanceof File)) data[field.key] = val;
         }
       }
