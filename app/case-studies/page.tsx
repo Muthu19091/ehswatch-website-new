@@ -47,6 +47,8 @@ export default async function CaseStudiesPage() {
     secondary_cta?: unknown;
   }>(blocks, "hero");
 
+  const listingBlock = findBlock<{ pagination?: string; limit?: number; sort?: string }>(blocks, "post_listing");
+
   const ctaBlock = findBlock<{
     headline?: string;
     subhead?: string;
@@ -70,7 +72,11 @@ export default async function CaseStudiesPage() {
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
         />
-        <CaseStudiesGrid cmsStudies={cmsItems.length > 0 ? cmsItems : undefined} />
+        <CaseStudiesGrid
+          cmsStudies={cmsItems.length > 0 ? cmsItems : undefined}
+          pagination={listingBlock?.pagination}
+          limit={typeof listingBlock?.limit === "number" ? listingBlock.limit : undefined}
+        />
         <CTABanner
           cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
           cmsSubhead={stripHtmlOpt(ctaBlock?.subhead)}

@@ -226,6 +226,8 @@ function SquareCard({ card, index }: { card: Card; index: number }) {
 ═══════════════════════════════════════════════════════ */
 interface CaseStudiesGridProps {
   cmsStudies?: CmsCaseStudy[];
+  pagination?: string;   // CMS post_listing: "load_more" | "pagination"
+  limit?: number;        // CMS post_listing: max items to show
 }
 
 // Case studies per page: one wide "lead" card + a 2-col grid of the rest.
@@ -241,14 +243,19 @@ function pageItems(current: number, total: number): (number | "…")[] {
   return out;
 }
 
-export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
+export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseStudiesGridProps) {
   // CMS-only: no hardcoded fallback studies.
-  const cards: Card[] =
+  const allCards: Card[] =
     cmsStudies && cmsStudies.length > 0
       ? cmsStudies.map(cmsToCard)
       : [];
+  // Honour the CMS post_listing block: cap by `limit`, and switch the pager to
+  // a "Load More" button when pagination is set to load_more.
+  const cards: Card[] = limit && limit > 0 ? allCards.slice(0, limit) : allCards;
+  const loadMore = (pagination ?? "").toLowerCase() === "load_more";
 
   const [page, setPage] = useState(1);
+  const [shownCount, setShownCount] = useState(PAGE_SIZE);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Nothing configured → hide the whole section.
@@ -257,7 +264,7 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
   const totalPages  = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages); // guard against a stale page
   const pageStart   = (currentPage - 1) * PAGE_SIZE;
-  const pageCards   = cards.slice(pageStart, pageStart + PAGE_SIZE);
+  const pageCards   = loadMore ? cards.slice(0, shownCount) : cards.slice(pageStart, pageStart + PAGE_SIZE);
   const [lead, ...others] = pageCards;
 
   const goToPage = (n: number) => {
@@ -285,7 +292,7 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
         )}
 
         {/* Pagination — numbered pager (Prev · 1 … N · Next) */}
-        {totalPages > 1 && (
+        {!loadMore && totalPages > 1 && (
           <nav className="flex justify-center items-center gap-1.5 mt-6" aria-label="Case studies pagination">
             <button
               type="button"
@@ -327,6 +334,18 @@ export default function CaseStudiesGrid({ cmsStudies }: CaseStudiesGridProps) {
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
           </nav>
+        )}
+
+        {loadMore && cards.length > shownCount && (
+          <div className="flex justify-center mt-6">
+            <button
+              type="button"
+              onClick={() => setShownCount((v) => v + PAGE_SIZE)}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] text-[#4b5563] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors"
+            >
+              Load More
+            </button>
+          </div>
         )}
 
       </div>
