@@ -595,6 +595,8 @@ export default function NavbarClient({
         {/* ── Desktop CTA ─────────────────────────────────── */}
         <Link
           href={ctaHref}
+          target={primaryCta?.newTab ? "_blank" : undefined}
+          rel={primaryCta?.newTab ? "noopener noreferrer" : undefined}
           ref={ctaRef}
           onMouseEnter={(e) => {
             const r = ctaRef.current?.getBoundingClientRect();
@@ -717,6 +719,8 @@ export default function NavbarClient({
           )
         )}
         <Link href={ctaHref} onClick={() => setOpen(false)}
+          target={primaryCta?.newTab ? "_blank" : undefined}
+          rel={primaryCta?.newTab ? "noopener noreferrer" : undefined}
           className="sm:hidden mt-2 px-4 py-3 text-center border border-[rgba(255,109,0,0.65)] text-[var(--brand-primary)] rounded-full font-medium text-[15px] font-[family-name:var(--font-dm-sans)] hover:bg-orange-50 transition-colors">
           {ctaLabel}
         </Link>

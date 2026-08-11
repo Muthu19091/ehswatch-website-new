@@ -54,12 +54,15 @@ interface GlareButtonProps {
   // When set (CMS "video_popup" link type), the button opens a modal player
   // instead of navigating — works for ANY CTA that resolves to a video_popup.
   videoUrl?: string;
+  // Open in a new tab (CMS open_in_new_tab). External links already do.
+  newTab?: boolean;
 }
 
 export default function GlareButton({
   children,
   className = "",
   href,
+  newTab,
   onClick,
   style,
   fillColor = "#FFA660",
@@ -201,7 +204,7 @@ export default function GlareButton({
       {...shared}
       href={withBasePath(href)}
       onClick={onClick}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      {...((external || newTab) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       {inner}
     </a>

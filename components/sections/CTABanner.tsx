@@ -5,8 +5,8 @@ import GlareButton from "@/components/ui/GlareButton";
 interface CTABannerProps {
   cmsHeadline?: string;
   cmsSubhead?: string;
-  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string };
-  cmsSecondaryCta?: { label: string; url: string; videoUrl?: string };
+  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string; newTab?: boolean };
+  cmsSecondaryCta?: { label: string; url: string; videoUrl?: string; newTab?: boolean };
 }
 
 export default function CTABanner({
@@ -57,6 +57,7 @@ export default function CTABanner({
               <GlareButton
                 href={cmsPrimaryCta.url}
                 videoUrl={cmsPrimaryCta.videoUrl}
+                newTab={cmsPrimaryCta.newTab}
                 className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full font-[family-name:var(--font-inter)] font-medium text-[14px] text-white whitespace-nowrap"
                 style={{
                   backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)",
@@ -70,6 +71,7 @@ export default function CTABanner({
               <GlareButton
                 href={cmsSecondaryCta.url}
                 videoUrl={cmsSecondaryCta.videoUrl}
+                newTab={cmsSecondaryCta.newTab}
                 fillColor="#FFA660"
                 hoverTextColor="#ffffff"
                 className="w-full sm:w-auto px-6 md:px-[26px] py-3 md:py-[10px] rounded-full bg-[rgba(255,120,44,0.1)] border border-[rgba(255,120,44,0.2)] font-[family-name:var(--font-inter)] font-medium text-[14px] text-[var(--brand-primary)] whitespace-nowrap"

@@ -141,7 +141,7 @@ export function isExternalUrl(href: string): boolean {
 export function resolveCta(
   cta: unknown,
   pageMap?: PageMap,
-): { label: string; url: string; videoUrl?: string } | null {
+): { label: string; url: string; videoUrl?: string; newTab?: boolean } | null {
   const c = unwrapCta(cta);
   if (!c) return null;
   const label = stripHtml(c.label as string | null | undefined);
@@ -159,7 +159,8 @@ export function resolveCta(
           ? vf
           : vf?.url) || undefined;
   }
-  return videoUrl ? { label, url, videoUrl } : { label, url };
+  const newTab = Boolean((c as { open_in_new_tab?: boolean }).open_in_new_tab);
+  return { label, url, ...(videoUrl ? { videoUrl } : {}), ...(newTab ? { newTab } : {}) };
 }
 
 // Aliases used by page routes
