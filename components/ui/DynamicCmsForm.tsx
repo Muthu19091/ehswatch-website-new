@@ -343,29 +343,9 @@ function FieldWidget({
   );
 }
 
-/* Group fields into rows: full-width / multi-line fields get their own row; others pair up */
-function buildRows(fields: CmsFormField[]): CmsFormField[][] {
-  const SOLO_TYPES = new Set(["textarea", "radio", "checkboxes", "consent", "file", "application_picker", "addon_picker", "catalogue_picker"]);
-  const rows: CmsFormField[][] = [];
-  let i = 0;
-  while (i < fields.length) {
-    const f = fields[i];
-    if (f.full_width || SOLO_TYPES.has(f.field_type)) {
-      rows.push([f]);
-      i++;
-    } else {
-      const next = fields[i + 1];
-      if (next && !next.full_width && !SOLO_TYPES.has(next.field_type)) {
-        rows.push([f, next]);
-        i += 2;
-      } else {
-        rows.push([f]);
-        i++;
-      }
-    }
-  }
-  return rows;
-}
+/* Field width is driven SOLELY by the CMS `full_width` toggle, for every field
+   type: on → spans the full row (col-span-2), off → half width (col-span-1) and
+   packs 2-up in the grid. No field type is force-full anymore. */
 
 /* ── Client-side validation ── */
 function validateFields(
@@ -625,23 +605,22 @@ export default function DynamicCmsForm({
 
   const gapClass = variant === "contact" ? "gap-10" : "gap-4";
 
-  const renderRows = (fields: CmsFormField[]) =>
-    buildRows(fields.filter((f) => f.field_type !== "hidden")).map((row, ri) => (
-      <div
-        key={ri}
-        className={row.length === 2 ? "grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12" : ""}
-      >
-        {row.map((field) => (
-          <FieldWidget
-            key={field.key}
-            field={field}
-            variant={variant}
-            error={errors[field.key]}
-            pickerCatalogues={formAttrs.picker_catalogues}
-          />
+  const renderRows = (fields: CmsFormField[]) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
+      {fields
+        .filter((f) => f.field_type !== "hidden")
+        .map((field) => (
+          <div key={field.key} className={field.full_width ? "sm:col-span-2" : ""}>
+            <FieldWidget
+              field={field}
+              variant={variant}
+              error={errors[field.key]}
+              pickerCatalogues={formAttrs.picker_catalogues}
+            />
+          </div>
         ))}
-      </div>
-    ));
+    </div>
+  );
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} noValidate className={`flex flex-col ${gapClass}`}>
