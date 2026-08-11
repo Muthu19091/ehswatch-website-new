@@ -1934,12 +1934,12 @@ export default function IrisPage({
               1 / 2 / 3 columns (was a rows-of-3 grid that broke on iPad). */}
           <div
             ref={problemsGridRef}
-            className="flex flex-wrap justify-center gap-4 iris-stagger"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden iris-stagger"
           >
             {ACTIVE_PROBLEMS.map((p) => (
               <div
                 key={p.title}
-                className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px] iris-reveal-target"
+                className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target"
               >
                 {/* Icon — ONLY when the CMS item has an icon set. No hardcoded
                     default (the section previously showed a default SVG even when
