@@ -247,7 +247,14 @@ export function buildModuleTemplateProps(
   type MoreCard = { name: string; slug: string; desc: string; icon: string | null; href: string };
   let otherModules: MoreCard[];
 
-  if ((modulesBlock?.source ?? "").toLowerCase() === "inline") {
+  // Honor the block's "Pick a source" explicitly so switching sources always
+  // takes effect: "inline" = per-page authored cards; "curated" = hand-picked
+  // ids from the global pool; "all" (default) = every active module. Gating on
+  // the source value (not merely "are there curated_ids") means selecting "all"
+  // ignores any stale curated_ids left behind by a previous "curated" choice.
+  const moduleSource = (modulesBlock?.source ?? "all").toLowerCase();
+
+  if (moduleSource === "inline") {
     // Inline source — each card's copy/icon/link is authored directly on this
     // page's block (includes a per-page contextual IRIS AI card). Self-contained,
     // so no lookup against the global module pool.
@@ -308,7 +315,7 @@ export function buildModuleTemplateProps(
       .filter((m): m is CmsProductModule => !!m && m.attributes.slug !== slug)
       .map(toCard);
 
-    otherModules = curatedModules.length > 0
+    otherModules = (moduleSource === "curated" && curatedModules.length > 0)
       ? curatedModules
       : allModules
           .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
