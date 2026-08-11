@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getBookmarks, removeBookmark, subscribeBookmarks, type Bookmark } from "@/lib/bookmarks";
+import { withBasePath } from "@/lib/basePath";
 
 // Show at most this many bookmarks in the dropdown before collapsing the rest
 // behind a "View all" CTA.
@@ -92,7 +93,7 @@ export default function BookmarksMenu({ lightHero = false }: { lightHero?: boole
               <ul className="flex flex-col">
                 {visible.map((b) => (
                   <li key={b.slug} className="group flex items-start gap-2 px-4 py-2 hover:bg-[#f9fafb]">
-                    <a href={b.url} className="flex-1 min-w-0 no-underline">
+                    <a href={withBasePath(b.url)} className="flex-1 min-w-0 no-underline">
                       <span className="block font-[family-name:var(--font-dm-sans)] text-[13.5px] leading-snug line-clamp-1" style={{ color: "#111827" }}>
                         {b.title}
                       </span>

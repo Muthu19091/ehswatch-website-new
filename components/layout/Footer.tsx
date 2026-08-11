@@ -1,5 +1,6 @@
 import { getFooter, getProductModules, getSettings } from "@/lib/api";
 import Link from "next/link";
+import { withBasePath } from "@/lib/basePath";
 import CmsIcon from "@/components/ui/CmsIcon";
 
 const COMPANY = [
@@ -349,7 +350,7 @@ export default async function Footer() {
               <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/15 text-[11px] md:text-[12px] text-white/70">{label}</span>
             );
             return b.url
-              ? <a key={i} href={b.url} target="_blank" rel="noopener noreferrer" className="inline-flex">{content}</a>
+              ? <a key={i} href={withBasePath(b.url) || "#"} target="_blank" rel="noopener noreferrer" className="inline-flex">{content}</a>
               : <span key={i} className="inline-flex">{content}</span>;
           })}
         </div>
