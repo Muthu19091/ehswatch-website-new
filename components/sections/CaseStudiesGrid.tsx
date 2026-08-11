@@ -16,6 +16,9 @@ interface Card {
   industry?: string;
   metricValue?: string;
   metricLabel?: string;
+  category?: string;
+  date?: string;
+  author?: string;
 }
 
 function cmsToCard(cs: CmsCaseStudy): Card {
@@ -28,6 +31,9 @@ function cmsToCard(cs: CmsCaseStudy): Card {
     industry: cs.attributes.industry || undefined,
     metricValue: r?.value ?? r?.after ?? undefined,
     metricLabel: r?.label ?? r?.metric ?? undefined,
+    category: (cs.attributes as { category?: string }).category || cs.attributes.industry || undefined,
+    date: cs.attributes.published_at || undefined,
+    author: cs.attributes.client_name || undefined,
   };
 }
 
@@ -70,13 +76,30 @@ function CoverPanel({ card, index }: { card: Card; index: number }) {
 /* ═══════════════════════════════════════════════════════
    CTA
 ═══════════════════════════════════════════════════════ */
-function KnowMore({ hovered }: { hovered: boolean }) {
+interface CardConfig {
+  showImage: boolean;
+  showExcerpt: boolean;
+  showDate: boolean;
+  showAuthor: boolean;
+  showCategory: boolean;
+  ctaLabel: string;
+}
+
+// Format an ISO date as "Jul 17, 2026" from its Y-M-D parts (no Date()/timezone
+// math, so server and client render identically — no hydration mismatch).
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function fmtDate(iso?: string): string {
+  const m = (iso ?? "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}` : "";
+}
+
+function KnowMore({ hovered, label }: { hovered: boolean; label: string }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold"
       style={{ color: hovered ? "#ea6c00" : "#F97316", transition: "color 0.2s" }}
     >
-      Know more
+      {label}
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
         <path d="M2.5 7h9M8 3.5l3.5 3.5L8 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
@@ -120,7 +143,7 @@ function WideCard({ card, index }: { card: Card; index: number }) {
           {card.body}
         </p>
         <div className="my-6" style={{ height: 1, background: "#F0F0F0" }} />
-        <KnowMore hovered={hovered} />
+        <KnowMore hovered={hovered} label="Know more" />
       </div>
 
       {/* Image */}
@@ -158,8 +181,13 @@ function WideCard({ card, index }: { card: Card; index: number }) {
 /* ═══════════════════════════════════════════════════════
    SQUARE CARD
 ═══════════════════════════════════════════════════════ */
-function SquareCard({ card, index }: { card: Card; index: number }) {
+function SquareCard({ card, index, cfg }: { card: Card; index: number; cfg: CardConfig }) {
   const [hovered, setHovered] = useState(false);
+  const metaBits = [
+    cfg.showCategory ? card.category : "",
+    cfg.showAuthor ? card.author : "",
+    cfg.showDate ? fmtDate(card.date) : "",
+  ].filter(Boolean);
   return (
     <Link
       href={`/case-studies/${card.slug}`}
@@ -173,7 +201,8 @@ function SquareCard({ card, index }: { card: Card; index: number }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image */}
+      {/* Image (post_listing show_image toggle) */}
+      {cfg.showImage && (
       <div
         className="overflow-hidden flex-shrink-0"
         style={{
@@ -200,23 +229,34 @@ function SquareCard({ card, index }: { card: Card; index: number }) {
           <CoverPanel card={card} index={index} />
         )}
       </div>
+      )}
 
       {/* Text */}
       <div className="flex flex-col px-7 py-7 flex-1">
+        {metaBits.length > 0 && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[12px] font-medium mb-2"
+            style={{ color: "#9CA3AF" }}
+          >
+            {metaBits.join(" · ")}
+          </p>
+        )}
         <h3
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[18px] leading-[1.35] mb-3"
           style={{ color: "#111827", textWrap: "pretty" } as React.CSSProperties}
         >
           {card.title}
         </h3>
-        <p
-          className="font-[family-name:var(--font-dm-sans)] text-[13px] leading-[1.7] flex-1"
-          style={{ color: "#6B7280", textWrap: "pretty" } as React.CSSProperties}
-        >
-          {card.body}
-        </p>
+        {cfg.showExcerpt && card.body && (
+          <p
+            className="font-[family-name:var(--font-dm-sans)] text-[13px] leading-[1.7] flex-1"
+            style={{ color: "#6B7280", textWrap: "pretty" } as React.CSSProperties}
+          >
+            {card.body}
+          </p>
+        )}
         <div className="my-5" style={{ height: 1, background: "#F0F0F0" }} />
-        <KnowMore hovered={hovered} />
+        <KnowMore hovered={hovered} label={cfg.ctaLabel} />
       </div>
     </Link>
   );
@@ -229,6 +269,15 @@ interface CaseStudiesGridProps {
   cmsStudies?: CmsCaseStudy[];
   pagination?: string;   // CMS post_listing: "load_more" | "pagination"
   limit?: number;        // CMS post_listing: max items to show
+  heading?: string;
+  subheading?: string;
+  showImage?: boolean;
+  showExcerpt?: boolean;
+  showDate?: boolean;
+  showAuthor?: boolean;
+  showCategory?: boolean;
+  cardCtaLabel?: string;
+  emptyStateText?: string;
 }
 
 // Case studies per page: a uniform 3-col grid of equal cards.
@@ -244,7 +293,21 @@ function pageItems(current: number, total: number): (number | "…")[] {
   return out;
 }
 
-export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseStudiesGridProps) {
+export default function CaseStudiesGrid({
+  cmsStudies, pagination, limit,
+  heading, subheading,
+  showImage, showExcerpt, showDate, showAuthor, showCategory,
+  cardCtaLabel, emptyStateText,
+}: CaseStudiesGridProps) {
+  // post_listing card toggles (Filament defaults: image/excerpt/date/category ON, author OFF).
+  const cfg: CardConfig = {
+    showImage: showImage !== false,
+    showExcerpt: showExcerpt !== false,
+    showDate: showDate !== false,
+    showCategory: showCategory !== false,
+    showAuthor: showAuthor === true,
+    ctaLabel: (cardCtaLabel && cardCtaLabel.trim()) || "Know more",
+  };
   // CMS-only: no hardcoded fallback studies.
   const allCards: Card[] =
     cmsStudies && cmsStudies.length > 0
@@ -259,8 +322,15 @@ export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseS
   const [shownCount, setShownCount] = useState(PAGE_SIZE);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Nothing configured → hide the whole section.
-  if (cards.length === 0) return null;
+  // Nothing configured → CMS empty-state message if set, otherwise hide.
+  if (cards.length === 0) {
+    const msg = (emptyStateText && emptyStateText.trim()) || "";
+    return msg ? (
+      <section id="case-studies" className="pt-10 pb-16 px-5 md:px-8 lg:px-12" style={{ background: "#FFFFFF" }}>
+        <p className="max-w-[1200px] mx-auto text-center font-[family-name:var(--font-dm-sans)] text-[15px]" style={{ color: "#6B7280" }}>{msg}</p>
+      </section>
+    ) : null;
+  }
 
   const totalPages  = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages); // guard against a stale page
@@ -281,10 +351,21 @@ export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseS
     <section id="case-studies" className="pt-10 pb-16 px-5 md:px-8 lg:px-12" style={{ background: "#FFFFFF" }}>
       <div ref={gridRef} className="max-w-[1200px] mx-auto flex flex-col gap-4 scroll-mt-24">
 
+        {(heading || subheading) && (
+          <div className="text-center mb-2">
+            {heading && (
+              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] md:text-[36px] leading-tight" style={{ color: "#111827" }}>{heading}</h2>
+            )}
+            {subheading && (
+              <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[15px] max-w-[600px] mx-auto" style={{ color: "#6B7280" }}>{subheading}</p>
+            )}
+          </div>
+        )}
+
         {pageCards.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {pageCards.map((card, i) => (
-              <SquareCard key={card.slug} card={card} index={i} />
+              <SquareCard key={card.slug} card={card} index={i} cfg={cfg} />
             ))}
           </div>
         )}

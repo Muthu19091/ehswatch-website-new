@@ -47,7 +47,14 @@ export default async function CaseStudiesPage() {
     secondary_cta?: unknown;
   }>(blocks, "hero");
 
-  const listingBlock = findBlock<{ pagination?: string; limit?: number; sort?: string }>(blocks, "post_listing");
+  const listingBlock = findBlock<{
+    heading?: string; subheading?: string;
+    pagination?: string; limit?: number | string; sort?: string;
+    show_image?: boolean; show_excerpt?: boolean; show_date?: boolean;
+    show_author?: boolean; show_category?: boolean;
+    card_cta_label?: string; empty_state_text?: string;
+  }>(blocks, "post_listing");
+  const listingLimit = Number(listingBlock?.limit);
 
   const ctaBlock = findBlock<{
     headline?: string;
@@ -75,7 +82,16 @@ export default async function CaseStudiesPage() {
         <CaseStudiesGrid
           cmsStudies={cmsItems.length > 0 ? cmsItems : undefined}
           pagination={listingBlock?.pagination}
-          limit={typeof listingBlock?.limit === "number" ? listingBlock.limit : undefined}
+          limit={Number.isFinite(listingLimit) && listingLimit > 0 ? listingLimit : undefined}
+          heading={stripHtmlOpt(listingBlock?.heading)}
+          subheading={stripHtmlOpt(listingBlock?.subheading)}
+          showImage={listingBlock?.show_image}
+          showExcerpt={listingBlock?.show_excerpt}
+          showDate={listingBlock?.show_date}
+          showAuthor={listingBlock?.show_author}
+          showCategory={listingBlock?.show_category}
+          cardCtaLabel={stripHtmlOpt(listingBlock?.card_cta_label)}
+          emptyStateText={stripHtmlOpt(listingBlock?.empty_state_text)}
         />
         <CTABanner
           cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
