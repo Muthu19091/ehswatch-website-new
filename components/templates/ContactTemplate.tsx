@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import ContactPage from "@/components/sections/ContactPage";
 import { getForm, getPage, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, normalizeArray, resolveHref, resolveCta, buildPageMap } from "@/lib/blocks";
 import { stripHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
@@ -35,6 +36,7 @@ export default async function ContactTemplate({ slug }: { slug: string }) {
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
+  redirectIfMoved(slug, pageRes);
   const blocks: any[] = (pageRes?.data as any)?.attributes?.content ?? [];
   const pageMap = buildPageMap(pageListRes?.data);
 

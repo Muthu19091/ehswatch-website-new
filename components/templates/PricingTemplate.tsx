@@ -7,6 +7,7 @@ import PricingCalculator from "@/components/sections/PricingCalculator";
 import PricingFAQ from "@/components/sections/PricingFAQ";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getForm, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { Metadata } from "next";
@@ -31,6 +32,7 @@ export default async function PricingTemplate({ slug }: { slug: string }) {
   const [pageData, pageListRes] = await Promise.all([getPage(slug), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
+  redirectIfMoved(slug, pageData);
   const blocks: any[] = pageData?.data?.attributes?.content ?? [];
   const pageMap = buildPageMap(pageListRes?.data);
 

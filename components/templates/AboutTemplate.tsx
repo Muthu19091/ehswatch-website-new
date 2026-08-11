@@ -8,6 +8,7 @@ import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
 import type { Metadata } from "next";
 import { getPage, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, findBlocks, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import { stripHtmlOpt, headingHtmlOpt, richHtml } from "@/lib/text";
 import { robotsFrom, seoExtras } from "@/lib/seo";
@@ -33,6 +34,7 @@ export default async function AboutTemplate({ slug }: { slug: string }) {
   const [pageData, pageListRes] = await Promise.all([getPage(slug), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
+  redirectIfMoved(slug, pageData);
   const blocks = pageData?.data?.attributes?.content ?? [];
   const pageMap = buildPageMap(pageListRes?.data);
 

@@ -6,6 +6,7 @@ import SolutionsZigzag from "@/components/sections/SolutionsZigzag";
 import CTABanner from "@/components/sections/CTABanner";
 import Testimonials from "@/components/sections/Testimonials";
 import { getPage, getTestimonials, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import type { CmsIndustryCard } from "@/components/sections/SolutionsZigzag";
@@ -33,6 +34,7 @@ export default async function IndustriesTemplate({ slug }: { slug: string }) {
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!industriesData?.data) notFound();
+  redirectIfMoved(slug, industriesData);
 
   const industryBlocks: any[] = (industriesData?.data as any)?.attributes?.content ?? [];
   const cmsTestimonials = testimonialsRes?.data ?? [];

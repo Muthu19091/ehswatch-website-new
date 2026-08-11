@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import LegalPage, { legalMetadata } from "@/components/sections/LegalPage";
 import { getPage } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { TEMPLATE_COMPONENTS, TEMPLATE_METADATA } from "@/components/templates/registry";
 
 // Top-level catch-all. Next prefers the bespoke static routes (about, product,
@@ -24,6 +25,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const res = await getPage(slug).catch(() => null);
   if (!res?.data?.attributes) notFound();
+  redirectIfMoved(slug, res);
   const template = (res.data as { attributes?: { template?: string } }).attributes?.template;
   const Tpl = template ? TEMPLATE_COMPONENTS[template] : undefined;
   if (Tpl) return <Tpl slug={slug} />;

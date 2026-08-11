@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import IrisPage from "@/components/sections/IrisPage";
 import { getPage, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, iconFeaturesToArray, buildPageMap } from "@/lib/blocks";
 import { robotsFrom, seoExtras } from "@/lib/seo";
 
@@ -28,6 +29,7 @@ export default async function IrisTemplate({ slug }: { slug: string }) {
   const [pageData, pageListRes] = await Promise.all([getPage(slug), getPageList()]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageData?.data) notFound();
+  redirectIfMoved(slug, pageData);
   const blocks: Array<{ type: string; data: Record<string, unknown> }> =
     (pageData?.data?.attributes?.content as Array<{ type: string; data: Record<string, unknown> }>) ?? [];
   const pageMap = buildPageMap(pageListRes?.data);

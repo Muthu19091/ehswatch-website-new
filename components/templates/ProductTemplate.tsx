@@ -8,6 +8,7 @@ import ProductModules from "@/components/sections/ProductModules";
 import Stats from "@/components/sections/Stats";
 import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getProductModules, getPageList } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
 import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
@@ -38,6 +39,7 @@ export default async function ProductTemplate({ slug }: { slug: string }) {
   ]);
   // CMS page record must be published — drafts and missing records 404
   if (!pageRes?.data) notFound();
+  redirectIfMoved(slug, pageRes);
   const blocks = pageRes?.data?.attributes?.content ?? [];
   const pageMap = buildPageMap(pageListRes?.data);
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getPage } from "@/lib/api";
+import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, findBlocks } from "@/lib/blocks";
 import { stripHtml } from "@/lib/text";
 import { seoExtras, robotsFrom } from "@/lib/seo";
@@ -27,6 +28,7 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
   const res = await getPage(slug);
   const attrs = res?.data?.attributes;
   if (!attrs) notFound();
+  redirectIfMoved(slug, res);
 
   const blocks = attrs.content ?? [];
   const hero = findBlock<HeroBlock>(blocks, "hero");
