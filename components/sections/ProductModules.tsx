@@ -238,24 +238,21 @@ export default function ProductModules({
   // Trailing empty cells in the last grid row get white filler cells so an odd
   // module count never leaves a bordered empty box. 2-col (sm) and 3-col (lg)
   // need different fill counts.
-  const fillSm = (2 - (visibleModules.length % 2)) % 2; // 0 or 1
-  const fillLg = (3 - (visibleModules.length % 3)) % 3; // 0, 1 or 2
+  const fillSm = (2 - (visibleModules.length % 2)) % 2; // trailing empty cell in a partial 2-col (tablet) row
 
-  // Real cards sitting in a PARTIAL last row (per breakpoint). Those cards get
-  // pulled up 1px so their white body paints over the hairline divider above
-  // them — otherwise a lonely last-row card (e.g. 4 cards in a 3-col grid)
-  // leaves a stubby divider "pointing into" the empty filler cells. Combined
-  // with the white filler cells, the partial row then reads as clean whitespace
-  // with no broken bordered box. Full rows keep their divider.
-  const remSm = visibleModules.length % 2; // real cards in partial 2-col last row (0 = full)
-  const remLg = visibleModules.length % 3; // real cards in partial 3-col last row (0 = full)
-  const coverClassFor = (i: number): string => {
-    const n = visibleModules.length;
-    // sm-only cover (reset at lg so a card that is sm-partial but lg-full keeps its lg divider)
-    const smCover = remSm > 0 && i >= n - remSm ? "sm:-mt-px sm:relative sm:z-[1] lg:mt-0" : "";
-    const lgCover = remLg > 0 && i >= n - remLg ? "lg:-mt-px lg:relative lg:z-[1]" : "";
-    return [smCover, lgCover].filter(Boolean).join(" ");
-  };
+  // Desktop (3-col): split a PARTIAL last row off so it can be CENTERED
+  // instead of leaving a void on the right. Complete rows render in the top
+  // grid; the 1–2 leftover cards render centered below, under a full-width
+  // divider. A full grid (no remainder) renders as one grid, unchanged.
+  const lgTailCount = visibleModules.length % 3; // 0 = full grid
+  const lgHead = lgTailCount > 0 ? visibleModules.slice(0, visibleModules.length - lgTailCount) : visibleModules;
+  const lgTail = lgTailCount > 0 ? visibleModules.slice(visibleModules.length - lgTailCount) : [];
+
+  // Tablet (2-col): a lone trailing card is pulled up 1px so its white body
+  // paints over the hairline divider above it (the filler covers the empty cell).
+  const remSm = visibleModules.length % 2;
+  const coverClassForSm = (i: number): string =>
+    remSm > 0 && i >= visibleModules.length - remSm ? "sm:-mt-px sm:relative sm:z-[1]" : "";
 
   const handleViewMore = () => {
     setVisibleCount(Math.min(visibleCount + STEP, modules.length));
@@ -320,26 +317,40 @@ export default function ProductModules({
             box-shadow filler was unreliable). The last row blends to white with
             no bordered empty box (BUG-185). */}
         <div className="w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
-            {visibleModules.map((mod, i) => (
-              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} coverClass={coverClassFor(i)} />
-            ))}
-            {(fillSm >= 1 || fillLg >= 1) && (
-              <div
-                aria-hidden
-                className={`bg-white relative z-[1] ${
-                  fillSm >= 1 && fillLg >= 1
-                    ? "hidden sm:block"
-                    : fillSm >= 1
-                      ? "hidden sm:block lg:hidden"
-                      : "hidden lg:block"
-                }`}
-                style={{ marginTop: -1, marginLeft: -1 }}
-              />
+          {/* Desktop (lg+): complete rows in a 3-col divider grid; a PARTIAL
+              last row renders centered below, under a full-width divider, so
+              there's no empty void on the right (card design unchanged). */}
+          <div className="hidden lg:block">
+            {lgHead.length > 0 && (
+              <div className={`grid grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] overflow-hidden ${lgTail.length > 0 ? "rounded-t-[12px] border-b-0" : "rounded-[12px]"}`}>
+                {lgHead.map((mod) => (
+                  <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
+                ))}
+              </div>
             )}
-            {fillLg >= 2 && (
-              <div aria-hidden className="bg-white relative z-[1] hidden lg:block" style={{ marginTop: -1, marginLeft: -1 }} />
+            {lgTail.length > 0 && (
+              <div className={`flex justify-center bg-white border border-[#e5e7eb] overflow-hidden ${lgHead.length > 0 ? "rounded-b-[12px]" : "rounded-[12px]"}`}>
+                {lgTail.map((mod, i) => (
+                  <div key={mod.name} className={`w-1/3 bg-white ${i > 0 ? "border-l border-[#e5e7eb]" : ""}`}>
+                    <ModuleCell mod={mod} linkText={cmsLinkText} />
+                  </div>
+                ))}
+              </div>
             )}
+          </div>
+
+          {/* Tablet / mobile (< lg): 1-col / 2-col grid. A trailing empty cell
+              in a partial 2-col row is covered by a white filler + the lone
+              card is pulled up 1px, so no bordered empty box appears. */}
+          <div className="lg:hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
+              {visibleModules.map((mod, i) => (
+                <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} coverClass={coverClassForSm(i)} />
+              ))}
+              {fillSm >= 1 && (
+                <div aria-hidden className="bg-white relative z-[1] hidden sm:block" style={{ marginTop: -1, marginLeft: -1 }} />
+              )}
+            </div>
           </div>
         </div>
 
