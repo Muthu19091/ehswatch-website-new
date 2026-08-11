@@ -3,14 +3,40 @@ import Footer from "@/components/layout/Footer";
 import CTABanner from "@/components/sections/CTABanner";
 import HeroDotBackground from "@/components/ui/HeroDotBackground";
 import Link from "next/link";
+import { connection } from "next/server";
 import { getPage, getPageList } from "@/lib/api";
 import { findBlock, buildPageMap, resolveCta } from "@/lib/blocks";
 import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
+import type { Metadata } from "next";
+import { robotsFrom, seoExtras } from "@/lib/seo";
 
 // Custom 404 — renders the CMS "404" page (slug "404") content, so editors
 // control the not-found copy/CTAs. Falls back to sensible defaults if the CMS
 // page is unavailable. Next.js serves this with a 404 status automatically.
+// SEO for the 404 is CMS-driven too: title/description/keywords/canonical/og
+// come from the "404" page record; a 404 defaults to noindex unless the CMS
+// robots field explicitly overrides it. Runs per-request (route is dynamic).
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getPage("404").catch(() => null);
+  const attrs = pageData?.data?.attributes as { meta?: Parameters<typeof seoExtras>[0]; title?: string } | undefined;
+  const meta = attrs?.meta;
+  return {
+    ...seoExtras(meta),
+    robots: robotsFrom(meta?.robots) ?? { index: false, follow: false },
+    title: meta?.meta_title || attrs?.title || "Page Not Found — EHSWatch",
+    description:
+      meta?.meta_description ||
+      "The page you\u2019re looking for may have been moved or no longer exists.",
+  };
+}
+
+// Render per-request so editors' CMS "404" page edits reflect without a rebuild.
+// not-found.tsx ignores `export const dynamic`, so connection() below is what
+// actually opts this route out of static prerendering; the export documents intent.
+export const dynamic = "force-dynamic";
+
 export default async function NotFound() {
+  await connection(); // opt out of build-time prerender
   const [pageRes, pageListRes] = await Promise.all([
     getPage("404").catch(() => null),
     getPageList().catch(() => null),
