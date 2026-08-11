@@ -198,6 +198,8 @@ function FieldWidget({
   }
 
   if (field.field_type === "consent") {
+    // A consent field is a single checkbox with the statement (label) beside it.
+    // No separate help_text line below — the beside text IS the consent text.
     return (
       <div>
         <label className="flex items-start gap-3 cursor-pointer">
@@ -207,7 +209,6 @@ function FieldWidget({
             {field.required && <span className="text-[#e53e3e] ml-0.5">*</span>}
           </span>
         </label>
-        {helpText}
         <FieldError message={error} />
       </div>
     );
