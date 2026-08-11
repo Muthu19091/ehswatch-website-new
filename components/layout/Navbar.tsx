@@ -117,10 +117,22 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
     )
     .filter((item) => (item.hasDropdown ? (item.children?.length ?? 0) > 0 : navLinkVisible(item.href, navFlags, "header")));
 
+  // A page with show_in_header enabled is auto-added to the header as a top-level
+  // link — but if it also lives inside a dropdown (e.g. Blogs / Case Studies under
+  // Resources), it would appear twice. Drop the top-level duplicate so it shows
+  // under the dropdown only.
+  const normHref = (h?: string) => (h ?? "").replace(/[#?].*$/, "").replace(/\/+$/, "").toLowerCase() || "/";
+  const childHrefs = new Set(
+    filteredNav.flatMap((it) => (it.children ?? []).map((c) => normHref(c.href))),
+  );
+  const dedupedNav = filteredNav.filter(
+    (it) => it.hasDropdown || !childHrefs.has(normHref(it.href)),
+  );
+
   return (
     <NavbarClient
       lightHero={lightHero}
-      cmsNav={filteredNav.length > 0 ? filteredNav : undefined}
+      cmsNav={dedupedNav.length > 0 ? dedupedNav : undefined}
       cmsCta={cmsCta}
       cmsCtas={cmsCtas.length > 0 ? cmsCtas : undefined}
       cmsLogo={cmsLogo}
