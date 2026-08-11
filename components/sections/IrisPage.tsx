@@ -1499,6 +1499,33 @@ export default function IrisPage({
       }))
       .filter((p) => p.title || p.desc);
 
+  // Problems grid layout (mirrors the Product Modules grid): complete rows
+  // render in a 3-col divider grid; a PARTIAL last row is centered below a
+  // full-width divider, so empty cells never expose the grey divider bg.
+  const P_TAIL = ACTIVE_PROBLEMS.length % 3; // 0 = full grid
+  const P_HEAD_CARDS = P_TAIL > 0 ? ACTIVE_PROBLEMS.slice(0, ACTIVE_PROBLEMS.length - P_TAIL) : ACTIVE_PROBLEMS;
+  const P_TAIL_CARDS = P_TAIL > 0 ? ACTIVE_PROBLEMS.slice(ACTIVE_PROBLEMS.length - P_TAIL) : [];
+  const P_FILL_SM = (2 - (ACTIVE_PROBLEMS.length % 2)) % 2; // trailing empty cell in a partial 2-col row
+  const P_REM_SM = ACTIVE_PROBLEMS.length % 2;
+  const problemBody = (p: ProblemCard & { cmsIcon?: string | null }) => (
+    <>
+      {p.cmsIcon && (
+        <div
+          className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+          style={{ backgroundColor: p.color + "14", color: p.color }}
+        >
+          <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
+        </div>
+      )}
+      <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
+        {p.title}
+      </h3>
+      <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] text-pretty">
+        {p.desc}
+      </p>
+    </>
+  );
+
   // CAPABILITIES: overlay CMS title/desc by index if provided; keep all
   // styling, icons, features and benefits from the hardcoded array.
   // This merged array is passed down to any capabilities sub-section rendered below.
@@ -1927,43 +1954,45 @@ export default function IrisPage({
           </div>
           )}
 
-          {/* Grid — no outer border, internal dividers only (matches modules style).
-              Rows are derived from the item count so any number of CMS cards
-              renders (was hard-capped at 2 rows / 6 items). */}
-          {/* Single responsive grid with gap dividers — clean borders at
-              1 / 2 / 3 columns (was a rows-of-3 grid that broke on iPad). */}
-          <div
-            ref={problemsGridRef}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden iris-stagger"
-          >
-            {ACTIVE_PROBLEMS.map((p) => (
-              <div
-                key={p.title}
-                className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target"
-              >
-                {/* Icon — ONLY when the CMS item has an icon set. No hardcoded
-                    default (the section previously showed a default SVG even when
-                    the editor added no icon). */}
-                {p.cmsIcon && (
-                  <div
-                    className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: p.color + "14", color: p.color }}
-                  >
-                    <CmsIcon icon={p.cmsIcon} size={22} strokeWidth={1.6} color={p.color} fallback="triangle-alert" />
+          {/* Grid — modules-style connected dividers. Complete rows render in
+              a 3-col grid; a PARTIAL last row is centered below a full-width
+              divider so empty cells never show the grey divider background.
+              Tablet/mobile keep the clean 1-/2-col fill. */}
+          <div ref={problemsGridRef}>
+            {/* Desktop (lg+) */}
+            <div className="hidden lg:block">
+              {P_HEAD_CARDS.length > 0 && (
+                <div className={`grid grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] overflow-hidden iris-stagger ${P_TAIL_CARDS.length > 0 ? "rounded-t-[12px] border-b-0" : "rounded-[12px]"}`}>
+                  {P_HEAD_CARDS.map((p) => (
+                    <div key={p.title} className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target">
+                      {problemBody(p)}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {P_TAIL_CARDS.length > 0 && (
+                <div className={`flex justify-center bg-white border border-[#e5e7eb] overflow-hidden iris-stagger ${P_HEAD_CARDS.length > 0 ? "rounded-b-[12px]" : "rounded-[12px]"}`}>
+                  {P_TAIL_CARDS.map((p, i) => (
+                    <div key={p.title} className={`w-1/3 flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target ${i > 0 ? "border-l border-[#e5e7eb]" : ""}`}>
+                      {problemBody(p)}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Tablet / mobile (< lg) */}
+            <div className="lg:hidden">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden iris-stagger">
+                {ACTIVE_PROBLEMS.map((p, i) => (
+                  <div key={p.title} className={`flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white iris-reveal-target ${P_REM_SM > 0 && i >= ACTIVE_PROBLEMS.length - P_REM_SM ? "sm:-mt-px sm:relative sm:z-[1]" : ""}`}>
+                    {problemBody(p)}
                   </div>
+                ))}
+                {P_FILL_SM >= 1 && (
+                  <div aria-hidden className="bg-white relative z-[1] hidden sm:block" style={{ marginTop: -1, marginLeft: -1 }} />
                 )}
-
-                {/* Title */}
-                <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
-                  {p.title}
-                </h3>
-
-                {/* Description */}
-                <p className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#6b7280] leading-[1.65] text-pretty">
-                  {p.desc}
-                </p>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
