@@ -128,13 +128,22 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   // Drop a top-level link when the same page already appears in a dropdown, AND
   // when the same page appears more than once at the top level (a manual link +
   // an auto-added show_in_header link both point at it). Keep the first.
+  // Also dedupe by normalized LABEL so a repeated entry (e.g. two "About Us"
+  // links pointing at DIFFERENT slugs — one left stale after a page rename)
+  // collapses to the first. Href-only dedup misses these because the URLs
+  // differ; label dedup keeps the nav clean however the duplicate crept in.
+  const normLabel = (l?: string) => (l ?? "").replace(/\s+/g, " ").trim().toLowerCase();
   const seenTop = new Set<string>();
+  const seenLabel = new Set<string>();
   const dedupedNav = filteredNav.filter((it) => {
     if (it.hasDropdown) return true;
     const h = normHref(it.href);
     if (childHrefs.has(h)) return false;
     if (seenTop.has(h)) return false;
+    const lbl = normLabel((it as { label?: string }).label);
+    if (lbl && seenLabel.has(lbl)) return false;
     seenTop.add(h);
+    if (lbl) seenLabel.add(lbl);
     return true;
   });
 
