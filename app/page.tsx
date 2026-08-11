@@ -13,7 +13,7 @@ import Blogs from "@/components/sections/Blogs";
 import CTABanner from "@/components/sections/CTABanner";
 import { getTestimonials, getClientLogos, getPage, getPageList } from "@/lib/api";
 import { stripHtml, stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
-import { findBlock, normalizeArray, buildPageMap, resolveCta } from "@/lib/blocks";
+import { findBlock, normalizeArray, buildPageMap, resolveCta, mediaUrl } from "@/lib/blocks";
 import { robotsFrom, seoExtras } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -127,12 +127,12 @@ export default async function HomePage() {
   }>(blocks, "tabs_carousel");
 
   const cmsPlatformTabs = tabsCarouselBlock?.tabs
-    ? normalizeArray<{ label?: string; title?: string; description?: string; badge?: string | null; image?: string | null; cta?: { label?: string; url?: string } }>(tabsCarouselBlock.tabs).map(t => ({
+    ? normalizeArray<{ label?: string; title?: string; description?: string; badge?: string | null; image?: { url?: string; attributes?: { url?: string } } | string | null; cta?: { label?: string; url?: string } }>(tabsCarouselBlock.tabs).map(t => ({
         label:       t.label       || "",
         title:       t.title       || "",
         description: t.description || "",
         badge:       t.badge       || null,
-        cmsImage:    t.image       || null,
+        cmsImage:    mediaUrl(t.image) || null,
         ctaLabel:    t.cta?.label  || "",
         ctaUrl:      resolveCta(t.cta, pageMap)?.url || "",
       }))
