@@ -127,11 +127,11 @@ const STEP = COLS * 2; // reveal full rows on both 2-col (tablet) and 3-col (des
 
 // ── Module cell ────────────────────────────────────────────────────────────
 
-function ModuleCell({ mod, linkText }: { mod: Module; linkText?: string }) {
+function ModuleCell({ mod, linkText, coverClass }: { mod: Module; linkText?: string; coverClass?: string }) {
   const [linkHovered, setLinkHovered] = useState(false);
 
   return (
-    <div className="flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white">
+    <div className={`flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white ${coverClass ?? ""}`}>
 
       <div
         className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
@@ -241,6 +241,22 @@ export default function ProductModules({
   const fillSm = (2 - (visibleModules.length % 2)) % 2; // 0 or 1
   const fillLg = (3 - (visibleModules.length % 3)) % 3; // 0, 1 or 2
 
+  // Real cards sitting in a PARTIAL last row (per breakpoint). Those cards get
+  // pulled up 1px so their white body paints over the hairline divider above
+  // them — otherwise a lonely last-row card (e.g. 4 cards in a 3-col grid)
+  // leaves a stubby divider "pointing into" the empty filler cells. Combined
+  // with the white filler cells, the partial row then reads as clean whitespace
+  // with no broken bordered box. Full rows keep their divider.
+  const remSm = visibleModules.length % 2; // real cards in partial 2-col last row (0 = full)
+  const remLg = visibleModules.length % 3; // real cards in partial 3-col last row (0 = full)
+  const coverClassFor = (i: number): string => {
+    const n = visibleModules.length;
+    // sm-only cover (reset at lg so a card that is sm-partial but lg-full keeps its lg divider)
+    const smCover = remSm > 0 && i >= n - remSm ? "sm:-mt-px sm:relative sm:z-[1] lg:mt-0" : "";
+    const lgCover = remLg > 0 && i >= n - remLg ? "lg:-mt-px lg:relative lg:z-[1]" : "";
+    return [smCover, lgCover].filter(Boolean).join(" ");
+  };
+
   const handleViewMore = () => {
     setVisibleCount(Math.min(visibleCount + STEP, modules.length));
   };
@@ -305,8 +321,8 @@ export default function ProductModules({
             no bordered empty box (BUG-185). */}
         <div className="w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e5e7eb] border border-[#e5e7eb] rounded-[12px] overflow-hidden">
-            {visibleModules.map((mod) => (
-              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} />
+            {visibleModules.map((mod, i) => (
+              <ModuleCell key={mod.name} mod={mod} linkText={cmsLinkText} coverClass={coverClassFor(i)} />
             ))}
             {(fillSm >= 1 || fillLg >= 1) && (
               <div
