@@ -122,29 +122,52 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   // Resources), it would appear twice. Drop the top-level duplicate so it shows
   // under the dropdown only.
   const normHref = (h?: string) => (h ?? "").replace(/[#?].*$/, "").replace(/\/+$/, "").toLowerCase() || "/";
+  const normLabel = (l?: string) => (l ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+  const labelOf = (it: unknown) => normLabel((it as { label?: string }).label);
   const childHrefs = new Set(
     filteredNav.flatMap((it) => (it.children ?? []).map((c) => normHref(c.href))),
   );
-  // Drop a top-level link when the same page already appears in a dropdown, AND
-  // when the same page appears more than once at the top level (a manual link +
-  // an auto-added show_in_header link both point at it). Keep the first.
-  // Also dedupe by normalized LABEL so a repeated entry (e.g. two "About Us"
-  // links pointing at DIFFERENT slugs — one left stale after a page rename)
-  // collapses to the first. Href-only dedup misses these because the URLs
-  // differ; label dedup keeps the nav clean however the duplicate crept in.
-  const normLabel = (l?: string) => (l ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+
+  // Paths that map to a CURRENTLY-EXISTING page, so a nav link left pointing at
+  // an OLD slug after a rename can be recognised as stale.
+  const currentPaths = new Set(
+    (((pageListRes as { data?: Array<{ attributes?: { slug?: string } }> } | null)?.data) ?? [])
+      .map((pg) => normHref("/" + String(pg?.attributes?.slug ?? "").replace(/^\/+/, "")))
+      .filter((h) => h !== "/"),
+  );
+
+  // Per label, choose the href to actually render: prefer one that points at a
+  // current page over a stale old-slug link. Renaming a page leaves the old nav
+  // link behind (a duplicate); this makes the SURVIVING entry resolve to the
+  // live slug even when the first CMS entry still holds the pre-rename URL.
+  const hrefByLabel = new Map<string, string>();
+  for (const it of filteredNav) {
+    if (it.hasDropdown) continue;
+    const lbl = labelOf(it);
+    if (!lbl) continue;
+    const cur = hrefByLabel.get(lbl);
+    if (cur === undefined || (!currentPaths.has(normHref(cur)) && currentPaths.has(normHref(it.href)))) {
+      hrefByLabel.set(lbl, it.href);
+    }
+  }
+
+  // Drop a top-level link when the same page already appears in a dropdown, when
+  // the same href repeats, or when the label repeats — keeping the FIRST
+  // position but swapping in the current-page href chosen above, so a stale
+  // duplicate can never be the one that survives.
   const seenTop = new Set<string>();
   const seenLabel = new Set<string>();
-  const dedupedNav = filteredNav.filter((it) => {
-    if (it.hasDropdown) return true;
-    const h = normHref(it.href);
-    if (childHrefs.has(h)) return false;
-    if (seenTop.has(h)) return false;
-    const lbl = normLabel((it as { label?: string }).label);
-    if (lbl && seenLabel.has(lbl)) return false;
+  const dedupedNav = filteredNav.flatMap((it) => {
+    if (it.hasDropdown) return [it];
+    const lbl = labelOf(it);
+    const href = lbl && hrefByLabel.has(lbl) ? (hrefByLabel.get(lbl) as string) : it.href;
+    const h = normHref(href);
+    if (childHrefs.has(h)) return [];
+    if (seenTop.has(h)) return [];
+    if (lbl && seenLabel.has(lbl)) return [];
     seenTop.add(h);
     if (lbl) seenLabel.add(lbl);
-    return true;
+    return [href === it.href ? it : { ...it, href }];
   });
 
   return (
