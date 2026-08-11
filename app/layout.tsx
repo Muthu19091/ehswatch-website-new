@@ -73,6 +73,18 @@ export default async function RootLayout({
   // Site-wide analytics + JSON-LD, both CMS-driven (Settings → tracking / brand / seo).
   const settings = ((settingsRes?.data ?? null) as unknown) as Record<string, any> | null;
   const tracking = settings?.tracking ?? {};
+  // The CMS keeps enabled analytics snippets (e.g. the real GTM container)
+  // in tracking.additional_scripts[{position,enabled,script}] — fold them
+  // into the head/body markup alongside the legacy head_script/body_script.
+  const addlScripts: Array<{ position?: string; enabled?: boolean; script?: string }> =
+    Array.isArray(tracking?.additional_scripts) ? tracking.additional_scripts : [];
+  const scriptsFor = (positions: string[]): string =>
+    addlScripts.filter((x) => x?.enabled && positions.includes(String(x?.position)))
+      .map((x) => x?.script).filter((v): v is string => Boolean(v && v.trim())).join("\n");
+  const headTracking = [tracking?.head_script, scriptsFor(["head"])]
+    .filter((v) => v && String(v).trim()).join("\n");
+  const bodyTracking = [tracking?.body_script, scriptsFor(["body_start", "body_end", "body"])]
+    .filter((v) => v && String(v).trim()).join("\n");
   const brandName = settings?.brand?.name || "EHSWatch";
   const siteUrl = (settings?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
   // Brand primary color from Site Settings drives --brand-primary site-wide.
@@ -153,7 +165,7 @@ export default async function RootLayout({
         {/* Analytics / tracking (GTM etc.) + embed overlay — injected from the
             CMS (Settings → tracking.head_script / body_script), so editing the
             tag in the dashboard reflects site-wide with no code change. */}
-        <TrackingScripts head={tracking?.head_script} body={tracking?.body_script} />
+        <TrackingScripts head={headTracking} body={bodyTracking} />
       </body>
     </html>
   );

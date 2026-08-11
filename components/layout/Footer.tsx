@@ -338,12 +338,19 @@ export default async function Footer() {
         <div className="relative z-[1] w-full max-w-[1216px] px-6 md:px-8 flex flex-wrap items-center gap-4 md:gap-6 pb-2">
           {badges.map((b, i) => {
             const src = typeof b.image === "string" ? b.image : b.image?.url;
-            if (!src) return null;
-            /* eslint-disable-next-line @next/next/no-img-element */
-            const img = <img src={src} alt={b.alt || b.label || ""} className="h-9 md:h-11 w-auto object-contain opacity-80" />;
+            const label = (b.label || "").trim();
+            if (!src && !label) return null;
+            // Image badge when an image is set; otherwise a text chip so
+            // label-only badges (no image) still render.
+            const content = src ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={src} alt={b.alt || label || ""} className="h-9 md:h-11 w-auto object-contain opacity-80" />
+            ) : (
+              <span className="inline-flex items-center px-3 py-1 rounded-full border border-white/15 text-[11px] md:text-[12px] text-white/70">{label}</span>
+            );
             return b.url
-              ? <a key={i} href={b.url} target="_blank" rel="noopener noreferrer" className="inline-flex">{img}</a>
-              : <span key={i} className="inline-flex">{img}</span>;
+              ? <a key={i} href={b.url} target="_blank" rel="noopener noreferrer" className="inline-flex">{content}</a>
+              : <span key={i} className="inline-flex">{content}</span>;
           })}
         </div>
       )}
