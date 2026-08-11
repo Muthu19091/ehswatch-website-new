@@ -92,11 +92,13 @@ const ALIASES: Record<string, string> = {
 export function resolveIconName(
   slug?: string | null,
   fallback: LucideIconName = "circle-alert",
-): LucideIconName {
-  if (!slug) return fallback;
+): LucideIconName | null {
+  // Unset / empty icon → null so the caller renders nothing (no default icon).
+  if (!slug || !slug.trim()) return null;
   let s = slug.trim();
   if (s.startsWith("heroicon-o-") || s.startsWith("heroicon-s-")) s = s.slice(11);
   s = ALIASES[s] ?? s;
+  // A set-but-unknown slug still falls back so legacy/renamed data never renders broken.
   return s in dynamicIconImports ? (s as LucideIconName) : fallback;
 }
 
@@ -115,9 +117,12 @@ export default function CmsIcon({
   className?: string;
   fallback?: LucideIconName;
 }) {
+  const name = resolveIconName(icon, fallback);
+  // No icon configured → render nothing (previously showed a fallback icon).
+  if (!name) return null;
   return (
     <DynamicIcon
-      name={resolveIconName(icon, fallback)}
+      name={name}
       size={size}
       strokeWidth={strokeWidth}
       color={color}
