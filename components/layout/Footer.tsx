@@ -1,4 +1,5 @@
-import { getFooter, getProductModules, getSettings } from "@/lib/api";
+import { getFooter, getProductModules, getSettings, getPageList } from "@/lib/api";
+import { buildNavFlags, navLinkVisible } from "@/lib/navVisibility";
 import Link from "next/link";
 import { withBasePath } from "@/lib/basePath";
 import CmsIcon from "@/components/ui/CmsIcon";
@@ -103,7 +104,10 @@ const FALLBACK_SOCIALS = [
 ];
 
 export default async function Footer() {
-  const [footer, modulesRes, settingsRes] = await Promise.all([getFooter(), getProductModules(), getSettings()]);
+  const [footer, modulesRes, settingsRes, pageListRes] = await Promise.all([getFooter(), getProductModules(), getSettings(), getPageList().catch(() => null)]);
+  // Toggle-driven visibility: a footer link to a page is hidden when that page's
+  // show_in_footer is off (once toggles are in use). External/anchor/custom links always show.
+  const navFlags = buildNavFlags((pageListRes as { data?: unknown } | null)?.data);
   const attrs = (footer?.data as any)?.attributes;
   // Contact details come from Settings → Contact (single source of truth)
   const contactEmail = (settingsRes?.data as any)?.contact?.email || null;
@@ -155,8 +159,8 @@ export default async function Footer() {
   // appears automatically (was hard-limited to a single "Company" column).
   const genericColumns = (
     columns.filter((c) => !isModulesCol(c)).length > 0
-      ? columns.filter((c) => !isModulesCol(c)).map((c) => ({ heading: colHeading(c) || "COMPANY", links: c.links ?? [] }))
-      : [{ heading: "COMPANY", links: COMPANY.map((l) => ({ label: l.label, url: l.href })) }]
+      ? columns.filter((c) => !isModulesCol(c)).map((c) => ({ heading: colHeading(c) || "COMPANY", links: (c.links ?? []).filter((l) => navLinkVisible((l as { url?: string }).url, navFlags, "footer")) }))
+      : [{ heading: "COMPANY", links: COMPANY.map((l) => ({ label: l.label, url: l.href })).filter((l) => navLinkVisible(l.url, navFlags, "footer")) }]
   );
 
   // Prefer live module pages; fall back to CMS-authored links, then hardcoded.

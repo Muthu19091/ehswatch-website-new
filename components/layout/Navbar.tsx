@@ -1,5 +1,6 @@
 import { getHeader, getBlogPosts, getCaseStudies, getSettings, getPageList } from "@/lib/api";
 import { normalizeUrl, resolveHref, buildPageMap } from "@/lib/blocks";
+import { buildNavFlags, navLinkVisible } from "@/lib/navVisibility";
 import NavbarClient from "./NavbarClient";
 
 function extractCover(item: any): string | undefined {
@@ -103,10 +104,22 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       }
     : undefined;
 
+  // Toggle-driven header visibility: a page link is hidden when its
+  // show_in_header is off (once toggles are in use). Dropdowns drop hidden
+  // children and vanish if empty. External/anchor/custom links always show.
+  const navFlags = buildNavFlags((pageListRes as { data?: unknown } | null)?.data);
+  const filteredNav = cmsNav
+    .map((item) =>
+      item.children
+        ? { ...item, children: item.children.filter((c) => navLinkVisible(c.href, navFlags, "header")) }
+        : item,
+    )
+    .filter((item) => (item.hasDropdown ? (item.children?.length ?? 0) > 0 : navLinkVisible(item.href, navFlags, "header")));
+
   return (
     <NavbarClient
       lightHero={lightHero}
-      cmsNav={cmsNav.length > 0 ? cmsNav : undefined}
+      cmsNav={filteredNav.length > 0 ? filteredNav : undefined}
       cmsCta={cmsCta}
       cmsCtas={cmsCtas.length > 0 ? cmsCtas : undefined}
       cmsLogo={cmsLogo}
