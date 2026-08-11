@@ -244,7 +244,7 @@ export function buildModuleTemplateProps(
   const slugify = (s: string) =>
     s.toLowerCase().trim().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-+|-+$)/g, "");
 
-  type MoreCard = { name: string; slug: string; desc: string; icon: string | null; href: string };
+  type MoreCard = { name: string; slug: string; desc: string; icon: string | null; href: string; linkLabel?: string };
   let otherModules: MoreCard[];
 
   // Honor the block's "Pick a source" explicitly so switching sources always
@@ -261,6 +261,7 @@ export function buildModuleTemplateProps(
     otherModules = normalizeArray<{
       name?: string;
       tagline?: string;
+      description?: string;
       icon?: string | null;
       cta?: Parameters<typeof resolveCta>[0];
     }>(modulesBlock?.items)
@@ -273,9 +274,10 @@ export function buildModuleTemplateProps(
         return {
           name: nm,
           slug: slugify(nm),
-          desc: stripHtml(it.tagline ?? ""),
+          desc: stripHtmlOpt(it.description) || stripHtml(it.tagline ?? ""),
           icon: it.icon ?? null,
           href: url || hrefForModule(slugify(nm)),
+          linkLabel: resolved?.label ?? undefined,
         };
       });
   } else {
