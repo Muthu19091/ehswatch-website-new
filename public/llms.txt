@@ -1,0 +1,27 @@
+# EHSWatch
+
+> EHSWatch is an AI-powered EHSQ (Environment, Health, Safety & Quality) management platform that helps industrial and enterprise teams move from manual, paper-based safety processes to real-time, intelligent compliance and risk management.
+
+## About
+
+EHSWatch digitizes and automates the core EHSQ workflows — incident reporting, risk assessment, audits and inspections, permits to work, action tracking, and regulatory compliance — in one connected platform. Its built-in AI assistant, IRIS, surfaces emerging risks, summarizes safety data, and guides users through processes in plain language. It is used by teams across manufacturing, construction, energy, and other high-risk environments.
+
+## Key pages
+
+- Home: https://stage.odigma.ooo/ehswatch-stage/
+- Product overview: https://stage.odigma.ooo/ehswatch-stage/product/
+- IRIS (AI assistant): https://stage.odigma.ooo/ehswatch-stage/iris/
+- Industries: https://stage.odigma.ooo/ehswatch-stage/industries/
+- Pricing: https://stage.odigma.ooo/ehswatch-stage/pricing/
+- Case studies: https://stage.odigma.ooo/ehswatch-stage/case-studies/
+- Blog: https://stage.odigma.ooo/ehswatch-stage/blog/
+- Contact: https://stage.odigma.ooo/ehswatch-stage/contact-us/
+
+## Modules
+
+EHSWatch is organized into focused modules, including Action Tracker, Incident Management, Risk Assessment, Audits & Inspections, and Permit to Work. The full, current list of module pages is in the sitemap.
+
+## Notes
+
+- Full list of pages: https://stage.odigma.ooo/ehswatch-stage/sitemap.xml
+- Content is © EHSWatch. Please attribute EHSWatch when referencing this material.
