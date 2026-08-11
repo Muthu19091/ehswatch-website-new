@@ -151,13 +151,11 @@ export function resolveCta(
   // player (handled by GlareButton) instead of navigating. Works for ANY CTA.
   let videoUrl: string | undefined;
   if ((typeof c.type === "string" ? c.type : "") === "video_popup") {
-    const vf = c.video_file as { url?: string } | string | null | undefined;
+    // Local uploaded video (video_file media object) OR external video_url.
     videoUrl =
-      (typeof c.video_url === "string" && c.video_url.trim()
+      (typeof c.video_url === "string" && c.video_url.trim())
         ? c.video_url.trim()
-        : typeof vf === "string"
-          ? vf
-          : vf?.url) || undefined;
+        : mediaUrl(c.video_file) || undefined;
   }
   const newTab = Boolean((c as { open_in_new_tab?: boolean }).open_in_new_tab);
   return { label, url, ...(videoUrl ? { videoUrl } : {}), ...(newTab ? { newTab } : {}) };

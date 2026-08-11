@@ -143,6 +143,8 @@ export default async function BlogPage() {
     showTopic:    asBool(highlightsBlock.show_topic_filter),
     showFormat:   asBool(highlightsBlock.show_format_filter),
     perPage:      Number(highlightsBlock.max_count) || undefined,
+    pagination:   (highlightsBlock.pagination as string | undefined) || undefined,
+    loadMoreLabel: ((highlightsBlock.view_all_cta as { label?: string } | undefined)?.label) || undefined,
   };
 
   // Extract form_embed block — read form_slug dynamically
@@ -183,6 +185,8 @@ export default async function BlogPage() {
           showTimeline={listingControls.showTimeline}
           showTopic={listingControls.showTopic}
           showFormat={listingControls.showFormat}
+          pagination={listingControls.pagination}
+          loadMoreLabel={listingControls.loadMoreLabel}
         />
         <BlogNewsletter formAttrs={newsletterFormAttrs} />
         <BlogCTA

@@ -248,6 +248,8 @@ export default function BlogGrid({
   showTimeline = true,
   showTopic = true,
   showFormat = true,
+  pagination,
+  loadMoreLabel,
 }: {
   cmsPosts?: CmsBlogPost[];
   cmsPageSize?: number;
@@ -255,6 +257,8 @@ export default function BlogGrid({
   showTimeline?: boolean;
   showTopic?: boolean;
   showFormat?: boolean;
+  pagination?: string;
+  loadMoreLabel?: string;
 }) {
   // CMS-only: no hardcoded fallback posts.
   const POSTS = cmsPosts && cmsPosts.length > 0 ? cmsPosts.map(cmsToPost) : [];
@@ -284,6 +288,8 @@ export default function BlogGrid({
   const [topic,    setTopic]    = useState("Topic: All topics");
   const [format,   setFormat]   = useState("Format: All formats");
   const [page,     setPage]     = useState(1);
+  const loadMore = (pagination ?? "").toLowerCase() === "load_more";
+  const [shownCount, setShownCount] = useState(PAGE_SIZE);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => {
@@ -310,7 +316,7 @@ export default function BlogGrid({
   const totalPages  = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages); // guard against a stale page
   const pageStart   = (currentPage - 1) * PAGE_SIZE;
-  const pagePosts   = filtered.slice(pageStart, pageStart + PAGE_SIZE);
+  const pagePosts   = loadMore ? filtered.slice(0, shownCount) : filtered.slice(pageStart, pageStart + PAGE_SIZE);
   const featured    = pagePosts.slice(0, 2);
   const standard    = pagePosts.slice(2);
 
@@ -395,7 +401,7 @@ export default function BlogGrid({
             )}
 
             {/* Pagination — numbered pager (Prev · 1 … N · Next) */}
-            {totalPages > 1 && (
+            {!loadMore && totalPages > 1 && (
               <nav className="flex justify-center items-center gap-1.5 mt-6" aria-label="Blog pagination">
                 <button
                   type="button"
@@ -437,6 +443,18 @@ export default function BlogGrid({
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
               </nav>
+            )}
+
+            {loadMore && filtered.length > shownCount && (
+              <div className="flex justify-center mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShownCount((v) => v + PAGE_SIZE)}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] text-[#4b5563] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors"
+                >
+                  {loadMoreLabel?.trim() || "Load More"}
+                </button>
+              </div>
             )}
           </div>
         )}
