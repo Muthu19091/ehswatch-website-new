@@ -326,7 +326,10 @@ export default function ProductModules({
           </div>
         </div>
 
-        {/* View more / View less */}
+        {/* View more / View less — only when there are MORE modules than the
+            initial (collapsed) view, so no dead "View less" button appears when
+            everything already fits (e.g. visible_count >= total modules). */}
+        {modules.length > initialCount && (
         <div className="flex justify-center mt-8">
           {hasMore ? (
             <button
@@ -350,6 +353,7 @@ export default function ProductModules({
             </button>
           )}
         </div>
+        )}
 
       </div>
     </section>
