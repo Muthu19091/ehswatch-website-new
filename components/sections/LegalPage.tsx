@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { getPage } from "@/lib/api";
 import { findBlock, findBlocks } from "@/lib/blocks";
 import { stripHtml } from "@/lib/text";
-import { seoExtras } from "@/lib/seo";
+import { seoExtras, robotsFrom } from "@/lib/seo";
 
 type HeroBlock = { headline?: string; subheadline?: string };
 type RichTextBlock = { body?: string };
@@ -15,6 +15,7 @@ export async function legalMetadata(slug: string, fallbackTitle: string): Promis
   const attrs = res?.data?.attributes;
   return {
     ...seoExtras(attrs?.meta),
+    robots: robotsFrom(attrs?.meta?.robots),
     title: attrs?.meta?.meta_title || `${attrs?.title || fallbackTitle} — EHSWatch`,
     description:
       attrs?.meta?.meta_description ||

@@ -49,6 +49,7 @@ export default async function NotFound() {
     headline?: string;
     subheadline?: string;
     primary_cta?: unknown;
+    secondary_cta?: unknown;
   }>(blocks, "hero");
 
   const eyebrow = hero?.eyebrow?.trim() || "404";
@@ -57,6 +58,7 @@ export default async function NotFound() {
     stripHtmlOpt(hero?.subheadline) ||
     "The link you followed may be broken, or the page may have been moved.";
   const cta = resolveCta(hero?.primary_cta, pageMap) ?? { label: "Back to home", url: "/" };
+  const secondaryCta = resolveCta(hero?.secondary_cta, pageMap);
 
   const ctaBlock = findBlock<{
     headline?: string;
@@ -84,6 +86,7 @@ export default async function NotFound() {
             <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-gray-600 leading-[1.75] max-w-[460px] text-pretty">
               {subheadline}
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href={cta.url || "/"}
               className="inline-flex items-center gap-2 px-8 py-[12px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white hover:shadow-lg transition-shadow"
@@ -94,6 +97,15 @@ export default async function NotFound() {
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
+            {secondaryCta?.url && (
+              <Link
+                href={secondaryCta.url}
+                className="inline-flex items-center gap-2 px-8 py-[12px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-[#1b1b1b] bg-white border border-[#d5d9e2] hover:border-[#1d4ed8] hover:text-[#1d4ed8] transition-colors"
+              >
+                {secondaryCta.label}
+              </Link>
+            )}
+            </div>
           </div>
         </section>
         {ctaBlock?.headline && (
