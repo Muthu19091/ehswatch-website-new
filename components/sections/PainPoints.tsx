@@ -60,6 +60,9 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
   const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").trim();
   const headingLine1 = (spanMatch ? stripTags(spanMatch[1]) : (cmsHeading ? stripTags(cmsHeading) : "")) || "";
   const headingLine2 = (spanMatch ? stripTags(spanMatch[2]) : cmsSubheading) || "";
+  // Text after the </span> (e.g. "... <span>foo</span> bar") — kept dynamic
+  // so editors can append copy past the blue highlight; rendered dark inline.
+  const headingAfter = spanMatch ? stripTags(cmsHeading!.slice(spanMatch[0].length)) : "";
 
   return (
     <section
@@ -111,7 +114,7 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
               {headingLine1}
             </p>
             <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] lg:text-[32px] leading-tight lg:leading-[48px] text-[#155eef] tracking-[-0.5px] lg:tracking-[-0.6px]">
-              {headingLine2}
+              {headingLine2}{headingAfter ? <span className="text-[#1b1b1b]"> {headingAfter}</span> : null}
             </p>
           </div>
 
@@ -129,7 +132,7 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
               {headingLine1}
             </p>
             <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[30px] leading-tight text-[#155eef] tracking-[-0.5px]">
-              {headingLine2}
+              {headingLine2}{headingAfter ? <span className="text-[#1b1b1b]"> {headingAfter}</span> : null}
             </p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-[400px]">
