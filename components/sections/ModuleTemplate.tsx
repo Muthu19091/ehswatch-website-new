@@ -471,12 +471,16 @@ export default function ModuleTemplate({
                 const color = FEATURE_COLORS[i % FEATURE_COLORS.length];
                 return (
                   <div key={i} className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] flex flex-col gap-3 px-5 sm:px-7 py-6 sm:py-8 bg-white border border-[#e5e7eb] rounded-[12px]">
+                    {/* BUG-211: icon ONLY when the CMS item has one — no default
+                        square-check when the editor left it blank. */}
+                    {feat.icon && (
                     <div
                       className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
                       style={{ background: color + "14", color }}
                     >
                       <CmsIcon icon={feat.icon} size={22} strokeWidth={1.6} color={color} fallback="square-check" />
                     </div>
+                    )}
                     <h3 className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[15px] text-[#0a0f1e] leading-snug">
                       {feat.title}
                     </h3>

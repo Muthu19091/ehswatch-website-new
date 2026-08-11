@@ -371,15 +371,28 @@ export function buildModuleTemplateProps(
         }
       : undefined;
 
+  // BUG-199: section ids from each block's CMS `anchor`, kept UNIQUE. The Key
+  // Features (icon_features) section reserves the conventional "features" id that
+  // every hero "See Key Features" CTA targets, so a stray anchor="features" on
+  // another block (e.g. image_text) can't create a duplicate id and hijack the
+  // scroll — browsers jump to the FIRST matching id. Reserve "features" first,
+  // then assign the rest, dropping any duplicates.
+  const usedAnchorIds = new Set<string>();
+  const takeAnchor = (raw?: string | null, fallback?: string): string | undefined => {
+    const id = anchorId(raw) ?? fallback;
+    if (!id || usedAnchorIds.has(id)) return undefined;
+    usedAnchorIds.add(id);
+    return id;
+  };
+  const featuresAnchor = takeAnchor(iconFeaturesBlock?.anchor, "features");
+  const heroAnchor = takeAnchor(heroBlock?.anchor);
+  const whyAnchor = takeAnchor(imageTextBlock?.anchor);
+  const apartAnchor = takeAnchor(richTextBlock?.anchor);
+  const faqsAnchor = takeAnchor(faqBlock?.anchor);
+  const finalCtaAnchor = takeAnchor(ctaBlock?.anchor);
+
   return {
     moduleName: name, hero, why, features, apart, faqs, clientStrip, finalCta, moreModules,
-    // BUG-199: normalized section ids from each block's CMS `anchor` field so
-    // anchor-type CTAs (#calculator, #faqs, #why, …) scroll to the right section.
-    heroAnchor: anchorId(heroBlock?.anchor),
-    whyAnchor: anchorId(imageTextBlock?.anchor),
-    featuresAnchor: anchorId(iconFeaturesBlock?.anchor),
-    apartAnchor: anchorId(richTextBlock?.anchor),
-    faqsAnchor: anchorId(faqBlock?.anchor),
-    finalCtaAnchor: anchorId(ctaBlock?.anchor),
+    heroAnchor, whyAnchor, featuresAnchor, apartAnchor, faqsAnchor, finalCtaAnchor,
   };
 }
