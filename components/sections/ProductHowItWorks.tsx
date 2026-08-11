@@ -533,13 +533,13 @@ function Visual5({
                 display: "flex",
                 alignItems: "center",
                 gap: 15,
-                padding: "14px 18px",
+                padding: "clamp(8px, 1.5vh, 14px) 18px",
                 opacity: active ? 1 : 0,
                 transform: active ? "translateY(0)" : "translateY(22px)",
                 transition: `opacity 0.5s cubic-bezier(0.34,1.1,0.64,1) ${0.08 + i * 0.12}s, transform 0.5s cubic-bezier(0.34,1.1,0.64,1) ${0.08 + i * 0.12}s`,
               }}
             >
-              <div style={{ width: 54, height: 54, borderRadius: 14, background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div style={{ width: "clamp(44px, 7.4vh, 54px)", height: "clamp(44px, 7.4vh, 54px)", borderRadius: 14, background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 {(step as { icon?: string }).icon ? (
                   <CmsIcon icon={(step as { icon?: string }).icon} size={28} strokeWidth={1.6} color="#155eef" fallback="sparkles" />
                 ) : (
@@ -557,7 +557,7 @@ function Visual5({
             </div>
 
             {i < insightSteps.length - 1 && (
-              <div style={{ paddingLeft: 44, height: 12, display: "flex", alignItems: "center" }}>
+              <div style={{ paddingLeft: 44, height: "clamp(6px, 1.3vh, 12px)", display: "flex", alignItems: "center" }}>
                 <div
                   style={{
                     width: 2, borderRadius: 2,

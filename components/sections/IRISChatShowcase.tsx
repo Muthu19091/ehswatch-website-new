@@ -546,6 +546,7 @@ function splitShowcaseHeading(text: string): [string, string] {
 
 export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }: IRISChatShowcaseProps = {}) {
   const outerRef     = useRef<HTMLDivElement>(null);
+  const stepCountRef = useRef(0);
   const mobileRef    = useRef<HTMLDivElement>(null);
   const [step,       setStep]       = useState(0);
   const [showIris,   setShowIris]   = useState(false);
@@ -566,15 +567,19 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
 
   // Titles/descriptions are CMS-only (number_steps); the chat scenes and
   // callout positions stay design-owned. No hardcoded fallback copy.
-  const features: FeatureItem[] = FEATURES.map((f, i) => ({
-    side: f.side,
-    num: f.num,
-    title: cmsSteps?.[i]?.title?.trim() || "",
-    desc: cmsSteps?.[i]?.description?.trim() || "",
-    subItems: (cmsSteps?.[i]?.sub_items ?? [])
-      .filter((s) => (s?.title?.trim() || s?.description?.trim()))
-      .map((s) => ({ title: s.title?.trim() || "", description: s.description?.trim() || "" })),
+  // Driven ENTIRELY by the CMS number_steps array so the count is dynamic and a
+  // newly-added feature box reflects (BUG-180/181). Side/number use the design
+  // pattern for the first 6, then alternate for any extra steps.
+  const features: FeatureItem[] = (cmsSteps ?? []).map((s, i) => ({
+    side: FEATURES[i]?.side ?? (i % 2 === 0 ? "left" : "right"),
+    num: FEATURES[i]?.num ?? String(i + 1).padStart(2, "0"),
+    title: s?.title?.trim() || "",
+    desc: s?.description?.trim() || "",
+    subItems: (s?.sub_items ?? [])
+      .filter((si) => (si?.title?.trim() || si?.description?.trim()))
+      .map((si) => ({ title: si.title?.trim() || "", description: si.description?.trim() || "" })),
   }));
+  stepCountRef.current = features.length;
 
   // CMS-only heading/subheading — no hardcoded fallback copy.
   const [headingStart, headingTail] = splitShowcaseHeading(cmsHeading?.trim() || "");
@@ -660,7 +665,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
       if (!el) return;
       const scrolled = -el.getBoundingClientRect().top;
       const stepSize = window.innerHeight * 0.7; // ~2.8 scroll-lengths per agent (user asked to slow it further; /2 still felt fast)
-      const newStep = scrolled < 0 ? -1 : Math.min(Math.floor(scrolled / stepSize), 5);
+      const newStep = scrolled < 0 ? -1 : Math.min(Math.floor(scrolled / stepSize), Math.max(0, stepCountRef.current - 1));
 
       if (newStep < 0) {
         // Scrolled above section — cancel queue and reset
