@@ -125,9 +125,18 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   const childHrefs = new Set(
     filteredNav.flatMap((it) => (it.children ?? []).map((c) => normHref(c.href))),
   );
-  const dedupedNav = filteredNav.filter(
-    (it) => it.hasDropdown || !childHrefs.has(normHref(it.href)),
-  );
+  // Drop a top-level link when the same page already appears in a dropdown, AND
+  // when the same page appears more than once at the top level (a manual link +
+  // an auto-added show_in_header link both point at it). Keep the first.
+  const seenTop = new Set<string>();
+  const dedupedNav = filteredNav.filter((it) => {
+    if (it.hasDropdown) return true;
+    const h = normHref(it.href);
+    if (childHrefs.has(h)) return false;
+    if (seenTop.has(h)) return false;
+    seenTop.add(h);
+    return true;
+  });
 
   return (
     <NavbarClient
