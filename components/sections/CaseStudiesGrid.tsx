@@ -313,13 +313,19 @@ export default function CaseStudiesGrid({
     cmsStudies && cmsStudies.length > 0
       ? cmsStudies.map(cmsToCard)
       : [];
-  // Honour the CMS post_listing block: cap by `limit`, and switch the pager to
-  // a "Load More" button when pagination is set to load_more.
-  const cards: Card[] = limit && limit > 0 ? allCards.slice(0, limit) : allCards;
-  const loadMore = (pagination ?? "").toLowerCase() === "load_more";
+  // Honour the CMS post_listing block. `limit` ("Max items shown") means:
+  //   • pages / load_more → the PER-PAGE (or initial batch) size; paginate over ALL
+  //   • none (or unset)   → a hard "show top N" cap
+  const pag = (pagination ?? "").toLowerCase();
+  const loadMore = pag === "load_more";
+  const perPage = limit && limit > 0 ? limit : PAGE_SIZE;
+  const cards: Card[] =
+    pag === "pages" || pag === "load_more"
+      ? allCards
+      : limit && limit > 0 ? allCards.slice(0, limit) : allCards;
 
   const [page, setPage] = useState(1);
-  const [shownCount, setShownCount] = useState(PAGE_SIZE);
+  const [shownCount, setShownCount] = useState(perPage);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Nothing configured → CMS empty-state message if set, otherwise hide.
@@ -332,10 +338,10 @@ export default function CaseStudiesGrid({
     ) : null;
   }
 
-  const totalPages  = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+  const totalPages  = Math.max(1, Math.ceil(cards.length / perPage));
   const currentPage = Math.min(page, totalPages); // guard against a stale page
-  const pageStart   = (currentPage - 1) * PAGE_SIZE;
-  const pageCards   = loadMore ? cards.slice(0, shownCount) : cards.slice(pageStart, pageStart + PAGE_SIZE);
+  const pageStart   = (currentPage - 1) * perPage;
+  const pageCards   = loadMore ? cards.slice(0, shownCount) : cards.slice(pageStart, pageStart + perPage);
 
   const goToPage = (n: number) => {
     const target = Math.min(Math.max(1, n), totalPages);
@@ -419,7 +425,7 @@ export default function CaseStudiesGrid({
           <div className="flex justify-center mt-6">
             <button
               type="button"
-              onClick={() => setShownCount((v) => v + PAGE_SIZE)}
+              onClick={() => setShownCount((v) => v + perPage)}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#e5e7eb] text-[#4b5563] font-[family-name:var(--font-dm-sans)] font-medium text-[14px] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors"
             >
               Load More
