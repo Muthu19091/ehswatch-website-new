@@ -200,11 +200,12 @@ export default function ProductModules({
   cmsLinkText,
 }: ProductModulesProps = {}) {
   // Initial cards shown before "View more" — CMS visible_count drives it.
-  const rawInitial = cmsVisibleCount && cmsVisibleCount > 0 ? cmsVisibleCount : INITIAL_ROWS * COLS;
-  // Round the collapsed count up to a FULL grid — a multiple of COLS*2 (=6)
-  // fills complete rows at 1 / 2 / 3 columns — so the initial view never shows a
-  // half-empty last row (e.g. a CMS visible_count of 5 rounds to 6). BUG-185.
-  const initialCount = Math.ceil(rawInitial / (COLS * 2)) * (COLS * 2);
+  // Honor the CMS "Cards shown by default" (visible_count) EXACTLY — an editor
+  // asking for 4 cards gets 4, not a row-rounded 6 (BUG-187 / BUG-193). A
+  // half-empty last row is handled by the white filler cells below
+  // (fillSm / fillLg), so no round-up-to-a-full-grid is needed to avoid the old
+  // grey-box gap (BUG-185 / BUG-178).
+  const initialCount = cmsVisibleCount && cmsVisibleCount > 0 ? cmsVisibleCount : INITIAL_ROWS * COLS;
   const [visibleCount, setVisibleCount] = useState(initialCount);
   const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
   // Set by a "View less" tap, consumed by the scroll effect once the grid has
