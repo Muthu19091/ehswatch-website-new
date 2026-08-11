@@ -25,6 +25,11 @@ export default function ProductOverview({
   const headingBefore = spanText
     ? plainHeading.slice(0, plainHeading.indexOf(spanText)).trim()
     : plainHeading;
+  // Text AFTER the </span> was dropped before — render it so a full CMS heading
+  // edit (incl. trailing words) reflects.
+  const headingAfter = spanText
+    ? plainHeading.slice(plainHeading.indexOf(spanText) + spanText.length).trim()
+    : "";
 
   const hasLeft = !!plainHeading || !!subheading || !!cmsImage?.url;
   const hasBody = !!cmsBody?.trim();
@@ -43,6 +48,7 @@ export default function ProductOverview({
                 <>
                   {headingBefore}{" "}
                   <span className="text-[#155eef]">{spanText}</span>
+                  {headingAfter ? <> {headingAfter}</> : null}
                 </>
               ) : (
                 plainHeading
