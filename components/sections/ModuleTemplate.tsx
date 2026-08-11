@@ -21,6 +21,14 @@ export interface ModuleCta {
 
 export interface ModuleTemplateProps {
   moduleName: string;
+  // BUG-199: optional per-section DOM ids sourced from each block's CMS
+  // `anchor` field, so anchor-type CTAs can target sections beyond #features.
+  heroAnchor?: string;
+  whyAnchor?: string;
+  featuresAnchor?: string;
+  apartAnchor?: string;
+  faqsAnchor?: string;
+  finalCtaAnchor?: string;
   hero: {
     eyebrow?: string;
     headline: string;
@@ -199,10 +207,10 @@ function MoreModuleCard({ mod, color, isLast, linkText }: {
   );
 }
 
-function FAQAccordion({ heading, items }: { heading: string; items: Array<{ question: string; answer: string }> }) {
+function FAQAccordion({ heading, items, id }: { heading: string; items: Array<{ question: string; answer: string }>; id?: string }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
-    <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
+    <section id={id} className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
       <div className="max-w-[820px] mx-auto flex flex-col gap-8">
         {heading && (
           <div className="text-center">
@@ -263,6 +271,12 @@ export default function ModuleTemplate({
   clientStrip,
   finalCta,
   moreModules,
+  heroAnchor,
+  whyAnchor,
+  featuresAnchor,
+  apartAnchor,
+  faqsAnchor,
+  finalCtaAnchor,
 }: ModuleTemplateProps) {
   // When the page is machine-translated to Arabic, the accent <span> below
   // would split the headline into two fragments that get translated
@@ -351,6 +365,7 @@ export default function ModuleTemplate({
 
       {/* ── HERO ── */}
       <section
+        id={heroAnchor}
         className="relative overflow-hidden flex items-center justify-center px-4 sm:px-6 pt-[90px] sm:pt-[120px] md:pt-[148px] pb-[60px] sm:pb-[80px] md:pb-[100px]"
         style={{
           minHeight: "58vh",
@@ -407,7 +422,7 @@ export default function ModuleTemplate({
 
       {/* ── WHY ── */}
       {why && (
-        <section className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
+        <section id={whyAnchor} className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
           <div className="max-w-[1160px] mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
             <div className={`flex flex-col gap-6 w-full ${why.imageUrl ? "lg:w-[40%]" : "max-w-[760px] mx-auto"}`}>
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
@@ -428,7 +443,7 @@ export default function ModuleTemplate({
 
       {/* ── KEY FEATURES ── */}
       {features && features.items.length > 0 && (
-        <section id="features" className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
+        <section id={featuresAnchor ?? "features"} className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
           <div className="max-w-[1160px] mx-auto">
             <div className="text-center mb-12 md:mb-16">
               {features.heading && (
@@ -478,7 +493,7 @@ export default function ModuleTemplate({
 
       {/* ── WHAT SETS IT APART ── */}
       {apart && (apart.items.length > 0 || apart.bodyHtml) && (
-        <section className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
+        <section id={apartAnchor} className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#F8FBFF" }}>
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {apart.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
@@ -561,11 +576,11 @@ export default function ModuleTemplate({
         </section>
       )}
 
-      {faqs && faqs.items.length > 0 && <FAQAccordion heading={faqs.heading} items={faqs.items} />}
+      {faqs && faqs.items.length > 0 && <FAQAccordion heading={faqs.heading} items={faqs.items} id={faqsAnchor} />}
 
       {/* ── FINAL CTA ── */}
       {finalCta && (
-        <section className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#f1f7ff" }}>
+        <section id={finalCtaAnchor} className="py-[70px] md:py-[90px] px-4 md:px-6" style={{ background: "#f1f7ff" }}>
           <div className="max-w-[700px] mx-auto text-center flex flex-col items-center gap-6">
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
               {finalCta.headline}

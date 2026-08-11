@@ -59,6 +59,7 @@ export default function NavbarClient({
   cmsCtas,
   cmsLogo,
   shrinkOnScroll = true,
+  transparentOnTop = true,
 }: {
   lightHero?: boolean;
   cmsNav?: CmsNavItem[];
@@ -66,7 +67,13 @@ export default function NavbarClient({
   cmsCtas?: { label: string; href: string; style?: string; newTab?: boolean }[];
   cmsLogo?: { url: string; alt?: string; href?: string };
   shrinkOnScroll?: boolean;
+  transparentOnTop?: boolean;
 }) {
+  // When the header is NOT transparent at the top (CMS behaviour.transparent_on_top
+  // = false), the top bar is solid white and therefore needs dark content — same
+  // top-state text/logo colouring as a light hero. This only affects the TOP
+  // (unscrolled) colours; the scrolled state is already solid/dark.
+  const lightAtTop = lightHero || !transparentOnTop;
   const allNavItems = cmsNav && cmsNav.length > 0 ? cmsNav : ALL_NAV;
   // Keep the row from overflowing the logo/CTA: show a safe number of items
   // inline and collapse the rest into a "More" dropdown. Beyond this the header
@@ -317,19 +324,22 @@ export default function NavbarClient({
       nav.style.maxWidth       = `${lerp(2400, 1160, sizeT)}px`;   // wide enough to keep all nav links (incl. Support) visible in the collapsed pill
       nav.style.borderRadius   = `${lerp(0, 9999, sizeT)}px`;
       nav.style.gap            = `${lerp(0, 0, t)}px`;   // gap handled per-link via padding
-      nav.style.background     = `rgba(255,255,255,${lerp(0, 0.92, t)})`;
+      // Background floor: transparent at top by default, but SOLID from the top
+      // when transparent_on_top is off. Scrolled target (0.92) is unchanged.
+      const bgTop = transparentOnTop ? 0 : 0.92;
+      nav.style.background     = `rgba(255,255,255,${lerp(bgTop, 0.92, t)})`;
       nav.style.boxShadow      = `0 8px 32px rgba(0,0,0,${lerp(0, 0.10, t)})`;
       nav.style.backdropFilter = `blur(${lerp(0, 12, t)}px)`;
 
       // ── Logo crossfade ────────────────────────────────────────
-      if (logoWhiteRef.current) logoWhiteRef.current.style.opacity = `${lerp(lightHero ? 0 : 1, 0, t)}`;
-      if (logoDarkRef.current)  logoDarkRef.current.style.opacity  = `${lerp(lightHero ? 1 : 0, 1, t)}`;
+      if (logoWhiteRef.current) logoWhiteRef.current.style.opacity = `${lerp(lightAtTop ? 0 : 1, 0, t)}`;
+      if (logoDarkRef.current)  logoDarkRef.current.style.opacity  = `${lerp(lightAtTop ? 1 : 0, 1, t)}`;
 
       // ── Nav links ─────────────────────────────────────────────
-      const linkStart = lightHero ? 30 : 255;
+      const linkStart = lightAtTop ? 30 : 255;
       const lc      = Math.round(lerp(linkStart, 30, t));
       const lColor  = `rgb(${lc},${lc},${lc})`;
-      const lShadow = (!lightHero && t < 0.3) ? "0 1px 4px rgba(0,0,0,0.4)" : "none";
+      const lShadow = (!lightAtTop && t < 0.3) ? "0 1px 4px rgba(0,0,0,0.4)" : "none";
       // Link padding stays fixed — only hideOnScroll items collapse.
       // Matches the static per-link padding so it doesn't jump on scroll.
       const LINK_PX = 9;
@@ -402,8 +412,8 @@ export default function NavbarClient({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initColor = lightHero ? "rgb(30,30,30)" : "rgb(255,255,255)";
-  const initShadow = lightHero ? "none" : "0 1px 4px rgba(0,0,0,0.4)";
+  const initColor = lightAtTop ? "rgb(30,30,30)" : "rgb(255,255,255)";
+  const initShadow = lightAtTop ? "none" : "0 1px 4px rgba(0,0,0,0.4)";
 
   return (
     <header
@@ -430,7 +440,7 @@ export default function NavbarClient({
             src={logoSrc}
             alt={logoAlt} fill sizes="110px"
             className="object-contain object-left"
-            style={{ opacity: lightHero ? 0 : 1 }}
+            style={{ opacity: lightAtTop ? 0 : 1 }}
             priority
           />
           <Image
@@ -438,7 +448,7 @@ export default function NavbarClient({
             src={logoSrc}
             alt="" fill sizes="110px"
             className="object-contain object-left"
-            style={{ opacity: lightHero ? 1 : 0 }}
+            style={{ opacity: lightAtTop ? 1 : 0 }}
             priority
           />
         </Link>

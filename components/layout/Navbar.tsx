@@ -88,6 +88,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       newTab: c.open_in_new_tab === true,
     }));
   const shrinkOnScroll = (header?.data as any)?.attributes?.behaviour?.shrink_on_scroll !== false;
+  const transparentOnTop = (header?.data as any)?.attributes?.behaviour?.transparent_on_top === true;
 
   /* Logo: CMS header editor first; otherwise the Site Settings brand header
      logo (both resolved to URLs by the CMS). No hardcoded logo fallback. */
@@ -124,6 +125,7 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
       cmsCtas={cmsCtas.length > 0 ? cmsCtas : undefined}
       cmsLogo={cmsLogo}
       shrinkOnScroll={shrinkOnScroll}
+      transparentOnTop={transparentOnTop}
     />
   );
 }

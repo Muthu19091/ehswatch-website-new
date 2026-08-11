@@ -44,6 +44,10 @@ function resolveCta(raw?: CtaShape | null, pageMap?: PageMap): ModuleCta | undef
   return c ? { label: c.label, href: c.url, videoUrl: c.videoUrl } : undefined;
 }
 
+// BUG-199: normalize a CMS block `anchor` field into a bare DOM id (strip a
+// leading "#", trim). Empty/absent → undefined so React omits the id attr.
+const anchorId = (a?: string | null) => a ? (a.replace(/^#/, "").trim() || undefined) : undefined;
+
 // Pull each <li> out of a rich_text body, keeping inline formatting
 // (links, bold, emphasis) so hyperlinks entered in the CMS survive.
 // Block-level wrappers (Tiptap nests <p> inside <li>) are unwrapped so
@@ -81,6 +85,7 @@ export function buildModuleTemplateProps(
     headline_accent?: string;
     primary_cta?: CtaShape;
     secondary_cta?: CtaShape;
+    anchor?: string;
   }>(blocks, "hero");
 
   const hero: ModuleTemplateProps["hero"] = {
@@ -105,6 +110,7 @@ export function buildModuleTemplateProps(
     body?: string;
     image?: { url?: string } | null;
     cta?: CtaShape;
+    anchor?: string;
   }>(blocks, "image_text");
 
   // "See … in Action" CTA. Always shown on the Why section: the label defaults
@@ -132,6 +138,7 @@ export function buildModuleTemplateProps(
     heading?: string;
     subheading?: string;
     items?: unknown;
+    anchor?: string;
   }>(blocks, "icon_features");
 
   const featureItems = normalizeArray<{
@@ -158,6 +165,7 @@ export function buildModuleTemplateProps(
   const richTextBlock = findBlock<{
     heading?: string;
     body?: string;
+    anchor?: string;
   }>(blocks, "rich_text");
 
   // The rich_text block feeds the "What Sets … Apart" section. A bullet
@@ -186,6 +194,7 @@ export function buildModuleTemplateProps(
   const faqBlock = findBlock<{
     heading?: string;
     items?: unknown;
+    anchor?: string;
   }>(blocks, "faq_accordion");
 
   const faqItems = normalizeArray<{ question?: string; answer?: string }>(faqBlock?.items)
@@ -202,6 +211,7 @@ export function buildModuleTemplateProps(
     subhead?: string;
     primary_cta?: CtaShape;
     secondary_cta?: CtaShape;
+    anchor?: string;
   }>(blocks, "cta_banner");
 
   const finalCta: ModuleTemplateProps["finalCta"] | undefined = ctaBlock?.headline
@@ -352,5 +362,15 @@ export function buildModuleTemplateProps(
         }
       : undefined;
 
-  return { moduleName: name, hero, why, features, apart, faqs, clientStrip, finalCta, moreModules };
+  return {
+    moduleName: name, hero, why, features, apart, faqs, clientStrip, finalCta, moreModules,
+    // BUG-199: normalized section ids from each block's CMS `anchor` field so
+    // anchor-type CTAs (#calculator, #faqs, #why, …) scroll to the right section.
+    heroAnchor: anchorId(heroBlock?.anchor),
+    whyAnchor: anchorId(imageTextBlock?.anchor),
+    featuresAnchor: anchorId(iconFeaturesBlock?.anchor),
+    apartAnchor: anchorId(richTextBlock?.anchor),
+    faqsAnchor: anchorId(faqBlock?.anchor),
+    finalCtaAnchor: anchorId(ctaBlock?.anchor),
+  };
 }
