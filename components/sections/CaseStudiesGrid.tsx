@@ -89,6 +89,7 @@ function KnowMore({ hovered }: { hovered: boolean }) {
 ═══════════════════════════════════════════════════════ */
 const PLACEHOLDER_COLORS = ["#EFF6FF", "#DBEAFE", "#E0F2FE", "#F0FDF4"];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function WideCard({ card, index }: { card: Card; index: number }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -230,8 +231,8 @@ interface CaseStudiesGridProps {
   limit?: number;        // CMS post_listing: max items to show
 }
 
-// Case studies per page: one wide "lead" card + a 2-col grid of the rest.
-const PAGE_SIZE = 5;
+// Case studies per page: a uniform 3-col grid of equal cards.
+const PAGE_SIZE = 6;
 
 // Windowed pager list: 1 … (cur-1) cur (cur+1) … N (same pattern as the blog).
 function pageItems(current: number, total: number): (number | "…")[] {
@@ -265,7 +266,6 @@ export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseS
   const currentPage = Math.min(page, totalPages); // guard against a stale page
   const pageStart   = (currentPage - 1) * PAGE_SIZE;
   const pageCards   = loadMore ? cards.slice(0, shownCount) : cards.slice(pageStart, pageStart + PAGE_SIZE);
-  const [lead, ...others] = pageCards;
 
   const goToPage = (n: number) => {
     const target = Math.min(Math.max(1, n), totalPages);
@@ -281,12 +281,10 @@ export default function CaseStudiesGrid({ cmsStudies, pagination, limit }: CaseS
     <section id="case-studies" className="pt-10 pb-16 px-5 md:px-8 lg:px-12" style={{ background: "#FFFFFF" }}>
       <div ref={gridRef} className="max-w-[1200px] mx-auto flex flex-col gap-4 scroll-mt-24">
 
-        {lead && <WideCard card={lead} index={0} />}
-
-        {others.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {others.map((card, i) => (
-              <SquareCard key={card.slug} card={card} index={i + 1} />
+        {pageCards.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {pageCards.map((card, i) => (
+              <SquareCard key={card.slug} card={card} index={i} />
             ))}
           </div>
         )}
