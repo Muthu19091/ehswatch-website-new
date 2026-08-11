@@ -253,7 +253,20 @@ function FieldWidget({
       <div>
         {label}
         <div className={wrapClass}>
-          <input type="tel" name={field.key} placeholder={placeholder} className={inputClass} />
+          <input
+            type="tel"
+            name={field.key}
+            placeholder={placeholder}
+            className={inputClass}
+            inputMode="tel"
+            autoComplete="tel"
+            onInput={(e) => {
+              // Phone-only: strip anything that isn't a digit or + ( ) - / space.
+              const el = e.currentTarget;
+              const cleaned = el.value.replace(/[^\d+()\-\s]/g, "");
+              if (cleaned !== el.value) el.value = cleaned;
+            }}
+          />
         </div>
         {helpText}
         <FieldError message={error} />
