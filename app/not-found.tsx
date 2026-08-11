@@ -111,7 +111,7 @@ export default async function NotFound() {
         {ctaBlock?.headline && (
           <CTABanner
             cmsHeadline={headingHtmlOpt(ctaBlock.headline)}
-            cmsSubhead={stripHtmlOpt(ctaBlock.subheadline || ctaBlock.subhead)}
+            cmsSubhead={stripHtmlOpt(ctaBlock.subhead || ctaBlock.subheadline)}
             cmsPrimaryCta={bannerPrimary ?? undefined}
             cmsSecondaryCta={bannerSecondary ?? undefined}
           />

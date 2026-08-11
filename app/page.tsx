@@ -250,7 +250,7 @@ export default async function HomePage() {
         />
         <CTABanner
           cmsHeadline={headingHtmlOpt(ctaBlock?.headline)}
-          cmsSubhead={stripHtmlOpt(ctaBlock?.subheadline || ctaBlock?.subhead)}
+          cmsSubhead={stripHtmlOpt(ctaBlock?.subhead || ctaBlock?.subheadline)}
           cmsPrimaryCta={ctaPrimary ?? undefined}
           cmsSecondaryCta={ctaSecondary ?? undefined}
         />
