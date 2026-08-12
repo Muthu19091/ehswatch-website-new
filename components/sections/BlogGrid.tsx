@@ -55,11 +55,11 @@ function pageItems(current: number, total: number): (number | "…")[] {
 // the dropdowns always match what editors set in the dashboard.
 
 /* ── Featured Card (Row 1): image left, text right ───────────── */
-function FeaturedCard({ post }: { post: Post }) {
+function FeaturedCard({ post, listingSlug }: { post: Post; listingSlug: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={`/${listingSlug}/${post.slug}`}
       className="group flex flex-col xl:flex-row bg-white overflow-hidden h-full"
       style={{
         border: "1px solid #E5E7EB",
@@ -137,11 +137,11 @@ function FeaturedCard({ post }: { post: Post }) {
 }
 
 /* ── Standard Card (Row 2): image top, text bottom ───────────── */
-function StandardCard({ post }: { post: Post }) {
+function StandardCard({ post, listingSlug }: { post: Post; listingSlug: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={`/${listingSlug}/${post.slug}`}
       className="group flex flex-col bg-white overflow-hidden h-full"
       style={{
         border: "1px solid #E5E7EB",
@@ -243,6 +243,7 @@ function FilterSelect({ value, onChange, options }: { value: string; onChange: (
 /* ── Section ─────────────────────────────────────────────────── */
 export default function BlogGrid({
   cmsPosts,
+  listingSlug = "blog",
   cmsPageSize,
   showSearch = true,
   showTimeline = true,
@@ -252,6 +253,7 @@ export default function BlogGrid({
   loadMoreLabel,
 }: {
   cmsPosts?: CmsBlogPost[];
+  listingSlug?: string;
   cmsPageSize?: number;
   showSearch?: boolean;
   showTimeline?: boolean;
@@ -388,7 +390,7 @@ export default function BlogGrid({
             {/* Row 1 — featured 2-col */}
             {featured.length > 0 && (
               <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
-                {featured.map((p) => <FeaturedCard key={p.slug} post={p} />)}
+                {featured.map((p) => <FeaturedCard key={p.slug} post={p} listingSlug={listingSlug} />)}
                 {featured.length === 1 && <div className="hidden md:block" />}
               </div>
             )}
@@ -396,7 +398,7 @@ export default function BlogGrid({
             {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
             {standard.length > 0 && (
               <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {standard.map((p) => <StandardCard key={p.slug} post={p} />)}
+                {standard.map((p) => <StandardCard key={p.slug} post={p} listingSlug={listingSlug} />)}
               </div>
             )}
 

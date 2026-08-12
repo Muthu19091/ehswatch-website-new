@@ -59,7 +59,7 @@ function getPrevNext(slug: string, cmsSlugs?: string[]) {
 // Main component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cmsPost?: CmsBlogPost; cmsSlugs?: string[] }) {
+export default function BlogPost({ slug, cmsPost, cmsSlugs, listingSlug = "blog" }: { slug: string; cmsPost?: CmsBlogPost; cmsSlugs?: string[]; listingSlug?: string }) {
   // CMS-only: the blog routes 404 on missing/unpublished posts, so there is
   // always a real CMS record here — no hardcoded placeholder content.
   if (!cmsPost) return null;
@@ -250,7 +250,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
               {/* Prev */}
               {prev && (
                 <div className={next ? "pe-8" : ""}>
-                  <Link href={`/blog/${prev.slug}`} className="flex flex-col gap-2 group no-underline">
+                  <Link href={`/${listingSlug}/${prev.slug}`} className="flex flex-col gap-2 group no-underline">
                     <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
                       <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                         <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -264,7 +264,7 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs }: { slug: string; cm
               {/* Next */}
               {next && (
                 <div className={`text-end ${prev ? "ps-8" : ""}`}>
-                  <Link href={`/blog/${next.slug}`} className="flex flex-col gap-2 items-end group no-underline">
+                  <Link href={`/${listingSlug}/${next.slug}`} className="flex flex-col gap-2 items-end group no-underline">
                     <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
                       Next Article
                       <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
