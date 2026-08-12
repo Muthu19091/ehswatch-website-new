@@ -155,27 +155,35 @@ export default async function Footer() {
   const colHeading = (c?: { heading?: string; title?: string }) => (c?.heading || c?.title || "").trim();
   const isModulesCol = (c?: { heading?: string; title?: string }) => colHeading(c).toLowerCase().includes("module");
 
-  const modulesCol = columns.find(isModulesCol);
-  const modulesHeading = colHeading(modulesCol) || "MODULES";
+  // Live module pages populate a Modules column when available.
+  const liveModuleLinks = moduleLinks.length > 0 ? moduleLinks : null;
 
-  // Every non-Modules column renders generically, so a newly-added CMS column
-  // appears automatically (was hard-limited to a single "Company" column).
-  const genericColumns = (
-    columns.filter((c) => !isModulesCol(c)).length > 0
-      ? columns.filter((c) => !isModulesCol(c)).map((c) => ({ heading: colHeading(c) || "COMPANY", links: (c.links ?? []).filter((l) => navLinkVisible((l as { url?: string }).url, navFlags, "footer")) }))
-      : [{ heading: "COMPANY", links: COMPANY.map((l) => ({ label: l.label, url: l.href })).filter((l) => navLinkVisible(l.url, navFlags, "footer")) }]
-  );
+  // Footer columns render in the CMS-defined ORDER — drag-to-reorder in the
+  // dashboard now reflects on the site (the Modules column is no longer pinned
+  // to a fixed slot). A "Modules" column shows the live module list in two
+  // sub-columns; every other column is a plain link list.
+  type FooterCol = { heading: string; isModules: boolean; links: Array<{ label: string; url: string; open_in_new_tab?: boolean }> };
+  let orderedCols: FooterCol[] = columns.map((c) => {
+    const isMod = isModulesCol(c);
+    return {
+      heading: colHeading(c) || (isMod ? "MODULES" : "COMPANY"),
+      isModules: isMod,
+      links: isMod
+        ? (liveModuleLinks ?? (c.links ?? []))
+        : (c.links ?? []).filter((l) => navLinkVisible((l as { url?: string }).url, navFlags, "footer")),
+    };
+  });
+  if (orderedCols.length === 0) {
+    orderedCols = [
+      { heading: "COMPANY", isModules: false, links: COMPANY.map((l) => ({ label: l.label, url: l.href })).filter((l) => navLinkVisible(l.url, navFlags, "footer")) },
+      { heading: "MODULES", isModules: true, links: liveModuleLinks ?? [...MODULES_COL1, ...MODULES_COL2].map((l) => ({ label: l.label, url: l.href })) },
+    ];
+  } else if (!orderedCols.some((c) => c.isModules) && liveModuleLinks) {
+    orderedCols.push({ heading: "MODULES", isModules: true, links: liveModuleLinks });
+  }
 
-  // Prefer live module pages; fall back to CMS-authored links, then hardcoded.
-  const allModules   = moduleLinks.length > 0
-    ? moduleLinks
-    : (modulesCol?.links ?? [...MODULES_COL1, ...MODULES_COL2].map(l => ({ label: l.label, url: l.href })));
-  const mid          = Math.ceil(allModules.length / 2);
-  const modCol1      = allModules.slice(0, mid);
-  const modCol2      = allModules.slice(mid);
-
-  // Dynamic lg grid template: Brand | (generic columns…) | Modules | CTA
-  const footerGridCols = `1.1fr ${genericColumns.map(() => "0.9fr").join(" ")} 1.6fr${ctaEnabled ? " 1.1fr" : ""}`;
+  // Dynamic lg grid: Brand | (columns in CMS order) | CTA. Modules get a wider track.
+  const footerGridCols = `1.1fr ${orderedCols.map((c) => (c.isModules ? "1.6fr" : "0.9fr")).join(" ")}${ctaEnabled ? " 1.1fr" : ""}`;
 
   return (
     <footer dir="ltr" className="bg-[#0a1628] flex flex-col items-center pt-12 md:pt-[72px] relative isolate overflow-hidden">
@@ -241,9 +249,33 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* ── Generic link columns (Company + any extra CMS columns) ── */}
-        {genericColumns.map((col, ci) => (
-          <div key={`${col.heading}-${ci}`} className="flex flex-col gap-3 md:gap-[20px] items-start">
+        {/* ── Columns in CMS order (Company / Modules / any extra) ── */}
+        {orderedCols.map((col, ci) => col.isModules ? (
+          <div key={`col-${ci}`} className="flex flex-col gap-3 md:gap-[20px] items-start sm:col-span-2 lg:col-span-1">
+            <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
+              {col.heading}
+            </p>
+            <div className="grid grid-cols-2 gap-x-5 gap-y-[10px] w-full">
+              {[col.links.slice(0, Math.ceil(col.links.length / 2)), col.links.slice(Math.ceil(col.links.length / 2))].map((half, hi) => (
+                <ul key={hi} className="flex flex-col gap-[10px]">
+                  {half.map((mod, li) => (
+                    <li key={`${mod.label}-${li}`}>
+                      <Link
+                        href={mod.url || "#"}
+                        target={mod.open_in_new_tab ? "_blank" : undefined}
+                        rel={mod.open_in_new_tab ? "noopener noreferrer" : undefined}
+                        className="font-[family-name:var(--font-inter)] text-[12.5px] text-white/60 hover:text-white transition-colors leading-snug"
+                      >
+                        {mod.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div key={`col-${ci}`} className="flex flex-col gap-3 md:gap-[20px] items-start">
             <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
               {col.heading}
             </p>
@@ -252,8 +284,8 @@ export default async function Footer() {
                 <li key={`${link.label}-${li}`}>
                   <Link
                     href={link.url || "#"}
-                    target={(link as { open_in_new_tab?: boolean }).open_in_new_tab ? "_blank" : undefined}
-                    rel={(link as { open_in_new_tab?: boolean }).open_in_new_tab ? "noopener noreferrer" : undefined}
+                    target={link.open_in_new_tab ? "_blank" : undefined}
+                    rel={link.open_in_new_tab ? "noopener noreferrer" : undefined}
                     className="font-[family-name:var(--font-inter)] text-[13px] md:text-[14px] text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
@@ -264,45 +296,6 @@ export default async function Footer() {
           </div>
         ))}
 
-        {/* ── Modules column — 2-column grid ──
-            On tablet the main footer grid is 2-col, which otherwise strands this
-            column alone on its own row with an empty half beside it. Span both
-            columns there so it fills the width; the lg template restores 1 col. */}
-        <div className="flex flex-col gap-3 md:gap-[20px] items-start sm:col-span-2 lg:col-span-1">
-          <p className="font-[family-name:var(--font-inter)] font-semibold text-[11px] text-white tracking-[0.99px] uppercase">
-            {modulesHeading}
-          </p>
-          <div className="grid grid-cols-2 gap-x-5 gap-y-[10px] w-full">
-            <ul className="flex flex-col gap-[10px]">
-              {modCol1.map((mod) => (
-                <li key={mod.label}>
-                  <Link
-                    href={(mod as any).url || (mod as any).href || "#"}
-                    target={(mod as any).open_in_new_tab ? "_blank" : undefined}
-                    rel={(mod as any).open_in_new_tab ? "noopener noreferrer" : undefined}
-                    className="font-[family-name:var(--font-inter)] text-[12.5px] text-white/60 hover:text-white transition-colors leading-snug"
-                  >
-                    {mod.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <ul className="flex flex-col gap-[10px]">
-              {modCol2.map((mod) => (
-                <li key={mod.label}>
-                  <Link
-                    href={(mod as any).url || (mod as any).href || "#"}
-                    target={(mod as any).open_in_new_tab ? "_blank" : undefined}
-                    rel={(mod as any).open_in_new_tab ? "noopener noreferrer" : undefined}
-                    className="font-[family-name:var(--font-inter)] text-[12.5px] text-white/60 hover:text-white transition-colors leading-snug"
-                  >
-                    {mod.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
         {/* ── CTA column (CMS-controlled; hidden when disabled or empty) ── */}
         {ctaEnabled && (

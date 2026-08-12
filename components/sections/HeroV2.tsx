@@ -12,9 +12,9 @@ interface HeroProps {
   cmsHeadline?: string;
   cmsSubheadline?: string;
   cmsEyebrow?: string;
-  cmsPrimaryCta?: { label: string; url: string };
-  cmsSecondaryCta?: { label: string; url: string };
-  cmsTertiaryCta?: { label: string; url: string };
+  cmsPrimaryCta?: { label: string; url: string; videoUrl?: string };
+  cmsSecondaryCta?: { label: string; url: string; videoUrl?: string };
+  cmsTertiaryCta?: { label: string; url: string; videoUrl?: string };
   // When the CMS secondary CTA is a "video_popup", its video URL — the CTA
   // then opens a modal player instead of navigating.
   cmsHeroVideoUrl?: string;
@@ -161,6 +161,7 @@ export default function HeroV2({
                 {primaryCta && (
                 <GlareButton
                   href={primaryCta.url}
+                  videoUrl={primaryCta.videoUrl}
                   className="px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[16px] sm:text-[18px] text-white whitespace-nowrap"
                   style={{
                     background: "linear-gradient(102deg, #ffa964 0%, #ff8e37 34%, #ff7812 50%, #ff6d00 120%)",
@@ -195,12 +196,13 @@ export default function HeroV2({
                 })()}
 
                 {tertiaryCta && (
-                <Link
+                <GlareButton
                   href={tertiaryCta.url}
+                  videoUrl={tertiaryCta.videoUrl}
                   className="inline-flex items-center justify-center px-7 py-[10px] rounded-full border border-[#0f172a]/20 font-[family-name:var(--font-dm-sans)] font-medium text-[15px] sm:text-[17px] text-[#0f172a] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[#ff6d00]/5 whitespace-nowrap transition-colors"
                 >
                   {tertiaryCta.label}
-                </Link>
+                </GlareButton>
                 )}
               </div>
               )}
