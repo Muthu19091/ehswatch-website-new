@@ -216,7 +216,7 @@ export default function HeroV2({
           }
         >
           {cmsHeroImage ? (
-            <picture className="block w-full h-full">
+            <picture className="block w-full h-full animate-hero-rise" style={{ animationDelay: "450ms" }}>
               {cmsHeroImageMobile ? (
                 <source media="(max-width: 640px)" srcSet={cmsHeroImageMobile} />
               ) : null}
