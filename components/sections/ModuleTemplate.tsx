@@ -67,6 +67,7 @@ export interface ModuleTemplateProps {
   moreModules?: {
     heading: string;
     linkText?: string;
+    sectionCta?: { label: string; href: string };
     modules: Array<{ name: string; slug: string; desc: string; icon?: string | null; href?: string; linkLabel?: string }>;
   };
   clientStrip?: {
@@ -627,6 +628,11 @@ export default function ModuleTemplate({
                 />
               ))}
             </div>
+            {moreModules.sectionCta && (
+              <div className="flex justify-center mt-10 md:mt-12">
+                <CTAButton href={moreModules.sectionCta.href} label={moreModules.sectionCta.label} variant="ghost" />
+              </div>
+            )}
           </div>
         </section>
       )}

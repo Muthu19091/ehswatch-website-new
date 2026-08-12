@@ -335,11 +335,19 @@ export function buildModuleTemplateProps(
     otherModules = otherModules.slice(0, cap);
   }
 
+  // Section CTA below the grid (the "View more" link the editor configures).
+  const sectionCtaResolved = resolveCta((modulesBlock as { cta?: Parameters<typeof resolveCta>[0] })?.cta, pageMap);
+  const sectionCta =
+    sectionCtaResolved?.label && sectionCtaResolved.href && sectionCtaResolved.href !== "#"
+      ? { label: sectionCtaResolved.label, href: sectionCtaResolved.href }
+      : undefined;
+
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
       ? {
           heading: stripHtml(modulesBlock?.heading) || "",
           linkText: stripHtmlOpt((modulesBlock as { link_text?: string })?.link_text) || undefined,
+          sectionCta,
           modules: otherModules,
         }
       : undefined;
