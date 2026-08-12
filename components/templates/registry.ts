@@ -6,6 +6,7 @@ import AboutTemplate, { aboutMetadata } from "@/components/templates/AboutTempla
 import IndustriesTemplate, { industriesMetadata } from "@/components/templates/IndustriesTemplate";
 import ContactTemplate, { contactMetadata } from "@/components/templates/ContactTemplate";
 import BlogTemplate, { blogMetadata } from "@/components/templates/BlogTemplate";
+import CaseStudiesTemplate, { caseStudiesMetadata } from "@/components/templates/CaseStudiesTemplate";
 
 // Maps a page's CMS `template` value → the bespoke React component that renders
 // it. The catch-all route (app/[slug]) looks the page's template up here, so a
@@ -22,6 +23,7 @@ export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
   industries: IndustriesTemplate as TemplateComponent,
   contact: ContactTemplate as TemplateComponent,
   blog: BlogTemplate as TemplateComponent,
+  "case-studies": CaseStudiesTemplate as TemplateComponent,
 };
 
 export const TEMPLATE_METADATA: Record<string, TemplateMetadata> = {
@@ -32,4 +34,5 @@ export const TEMPLATE_METADATA: Record<string, TemplateMetadata> = {
   industries: industriesMetadata,
   contact: contactMetadata,
   blog: blogMetadata,
+  "case-studies": caseStudiesMetadata,
 };

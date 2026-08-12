@@ -33,12 +33,14 @@ export default function CaseStudyTemplate({
   allSlugs,
   applications: applicationsProp,
   applicationsHeading,
+  listingSlug = "case-studies",
 }: {
   slug: string;
   cmsStudy?: CmsCaseStudy;
   allSlugs?: string[];
   applications?: { name: string; slug: string }[];
   applicationsHeading?: string;
+  listingSlug?: string;
 }) {
   // CMS-only: the detail route 404s when the study is missing, so there is
   // always a real record here — no DUMMY placeholder content.
@@ -312,7 +314,7 @@ export default function CaseStudyTemplate({
               <div className={`grid py-8 ${prev && next ? "grid-cols-2 divide-x divide-[#e5e7eb]" : "grid-cols-1"}`}>
                 {prev && (
                   <div className={next ? "pr-8" : ""}>
-                    <Link href={`/case-studies/${prev}`} className="flex flex-col gap-2 no-underline group">
+                    <Link href={`/${listingSlug}/${prev}`} className="flex flex-col gap-2 no-underline group">
                       <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
                         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                           <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -324,7 +326,7 @@ export default function CaseStudyTemplate({
                 )}
                 {next && (
                   <div className={`text-right ${prev ? "pl-8" : ""}`}>
-                    <Link href={`/case-studies/${next}`} className="flex flex-col gap-2 items-end no-underline group">
+                    <Link href={`/${listingSlug}/${next}`} className="flex flex-col gap-2 items-end no-underline group">
                       <span className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9ca3af] flex items-center gap-1.5">
                         Next Case Study
                         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">

@@ -113,11 +113,11 @@ function KnowMore({ hovered, label }: { hovered: boolean; label: string }) {
 const PLACEHOLDER_COLORS = ["#EFF6FF", "#DBEAFE", "#E0F2FE", "#F0FDF4"];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function WideCard({ card, index }: { card: Card; index: number }) {
+function WideCard({ card, index, listingSlug = "case-studies" }: { card: Card; index: number; listingSlug?: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
-      href={`/case-studies/${card.slug}`}
+      href={`/${listingSlug}/${card.slug}`}
       className="flex flex-col md:flex-row bg-white overflow-hidden w-full"
       style={{
         border: "1px solid #F0F0F0",
@@ -181,7 +181,7 @@ function WideCard({ card, index }: { card: Card; index: number }) {
 /* ═══════════════════════════════════════════════════════
    SQUARE CARD
 ═══════════════════════════════════════════════════════ */
-function SquareCard({ card, index, cfg }: { card: Card; index: number; cfg: CardConfig }) {
+function SquareCard({ card, index, cfg, listingSlug }: { card: Card; index: number; cfg: CardConfig; listingSlug: string }) {
   const [hovered, setHovered] = useState(false);
   const metaBits = [
     cfg.showCategory ? card.category : "",
@@ -190,7 +190,7 @@ function SquareCard({ card, index, cfg }: { card: Card; index: number; cfg: Card
   ].filter(Boolean);
   return (
     <Link
-      href={`/case-studies/${card.slug}`}
+      href={`/${listingSlug}/${card.slug}`}
       className="flex flex-col bg-white overflow-hidden"
       style={{
         border: "1px solid #F0F0F0",
@@ -267,6 +267,7 @@ function SquareCard({ card, index, cfg }: { card: Card; index: number; cfg: Card
 ═══════════════════════════════════════════════════════ */
 interface CaseStudiesGridProps {
   cmsStudies?: CmsCaseStudy[];
+  listingSlug?: string;
   pagination?: string;   // CMS post_listing: "load_more" | "pagination"
   limit?: number;        // CMS post_listing: max items to show
   heading?: string;
@@ -294,7 +295,7 @@ function pageItems(current: number, total: number): (number | "…")[] {
 }
 
 export default function CaseStudiesGrid({
-  cmsStudies, pagination, limit,
+  cmsStudies, listingSlug = "case-studies", pagination, limit,
   heading, subheading,
   showImage, showExcerpt, showDate, showAuthor, showCategory,
   cardCtaLabel, emptyStateText,
@@ -371,7 +372,7 @@ export default function CaseStudiesGrid({
         {pageCards.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {pageCards.map((card, i) => (
-              <SquareCard key={card.slug} card={card} index={i} cfg={cfg} />
+              <SquareCard key={card.slug} card={card} index={i} cfg={cfg} listingSlug={listingSlug} />
             ))}
           </div>
         )}
