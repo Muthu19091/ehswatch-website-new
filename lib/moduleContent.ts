@@ -227,7 +227,7 @@ export function buildModuleTemplateProps(
 
   const modulesBlock = findBlock<{
     heading?: string;
-    visible_count?: number;
+    visible_count?: number | string;
     source?: string;
     curated_ids?: unknown;
     items?: unknown;
@@ -253,6 +253,10 @@ export function buildModuleTemplateProps(
   // the source value (not merely "are there curated_ids") means selecting "all"
   // ignores any stale curated_ids left behind by a previous "curated" choice.
   const moduleSource = (modulesBlock?.source ?? "all").toLowerCase();
+  // "Cards shown by default" cap — accept a number OR a numeric string
+  // (the CMS sometimes stores it as a string). undefined = no cap.
+  const vcNum = Number(modulesBlock?.visible_count);
+  const cap = Number.isFinite(vcNum) && vcNum > 0 ? vcNum : undefined;
 
   if (moduleSource === "inline") {
     // Inline source — each card's copy/icon/link is authored directly on this
@@ -321,14 +325,14 @@ export function buildModuleTemplateProps(
       ? curatedModules
       : allModules
           .filter((m) => m.attributes.status === "active" && m.attributes.slug !== slug)
-          .slice(0, typeof modulesBlock?.visible_count === "number" ? modulesBlock.visible_count : 5)
+          .slice(0, cap ?? 5)
           .map(toCard);
   }
 
-  // Respect the editor's visible_count on BOTH the curated and auto-listed sets
-  // (curated was uncapped before, so "show 4" still rendered all 5).
-  if (typeof modulesBlock?.visible_count === "number" && modulesBlock.visible_count > 0) {
-    otherModules = otherModules.slice(0, modulesBlock.visible_count);
+  // Respect the editor's visible_count on ALL sources (inline/curated/all);
+  // accepts a numeric string.
+  if (cap) {
+    otherModules = otherModules.slice(0, cap);
   }
 
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
