@@ -485,13 +485,16 @@ export default function NavbarClient({
                 <div className={`absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-[0_20px_56px_rgba(0,0,0,0.14)] border border-[#f0f2f5] p-4 w-fit max-w-[480px] transition-all duration-200 z-50 ${deskPanelClass(deskOpen === i)}`}>
                   {/* caret */}
                   <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-[#f0f2f5] rotate-45" />
-                  <div className="flex flex-wrap gap-3">
+                  <div
+                    className="grid gap-3"
+                    style={{ gridTemplateColumns: `repeat(${Math.min(2, (((link as { children?: unknown[] }).children ?? RESOURCES_ITEMS).length) || 1)}, 218px)` }}
+                  >
                     {((link as any).children ?? RESOURCES_ITEMS).map((item: { label: string; href: string; desc?: string; img?: string }) => (
                       <Link
                         key={item.label}
                         href={item.href}
                         onClick={() => setDeskOpen(null)}
-                        className="group/card flex flex-col gap-2.5 rounded-xl overflow-hidden transition-all duration-200 w-[218px] shrink-0"
+                        className="group/card flex flex-col gap-2.5 rounded-xl overflow-hidden transition-all duration-200 w-full"
                       >
                         {/* Thumbnail — show image if available, gradient placeholder otherwise */}
                         <div className="w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
