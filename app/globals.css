@@ -46,6 +46,11 @@ button:disabled,
 html {
   background-color: #ffffff;
   overscroll-behavior-y: none;
+  /* In-page anchor CTAs: scroll smoothly and clear the fixed navbar so the
+     target section isn't hidden behind it (was: instant jump under the header,
+     which read as "anchor does nothing"). */
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
   overflow-x: clip; /* clip ≠ hidden — does NOT create a scroll container, so position:sticky works */
 }
 body {
