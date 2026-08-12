@@ -18,6 +18,10 @@ interface HeroProps {
   // When the CMS secondary CTA is a "video_popup", its video URL — the CTA
   // then opens a modal player instead of navigating.
   cmsHeroVideoUrl?: string;
+  // Optional CMS hero image shown inside the framed card in place of the coded
+  // dashboard (mobile variant on small screens); falls back to <HeroDashboard/>.
+  cmsHeroImage?: string;
+  cmsHeroImageMobile?: string;
 }
 
 // YouTube watch/short URL → privacy-friendly embed URL with autoplay (and start
@@ -51,6 +55,8 @@ export default function HeroV2({
   cmsSecondaryCta,
   cmsTertiaryCta,
   cmsHeroVideoUrl,
+  cmsHeroImage,
+  cmsHeroImageMobile,
 }: HeroProps) {
   // CMS-only: no hardcoded copy. Empty CMS field → nothing rendered.
   const headline = cmsHeadline ?? "";
@@ -209,7 +215,17 @@ export default function HeroV2({
             </div>
           }
         >
-          <HeroDashboard />
+          {cmsHeroImage ? (
+            <picture className="block w-full h-full">
+              {cmsHeroImageMobile ? (
+                <source media="(max-width: 640px)" srcSet={cmsHeroImageMobile} />
+              ) : null}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={cmsHeroImage} alt="" className="w-full h-full object-cover object-top" />
+            </picture>
+          ) : (
+            <HeroDashboard />
+          )}
         </ContainerScroll>
       </div>
 

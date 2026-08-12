@@ -51,6 +51,8 @@ export default async function HomePage() {
     headline?: string;
     subheadline?: string;
     eyebrow?: string;
+    desktop_image?: unknown;
+    mobile_image?: unknown;
     primary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
     secondary_cta?: { label?: string; url?: string; type?: string; anchor?: string; video_url?: string; video_file?: { url?: string } | string | null };
     tertiary_cta?: { label?: string; url?: string; type?: string; anchor?: string };
@@ -190,6 +192,8 @@ export default async function HomePage() {
           cmsSecondaryCta={resolveCta(heroBlock?.secondary_cta, pageMap) ?? undefined}
           cmsTertiaryCta={resolveCta(heroBlock?.tertiary_cta, pageMap) ?? undefined}
           cmsHeroVideoUrl={heroVideoUrl}
+          cmsHeroImage={mediaUrl(heroBlock?.desktop_image)}
+          cmsHeroImageMobile={mediaUrl(heroBlock?.mobile_image)}
         />
         {/* id=logos = target for the hero "Read More" anchor CTA (#logos) */}
         <div id="logos">
