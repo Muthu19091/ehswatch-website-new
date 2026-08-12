@@ -191,10 +191,13 @@ export default async function HomePage() {
           cmsTertiaryCta={resolveCta(heroBlock?.tertiary_cta, pageMap) ?? undefined}
           cmsHeroVideoUrl={heroVideoUrl}
         />
-        <TrustedLogos
-          cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined}
-          cmsHeading={headingHtmlOpt(trustedBlock?.heading)}
-        />
+        {/* id=logos = target for the hero "Read More" anchor CTA (#logos) */}
+        <div id="logos">
+          <TrustedLogos
+            cmsLogos={cmsLogos.length > 0 ? cmsLogos : undefined}
+            cmsHeading={headingHtmlOpt(trustedBlock?.heading)}
+          />
+        </div>
         <Stats
           cmsItems={
             statsBlock?.items && statsBlock.items.length > 0
