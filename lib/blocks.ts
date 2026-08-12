@@ -173,8 +173,21 @@ export const ctaHref = resolveHref;
 // MediaResource objects ({ attributes: { url } }); some older fields are flat
 // ({ url }) or plain strings — handle all three.
 export function mediaUrl(media: unknown): string | undefined {
-  if (!media) return undefined;
-  if (typeof media === "string") return media;
+  if (media == null) return undefined;
+  // Some pickers persist a single upload as a one-element array (e.g. a
+  // video_file that the enricher resolves to [{id,url,alt}]) — take the first
+  // resolvable entry so uploaded videos/images aren't dropped.
+  if (Array.isArray(media)) {
+    for (const item of media) {
+      const u = mediaUrl(item);
+      if (u) return u;
+    }
+    return undefined;
+  }
+  if (typeof media === "string") return media.trim() || undefined;
+  // A bare numeric id means the enricher didn't resolve this field — the FE
+  // can't turn an id into a URL, so treat it as unset rather than a broken src.
+  if (typeof media === "number") return undefined;
   const m = media as { url?: string; attributes?: { url?: string } };
   return m.attributes?.url ?? m.url ?? undefined;
 }
