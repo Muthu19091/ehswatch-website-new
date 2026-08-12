@@ -34,7 +34,7 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
   const cmsStudy = res?.data;
   if (!cmsStudy) notFound();
   const pms = (cmsStudy.attributes as {
-    product_modules_section?: { source?: string; heading?: string; curated_ids?: number[]; visible_count?: number | null };
+    product_modules_section?: { source?: string; heading?: string; curated_ids?: number[]; visible_count?: number | string | null };
   }).product_modules_section;
   const moduleList = modulesRes?.data ?? [];
   const moduleById = new Map(moduleList.map((m) => [m.id, m]));
@@ -47,10 +47,11 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
         .map((m) => ({ name: m.attributes.name, slug: m.attributes.slug }));
     } else {
       applications = moduleList.map((m) => ({ name: m.attributes.name, slug: m.attributes.slug }));
-      if (typeof pms.visible_count === "number" && pms.visible_count > 0) {
-        applications = applications.slice(0, pms.visible_count);
-      }
     }
+    // "Cards shown by default" cap — applies to ANY source; accepts a number or
+    // a numeric string ("5"), which the CMS sometimes stores.
+    const vc = Number(pms.visible_count);
+    if (Number.isFinite(vc) && vc > 0) applications = applications.slice(0, vc);
   }
 
   const allSlugs = (allRes?.data ?? [])
