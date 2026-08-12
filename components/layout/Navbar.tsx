@@ -109,12 +109,12 @@ export default async function Navbar({ lightHero }: { lightHero?: boolean }) {
   // show_in_header is off (once toggles are in use). Dropdowns drop hidden
   // children and vanish if empty. External/anchor/custom links always show.
   const navFlags = buildNavFlags((pageListRes as { data?: unknown } | null)?.data);
+  // Dropdown children are explicitly curated in the CMS header nav, so they are
+  // NOT filtered by their target page's show_in_header toggle (that toggle only
+  // governs auto top-level insertion + top-level page links). This lets an editor
+  // add a child (e.g. a Terms link under Resources) even when that page is hidden
+  // from the top-level header.
   const filteredNav = cmsNav
-    .map((item) =>
-      item.children
-        ? { ...item, children: item.children.filter((c) => navLinkVisible(c.href, navFlags, "header")) }
-        : item,
-    )
     .filter((item) => (item.hasDropdown ? (item.children?.length ?? 0) > 0 : navLinkVisible(item.href, navFlags, "header")));
 
   // A page with show_in_header enabled is auto-added to the header as a top-level
