@@ -169,7 +169,12 @@ export default async function Footer() {
       heading: colHeading(c) || (isMod ? "MODULES" : "COMPANY"),
       isModules: isMod,
       links: isMod
-        ? (liveModuleLinks ?? (c.links ?? []))
+        // Editor-authored Modules links WIN when present, so footer edits to the
+        // Modules column actually reflect; fall back to the auto live module-page
+        // list only when the column is left empty.
+        ? ((c.links && c.links.length > 0)
+            ? c.links.filter((l) => navLinkVisible((l as { url?: string }).url, navFlags, "footer"))
+            : (liveModuleLinks ?? []))
         : (c.links ?? []).filter((l) => navLinkVisible((l as { url?: string }).url, navFlags, "footer")),
     };
   });
