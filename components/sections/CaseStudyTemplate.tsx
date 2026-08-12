@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/blocks";
-import GlareButton from "@/components/ui/GlareButton";
 import type { CmsCaseStudy } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -243,22 +242,6 @@ export default function CaseStudyTemplate({
               </div>
             )}
 
-            {/* Pull quote — echoes the summary as a client voice */}
-            <blockquote
-              className="my-14 rounded-2xl px-8 py-10 text-center"
-              style={{ background: "#F0FDF4", border: "1px solid #D1FAE5" }}
-            >
-              <svg width="34" height="34" viewBox="0 0 24 24" fill={ACCENT} className="mx-auto mb-4 opacity-30">
-                <path d="M9.5 4C6.5 5.5 4.5 8.5 4.5 12v6h6v-6h-3c0-2 1-3.5 3-4.5L9.5 4zm9 0c-3 1.5-5 4.5-5 8v6h6v-6h-3c0-2 1-3.5 3-4.5L18.5 4z"/>
-              </svg>
-              <p className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[19px] sm:text-[22px] leading-[1.5] text-[#0a0f1e] max-w-[620px] mx-auto text-balance">
-                {summary}
-              </p>
-              <p className="mt-5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold uppercase tracking-[0.1em]" style={{ color: ACCENT }}>
-                {clientName} · {industry}
-              </p>
-            </blockquote>
-
             {/* ── EHSWatch Applications ─ modules the customer used (CMS) ── */}
             {applications.length > 0 && (
               <section className="my-14">
@@ -280,29 +263,6 @@ export default function CaseStudyTemplate({
                 </div>
               </section>
             )}
-
-            {/* CTA */}
-            <div
-              className="my-14 rounded-2xl px-8 py-12 text-center flex flex-col items-center gap-5"
-              style={{ background: "#0a0f1e" }}
-            >
-              <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] leading-tight text-white text-balance max-w-[520px]">
-                See what EHSWatch can do for your team
-              </h2>
-              <p className="font-[family-name:var(--font-dm-sans)] text-[15px] text-[#9ca3af] max-w-[460px] leading-[1.7]">
-                Book a walkthrough and we&apos;ll map EHSWatch to your industry&apos;s workflows and compliance needs.
-              </p>
-              <GlareButton
-                href="/contact-us"
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-[family-name:var(--font-dm-sans)] font-semibold text-[15px] text-white"
-                style={{ backgroundImage: "linear-gradient(102.8deg, #ffa964 0.12%, #ff8e37 34.34%, #ff7812 50.27%, #ff6d00 119.92%)" }}
-              >
-                Book a Demo
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </GlareButton>
-            </div>
 
           </div>
         </div>
