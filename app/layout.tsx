@@ -41,23 +41,43 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 // assets — so changing the icon in the CMS reflects on the site (BUG-154).
 export async function generateMetadata(): Promise<Metadata> {
   const settingsRes = await getSettings().catch(() => null);
-  const brand = (settingsRes?.data as { brand?: Record<string, { attributes?: { url?: string } }> } | null)?.brand;
-  const faviconUrl = brand?.favicon?.attributes?.url;
-  const appleUrl = brand?.apple_touch_icon?.attributes?.url;
+  const data = settingsRes?.data as {
+    brand?: {
+      favicon?: { attributes?: { url?: string; mime_type?: string } };
+      apple_touch_icon?: { attributes?: { url?: string; mime_type?: string } };
+      name?: string;
+    };
+    seo?: { canonical_base_url?: string };
+  } | null;
+  const brand = data?.brand;
+  const fav = brand?.favicon?.attributes;
+  const faviconUrl = fav?.url;
+  // Emit the correct <link type> for whatever format the editor uploaded
+  // (svg / ico / png) so browsers that ignore an untyped icon still pick it up.
+  const faviconType = fav?.mime_type;
+  const appleAttrs = brand?.apple_touch_icon?.attributes;
+  const appleUrl = appleAttrs?.url;
+  const appleType = appleAttrs?.mime_type || "image/png";
+  const origin = (data?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
 
   return {
+    metadataBase: new URL(origin),
     title: "EHSWatch — From Manual Chaos to Smart Safety",
     description: "AI-powered EHS platform to streamline reporting everywhere.",
     icons: {
       icon: faviconUrl
-        ? [{ url: faviconUrl }]
+        ? [{ url: faviconUrl, ...(faviconType ? { type: faviconType } : {}) }]
         : [
             // Bundled fallback: SVG for modern browsers, PNG for iOS/iPad Safari.
             { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
             { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
           ],
       shortcut: faviconUrl || BASE + "/images/favicon-96.png",
-      apple: appleUrl || BASE + "/images/apple-touch-icon.png",
+      // Apple home-screen icon: declare 180x180 so iOS picks it up. Requires a
+      // real SQUARE PNG in Site Settings (a large non-square photo won't render).
+      apple: appleUrl
+        ? [{ url: appleUrl, sizes: "180x180", type: appleType }]
+        : BASE + "/images/apple-touch-icon.png",
     },
   };
 }
