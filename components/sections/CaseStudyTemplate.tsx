@@ -71,7 +71,6 @@ export default function CaseStudyTemplate({
   const { prev, next } = getPrevNext(slug, allSlugs);
 
   // Headline metric for the hero quick-facts strip (first result)
-  const heroMetric = results[0];
 
   return (
     <>
@@ -174,33 +173,6 @@ export default function CaseStudyTemplate({
               </div>
             )}
 
-            {/* At a glance — summary + quick facts */}
-            {(summary || heroMetric) && (
-            <div
-              className="rounded-2xl px-6 py-6 mb-12 flex flex-col md:flex-row gap-6 md:items-center"
-              style={{ background: "linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%)", border: "1px solid #D1FAE5" }}
-            >
-              {summary && (
-                <p className="flex-1 font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.75] text-[#065f46] font-medium">
-                  {summary}
-                </p>
-              )}
-              {heroMetric && (
-                <div className="shrink-0 md:border-l md:border-[#A7F3D0] md:pl-6 text-center md:text-left">
-                  <div
-                    className="font-[family-name:var(--font-gothic-a1)] font-bold text-[40px] leading-none tracking-[-0.03em]"
-                    style={{ color: ACCENT, fontVariantNumeric: "tabular-nums" }}
-                  >
-                    {heroMetric.value ?? heroMetric.after ?? "—"}
-                  </div>
-                  <div className="mt-1 font-[family-name:var(--font-dm-sans)] text-[12px] text-[#047857] max-w-[150px]">
-                    {heroMetric.label ?? heroMetric.metric ?? ""}
-                  </div>
-                </div>
-              )}
-            </div>
-            )}
-
             {/* Story */}
             {bodyHtml && (
               <div
@@ -241,6 +213,22 @@ export default function CaseStudyTemplate({
                 </div>
               </div>
             )}
+
+            {/* Pull quote — echoes the summary as a client voice */}
+            <blockquote
+              className="my-14 rounded-2xl px-8 py-10 text-center"
+              style={{ background: "#F0FDF4", border: "1px solid #D1FAE5" }}
+            >
+              <svg width="34" height="34" viewBox="0 0 24 24" fill={ACCENT} className="mx-auto mb-4 opacity-30">
+                <path d="M9.5 4C6.5 5.5 4.5 8.5 4.5 12v6h6v-6h-3c0-2 1-3.5 3-4.5L9.5 4zm9 0c-3 1.5-5 4.5-5 8v6h6v-6h-3c0-2 1-3.5 3-4.5L18.5 4z"/>
+              </svg>
+              <p className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[19px] sm:text-[22px] leading-[1.5] text-[#0a0f1e] max-w-[620px] mx-auto text-balance">
+                {summary}
+              </p>
+              <p className="mt-5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold uppercase tracking-[0.1em]" style={{ color: ACCENT }}>
+                {clientName} · {industry}
+              </p>
+            </blockquote>
 
             {/* ── EHSWatch Applications ─ modules the customer used (CMS) ── */}
             {applications.length > 0 && (
