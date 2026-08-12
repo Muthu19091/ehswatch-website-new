@@ -96,6 +96,10 @@ export function resolveIconName(
   // Unset / empty icon → null so the caller renders nothing (no default icon).
   if (!slug || !slug.trim()) return null;
   let s = slug.trim();
+  // Custom uploaded icon (inline SVG / URL / unresolved `custom:<id>`) — not a
+  // Lucide name; return null so callers don't render a wrong fallback glyph.
+  // CmsIcon detects and renders these directly (inline SVG or <img>).
+  if (/^(<svg|https?:\/\/|\/|data:image\/|custom:)/i.test(s) || /\.(svg|png|jpe?g|webp|gif)$/i.test(s)) return null;
   if (s.startsWith("heroicon-o-") || s.startsWith("heroicon-s-")) s = s.slice(11);
   s = ALIASES[s] ?? s;
   // A set-but-unknown slug still falls back so legacy/renamed data never renders broken.
@@ -117,6 +121,30 @@ export default function CmsIcon({
   className?: string;
   fallback?: LucideIconName;
 }) {
+  const raw = (icon ?? "").trim();
+
+  // Custom uploaded icon (CMS IconPicker upload). The API serves it as either
+  // sanitized inline <svg> markup or an image URL; render that directly rather
+  // than resolving a named Lucide glyph. Works everywhere IconPicker is used
+  // (module cards, icon-features, stats, steps, pain-points, pricing).
+  if (raw.startsWith("<svg")) {
+    return (
+      <span
+        aria-hidden
+        style={{ width: size, height: size, color }}
+        className={`inline-flex items-center justify-center [&_svg]:w-full [&_svg]:h-full ${className ?? ""}`}
+        // SVG is sanitized server-side (enshrined/svg-sanitize) before storage.
+        dangerouslySetInnerHTML={{ __html: raw }}
+      />
+    );
+  }
+  if (/^(https?:\/\/|\/|data:image\/)/i.test(raw) || /\.(svg|png|jpe?g|webp|gif)$/i.test(raw)) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={raw} alt="" width={size} height={size} className={className} style={{ objectFit: "contain" }} />
+    );
+  }
+
   const name = resolveIconName(icon, fallback);
   // No icon configured → render nothing (previously showed a fallback icon).
   if (!name) return null;
