@@ -19,6 +19,7 @@ import { useEffect } from "react";
 // English source (whitespace-normalised) → authored Arabic.
 const EN_TO_AR: Record<string, string> = {
   "Back": "رجوع",
+  "Book a Demo": "احجز عرضاً توضيحياً",
   "Step 1": "الخطوة الأولى",
   "Step 2": "الخطوة الثانية",
   "Step 3": "الخطوة الثالثة",
