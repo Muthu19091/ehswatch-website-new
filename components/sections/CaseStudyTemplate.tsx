@@ -174,7 +174,7 @@ export default function CaseStudyTemplate({
         </section>
 
         {/* ── Body ── */}
-        <div className="px-4 sm:px-6 pt-8 pb-0">
+        <div className="px-4 sm:px-6 pt-8 pb-16 md:pb-24">
           <div className="max-w-[820px] mx-auto">
 
             {/* Cover — only when a real image is uploaded */}
