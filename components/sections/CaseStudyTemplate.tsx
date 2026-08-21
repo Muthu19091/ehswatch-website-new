@@ -57,7 +57,6 @@ export default function CaseStudyTemplate({
   const title = attrs.title || "";
   const clientName = attrs.client_name || "";
   const industry = attrs.industry || "";
-  const summary = attrs.summary || "";
   const bodyHtml = attrs.body?.trim() ? attrs.body : "";
   const results = attrs.results?.length ? attrs.results : [];
   // Modules the customer used. New API sends product_modules_section.curated_ids
@@ -152,8 +151,12 @@ export default function CaseStudyTemplate({
             <div className="w-full max-w-[680px]" style={{ borderTop: "1px solid rgba(229,231,235,0.7)" }} />
             <div className="flex items-center justify-between w-full max-w-[680px] py-3">
               <div className="flex items-center gap-3">
-                <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{clientName}</span>
-                <span style={{ color: "#e5e7eb" }}>·</span>
+                {clientName && (
+                  <>
+                    <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{clientName}</span>
+                    <span style={{ color: "#e5e7eb" }}>·</span>
+                  </>
+                )}
                 <span className="font-[family-name:var(--font-dm-sans)] text-[13px] text-[#9ca3af]">{publishDate}</span>
               </div>
               <Link
@@ -222,28 +225,15 @@ export default function CaseStudyTemplate({
               </div>
             )}
 
-            {/* Pull quote — echoes the summary as a client voice */}
-            <blockquote
-              className="my-14 rounded-2xl px-8 py-10 text-center"
-              style={{ background: "#F0FDF4", border: "1px solid #D1FAE5" }}
-            >
-              <svg width="34" height="34" viewBox="0 0 24 24" fill={ACCENT} className="mx-auto mb-4 opacity-30">
-                <path d="M9.5 4C6.5 5.5 4.5 8.5 4.5 12v6h6v-6h-3c0-2 1-3.5 3-4.5L9.5 4zm9 0c-3 1.5-5 4.5-5 8v6h6v-6h-3c0-2 1-3.5 3-4.5L18.5 4z"/>
-              </svg>
-              <p className="font-[family-name:var(--font-gothic-a1)] font-semibold text-[19px] sm:text-[22px] leading-[1.5] text-[#0a0f1e] max-w-[620px] mx-auto text-balance">
-                {summary}
-              </p>
-              <p className="mt-5 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold uppercase tracking-[0.1em]" style={{ color: ACCENT }}>
-                {clientName} · {industry}
-              </p>
-            </blockquote>
 
             {/* ── EHSWatch Applications ─ modules the customer used (CMS) ── */}
             {applications.length > 0 && (
               <section className="my-14">
-                <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] leading-tight text-[#0a0f1e] mb-5">
-                  {applicationsHeading || "EHSWatch Applications"}
-                </h2>
+                {applicationsHeading && (
+                  <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] leading-tight text-[#0a0f1e] mb-5">
+                    {applicationsHeading}
+                  </h2>
+                )}
                 <div className="flex flex-wrap gap-3">
                   {applications.map((app) => (
                     <Link
