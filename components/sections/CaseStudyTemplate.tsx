@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/blocks";
+import CTABanner from "@/components/sections/CTABanner";
 import type { CmsCaseStudy } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -32,6 +33,7 @@ export default function CaseStudyTemplate({
   allSlugs,
   applications: applicationsProp,
   applicationsHeading,
+  ctaSection,
   listingSlug = "case-studies",
 }: {
   slug: string;
@@ -39,6 +41,12 @@ export default function CaseStudyTemplate({
   allSlugs?: string[];
   applications?: { name: string; slug: string }[];
   applicationsHeading?: string;
+  ctaSection?: {
+    headline?: string;
+    subhead?: string;
+    primaryCta?: { label: string; url: string; videoUrl?: string; newTab?: boolean };
+    secondaryCta?: { label: string; url: string; videoUrl?: string; newTab?: boolean };
+  };
   listingSlug?: string;
 }) {
   // CMS-only: the detail route 404s when the study is missing, so there is
@@ -291,6 +299,14 @@ export default function CaseStudyTemplate({
         )}
 
       </article>
+      {ctaSection?.headline && (
+        <CTABanner
+          cmsHeadline={ctaSection.headline}
+          cmsSubhead={ctaSection.subhead}
+          cmsPrimaryCta={ctaSection.primaryCta}
+          cmsSecondaryCta={ctaSection.secondaryCta}
+        />
+      )}
     </>
   );
 }

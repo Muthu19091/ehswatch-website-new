@@ -4,9 +4,11 @@ import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CaseStudyTemplate from "@/components/sections/CaseStudyTemplate";
-import { getCaseStudy, getCaseStudies, getProductModules } from "@/lib/api";
+import { getCaseStudy, getCaseStudies, getProductModules, getPageList } from "@/lib/api";
 import { notFound } from "next/navigation";
 import { robotsFrom, seoExtras } from "@/lib/seo";
+import { buildPageMap, resolveCta } from "@/lib/blocks";
+import { headingHtmlOpt, stripHtmlOpt } from "@/lib/text";
 
 export async function caseStudyDetailMetadata(slug: string): Promise<Metadata> {
   const res = await getCaseStudy(slug);
@@ -26,10 +28,11 @@ export async function caseStudyDetailMetadata(slug: string): Promise<Metadata> {
 }
 
 export default async function CaseStudyDetailTemplate({ slug, listingSlug = "case-studies" }: { slug: string; listingSlug?: string }) {
-  const [res, allRes, modulesRes] = await Promise.all([
+  const [res, allRes, modulesRes, pageListRes] = await Promise.all([
     getCaseStudy(slug),
     getCaseStudies(),
     getProductModules(),
+    getPageList(),
   ]);
   const cmsStudy = res?.data;
   if (!cmsStudy) notFound();
@@ -54,6 +57,23 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
     if (Number.isFinite(vc) && vc > 0) applications = applications.slice(0, vc);
   }
 
+  // CTA banner (new cta_section field on the Case Study API). Same shape as the
+  // cta_banner block; render only when a headline is set (mirrors the CTA rule
+  // "no label -> don't render"). CTAs resolved via pageMap for page_id links.
+  const pageMap = buildPageMap(pageListRes?.data);
+  const rawCta = (cmsStudy.attributes as {
+    cta_section?: { headline?: string; subhead?: string; primary_cta?: unknown; secondary_cta?: unknown } | null;
+  }).cta_section;
+  const ctaHeadline = headingHtmlOpt(rawCta?.headline);
+  const ctaSection = ctaHeadline
+    ? {
+        headline: ctaHeadline,
+        subhead: stripHtmlOpt(rawCta?.subhead),
+        primaryCta: resolveCta(rawCta?.primary_cta, pageMap) ?? undefined,
+        secondaryCta: resolveCta(rawCta?.secondary_cta, pageMap) ?? undefined,
+      }
+    : undefined;
+
   const allSlugs = (allRes?.data ?? [])
     .sort((a, b) => new Date(b.attributes.published_at).getTime() - new Date(a.attributes.published_at).getTime())
     .map((s) => s.attributes.slug);
@@ -68,6 +88,7 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
           allSlugs={allSlugs.length > 0 ? allSlugs : undefined}
           applications={applications}
           applicationsHeading={pms?.heading || undefined}
+          ctaSection={ctaSection}
           listingSlug={listingSlug}
         />
       </main>
