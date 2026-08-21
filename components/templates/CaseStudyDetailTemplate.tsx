@@ -48,7 +48,9 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
         .map((id) => moduleById.get(id))
         .filter((m): m is NonNullable<typeof m> => !!m)
         .map((m) => ({ name: m.attributes.name, slug: m.attributes.slug }));
-    } else {
+    } else if (pms.source === "all") {
+      // Only when the editor EXPLICITLY chooses "all". A null/unset source means
+      // the section is unconfigured -> stays empty and hides (no show-all fallback).
       applications = moduleList.map((m) => ({ name: m.attributes.name, slug: m.attributes.slug }));
     }
     // "Cards shown by default" cap — applies to ANY source; accepts a number or
