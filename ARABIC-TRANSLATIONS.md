@@ -86,3 +86,5 @@ redeploy. (For full page copy, use the CMS Arabic fields instead — see source 
   active.
 - Brand-in-English behaviour: `lib/text.ts → keepBrandsEnglish()`.
 - Changes require build → deploy (they are compiled into the app, unlike CMS `_ar` content).
+
+<!-- auto-deploy enabled 2026-08-21: a commit to `stage` now builds + deploys automatically within ~1-3 min. -->
