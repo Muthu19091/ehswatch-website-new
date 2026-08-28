@@ -23,7 +23,7 @@ export async function aboutMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "About Us — EHSWatch",
+    title: meta?.meta_title || "About Us - EHSWatch",
     description:
       meta?.meta_description ||
       "Built to simplify EHSQ. Designed to protect. The intelligent safety platform trusted by 25K+ teams worldwide.",

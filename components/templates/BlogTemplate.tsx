@@ -28,7 +28,7 @@ export async function blogMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "Blog — EHSWatch",
+    title: meta?.meta_title || "Blog - EHSWatch",
     description: meta?.meta_description || "Practical guidance, regulatory updates and operational insights for EHSQ professionals. Written by safety practitioners, for safety practitioners.",
   };
 }

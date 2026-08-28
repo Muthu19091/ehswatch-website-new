@@ -12,7 +12,7 @@ export default function SupportMap({ address }: { address?: string | null } = {}
           style={{ height: "420px", boxShadow: "0 2px 16px rgba(20,31,56,0.06)" }}
         >
           <iframe
-            title={`EHSWatch — ${query}`}
+            title={`EHSWatch - ${query}`}
             src={src}
             width="100%"
             height="100%"

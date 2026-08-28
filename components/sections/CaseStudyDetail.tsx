@@ -203,7 +203,7 @@ export default function CaseStudyDetail({
                   Before EHSWatch, the safety team at {attrs.client_name} managed compliance across multiple sites using a combination of spreadsheets, email threads, and a legacy desktop system that hadn&apos;t been updated in four years. Audit preparation alone consumed two full working days every quarter.
                 </p>
                 <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
-                  The team identified three root problems: data living in disconnected silos, no real-time visibility into open actions, and a reporting process so cumbersome that field workers were routinely deferring documentation until end-of-shift — by which point key details were lost.
+                  The team identified three root problems: data living in disconnected silos, no real-time visibility into open actions, and a reporting process so cumbersome that field workers were routinely deferring documentation until end-of-shift - by which point key details were lost.
                 </p>
                 <p className="font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151] text-pretty mt-6">
                   EHSWatch was deployed across all sites within six weeks. The mobile-first capture flow reduced average report time from eleven minutes to under two. Automatic routing of corrective actions to responsible owners eliminated the follow-up bottleneck. And real-time dashboards gave leadership the live view they needed to make proactive decisions rather than reactive ones.

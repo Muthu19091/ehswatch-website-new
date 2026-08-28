@@ -21,7 +21,7 @@ export async function industriesMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(attrs.meta),
     robots: robotsFrom(attrs.meta?.robots),
-    title: attrs.meta?.meta_title || "Industries — EHSWatch",
+    title: attrs.meta?.meta_title || "Industries - EHSWatch",
     description: attrs.meta?.meta_description || "Every industry has different risks. EHSWatch is configured to the compliance requirements, workflows and hazard profiles of your sector.",
   };
 }

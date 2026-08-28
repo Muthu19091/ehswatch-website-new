@@ -24,7 +24,7 @@ function PreviewBanner({ label }: { label: string }) {
       className="w-full text-center py-2.5 px-4 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold text-white"
       style={{ background: "linear-gradient(90deg, #f59e0b, #f97316)", position: "relative", zIndex: 60 }}
     >
-      DRAFT PREVIEW — {label} · This content is not published and this link expires automatically.
+      DRAFT PREVIEW - {label} · This content is not published and this link expires automatically.
     </div>
   );
 }

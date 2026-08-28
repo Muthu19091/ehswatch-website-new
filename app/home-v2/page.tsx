@@ -15,7 +15,7 @@ import type { Metadata } from "next";
 // Unlinked experimental home variant — keep it out of the index so it
 // never competes with "/" for search results.
 export const metadata: Metadata = {
-  title: "Home — EHSWatch",
+  title: "Home - EHSWatch",
   robots: { index: false, follow: false },
 };
 

@@ -28,17 +28,17 @@ const DEFAULT_STEPS: Array<{ n: number; title: string; body: string }> = [
   {
     n: 1,
     title: "Set up your safety processes",
-    body: "Configure your forms, modules, sites and approval workflows to match how your organisation already operates — without a complex IT setup or external consultants.",
+    body: "Configure your forms, modules, sites and approval workflows to match how your organisation already operates - without a complex IT setup or external consultants.",
   },
   {
     n: 2,
     title: "Capture information from the field",
-    body: "Workers, supervisors and safety teams log incidents, observations, audits or actions from any device. Offline reporting is fully supported — data syncs automatically when connectivity is restored.",
+    body: "Workers, supervisors and safety teams log incidents, observations, audits or actions from any device. Offline reporting is fully supported - data syncs automatically when connectivity is restored.",
   },
   {
     n: 3,
     title: "Route work to the right people",
-    body: "Once submitted, EHSWatch automatically assigns work to the relevant person or team. If actions are not acknowledged within the defined timeframe, the platform escalates automatically — nothing stalls silently.",
+    body: "Once submitted, EHSWatch automatically assigns work to the relevant person or team. If actions are not acknowledged within the defined timeframe, the platform escalates automatically - nothing stalls silently.",
   },
   {
     n: 4,
@@ -48,7 +48,7 @@ const DEFAULT_STEPS: Array<{ n: number; title: string; body: string }> = [
   {
     n: 5,
     title: "Use insights to improve safety",
-    body: "EHSWatch surfaces patterns, identifies root causes and flags preventive actions — so safety improvements compound with every report submitted.",
+    body: "EHSWatch surfaces patterns, identifies root causes and flags preventive actions - so safety improvements compound with every report submitted.",
   },
 ];
 

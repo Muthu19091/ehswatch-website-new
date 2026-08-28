@@ -20,7 +20,7 @@ export async function caseStudiesMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "Case Studies — EHSWatch",
+    title: meta?.meta_title || "Case Studies - EHSWatch",
     description:
       meta?.meta_description ||
       "See how EHSQ teams across construction, energy, manufacturing and logistics use EHSWatch to cut reporting time, accelerate audits and gain full visibility into risk.",

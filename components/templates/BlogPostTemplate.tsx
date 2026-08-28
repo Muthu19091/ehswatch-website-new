@@ -29,7 +29,7 @@ export async function blogPostMetadata(slug: string, listingSlug = "blog"): Prom
     description:
       meta?.meta_description ||
       post?.attributes.excerpt ||
-      `EHSWatch EHS insights — ${slug.replace(/-/g, " ")}.`,
+      `EHSWatch EHS insights - ${slug.replace(/-/g, " ")}.`,
   };
 }
 

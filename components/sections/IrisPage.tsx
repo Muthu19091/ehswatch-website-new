@@ -239,7 +239,7 @@ const PROBLEMS: ProblemCard[] = [
   },
   {
     title: "Surface-Level Investigations",
-    desc: "Investigations that stop at symptoms fail to uncover true root causes — letting repeat incidents happen.",
+    desc: "Investigations that stop at symptoms fail to uncover true root causes - letting repeat incidents happen.",
     icon: <IconLayers />, color: "#7c3aed", bg: "#f7f0ff",
   },
   {
@@ -512,7 +512,7 @@ function AIThinkingCardLight({ active }: { active: boolean }) {
         <div className="flex flex-col gap-1.5">
           <p className="font-[family-name:var(--font-dm-sans)] text-[10px] uppercase tracking-[0.15em] font-semibold text-[#9ca3af]">Insight ready</p>
           <p className="font-[family-name:var(--font-dm-sans)] text-[13px] leading-[1.6] text-[#1b1b1b]">
-            &ldquo;3 incidents share a common root cause at Site B — recommend immediate process review.&rdquo;
+            &ldquo;3 incidents share a common root cause at Site B - recommend immediate process review.&rdquo;
           </p>
         </div>
 

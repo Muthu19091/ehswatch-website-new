@@ -23,7 +23,7 @@ export async function pricingMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(attrs.meta),
     robots: robotsFrom(attrs.meta?.robots),
-    title: attrs.meta?.meta_title || "Pricing — EHSWatch",
+    title: attrs.meta?.meta_title || "Pricing - EHSWatch",
     description: attrs.meta?.meta_description || "Simple, flexible pricing for enterprise-grade EHS management. Pay only for the modules you need.",
   };
 }

@@ -193,7 +193,7 @@ const FEATURES = [
     ),
     color: "#155eef",
     title: "Instant Assignment",
-    desc: "Create actions with a defined owner, due date and priority level the moment a finding is raised — no separate task or email required.",
+    desc: "Create actions with a defined owner, due date and priority level the moment a finding is raised - no separate task or email required.",
   },
   {
     icon: (
@@ -233,7 +233,7 @@ const FEATURES = [
     ),
     color: "#7c3aed",
     title: "Custom Workflows",
-    desc: "Define multi-step approval and review workflows that match your organisation's processes — from simple two-step closures to complex multi-team sign-off chains.",
+    desc: "Define multi-step approval and review workflows that match your organisation's processes - from simple two-step closures to complex multi-team sign-off chains.",
   },
   {
     icon: (
@@ -258,12 +258,12 @@ const FEATURES = [
     ),
     color: "#155eef",
     title: "Connected Platform",
-    desc: "Actions auto-link to their originating record — whether an incident, audit finding, observation or risk assessment — with no manual re-entry and no data duplication.",
+    desc: "Actions auto-link to their originating record - whether an incident, audit finding, observation or risk assessment - with no manual re-entry and no data duplication.",
   },
 ];
 
 const DIFFERENTIATORS = [
-  "Rapid deployment with no IT dependency — configure workflows, approvals and notifications without development resource.",
+  "Rapid deployment with no IT dependency - configure workflows, approvals and notifications without development resource.",
   "Built by EHS experts who understand what safety teams need in the field.",
   "Scales from small teams to enterprise-wide multi-site deployments.",
   "ISO 45001-aligned audit trail supports external audits, regulatory inspections and certification reviews.",
@@ -272,15 +272,15 @@ const DIFFERENTIATORS = [
 const FAQS = [
   {
     q: "What is EHSWatch Action Tracker?",
-    a: "Action Tracker centralises corrective and preventive actions originating from incidents, audits, observations, risk assessments and other modules. Each action has a defined owner, deadline and priority level. Status is tracked in real time, and every change is logged with a full audit trail — so nothing falls through the cracks and accountability is always clear.",
+    a: "Action Tracker centralises corrective and preventive actions originating from incidents, audits, observations, risk assessments and other modules. Each action has a defined owner, deadline and priority level. Status is tracked in real time, and every change is logged with a full audit trail - so nothing falls through the cracks and accountability is always clear.",
   },
   {
     q: "Can Action Tracker be configured for our specific workflow?",
-    a: "Yes. Approval steps, notification rules, form fields, escalation paths and dashboards are all configurable to match your organisation's processes — without any coding or external development resource.",
+    a: "Yes. Approval steps, notification rules, form fields, escalation paths and dashboards are all configurable to match your organisation's processes - without any coding or external development resource.",
   },
   {
     q: "Does it integrate with other EHSWatch modules?",
-    a: "Yes. Because Action Tracker is built within the EHSWatch platform, actions link directly to the originating record — whether that is an incident, audit, observation or risk assessment. There is no manual data transfer and no duplication across systems.",
+    a: "Yes. Because Action Tracker is built within the EHSWatch platform, actions link directly to the originating record - whether that is an incident, audit, observation or risk assessment. There is no manual data transfer and no duplication across systems.",
   },
   {
     q: "Who typically uses Action Tracker?",
@@ -288,7 +288,7 @@ const FAQS = [
   },
   {
     q: "How does it support compliance and audit requirements?",
-    a: "Action Tracker maintains a complete audit trail of every action — owner history, status changes, comments, attachments and closure evidence — all timestamped and user-attributed. This record is exportable for regulatory inspections, ISO 45001 audits and internal compliance reviews.",
+    a: "Action Tracker maintains a complete audit trail of every action - owner history, status changes, comments, attachments and closure evidence - all timestamped and user-attributed. This record is exportable for regulatory inspections, ISO 45001 audits and internal compliance reviews.",
   },
   {
     q: "Is Action Tracker accessible on mobile devices?",
@@ -571,7 +571,7 @@ export default function ActionTrackerPage() {
             className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[17px] md:text-[18px] text-[#4b5563] leading-[1.75] max-w-[860px] animate-hero-rise text-pretty"
             style={{ animationDelay: "180ms" }}
           >
-            No more lost actions or endless email chains. EHSWatch Action Tracker gives every corrective and preventive action a clear owner, a firm deadline and a transparent audit trail — from the moment a finding is raised to the moment it is closed.
+            No more lost actions or endless email chains. EHSWatch Action Tracker gives every corrective and preventive action a clear owner, a firm deadline and a transparent audit trail - from the moment a finding is raised to the moment it is closed.
           </p>
 
           <p
@@ -601,7 +601,7 @@ export default function ActionTrackerPage() {
               In most organisations, corrective and preventive actions are managed across spreadsheets, email threads and verbal commitments. The result is predictable: actions stall, deadlines pass unnoticed, and the same incidents recur because root causes were never properly addressed.
             </p>
             <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.8] text-[#4b5563] text-pretty">
-              EHSWatch Action Tracker replaces that fragmentation with a single, connected workflow. Every action — regardless of where it originates — is assigned, tracked, escalated and closed through one system that everyone can see in real time.
+              EHSWatch Action Tracker replaces that fragmentation with a single, connected workflow. Every action - regardless of where it originates - is assigned, tracked, escalated and closed through one system that everyone can see in real time.
             </p>
             <ExploreLink href="/support" label="See Action Tracker in Action" />
           </div>
@@ -735,7 +735,7 @@ export default function ActionTrackerPage() {
             Ready to Close Actions Faster?
           </h2>
           <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.8] text-[#4b5563] max-w-[560px] text-pretty">
-            Request your free Action Tracker demo. See how EHSWatch transforms safety and compliance findings into closed, evidenced actions — across every site, every team, every time.
+            Request your free Action Tracker demo. See how EHSWatch transforms safety and compliance findings into closed, evidenced actions - across every site, every team, every time.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <CTAButton href="/support" label="Get Free Trial Access" variant="primary" />

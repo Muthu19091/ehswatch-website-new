@@ -62,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(origin),
-    title: "EHSWatch — From Manual Chaos to Smart Safety",
+    title: "EHSWatch - From Manual Chaos to Smart Safety",
     description: "AI-powered EHS platform to streamline reporting everywhere.",
     icons: {
       icon: faviconUrl

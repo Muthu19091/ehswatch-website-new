@@ -77,10 +77,10 @@ const MSGS: Msg[] = [
   { step:0, role:"user",
     text:"Oil spill in hallway, main building sector A, Hyderabad. No immediate actions taken." },
   { step:0, role:"iris", text:"Environmental incident pre-filled ✅",
-    bullets:["📍 Main Building, Sector A, Hyderabad","⚠️ Type: Environmental — Oil Spill","🔴 Severity: Medium  ·  Actions: None taken"] },
+    bullets:["📍 Main Building, Sector A, Hyderabad","⚠️ Type: Environmental - Oil Spill","🔴 Severity: Medium  ·  Actions: None taken"] },
   // Step 1 — Action Recommendation Engine
   { step:1, role:"user", text:"What should we do next?" },
-  { step:1, role:"iris", text:"Prioritised corrective actions — 47 similar incidents analysed:",
+  { step:1, role:"iris", text:"Prioritised corrective actions - 47 similar incidents analysed:",
     bullets:["🔴 Deploy absorbent mats & cordon off area now","🟡 Identify oil source; inspect adjacent machinery","🟢 Schedule deep clean & update MSDS register"] },
 
   // Step 2 — Root Cause Analysis
@@ -91,17 +91,17 @@ const MSGS: Msg[] = [
   // Step 3 — Event Similarity Detector
   { step:3, role:"user", text:"Have we seen anything like this before?" },
   { step:3, role:"iris", text:"🔍 3 similar clusters across 1,240 records:",
-    bullets:["Sector A — oil spill (2× in last 6 months)","Machine B-series failures — 4 events Q3–Q4","Overdue PM trend → emerging leading indicator ⚠️"] },
+    bullets:["Sector A - oil spill (2× in last 6 months)","Machine B-series failures - 4 events Q3–Q4","Overdue PM trend → emerging leading indicator ⚠️"] },
 
   // Step 4 — AI Insights Generator
   { step:4, role:"user", text:"Summarise this for my board report." },
-  { step:4, role:"iris", text:"Executive EHS summary — board-ready:",
+  { step:4, role:"iris", text:"Executive EHS summary - board-ready:",
     bullets:["3 spills linked to maintenance scheduling gap","Corrective actions 87% closed","17.5 hrs saved on reporting this month"] },
 
   // Step 5 — Image Recognition
   { step:5, role:"user", img:"warehouse", text:"Sending field photo…" },
   { step:5, role:"iris", text:"🤖 Image Analysis Complete:",
-    bullets:["⚠️ PPE violation — missing hard hat & hi-vis vest","📍 Location: Warehouse Bay 3","Supervisor Rajan M. alerted in real-time. Confirm to submit?"] },
+    bullets:["⚠️ PPE violation - missing hard hat & hi-vis vest","📍 Location: Warehouse Bay 3","Supervisor Rajan M. alerted in real-time. Confirm to submit?"] },
 ];
 
 // Voice-to-text typed string for step 0 only

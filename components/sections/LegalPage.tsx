@@ -17,7 +17,7 @@ export async function legalMetadata(slug: string, fallbackTitle: string): Promis
   return {
     ...seoExtras(attrs?.meta),
     robots: robotsFrom(attrs?.meta?.robots),
-    title: attrs?.meta?.meta_title || `${attrs?.title || fallbackTitle} — EHSWatch`,
+    title: attrs?.meta?.meta_title || `${attrs?.title || fallbackTitle} - EHSWatch`,
     description:
       attrs?.meta?.meta_description ||
       `${attrs?.title || fallbackTitle} for the EHSWatch platform and website.`,

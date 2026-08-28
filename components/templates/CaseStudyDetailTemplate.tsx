@@ -23,7 +23,7 @@ export async function caseStudyDetailMetadata(slug: string): Promise<Metadata> {
     description:
       meta?.meta_description ||
       study?.attributes.summary ||
-      `EHSWatch case study — ${slug.replace(/-/g, " ")}.`,
+      `EHSWatch case study - ${slug.replace(/-/g, " ")}.`,
   };
 }
 

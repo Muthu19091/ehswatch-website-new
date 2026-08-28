@@ -18,7 +18,7 @@ export async function irisMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "IRIS — AI-Powered EHSQ | EHSWatch",
+    title: meta?.meta_title || "IRIS - AI-Powered EHSQ | EHSWatch",
     description:
       meta?.meta_description ||
       "Meet IRIS, EHSWatch's Intelligent Risk & Insight System. Six AI capabilities embedded across your EHSQ workflows.",

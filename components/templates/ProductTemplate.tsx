@@ -24,10 +24,10 @@ export async function productMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "Product — EHSWatch",
+    title: meta?.meta_title || "Product - EHSWatch",
     description:
       meta?.meta_description ||
-      "One Platform. Every EHSQ Process. From field incidents to board-level dashboards — all connected, all in real time.",
+      "One Platform. Every EHSQ Process. From field incidents to board-level dashboards - all connected, all in real time.",
   };
 }
 

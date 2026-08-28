@@ -289,7 +289,7 @@ function UsersMockup() {
           ))}
         </div>
         <div className="mx-4 mb-4 bg-[#f0f5ff] rounded-xl px-5 py-2.5" style={{ opacity: 0, animation: "op-fade-up 0.4s ease-out 0.65s forwards" }}>
-          <p className="text-[#2e75f2] font-semibold text-[11px]">Unlimited seats — no extra charge</p>
+          <p className="text-[#2e75f2] font-semibold text-[11px]">Unlimited seats - no extra charge</p>
           <p className="text-[#5973a6] text-[9px] mt-0.5">Invite your whole team. Scale without limits.</p>
         </div>
       </div>
@@ -450,9 +450,9 @@ function UnifiedMockup() {
    TAB DATA
    ══════════════════════════════════════════════════════════════════ */
 const TABS = [
-  { number: "1.", label: "Compliance Reporting", title: "Stay Audit-Ready, Always",           desc: "Automatically generate compliance reports, track control effectiveness, and get ahead of regulatory deadlines — all from one centralised dashboard.", link: "See Compliance Tools", href: "/product" },
-  { number: "2.", label: "Mobile App",           title: "Safety in the Field, Offline-Ready", desc: "Your team can submit hazard reports, complete inspections, and log incidents directly from their phone — even without an internet connection.",         link: "Explore Mobile Features", href: "/product" },
-  { number: "3.", label: "Unlimited Users",      title: "Scale Without Extra Cost",           desc: "Add as many team members as you need — from field workers to executives — with role-based access and zero per-seat charges.",                         link: "See Pricing", href: "/pricing" },
+  { number: "1.", label: "Compliance Reporting", title: "Stay Audit-Ready, Always",           desc: "Automatically generate compliance reports, track control effectiveness, and get ahead of regulatory deadlines - all from one centralised dashboard.", link: "See Compliance Tools", href: "/product" },
+  { number: "2.", label: "Mobile App",           title: "Safety in the Field, Offline-Ready", desc: "Your team can submit hazard reports, complete inspections, and log incidents directly from their phone - even without an internet connection.",         link: "Explore Mobile Features", href: "/product" },
+  { number: "3.", label: "Unlimited Users",      title: "Scale Without Extra Cost",           desc: "Add as many team members as you need - from field workers to executives - with role-based access and zero per-seat charges.",                         link: "See Pricing", href: "/pricing" },
   { number: "4.", label: "Unified Platform",     title: "Everything in One Place",            desc: "From incident management to contractor safety, all your EHSQ modules share the same data, the same interface, and update in real-time.",               link: "View All Modules", href: "/product" },
 ];
 

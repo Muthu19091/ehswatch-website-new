@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots) ?? { index: false, follow: false },
-    title: meta?.meta_title || attrs?.title || "Page Not Found — EHSWatch",
+    title: meta?.meta_title || attrs?.title || "Page Not Found - EHSWatch",
     description:
       meta?.meta_description ||
       "The page you\u2019re looking for may have been moved or no longer exists.",

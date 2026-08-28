@@ -19,7 +19,7 @@ export async function contactMetadata(slug: string): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "Contact Us — EHSWatch",
+    title: meta?.meta_title || "Contact Us - EHSWatch",
     description:
       meta?.meta_description ||
       "Get in touch with the EHSWatch team for demos, onboarding support, or to find out how we can help your organisation.",

@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     ...seoExtras(meta),
     robots: robotsFrom(meta?.robots),
-    title: meta?.meta_title || "EHSWatch — From Manual Chaos to Smart Safety",
+    title: meta?.meta_title || "EHSWatch - From Manual Chaos to Smart Safety",
     description:
       meta?.meta_description ||
       "AI-powered EHS platform to streamline reporting everywhere.",

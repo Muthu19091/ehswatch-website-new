@@ -651,7 +651,7 @@ export default function PricingCalculator({
           </div>
           {/* Mobile: show only the current step's label (per-circle labels hidden) */}
           <p className="sm:hidden text-center font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold text-[#0a0f1e]">
-            Step {step + 1} of {stepLabels.length} — {stepLabels[step]}
+            Step {step + 1} of {stepLabels.length} - {stepLabels[step]}
           </p>
         </div>
 
