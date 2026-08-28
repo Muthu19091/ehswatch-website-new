@@ -6,6 +6,16 @@ import { mediaUrl } from "@/lib/blocks";
 import CTABanner from "@/components/sections/CTABanner";
 import type { CmsCaseStudy } from "@/lib/types";
 
+// Wrap tables so they scroll horizontally on narrow viewports instead of
+// overflowing the page (same pattern as BlogPost.tsx's normalizeBody).
+// Scoped to the case-study body -- see .cs-table-wrap CSS below.
+function wrapTables(html: string): string {
+  return html.replace(
+    /<table[\s\S]*?<\/table>/g,
+    (m: string) => `<div class="cs-table-wrap">${m}</div>`,
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Case-study inner-page template.
 //
@@ -57,7 +67,7 @@ export default function CaseStudyTemplate({
   const title = attrs.title || "";
   const clientName = attrs.client_name || "";
   const industry = attrs.industry || "";
-  const bodyHtml = attrs.body?.trim() ? attrs.body : "";
+  const bodyHtml = attrs.body?.trim() ? wrapTables(attrs.body) : "";
   const results = attrs.results?.length ? attrs.results : [];
   // Modules the customer used. New API sends product_modules_section.curated_ids
   // (resolved to name/slug in the page); legacy studies used attrs.applications.
@@ -90,6 +100,14 @@ export default function CaseStudyTemplate({
         .cs-body ul { margin: 1.1rem 0; padding-left: 1.2rem; list-style: disc; }
         .cs-body li { margin-top: 0.5rem; }
         .cs-body a { color: ${ACCENT}; text-decoration: underline; }
+        .cs-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
+        .cs-body th, .cs-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
+        .cs-body th { background: #f9fafb; font-weight: 600; color: #111827; }
+        /* Table scroll container (added by wrapTables). min-width keeps
+           columns readable on desktop; scrolls horizontally below ~560px
+           instead of overflowing the viewport or getting clipped. */
+        .cs-body .cs-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
+        .cs-body .cs-table-wrap table { margin: 0; width: 100%; min-width: 560px; }
         .cs-grid {
           background-image:
             linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),
