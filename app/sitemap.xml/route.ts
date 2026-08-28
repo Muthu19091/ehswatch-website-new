@@ -6,7 +6,10 @@ import { getSettings, getBlogPosts, getCaseStudies, getProductModules } from "@/
 // empty.
 export const dynamic = "force-dynamic";
 
-const CMS_ORIGIN = "http://stage.odigma.ooo/ehswatch-cms";
+// Derived from the same CMS_API_SSR_BASE env var lib/api.ts already reads,
+// stripped of its /api/v1 suffix — single source of truth for the CMS's
+// internal (SSR) base URL, same fallback as lib/api.ts for stage.
+const CMS_ORIGIN = (process.env.CMS_API_SSR_BASE || "http://stage.odigma.ooo/ehswatch-cms/api/v1").replace(/\/api\/v1\/?$/, "");
 
 const STATIC_ROUTES = [
   "", "/about", "/product", "/iris", "/industries", "/pricing",

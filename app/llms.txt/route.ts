@@ -5,21 +5,29 @@ import { getSettings } from "@/lib/api";
 // empty.
 export const dynamic = "force-dynamic";
 
-const FALLBACK = `# EHSWatch
-
-> EHSWatch is an AI-powered EHSQ (Environment, Health, Safety & Quality) management platform that helps industrial and enterprise teams move from manual, paper-based safety processes to real-time, intelligent compliance and risk management.
-
-## Key pages
-- Home: https://stage.odigma.ooo/ehswatch-stage/
-- Product: https://stage.odigma.ooo/ehswatch-stage/product/
-- Pricing: https://stage.odigma.ooo/ehswatch-stage/pricing/
-- Sitemap: https://stage.odigma.ooo/ehswatch-stage/sitemap.xml`;
+const DEFAULT_SITE_URL = "https://stage.odigma.ooo/ehswatch-stage";
 
 export async function GET(): Promise<Response> {
   const settingsRes = await getSettings().catch(() => null);
   const settings = (settingsRes?.data ?? null) as Record<string, unknown> | null;
-  const seo = (settings?.seo ?? null) as { llms_txt?: string } | null;
+  const seo = (settings?.seo ?? null) as { llms_txt?: string; canonical_base_url?: string } | null;
 
-  const body = (seo?.llms_txt?.trim() || FALLBACK) + "\n";
-  return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+  if (seo?.llms_txt?.trim()) {
+    return new Response(seo.llms_txt.trim() + "\n", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+  }
+
+  // Same canonical_base_url Settings → SEO field sitemap.xml uses — single
+  // source of truth for the frontend's own domain, no per-file hardcoding.
+  const siteUrl = (seo?.canonical_base_url || DEFAULT_SITE_URL).replace(/\/+$/, "");
+  const fallback = `# EHSWatch
+
+> EHSWatch is an AI-powered EHSQ (Environment, Health, Safety & Quality) management platform that helps industrial and enterprise teams move from manual, paper-based safety processes to real-time, intelligent compliance and risk management.
+
+## Key pages
+- Home: ${siteUrl}/
+- Product: ${siteUrl}/product/
+- Pricing: ${siteUrl}/pricing/
+- Sitemap: ${siteUrl}/sitemap.xml
+`;
+  return new Response(fallback, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }
