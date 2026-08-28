@@ -4,6 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { stripHtml } from "@/lib/text";
 
 
+// Browser-facing CMS origin, stripped of the /api/v1 suffix — same
+// NEXT_PUBLIC_CMS_API_BASE env var lib/api.ts's PUBLIC_BASE reads, so a
+// relative storage path resolves against the real CMS in every
+// environment instead of a hardcoded stage domain.
+const CMS_ORIGIN = (process.env.NEXT_PUBLIC_CMS_API_BASE || "https://stage.odigma.ooo/ehswatch-cms/api/v1").replace(/\/api\/v1\/?$/, "");
+
 function resolveVideoUrl(video: unknown): string | null {
   // CMS sends video either as a media object ({url}) or a plain URL string.
   let v: string | null = null;
@@ -12,7 +18,7 @@ function resolveVideoUrl(video: unknown): string | null {
     v = (video as { url?: string | null }).url ?? null;
   }
   if (!v) return null;
-  if (v.startsWith("/")) return `https://stage.odigma.ooo${v}`;
+  if (v.startsWith("/")) return `${CMS_ORIGIN}${v}`;
   return v;
 }
 
