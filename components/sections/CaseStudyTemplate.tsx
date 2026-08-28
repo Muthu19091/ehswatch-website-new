@@ -252,15 +252,15 @@ export default function CaseStudyTemplate({
                     {applicationsHeading}
                   </h2>
                 )}
-                <div className="flex flex-wrap gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {applications.map((app) => (
                     <Link
                       key={app.slug}
                       href={`/modules/${app.slug}`}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl no-underline transition-colors hover:border-[#059669]"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl no-underline transition-colors hover:border-[#059669]"
                       style={{ border: "1px solid #e5e7eb", background: "#f9fafb", color: "#0a0f1e" }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: ACCENT }} />
                       <span className="font-[family-name:var(--font-dm-sans)] font-medium text-[14px]">{app.name}</span>
                     </Link>
                   ))}
