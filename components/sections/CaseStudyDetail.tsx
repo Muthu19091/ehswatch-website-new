@@ -6,6 +6,16 @@ import Link from "next/link";
 import { basePath } from "@/lib/basePath";
 import type { CmsCaseStudy } from "@/lib/types";
 
+// Wrap tables so they scroll horizontally on narrow viewports instead of
+// overflowing the page (same pattern as BlogPost.tsx's normalizeBody).
+// Scoped to the case-study body — see .cs-table-wrap CSS below.
+function wrapTables(html: string): string {
+  return html.replace(
+    /<table[\s\S]*?<\/table>/g,
+    (m: string) => `<div class="cs-table-wrap">${m}</div>`,
+  );
+}
+
 // ─── Placeholder data ─────────────────────────────────────────────────────────
 
 const FALLBACK: CmsCaseStudy["attributes"] = {
@@ -82,6 +92,14 @@ export default function CaseStudyDetail({
         .cs-body ul { list-style: disc; }
         .cs-body ol { list-style: decimal; }
         .cs-body li { margin: 0.4rem 0; }
+        .cs-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
+        .cs-body th, .cs-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
+        .cs-body th { background: #f9fafb; font-weight: 600; color: #111827; }
+        /* Table scroll container (added by wrapTables). min-width keeps
+           columns readable on desktop; scrolls horizontally below ~560px
+           instead of overflowing the viewport or getting clipped. */
+        .cs-body .cs-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
+        .cs-body .cs-table-wrap table { margin: 0; width: 100%; min-width: 560px; }
         .cs-grid {
           background-image:
             linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),
@@ -195,7 +213,7 @@ export default function CaseStudyDetail({
             {attrs.body ? (
               <div
                 className="cs-body prose prose-lg max-w-none font-[family-name:var(--font-dm-sans)] text-[16px] sm:text-[17px] leading-[1.85] text-[#374151]"
-                dangerouslySetInnerHTML={{ __html: attrs.body }}
+                dangerouslySetInnerHTML={{ __html: wrapTables(attrs.body) }}
               />
             ) : (
               <div className="cs-body">
