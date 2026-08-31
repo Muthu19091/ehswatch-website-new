@@ -12,7 +12,18 @@ import type { CmsCaseStudy } from "@/lib/types";
 function wrapTables(html: string): string {
   return html.replace(
     /<table[\s\S]*?<\/table>/g,
-    (m: string) => `<div class="cs-table-wrap">${m}</div>`,
+    (m: string) => {
+      // CKEditor's <colgroup><col style="width:25%" width="155"> makes the
+      // inline CSS percentage win over the pixel attribute (and over any
+      // !important stylesheet rule targeting <col> -- table column sizing
+      // doesn't reliably respect that the way a normal element would).
+      // Stripping the colgroup entirely removes the only thing forcing
+      // columns to proportionally shrink instead of the table growing
+      // past its container, which is what actually needs to happen for
+      // the scroll wrapper below to do anything.
+      const withoutColgroup = m.replace(/<colgroup>[\s\S]*?<\/colgroup>/g, "");
+      return `<div class="cs-table-wrap">${withoutColgroup}</div>`;
+    },
   );
 }
 
@@ -103,11 +114,17 @@ export default function CaseStudyTemplate({
         .cs-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
         .cs-body th, .cs-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
         .cs-body th { background: #f9fafb; font-weight: 600; color: #111827; }
-        /* Table scroll container (added by wrapTables). min-width keeps
-           columns readable on desktop; scrolls horizontally below ~560px
-           instead of overflowing the viewport or getting clipped. */
+        /* Table scroll container (added by wrapTables). CKEditor exports a
+           <colgroup><col style="width:25%" width="155"> per column -- the
+           inline CSS percentage beats the pixel attribute, so columns just
+           shrink-and-wrap-text to fit instead of the table growing wider
+           than its container. Force auto column sizing + a real per-cell
+           min-width so the table actually needs to scroll on narrow
+           viewports rather than squeezing every column down to fit. */
         .cs-body .cs-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
-        .cs-body .cs-table-wrap table { margin: 0; width: 100%; min-width: 560px; }
+        .cs-body .cs-table-wrap table { margin: 0; width: auto; }
+        .cs-body .cs-table-wrap col { width: auto !important; }
+        .cs-body .cs-table-wrap th, .cs-body .cs-table-wrap td { min-width: 150px; }
         .cs-grid {
           background-image:
             linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),

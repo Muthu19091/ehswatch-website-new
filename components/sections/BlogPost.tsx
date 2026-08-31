@@ -35,9 +35,17 @@ function normalizeBody(html: string): string {
     )
     // Wrap tables so they scroll horizontally on narrow viewports instead of
     // overflowing the page. Scoped to the blog body — see .blog-table-wrap CSS.
+    // CKEditor's <colgroup><col style="width:25%" width="155"> makes columns
+    // proportionally shrink to fit instead of the table growing past its
+    // container -- table column sizing doesn't reliably respect an
+    // !important stylesheet override the way a normal element would, so
+    // strip the colgroup entirely rather than fight it with CSS.
     .replace(
       /<table[\s\S]*?<\/table>/g,
-      (m: string) => `<div class="blog-table-wrap">${m}</div>`,
+      (m: string) => {
+        const withoutColgroup = m.replace(/<colgroup>[\s\S]*?<\/colgroup>/g, "");
+        return `<div class="blog-table-wrap">${withoutColgroup}</div>`;
+      },
     );
 }
 
@@ -97,9 +105,16 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs, listingSlug = "blog"
         /* Table scroll container (added by normalizeBody). Owns the vertical
            spacing so tables clear the following heading, and lets wide tables
            scroll horizontally on mobile instead of overflowing the viewport.
-           min-width keeps columns readable: full-width on desktop, scroll below ~560px. */
+           CKEditor-authored tables export a <colgroup><col style="width:25%"
+           width="155"> per column -- the inline CSS percentage beats the
+           pixel attribute, so columns would just shrink-and-wrap-text to fit
+           instead of the table growing wider than its container. Force auto
+           column sizing + a real per-cell min-width so any CKEditor table
+           scrolls the same way the older Word-paste tables already do. */
         .blog-body .blog-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
-        .blog-body .blog-table-wrap table { margin: 0; width: 100%; min-width: 560px; }
+        .blog-body .blog-table-wrap table { margin: 0; width: auto; }
+        .blog-body .blog-table-wrap col { width: auto !important; }
+        .blog-body .blog-table-wrap th, .blog-body .blog-table-wrap td { min-width: 150px; }
         .blog-divider {
           display: flex;
           align-items: center;
