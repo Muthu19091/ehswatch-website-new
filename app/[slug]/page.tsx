@@ -12,8 +12,18 @@ import { TEMPLATE_COMPONENTS, TEMPLATE_METADATA } from "@/components/templates/r
 // render through the generic LegalPage. Unknown slugs 404.
 export const dynamic = "force-dynamic";
 
+// The CMS "404" page record exists purely as a content SOURCE for
+// not-found.tsx's own hero + CTA-banner rendering (see its own getPage("404")
+// call) -- it's not meant to be a real, directly-navigable page. Without this
+// guard, visiting /404 directly matched this catch-all, rendered the same
+// content through the generic LegalPage template instead (no hero styling,
+// no CTA banner), and returned a real 200 status instead of a genuine 404 --
+// wrong for SEO and semantically wrong for a URL literally named "404".
+const RESERVED_SLUGS = ["404"];
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (RESERVED_SLUGS.includes(slug)) notFound();
   const res = await getPage(slug).catch(() => null);
   const template = (res?.data as { attributes?: { template?: string } } | null)?.attributes?.template;
   const metaFn = template ? TEMPLATE_METADATA[template] : undefined;
@@ -23,6 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CatchAllPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (RESERVED_SLUGS.includes(slug)) notFound();
   const res = await getPage(slug).catch(() => null);
   if (!res?.data?.attributes) notFound();
   redirectIfMoved(slug, res);
