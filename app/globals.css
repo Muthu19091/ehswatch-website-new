@@ -297,6 +297,33 @@ html.gt-cloak body { visibility: hidden !important; }
 .blog-body table td span,
 .blog-body table th p { margin: 0 !important; }
 
+/* Case-study body tables — same treatment as the blog tables above (the
+   CMS-pasted/CKEditor inline styling gets replaced with clean borders + a
+   bold header row here rather than relying on a content author having
+   manually bolded their header text). The scroll wrapper (.cs-table-wrap)
+   and column sizing are handled in CaseStudyTemplate.tsx; this file just
+   owns the visual replacement of the pasted inline styling, same division
+   of responsibility as .blog-body above. */
+.cs-body table { border-collapse: collapse !important; font-size: 0.95rem; line-height: 1.55; }
+.cs-body table td,
+.cs-body table th {
+  border: 1px solid #e5e7eb !important;
+  padding: 0.7rem 1rem !important;
+  text-align: left;
+  vertical-align: top;
+  white-space: normal !important;
+  color: #374151;
+}
+.cs-body table tr:first-child td,
+.cs-body table th {
+  background: #f8fafc !important;
+  font-weight: 700;
+  color: #0a0f1e;
+}
+.cs-body table td p,
+.cs-body table td span,
+.cs-body table th p { margin: 0 !important; }
+
 /* ── RTL blog fixes ──────────────────────────────────────────────────────── */
 /* BUG-034: blog article lists use physical padding-left for the bullet gutter,
    so under RTL the markers sit on the right with no buffer and touch the edge.
@@ -312,6 +339,10 @@ html[dir="rtl"] .blog-body ol {
    right-aligned prose around it. Force cell content to the start (right) side in
    RTL — !important beats the non-important inline. LTR/English is untouched. */
 html[dir="rtl"] .blog-body table :is(td, th, p, span) {
+  text-align: right !important;
+}
+/* Same fix, case-study tables — see the .blog-body rule above. */
+html[dir="rtl"] .cs-body table :is(td, th, p, span) {
   text-align: right !important;
 }
 /* BUG-035: the numbered pager keeps its chevron SVGs pointing the LTR way, so in

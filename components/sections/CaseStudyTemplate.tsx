@@ -103,6 +103,14 @@ export default function CaseStudyTemplate({
   return (
     <>
       <style>{`
+        /* CKEditor/Word-paste content carries inline font-family (e.g.
+           "Helvetica Neue", "Aptos") and color on individual <p>/<span>
+           elements -- inline styles beat a non-!important class regardless
+           of specificity, so the intended DM Sans body font (set on the
+           .cs-body container itself) got silently overridden per-element.
+           Force it back on every descendant with !important. */
+        .cs-body :is(p, span, li, div, strong, em, a) { font-family: var(--font-dm-sans), sans-serif !important; }
+        .cs-body :is(p, span, li, div, strong, em) { color: #374151 !important; }
         .cs-body h2 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.5rem; color: #0a0f1e; margin: 2.4rem 0 0.9rem; letter-spacing: -0.02em; }
         .cs-body h3 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.2rem; color: #0a0f1e; margin: 2rem 0 0.7rem; letter-spacing: -0.01em; }
         .cs-body h4 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.05rem; color: #0a0f1e; margin: 1.7rem 0 0.6rem; }
@@ -122,9 +130,13 @@ export default function CaseStudyTemplate({
            min-width so the table actually needs to scroll on narrow
            viewports rather than squeezing every column down to fit. */
         .cs-body .cs-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
-        .cs-body .cs-table-wrap table { margin: 0; width: auto; }
+        /* table-layout: fixed (matching BlogPost.tsx's already-proven-working
+           tables) -- an auto-layout table inside an overflow:auto container
+           doesn't reliably trigger scrolling the way a fixed-layout one does;
+           width/min-width on cells become authoritative once layout is fixed. */
+        .cs-body .cs-table-wrap table { margin: 0; width: auto; table-layout: fixed; }
         .cs-body .cs-table-wrap col { width: auto !important; }
-        .cs-body .cs-table-wrap th, .cs-body .cs-table-wrap td { min-width: 150px; }
+        .cs-body .cs-table-wrap th, .cs-body .cs-table-wrap td { min-width: 150px; width: 150px; }
         .cs-grid {
           background-image:
             linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),

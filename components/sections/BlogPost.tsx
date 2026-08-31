@@ -86,6 +86,14 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs, listingSlug = "blog"
   return (
     <>
       <style>{`
+        /* CKEditor/Word-paste content carries inline font-family (e.g.
+           "Helvetica Neue", "Aptos") and color on individual <p>/<span>
+           elements -- inline styles beat a non-!important class regardless
+           of specificity, so the intended DM Sans body font (set on the
+           .blog-body container itself) can get silently overridden
+           per-element. Force it back on every descendant with !important. */
+        .blog-body :is(p, span, li, div, strong, em, a) { font-family: var(--font-dm-sans), sans-serif !important; }
+        .blog-body :is(p, span, li, div, strong, em) { color: #1f2937 !important; }
         .blog-body p + p { margin-top: 1.6rem; }
         .blog-body h2 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.5rem; color: #0a0f1e; margin: 2.4rem 0 0.9rem; letter-spacing: -0.02em; line-height: 1.3; }
         .blog-body h3 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.2rem; color: #0a0f1e; margin: 2rem 0 0.7rem; line-height: 1.3; }
@@ -112,9 +120,16 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs, listingSlug = "blog"
            column sizing + a real per-cell min-width so any CKEditor table
            scrolls the same way the older Word-paste tables already do. */
         .blog-body .blog-table-wrap { overflow-x: auto; margin: 1.4rem 0 2.5rem; -webkit-overflow-scrolling: touch; }
-        .blog-body .blog-table-wrap table { margin: 0; width: auto; }
+        .blog-body .blog-table-wrap table { margin: 0; width: auto; table-layout: fixed; }
         .blog-body .blog-table-wrap col { width: auto !important; }
-        .blog-body .blog-table-wrap th, .blog-body .blog-table-wrap td { min-width: 150px; }
+        /* width (not just min-width) matters for a fixed-layout table with
+           no inline per-cell width (a new CKEditor table, colgroup already
+           stripped) -- table-layout: fixed divides available width equally
+           among columns unless each one is given an explicit width, which
+           would just shrink to fit the container again. The old Word-paste
+           tables already carry their own inline width per <td> (e.g. 208px)
+           which wins over this external rule regardless. */
+        .blog-body .blog-table-wrap th, .blog-body .blog-table-wrap td { min-width: 150px; width: 150px; }
         .blog-divider {
           display: flex;
           align-items: center;
