@@ -115,8 +115,10 @@ export default async function Footer() {
 
   // Real module detail links, straight from the product-modules collection,
   // so the footer Modules column always points at /modules/<slug>.
+  // Defensive: a null/malformed entry from the API must never crash the
+  // footer, which renders on every page — skip it instead.
   const moduleLinks = (modulesRes?.data ?? [])
-    .filter((m) => m.attributes.status === "active")
+    .filter((m) => m?.attributes?.status === "active" && m.attributes.name && m.attributes.slug)
     .map((m) => ({ label: m.attributes.name.trim(), url: `/modules/${m.attributes.slug}` }));
 
   // Footer's own CMS logo first, else the Site Settings brand footer logo
