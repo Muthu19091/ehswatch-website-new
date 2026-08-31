@@ -324,6 +324,14 @@ html.gt-cloak body { visibility: hidden !important; }
 .cs-body table td span,
 .cs-body table th p { margin: 0 !important; }
 
+/* CKEditor wraps every table in <figure class="table">. That class name
+   collides with Tailwind's own ".table { display: table }" utility, so the
+   figure itself computes display:table and shrink-wraps to the table's full
+   content width instead of respecting its block container -- the table then
+   pushes the whole PAGE into horizontal scroll instead of just scrolling
+   inside .cs-table-wrap as intended. Force it back to a normal block box. */
+.cs-body figure.table, .blog-body figure.table { display: block; max-width: 100%; margin: 0; }
+
 /* ── RTL blog fixes ──────────────────────────────────────────────────────── */
 /* BUG-034: blog article lists use physical padding-left for the bullet gutter,
    so under RTL the markers sit on the right with no buffer and touch the edge.

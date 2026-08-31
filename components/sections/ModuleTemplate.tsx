@@ -2,6 +2,7 @@
 
 import { unescapeTypedTags, keepBrandsEnglish, escapeHtmlText } from "@/lib/text";
 import { useState, useEffect } from "react";
+import { useMarqueeDuration } from "@/hooks/useMarqueeDuration";
 import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
 import HeroDotBackground from "@/components/ui/HeroDotBackground";
@@ -283,6 +284,7 @@ export default function ModuleTemplate({
   // would split the headline into two fragments that get translated
   // independently — producing wrong word order (FE QA #17). In Arabic we render
   // the headline as one text node so the whole sentence translates coherently.
+  const { trackRef: clientStripTrackRef, durationSeconds: clientStripDuration } = useMarqueeDuration(3);
   const [isArabic, setIsArabic] = useState(false);
   useEffect(() => {
     const check = () => setIsArabic(
@@ -564,7 +566,11 @@ export default function ModuleTemplate({
                 WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)",
               }}
             >
-              <div className="flex gap-10 md:gap-[56px] items-center animate-marquee-slow whitespace-nowrap w-max">
+              <div
+                ref={clientStripTrackRef}
+                className="flex gap-10 md:gap-[56px] items-center animate-marquee-slow whitespace-nowrap w-max"
+                style={clientStripDuration ? { animationDuration: `${clientStripDuration}s` } : undefined}
+              >
                 {[...clientStrip.logos, ...clientStrip.logos, ...clientStrip.logos].map((logo, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img

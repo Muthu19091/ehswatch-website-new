@@ -4,6 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 import Image from "next/image";
 import type { CmsClientLogo } from "@/lib/types";
 import { mediaUrl } from "@/lib/blocks";
+import { useMarqueeDuration } from "@/hooks/useMarqueeDuration";
 
 export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsClientLogo[]; cmsHeading?: string }) {
   // CMS-only: no hardcoded logos/heading. Hide the section when the CMS has no logos.
@@ -15,6 +16,10 @@ export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsC
   const CLIENT_LOGOS = (cmsLogos ?? [])
     .map((l) => ({ src: mediaUrl(l?.attributes?.logo), alt: l?.attributes?.name ?? "" }))
     .filter((l): l is { src: string; alt: string } => Boolean(l.src));
+  // Hooks must run unconditionally on every render -- call this BEFORE the
+  // early return below, even though its result goes unused when there are
+  // no logos to show.
+  const { trackRef, durationSeconds } = useMarqueeDuration(3);
   if (CLIENT_LOGOS.length === 0) return null;
   const TRACK = [...CLIENT_LOGOS, ...CLIENT_LOGOS, ...CLIENT_LOGOS];
   return (
@@ -41,7 +46,11 @@ export default function TrustedLogos({ cmsLogos, cmsHeading }: { cmsLogos?: CmsC
               "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
           }}
         >
-          <div className="flex gap-10 md:gap-[56px] items-center animate-marquee-slow whitespace-nowrap w-max">
+          <div
+            ref={trackRef}
+            className="flex gap-10 md:gap-[56px] items-center animate-marquee-slow whitespace-nowrap w-max"
+            style={durationSeconds ? { animationDuration: `${durationSeconds}s` } : undefined}
+          >
             {TRACK.map((logo, i) => (
               <div
                 key={`${logo.alt}-${i}`}
