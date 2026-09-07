@@ -66,6 +66,15 @@ export default async function PreviewPage({
     body = <PreviewError message="This preview link is missing its access token. Generate a fresh link from the CMS edit page." />;
   } else if (type === "blog-post") {
     const res = await getPreview<CmsBlogPost>(type, slug, token, exp);
+    // A draft has no published_at yet -- BlogPost deliberately shows
+    // nothing rather than guess a date (see its own comment on why it
+    // can't safely read the live clock itself, being a client
+    // component). This server component renders once per request, so
+    // computing "now" here is safe and stable: a draft preview shows
+    // the date it would publish as right now.
+    if (res?.data && !res.data.attributes.published_at) {
+      res.data.attributes.published_at = new Date().toISOString();
+    }
     body = res?.data ? (
       <BlogPost slug={slug} cmsPost={res.data} />
     ) : (

@@ -75,7 +75,19 @@ export default function BlogPost({ slug, cmsPost, cmsSlugs, listingSlug = "blog"
     slug,
     category: cmsPost.attributes.category ?? "",
     title: cmsPost.attributes.title,
-    date: new Date(cmsPost.attributes.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
+    // A draft preview (see app/preview/[type]/[slug]/page.tsx) can have
+    // no published_at yet -- new Date(null) silently evaluates to the
+    // Unix epoch, showing "1 January 1970" instead of a sane date.
+    // Deliberately NOT falling back to Date.now()/new Date() here: this
+    // is a client component, and reading the live clock during render
+    // is an impure call that can produce a different value on the
+    // server-render pass vs. client hydration (React hydration
+    // mismatch) -- the preview page (a server component, one render per
+    // request) is the safe place to compute "now" once and pass it
+    // down; this component just needs to never show a wrong date.
+    date: cmsPost.attributes.published_at
+      ? new Date(cmsPost.attributes.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      : "",
     readTime: `${cmsPost.attributes.read_time_minutes} min read`,
     author: cmsPost.attributes.author?.name ?? "",
     authorRole: "",
