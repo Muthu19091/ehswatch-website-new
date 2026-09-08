@@ -12,8 +12,8 @@ import { richHtml } from "@/lib/text";
 // env var never silently falls back to stage. SSR uses an internal
 // (http/localhost) URL to skip the public/Cloudflare hop when set; the
 // browser uses the public HTTPS one.
-const SSR_BASE    = process.env.CMS_API_SSR_BASE       || "https://cms.ehswatch.com/api/v1";
-const PUBLIC_BASE = process.env.NEXT_PUBLIC_CMS_API_BASE || "https://cms.ehswatch.com/api/v1";
+const SSR_BASE    = process.env.CMS_API_SSR_BASE       || "https://cmsapi.ehswatch.com/api/v1";
+const PUBLIC_BASE = process.env.NEXT_PUBLIC_CMS_API_BASE || "https://cmsapi.ehswatch.com/api/v1";
 
 function makeClient(baseURL: string): AxiosInstance {
   return axios.create({

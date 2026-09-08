@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // Derived from the same CMS_API_SSR_BASE env var lib/api.ts already reads,
 // stripped of its /api/v1 suffix — single source of truth for the CMS's
 // internal (SSR) base URL, same fallback as lib/api.ts for stage.
-const CMS_ORIGIN = (process.env.CMS_API_SSR_BASE || "https://cms.ehswatch.com/api/v1").replace(/\/api\/v1\/?$/, "");
+const CMS_ORIGIN = (process.env.CMS_API_SSR_BASE || "https://cmsapi.ehswatch.com/api/v1").replace(/\/api\/v1\/?$/, "");
 
 const STATIC_ROUTES = [
   "", "/about", "/product", "/iris", "/industries", "/pricing",
