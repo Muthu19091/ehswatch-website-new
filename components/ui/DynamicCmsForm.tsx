@@ -76,11 +76,16 @@ function FieldWidget({
   variant,
   error,
   pickerCatalogues,
+  onClear,
 }: {
   field: CmsFormField;
   variant: FormVariant;
   error?: string;
   pickerCatalogues?: Record<string, Array<{ slug: string; name: string }>>;
+  /** PhoneInput's real (named) field is a hidden input whose value changes
+   *  via React state, not a user-driven DOM event -- the form's delegated
+   *  onChange never sees it, so it needs this direct callback instead. */
+  onClear?: () => void;
 }) {
   const { inputBase, wrapBase, wrapError, labelClass, showLabel } = STYLES[variant];
   const wrapClass = error ? wrapError : wrapBase;
@@ -225,6 +230,7 @@ function FieldWidget({
             required={field.required}
             placeholder={placeholder}
             variant={variant}
+            onValue={onClear}
           />
         </div>
         {helpText}
@@ -629,6 +635,7 @@ export default function DynamicCmsForm({
               field={field}
               variant={variant}
               error={errors[field.key]}
+              onClear={() => clearError(field.key)}
               pickerCatalogues={formAttrs.picker_catalogues}
             />
           </div>
@@ -636,8 +643,32 @@ export default function DynamicCmsForm({
     </div>
   );
 
+  // Errors are only ever SET at a validation checkpoint (Next / Submit) --
+  // nothing previously cleared one as the user actually fixed the field, so
+  // "X is required" sat there under a now-valid value until the next full
+  // validation pass.
+  const clearError = (name: string) => {
+    if (!errors[name]) return;
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
+  };
+
+  // Delegated (one listener) rather than per-field, since fields render
+  // across several different type-specific branches. Covers every native
+  // named input (text/email/textarea/select/checkbox/radio) via bubbling --
+  // PhoneInput is the one exception, wired separately via onClear below,
+  // since its real (named) field is a hidden input that changes via React
+  // state rather than a user-driven DOM event.
+  const clearFieldError = (e: React.ChangeEvent<HTMLFormElement>) => {
+    const name = (e.target as unknown as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).name;
+    if (name) clearError(name);
+  };
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className={`flex flex-col ${gapClass}`}>
+    <form ref={formRef} onSubmit={handleSubmit} onChange={clearFieldError} noValidate className={`flex flex-col ${gapClass}`}>
       {steps ? (
         <>
           {/* Step indicator */}
