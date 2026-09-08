@@ -53,6 +53,8 @@ const EN_TO_AR: Record<string, string> = {
   "Case Studies": "دراسات",
   "Blogs": "مقالات",
   "Support": "الدعم",
+  "Industries": "الصناعات",
+  "Contact Us": "اتصل بنا",
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
