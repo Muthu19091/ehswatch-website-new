@@ -82,6 +82,11 @@ export default async function PreviewPage({
     );
   } else if (type === "case-study") {
     const res = await getPreview<CmsCaseStudy>(type, slug, token, exp);
+    // Same "1 January 1970" bug as blog-post above, same fix -- see that
+    // branch's comment for why patching published_at here is safe.
+    if (res?.data && !res.data.attributes.published_at) {
+      res.data.attributes.published_at = new Date().toISOString();
+    }
     body = res?.data ? (
       <CaseStudyTemplate slug={slug} cmsStudy={res.data} />
     ) : (
