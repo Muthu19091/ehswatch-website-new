@@ -1,4 +1,13 @@
-name: Deploy to Stage
+name: Deploy to ehswatch.com
+
+# Pushing a fix to `stage` used to mean "it exists on GitHub" -- getting it
+# actually running on the server was a separate, easy-to-forget manual SSH
+# step. This closes that gap: every push here builds and deploys itself.
+#
+# Targets the live server directly (git pull + npm run build + pm2 restart,
+# same steps already verified working by hand) -- no tarball/standalone
+# swap, since this app runs from a plain `next start` on a git checkout,
+# not a `output: standalone` build.
 
 on:
   push:
@@ -6,61 +15,28 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-stage
+  group: deploy-ehswatch
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-        env:
-          NODE_ENV: production
-
-      - name: Bundle static assets into standalone
-        run: |
-          cp -r .next/static .next/standalone/.next/static
-          cp -r public .next/standalone/public
-
-      - name: Archive build
-        run: tar -czf build.tar.gz -C .next/standalone .
-
-      - name: Upload to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: build.tar.gz
-          target: /tmp/
-
-      - name: Swap and restart
+      - name: Pull, build, and restart on the server
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 10m
           script: |
             set -e
-            rm -rf /var/www/html/stage.odigma.ooo/ehswatch-next-new
-            mkdir -p /var/www/html/stage.odigma.ooo/ehswatch-next-new
-            tar -xzf /tmp/build.tar.gz -C /var/www/html/stage.odigma.ooo/ehswatch-next-new
-            rm /tmp/build.tar.gz
-            rm -rf /var/www/html/stage.odigma.ooo/ehswatch-next-old
-            mv /var/www/html/stage.odigma.ooo/ehswatch-next                /var/www/html/stage.odigma.ooo/ehswatch-next-old
-            mv /var/www/html/stage.odigma.ooo/ehswatch-next-new                /var/www/html/stage.odigma.ooo/ehswatch-next
-            pm2 restart ehswatch-stage --update-env
-            rm -rf /var/www/html/stage.odigma.ooo/ehswatch-next-old
+            cd /var/www/ehswatch/ehswatch-website
+            git fetch origin stage
+            git reset --hard origin/stage
+            npm ci
+            npm run build
+            pm2 restart ehs-website
