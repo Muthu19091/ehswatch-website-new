@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const CMS_BASE = process.env.CMS_API_SSR_BASE || "http://stage.odigma.ooo/ehswatch-cms/api/v1";
+const CMS_BASE = process.env.CMS_API_SSR_BASE || "https://cms.ehswatch.com/api/v1";
 
 /**
  * Bespoke-page previews keep their tokenised URL.

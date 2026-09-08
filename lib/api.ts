@@ -8,11 +8,12 @@ import { richHtml } from "@/lib/text";
 
 // ─── Axios instances ──────────────────────────────────────────────────────────
 
-// Base URLs are env-driven for prod; the stage values are the fallback so
-// existing stage builds are unchanged. SSR uses an internal (http/localhost)
-// URL to skip the public/Cloudflare hop; the browser uses the public HTTPS one.
-const SSR_BASE    = process.env.CMS_API_SSR_BASE       || "http://stage.odigma.ooo/ehswatch-cms/api/v1";
-const PUBLIC_BASE = process.env.NEXT_PUBLIC_CMS_API_BASE || "https://stage.odigma.ooo/ehswatch-cms/api/v1";
+// Base URLs are env-driven; the production CMS is the fallback so a missing
+// env var never silently falls back to stage. SSR uses an internal
+// (http/localhost) URL to skip the public/Cloudflare hop when set; the
+// browser uses the public HTTPS one.
+const SSR_BASE    = process.env.CMS_API_SSR_BASE       || "https://cms.ehswatch.com/api/v1";
+const PUBLIC_BASE = process.env.NEXT_PUBLIC_CMS_API_BASE || "https://cms.ehswatch.com/api/v1";
 
 function makeClient(baseURL: string): AxiosInstance {
   return axios.create({

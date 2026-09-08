@@ -20,7 +20,7 @@ export async function GET(): Promise<Response> {
   const custom = seo?.robots_txt?.trim();
   if (custom) return plain(custom);
 
-  const siteUrl = (seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  const siteUrl = (seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
   const isStaging = /stage|preview|localhost|127\.0\.0\.1/i.test(siteUrl);
   return plain(
     isStaging

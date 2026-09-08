@@ -8,7 +8,7 @@ import { stripHtml } from "@/lib/text";
 // NEXT_PUBLIC_CMS_API_BASE env var lib/api.ts's PUBLIC_BASE reads, so a
 // relative storage path resolves against the real CMS in every
 // environment instead of a hardcoded stage domain.
-const CMS_ORIGIN = (process.env.NEXT_PUBLIC_CMS_API_BASE || "https://stage.odigma.ooo/ehswatch-cms/api/v1").replace(/\/api\/v1\/?$/, "");
+const CMS_ORIGIN = (process.env.NEXT_PUBLIC_CMS_API_BASE || "https://cms.ehswatch.com/api/v1").replace(/\/api\/v1\/?$/, "");
 
 function resolveVideoUrl(video: unknown): string | null {
   // CMS sends video either as a media object ({url}) or a plain URL string.

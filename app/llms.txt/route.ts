@@ -5,7 +5,7 @@ import { getSettings } from "@/lib/api";
 // empty.
 export const dynamic = "force-dynamic";
 
-const DEFAULT_SITE_URL = "https://stage.odigma.ooo/ehswatch-stage";
+const DEFAULT_SITE_URL = "https://ehswatch.com";
 
 export async function GET(): Promise<Response> {
   const settingsRes = await getSettings().catch(() => null);

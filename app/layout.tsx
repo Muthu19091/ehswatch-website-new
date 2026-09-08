@@ -58,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const appleAttrs = brand?.apple_touch_icon?.attributes;
   const appleUrl = appleAttrs?.url;
   const appleType = appleAttrs?.mime_type || "image/png";
-  const origin = (data?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  const origin = (data?.seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
 
   return {
     metadataBase: new URL(origin),
@@ -106,7 +106,7 @@ export default async function RootLayout({
   const bodyTracking = [tracking?.body_script, scriptsFor(["body_start", "body_end", "body"])]
     .filter((v) => v && String(v).trim()).join("\n");
   const brandName = settings?.brand?.name || "EHSWatch";
-  const siteUrl = (settings?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  const siteUrl = (settings?.seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
   // Brand primary color from Site Settings drives --brand-primary site-wide.
   const primaryColor = settings?.appearance?.primary_color || settings?.brand?.primary_color || "var(--brand-primary)";
   const headerAttrs = (headerRes?.data as any)?.attributes;

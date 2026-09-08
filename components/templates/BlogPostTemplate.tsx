@@ -42,7 +42,7 @@ export default async function BlogPostTemplate({ slug, listingSlug = "blog" }: {
   const cmsPost = res?.data;
   if (!cmsPost) notFound();
   const a = cmsPost.attributes as any;
-  const sBase = ((settingsRes?.data as any)?.seo?.canonical_base_url || "https://stage.odigma.ooo/ehswatch-stage").replace(/\/+$/, "");
+  const sBase = ((settingsRes?.data as any)?.seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
   const cover = a.cover?.attributes?.url || a.cover?.url || undefined;
   const articleLd = {
     "@context": "https://schema.org",
