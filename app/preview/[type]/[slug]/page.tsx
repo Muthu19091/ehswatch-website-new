@@ -72,7 +72,14 @@ export default async function PreviewPage({
     // component). This server component renders once per request, so
     // computing "now" here is safe and stable: a draft preview shows
     // the date it would publish as right now.
-    if (res?.data && !res.data.attributes.published_at) {
+    //
+    // Keyed off status, not just a null check: a record that was
+    // published once and later reverted to Draft/Pending review/
+    // Archived keeps its OLD published_at in the DB (nothing clears it
+    // on revert) -- that stale real date is just as misleading in a
+    // draft preview as a genuinely-null one, so treat anything short
+    // of Active the same way.
+    if (res?.data && res.data.attributes.status !== "active") {
       res.data.attributes.published_at = new Date().toISOString();
     }
     body = res?.data ? (
@@ -82,9 +89,9 @@ export default async function PreviewPage({
     );
   } else if (type === "case-study") {
     const res = await getPreview<CmsCaseStudy>(type, slug, token, exp);
-    // Same "1 January 1970" bug as blog-post above, same fix -- see that
-    // branch's comment for why patching published_at here is safe.
-    if (res?.data && !res.data.attributes.published_at) {
+    // Same "1 January 1970" / stale-date bug as blog-post above, same
+    // fix -- see that branch's comment for the full reasoning.
+    if (res?.data && res.data.attributes.status !== "active") {
       res.data.attributes.published_at = new Date().toISOString();
     }
     body = res?.data ? (
