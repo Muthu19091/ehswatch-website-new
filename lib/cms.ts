@@ -13,7 +13,7 @@
 
 const CMS_API_URL =
   process.env.NEXT_PUBLIC_CMS_API_URL?.replace(/\/+$/, '') ||
-  'https://cms.ehswatch.com/api/v1';
+  'https://cmsapi.ehswatch.com/api/v1';
 
 /* ─── Shared shapes ────────────────────────────────────────── */
 

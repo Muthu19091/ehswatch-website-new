@@ -79,7 +79,7 @@ type Props = {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_CMS_API_URL ?? "https://cms.ehswatch.com/api/v1";
+  process.env.NEXT_PUBLIC_CMS_API_URL ?? "https://cmsapi.ehswatch.com/api/v1";
 
 // Accept either a CSV string (legacy single-step forms) OR an array
 // (modern Filament TagsInput shape). API normalises to array; fallback

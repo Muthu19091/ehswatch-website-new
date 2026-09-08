@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const CMS_BASE = process.env.CMS_API_SSR_BASE || "https://cms.ehswatch.com/api/v1";
+const CMS_BASE = process.env.CMS_API_SSR_BASE || "https://cmsapi.ehswatch.com/api/v1";
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 // Page slug → frontend route

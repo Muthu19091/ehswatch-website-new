@@ -7,7 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const CMS_API =
-  process.env.NEXT_PUBLIC_CMS_API_URL ?? "https://cms.ehswatch.com/api/v1";
+  process.env.NEXT_PUBLIC_CMS_API_URL ?? "https://cmsapi.ehswatch.com/api/v1";
 
 type SearchHit = {
   kind: "page" | "blog-post" | "case-study" | "product-module";
