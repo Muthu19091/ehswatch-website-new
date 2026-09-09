@@ -125,7 +125,17 @@ export default function PricingOverview({
                       >
                         <ItemIcon name={item.icon} />
                       </div>
-                      <span className="font-[family-name:var(--font-dm-sans)] text-[13px] sm:text-[14px] leading-[1.6] text-[#374151] text-pretty">
+                      {/* Client-caught (still visible after the rounded-2xl
+                          fix): the span sized to its own content -- with
+                          text-wrap:pretty choosing a conservative, balanced
+                          wrap, its rendered width (confirmed via DevTools:
+                          254px) can end up narrower than the space actually
+                          available in the pill, leaving a gap before the
+                          icon that isn't part of the border-radius bug at
+                          all. flex-1 makes it always claim the full
+                          remaining width regardless of how its own text
+                          wraps, so the icon stays visually anchored. */}
+                      <span className="flex-1 min-w-0 font-[family-name:var(--font-dm-sans)] text-[13px] sm:text-[14px] leading-[1.6] text-[#374151] text-pretty">
                         {item.text}
                       </span>
                     </div>
