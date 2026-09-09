@@ -53,10 +53,13 @@ export async function GET(): Promise<Response> {
   push(cases as { data?: Row[] } | null, "/case-studies");
   push(modules as { data?: Row[] } | null, "/modules");
 
+  // Per SEO team spec (matches the CMS's own generator): every entry gets
+  // priority 1.0. This path only runs if the CMS's /sitemap.xml is fully
+  // unreachable, but should stay consistent with it when it does.
   const body =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n") +
+    urls.map((u) => `  <url><loc>${u}</loc><priority>1.0</priority></url>`).join("\n") +
     `\n</urlset>\n`;
   return xml(body);
 }
