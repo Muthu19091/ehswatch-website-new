@@ -104,7 +104,15 @@ export default function PricingOverview({
                 {checklistNeedsArr.map((item, i) => (
                   <div key={i}>
                     <div
-                      className="needs-item flex items-center gap-3 px-4 py-3 rounded-full"
+                      // Client-caught (Arabic, wrapped text): rounded-full's
+                      // radius is half the box's own height -- fine for a
+                      // one-line pill, but a translation (or any text) long
+                      // enough to wrap to 2 lines makes the box much taller,
+                      // so the radius grows just as much and the resulting
+                      // stadium curve visibly eats into the space near the
+                      // icon. A fixed radius stays consistent regardless of
+                      // how many lines the text wraps to.
+                      className="needs-item flex items-center gap-3 px-4 py-3 rounded-2xl"
                       style={{
                         animationDelay: `${i * 180}ms`,
                         border: "1.5px solid #dbeafe",

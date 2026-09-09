@@ -623,8 +623,17 @@ function MobileStep({
   // narrow mobile column that width overflows and the right edge gets clipped
   // (BUG-026/033). Render each visual at its design width and scale it down to
   // fit the column so nothing is cut. Heights are the rendered (post-scale) box.
+  //
+  // Client-caught (Android, 360x740): step 2's visual is a CMS-uploaded
+  // custom image (not the default asset these numbers were originally tuned
+  // for) whose aspect ratio renders taller at width:242px than this box
+  // assumed -- 498px actual vs. 410px allocated, clipped ~88px by the
+  // overflow:hidden wrapper below. Bumped to fit the image that's actually
+  // live today; a future re-upload with a different aspect ratio would need
+  // this number revisited again (these are hand-tuned per current content,
+  // not measured dynamically).
   const DESIGN_W = isLast ? 440 : ([520, 242, 450, 530][index] ?? 450);
-  const visualH  = isLast ? 370 : ([300, 410, 330, 275][index] ?? 330);
+  const visualH  = isLast ? 370 : ([300, 500, 330, 275][index] ?? 330);
 
   useEffect(() => {
     const measure = () => {

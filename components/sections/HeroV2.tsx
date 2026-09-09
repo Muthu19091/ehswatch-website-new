@@ -119,9 +119,15 @@ export default function HeroV2({
       />
 
       <div className="relative z-20">
+        {/* Client-caught: home's hero sat right under the nav (0px gap)
+            while every other page's hero uses pt-[90px] on mobile
+            (About/Product/Pricing/Industries all share it) -- matching
+            that here. Scoped to mobile only (no sm:/md: bump) since
+            desktop routes through ContainerScroll's own scroll-linked
+            positioning, not verified here and outside what was asked. */}
         <ContainerScroll
           titleComponent={
-            <div className="flex flex-col items-center text-center gap-3 px-4 pb-16 md:pb-8">
+            <div className="flex flex-col items-center text-center gap-3 px-4 pt-[90px] md:pt-0 pb-16 md:pb-8">
               {cmsEyebrow && (
                 <span className="font-[family-name:var(--font-dm-sans)] text-[12px] font-semibold uppercase tracking-[0.14em] text-[#1d4ed8] animate-hero-rise">
                   {cmsEyebrow}
