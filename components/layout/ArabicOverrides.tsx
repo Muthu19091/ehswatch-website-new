@@ -55,6 +55,25 @@ const EN_TO_AR: Record<string, string> = {
   "Support": "الدعم",
   "Industries": "الصناعات",
   "Contact Us": "اتصل بنا",
+  // Pricing page headline fragments -- confirmed via direct API testing that
+  // Google's free translate endpoint returns these 3 specific fragments
+  // completely UNCHANGED (untranslated), even though the rest of the page
+  // translates fine. Each one leads into a CMS-authored Arabic <span> that's
+  // already correct, so only the plain-text lead-in needed a fix.
+  "Simple, Flexible Pricing for": "أسعار بسيطة ومرنة لـ",
+  "Designed Around Your": "مصمم حول",
+  "Custom pricing is available": "التسعير المخصص متاح",
+  // Same Google-API-unreliable pattern as above -- confirmed via direct
+  // testing that these two specifically come back unchanged (the third
+  // pill on the same page, "Integration with existing ERP...", translates
+  // fine every time -- this pair is inconsistent, not a hard failure, which
+  // is worse than a hard failure for a production site: a curated override
+  // guarantees correctness regardless of what Google's free endpoint does
+  // on any given request.
+  "Specific module combinations across different business units":
+    "مجموعات وحدات محددة لوحدات الأعمال المختلفة",
+  "Multi-site or multi-country deployments with regional configuration":
+    "عمليات نشر متعددة المواقع أو الدول بتكوين إقليمي",
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
