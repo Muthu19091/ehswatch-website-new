@@ -48,18 +48,17 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
     import("intl-tel-input").then(({ default: intlTelInput }) => {
       if (!inputRef.current) return;
       iti = intlTelInput(inputRef.current, {
-        // Detect the visitor's country from Cloudflare's same-origin trace
-        // endpoint (site is CF-fronted); fall back to India when unavailable.
-        initialCountry: "",
-        initialCountryLookup: async () => {
-          try {
-            const t = await fetch(`${window.location.origin}/cdn-cgi/trace`).then((r) => r.text());
-            const loc = t.match(/^loc=([A-Z]{2})$/m)?.[1];
-            return (loc && loc !== "XX" ? loc.toLowerCase() : "in") as never;
-          } catch {
-            return "in" as never;
-          }
-        },
+        // Client-caught (DevTools console, live device test): this used to
+        // try detecting the visitor's country via Cloudflare's /cdn-cgi/trace
+        // endpoint, which only exists on a Cloudflare-proxied site. This
+        // deployment sits behind plain nginx, not Cloudflare (confirmed: no
+        // cf-ray header) -- the fetch 404s on every single page load,
+        // logging a console error, and the detection ALWAYS silently fell
+        // back to India anyway. Just defaulting to India directly is
+        // honest about what actually happens today and drops the wasted
+        // request + error. Real geo-detection would need an actual
+        // geo-IP service wired in, out of scope for this fix.
+        initialCountry: "in",
         separateDialCode: true,
         loadUtils: () => import("intl-tel-input/utils"),
         // Client-caught (Android): the library's own auto-generated example-
