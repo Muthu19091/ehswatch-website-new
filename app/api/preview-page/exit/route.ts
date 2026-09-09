@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeForwardedHost } from "@/lib/safeHost";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -22,11 +23,11 @@ export async function GET(request: NextRequest) {
   }
 
   const proto = request.headers.get("x-forwarded-proto") ?? "https";
-  const host =
-    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  const target = host
-    ? `${proto}://${host}${BASE_PATH}${pagePath(slug)}`
-    : new URL(BASE_PATH + pagePath(slug), request.url);
+  const host = safeForwardedHost(
+    request.headers.get("x-forwarded-host"),
+    request.headers.get("host"),
+  );
+  const target = `${proto}://${host}${BASE_PATH}${pagePath(slug)}`;
 
   const response = NextResponse.redirect(target);
   response.cookies.set("page_preview", "", { path: "/", maxAge: 0 });

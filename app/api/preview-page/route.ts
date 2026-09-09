@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeForwardedHost } from "@/lib/safeHost";
 
 const CMS_BASE = process.env.CMS_API_SSR_BASE || "https://cmsapi.ehswatch.com/api/v1";
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -39,12 +40,15 @@ export async function GET(request: NextRequest) {
 
   // Build the redirect from forwarded headers so the host matches what the
   // visitor's browser is on (behind nginx, request.url is the bind address).
+  // safeForwardedHost checks the header against an allowlist first — these
+  // headers are client-controlled, and building a redirect target from them
+  // unchecked is an open-redirect vector.
   const proto = request.headers.get("x-forwarded-proto") ?? "https";
-  const host =
-    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  const target = host
-    ? `${proto}://${host}${BASE_PATH}${pagePath(slug)}`
-    : new URL(BASE_PATH + pagePath(slug), request.url);
+  const host = safeForwardedHost(
+    request.headers.get("x-forwarded-host"),
+    request.headers.get("host"),
+  );
+  const target = `${proto}://${host}${BASE_PATH}${pagePath(slug)}`;
   const response = NextResponse.redirect(target);
   response.cookies.set("page_preview", JSON.stringify({ slug, token, exp }), {
     httpOnly: true,
