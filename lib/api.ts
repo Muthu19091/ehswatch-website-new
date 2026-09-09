@@ -15,6 +15,11 @@ import { richHtml } from "@/lib/text";
 const SSR_BASE    = process.env.CMS_API_SSR_BASE       || "https://cmsapi.ehswatch.com/api/v1";
 const PUBLIC_BASE = process.env.NEXT_PUBLIC_CMS_API_BASE || "https://cmsapi.ehswatch.com/api/v1";
 
+// CMS's own origin (no /api/v1 suffix) — for CMS-served non-API routes like
+// /sitemap.xml and its /sitemaps/*.xml children, which the frontend proxies
+// verbatim rather than reimplementing.
+export const CMS_ORIGIN = SSR_BASE.replace(/\/api\/v1\/?$/, "");
+
 function makeClient(baseURL: string): AxiosInstance {
   return axios.create({
     baseURL,

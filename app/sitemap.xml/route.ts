@@ -1,15 +1,10 @@
-import { getSettings, getBlogPosts, getCaseStudies, getProductModules } from "@/lib/api";
+import { getSettings, getBlogPosts, getCaseStudies, getProductModules, CMS_ORIGIN } from "@/lib/api";
 
 // Prefer the CMS-managed sitemap (Settings → SEO). The CMS serves it at
 // /ehswatch-cms/sitemap.xml; when present we return it verbatim. If that is
 // unavailable we generate one from live CMS content so /sitemap.xml is never
 // empty.
 export const dynamic = "force-dynamic";
-
-// Derived from the same CMS_API_SSR_BASE env var lib/api.ts already reads,
-// stripped of its /api/v1 suffix — single source of truth for the CMS's
-// internal (SSR) base URL, same fallback as lib/api.ts for stage.
-const CMS_ORIGIN = (process.env.CMS_API_SSR_BASE || "https://cmsapi.ehswatch.com/api/v1").replace(/\/api\/v1\/?$/, "");
 
 const STATIC_ROUTES = [
   "", "/about", "/product", "/iris", "/industries", "/pricing",
