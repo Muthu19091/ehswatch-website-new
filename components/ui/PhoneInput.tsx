@@ -3,6 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import "intl-tel-input/styles";
 import type { FormVariant } from "./DynamicCmsForm";
+// Client confirmed (real device, Redmi Note 8 Pro): flags still blank after
+// BOTH a -webkit-image-set() fallback AND a plain url() one referencing the
+// library's own .webp asset -- the file itself is valid (checked: correct
+// magic bytes, correct Content-Type) and works fine on desktop, so this
+// isn't a CSS syntax issue at all. Importing the library's .png flags
+// directly (format support has no ambiguity anywhere, unlike webp on some
+// budget/older Android builds or under Data Saver's image-compression
+// proxy, which has known quirks specifically with CSS background-images)
+// as the true universal base layer.
+import flagsPng from "intl-tel-input/dist/img/flags.png";
+import flagsPng2x from "intl-tel-input/dist/img/flags@2x.png";
 
 interface Props {
   name: string;
@@ -116,22 +127,29 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
            the 14px input/placeholder — match it (and keep it LTR) so it isn't
            oversized or reversed. */
         .iti-wrap .iti__selected-dial-code { direction: ltr; font-size: 14px; }
-        /* Client-caught (Android), still reported blank after the
-           -webkit-image-set() fallback below -- some Android Chrome/WebView
-           builds apparently support NEITHER form of image-set(), prefixed
-           or not. Rather than chase which exact builds do what, layer in a
-           plain url() first: that's been supported everywhere for decades,
-           so it's the genuine no-image-set()-at-all fallback (loses retina
-           sharpness on those specific browsers, but the flag is visible,
-           which is the actual bug). Declaration order is the fallback
-           chain -- each later line only takes effect on a browser that
-           understands ITS syntax; plain url() first (universal), then
-           -webkit-image-set() (older prefixed support), then the library's
-           own bare image-set() elsewhere in its stylesheet (modern
-           browsers, sharpest -- comes later in the cascade already). */
+        /* Client-caught (Android, confirmed on a real Redmi Note 8 Pro):
+           flags still blank after BOTH a -webkit-image-set() fallback AND a
+           plain url() referencing the library's own .webp asset -- the file
+           itself is valid (checked: correct magic bytes, correct
+           Content-Type: image/webp) and this works fine on desktop, so it
+           was never a CSS syntax problem. Likely webp-specific: either a
+           genuinely old browser build, or (common on budget Indian Android
+           devices) Chrome's Data Saver / Lite mode routing images through a
+           compression proxy with known quirks around CSS background-images
+           specifically. .png has zero format ambiguity anywhere -- true
+           universal base layer, imported directly rather than trusting the
+           library's own (webp-only) CSS vars. Declaration order is the
+           fallback chain, weakest-first: .png url() (true universal) ->
+           .webp url() -> -webkit-image-set() -> the library's own bare
+           image-set() elsewhere in its stylesheet (modern browsers,
+           sharpest, already later in the cascade). */
         .iti-wrap .iti__flag {
+          background-image: url(${flagsPng.src});
           background-image: var(--iti-path-flags-1x);
           background-image: -webkit-image-set(var(--iti-path-flags-1x) 1x, var(--iti-path-flags-2x) 2x);
+        }
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+          .iti-wrap .iti__flag { background-image: url(${flagsPng2x.src}); }
         }
         .iti-support { display: block; width: 100%; }
         .iti-support .iti { width: 100%; }
