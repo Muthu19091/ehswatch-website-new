@@ -62,6 +62,13 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
         },
         separateDialCode: true,
         loadUtils: () => import("intl-tel-input/utils"),
+        // Client-caught (Android): the library's own auto-generated example-
+        // number placeholder rendered a malformed value
+        // ("+91 -1 000 000 000") -- likely a race with the async utils/
+        // country-detection above. Overriding it to always return our own
+        // simple placeholder sidesteps the whole class of bug rather than
+        // chasing the exact metadata glitch.
+        customPlaceholder: () => placeholder ?? "Phone number",
       });
       itiRef.current = iti;
       // Seed a previously-entered value when the widget re-mounts (wizard steps).
@@ -110,6 +117,17 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
            the 14px input/placeholder — match it (and keep it LTR) so it isn't
            oversized or reversed. */
         .iti-wrap .iti__selected-dial-code { direction: ltr; font-size: 14px; }
+        /* Client-caught (Android): flags all invisible. intl-tel-input's own
+           CSS sets background-image via bare image-set(), which several
+           Android Chrome/WebView builds still don't support unprefixed --
+           the whole declaration is dropped as invalid, leaving the flag
+           chips blank. Add the -webkit- fallback (using the library's own
+           CSS vars, already correctly populated) BEFORE the standard one --
+           browsers that only understand the prefixed form use it; browsers
+           that understand both take the later, standard declaration. */
+        .iti-wrap .iti__flag {
+          background-image: -webkit-image-set(var(--iti-path-flags-1x) 1x, var(--iti-path-flags-2x) 2x);
+        }
         .iti-support { display: block; width: 100%; }
         .iti-support .iti { width: 100%; }
         .iti-support input[type="tel"] {
