@@ -3,17 +3,79 @@
 import { useEffect, useRef, useState } from "react";
 import "intl-tel-input/styles";
 import type { FormVariant } from "./DynamicCmsForm";
-// Client confirmed (real device, Redmi Note 8 Pro): flags still blank after
-// BOTH a -webkit-image-set() fallback AND a plain url() one referencing the
-// library's own .webp asset -- the file itself is valid (checked: correct
-// magic bytes, correct Content-Type) and works fine on desktop, so this
-// isn't a CSS syntax issue at all. Importing the library's .png flags
-// directly (format support has no ambiguity anywhere, unlike webp on some
-// budget/older Android builds or under Data Saver's image-compression
-// proxy, which has known quirks specifically with CSS background-images)
-// as the true universal base layer.
+import { withBasePath } from "@/lib/basePath";
+// Kept as a defense-in-depth CSS fallback beneath the <img>-based fix below
+// -- costs nothing, and covers the (hopefully unreachable) case where JS
+// injection itself somehow fails on some future device.
 import flagsPng from "intl-tel-input/dist/img/flags.png";
 import flagsPng2x from "intl-tel-input/dist/img/flags@2x.png";
+// Client confirmed (real device, Redmi Note 8 Pro, AND a flagship Galaxy S20
+// via BrowserStack): flags still blank after THREE rounds of CSS fallbacks
+// (-webkit-image-set(), a plain url() to the library's .webp, then importing
+// its .png directly). DevTools on the real device confirmed every individual
+// piece was correct -- the image request succeeds (200, exact right byte
+// size), the element has a real, non-zero box (20x15px), background-image
+// resolves to a valid URL, background-position/-size compute to sane values
+// -- yet nothing paints. Failing identically on both a budget 2019 phone and
+// a 2020 flagship (while every desktop OS works) points at mobile Chrome's
+// handling of CSS background-image sprites specifically, not device
+// capability or our CSS syntax -- Data Saver/Lite Mode's image-compression
+// proxy has documented quirks exactly there, and is enabled by default on
+// many Indian carrier/budget-device configurations.
+//
+// Rather than a 4th CSS patch, sidestepping the whole class of bug: render
+// actual <img> elements (individual per-country SVGs, no sprite, no CSS
+// background-image at all) instead of trusting intl-tel-input's own sprite
+// rendering. <img> is exactly what Data Saver's proxy is built to handle
+// well -- it's CSS background-images that have historically been the
+// problem case. See injectFlagImages() below.
+const FLAG_SRC = (iso2: string): string => withBasePath(`/flags/${iso2}.svg`);
+
+/**
+ * intl-tel-input renders every flag via a CSS background-image sprite
+ * (.iti__flag). Finds every such element currently in the DOM -- the
+ * selected-country display AND, once opened, every row in the dropdown
+ * list -- and overlays a real <img> inside each one, sourced from an
+ * individual per-country SVG (see FLAG_SRC). Idempotent (checks
+ * data-img-injected) so it's safe to call repeatedly from a MutationObserver
+ * as the dropdown list mounts/unmounts and the selected country changes.
+ */
+function injectFlagImages(root: HTMLElement, getSelectedIso2: () => string | undefined): void {
+  root.querySelectorAll<HTMLElement>(".iti__flag").forEach((flagEl) => {
+    // Dropdown list rows carry their own country on the parent <li
+    // data-iso2="..">; the selected-country display has no such row, so
+    // it falls back to the widget's current selection -- which DOES change
+    // (the user picking a new country), so this re-syncs the <img> rather
+    // than a simple "already injected, skip forever" marker.
+    const li = flagEl.closest<HTMLElement>("li[data-iso2]");
+    // Defensive: a bad getSelectedIso2() call previously threw here and
+    // silently aborted injection for every OTHER flag on the page too
+    // (Array.prototype.forEach doesn't catch per-iteration) -- one bad
+    // element should never take the rest down with it.
+    let iso2: string | undefined;
+    try {
+      iso2 = li?.getAttribute("data-iso2") ?? getSelectedIso2() ?? undefined;
+    } catch {
+      iso2 = undefined;
+    }
+    if (!iso2) return;
+    const existing = flagEl.querySelector<HTMLImageElement>("img[data-flag-img]");
+    if (existing) {
+      if (existing.getAttribute("data-flag-img") !== iso2) {
+        existing.setAttribute("data-flag-img", iso2);
+        existing.src = FLAG_SRC(iso2);
+      }
+      return;
+    }
+    const img = document.createElement("img");
+    img.setAttribute("data-flag-img", iso2);
+    img.src = FLAG_SRC(iso2);
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    img.style.cssText = "display:block;width:100%;height:100%;object-fit:cover;border-radius:1px;";
+    flagEl.appendChild(img);
+  });
+}
 
 interface Props {
   name: string;
@@ -45,6 +107,7 @@ export function isPhoneField(field: {
 
 export default function PhoneInput({ name, required, placeholder, variant = "contact", onValue, defaultValue }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const wrapRef = useRef<HTMLSpanElement>(null);
   const itiRef = useRef<any>(null);
   const onValueRef = useRef(onValue);
   onValueRef.current = onValue;
@@ -52,9 +115,18 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
 
   useEffect(() => {
     const el = inputRef.current;
-    if (!el) return;
+    const wrap = wrapRef.current;
+    if (!el || !wrap) return;
 
     let iti: any;
+
+    // Runs on every DOM change inside the widget -- covers the initial
+    // selected-country flag (mounts once) and the dropdown list's flags
+    // (mount fresh each time it's opened, per intl-tel-input's own lazy
+    // rendering), without needing to hook every possible open/close event.
+    const runInject = () => injectFlagImages(wrap, () => itiRef.current?.getSelectedCountry()?.iso2);
+    const flagObserver = new MutationObserver(runInject);
+    flagObserver.observe(wrap, { childList: true, subtree: true });
 
     import("intl-tel-input").then(({ default: intlTelInput }) => {
       if (!inputRef.current) return;
@@ -85,12 +157,20 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
       if (defaultValue) {
         try { iti.setNumber(defaultValue); } catch { /* ignore */ }
       }
+      // The MutationObserver above only fires on FUTURE DOM changes; this
+      // widget's own init mutation may already have landed by the time the
+      // dynamic import resolves, so run once directly too (idempotent).
+      runInject();
     });
 
     const sync = () => {
       const v = itiRef.current?.getNumber() ?? "";
       setFullNumber(v);
       onValueRef.current?.(v);
+      // Re-syncs the selected-country <img> to whatever the user just
+      // picked -- the dropdown rows never change country once rendered,
+      // but the closed/selected display does, every time.
+      runInject();
     };
 
     el.addEventListener("input", sync);
@@ -99,6 +179,7 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
     return () => {
       el.removeEventListener("input", sync);
       el.removeEventListener("countrychange", sync);
+      flagObserver.disconnect();
       itiRef.current?.destroy();
       itiRef.current = null;
     };
@@ -107,7 +188,7 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
   const isSupport = variant === "support";
 
   return (
-    <span className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
+    <span ref={wrapRef} className={isSupport ? "iti-wrap iti-support" : "iti-wrap iti-contact"}>
       <style>{`
         /* The number entry, the "+NN" dial-code prefix, and the country dropdown
            are inherently LTR — force those PARTS so digits, the prefix, and the
