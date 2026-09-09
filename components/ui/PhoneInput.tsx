@@ -116,15 +116,21 @@ export default function PhoneInput({ name, required, placeholder, variant = "con
            the 14px input/placeholder — match it (and keep it LTR) so it isn't
            oversized or reversed. */
         .iti-wrap .iti__selected-dial-code { direction: ltr; font-size: 14px; }
-        /* Client-caught (Android): flags all invisible. intl-tel-input's own
-           CSS sets background-image via bare image-set(), which several
-           Android Chrome/WebView builds still don't support unprefixed --
-           the whole declaration is dropped as invalid, leaving the flag
-           chips blank. Add the -webkit- fallback (using the library's own
-           CSS vars, already correctly populated) BEFORE the standard one --
-           browsers that only understand the prefixed form use it; browsers
-           that understand both take the later, standard declaration. */
+        /* Client-caught (Android), still reported blank after the
+           -webkit-image-set() fallback below -- some Android Chrome/WebView
+           builds apparently support NEITHER form of image-set(), prefixed
+           or not. Rather than chase which exact builds do what, layer in a
+           plain url() first: that's been supported everywhere for decades,
+           so it's the genuine no-image-set()-at-all fallback (loses retina
+           sharpness on those specific browsers, but the flag is visible,
+           which is the actual bug). Declaration order is the fallback
+           chain -- each later line only takes effect on a browser that
+           understands ITS syntax; plain url() first (universal), then
+           -webkit-image-set() (older prefixed support), then the library's
+           own bare image-set() elsewhere in its stylesheet (modern
+           browsers, sharpest -- comes later in the cascade already). */
         .iti-wrap .iti__flag {
+          background-image: var(--iti-path-flags-1x);
           background-image: -webkit-image-set(var(--iti-path-flags-1x) 1x, var(--iti-path-flags-2x) 2x);
         }
         .iti-support { display: block; width: 100%; }
