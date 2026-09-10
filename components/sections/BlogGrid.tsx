@@ -322,16 +322,35 @@ export default function BlogGrid({
   const featured    = pagePosts.slice(0, 2);
   const standard    = pagePosts.slice(2);
 
+  // Reported live: on phone, clicking a page number sometimes scrolled all
+  // the way to the footer instead of the top of the grid. Root cause: this
+  // used to compute the scroll target from gridRef.getBoundingClientRect()
+  // in the SAME synchronous click handler as setPage() -- read immediately
+  // after a state update, before React has actually committed the new
+  // page's (often shorter) content to the DOM. The measurement was of the
+  // OLD page's layout, not the new one, so scrolling to it could land well
+  // past the new, shorter page's actual content -- variable by page-size
+  // delta and by how a given browser happens to schedule the paint, which
+  // is exactly the kind of thing that "works" in one engine and doesn't in
+  // another. Doing the measurement in an effect keyed on currentPage
+  // guarantees it only ever runs after the new page has actually rendered.
+  const pendingScrollRef = useRef(false);
+
   const goToPage = (n: number) => {
     const target = Math.min(Math.max(1, n), totalPages);
     if (target === currentPage) return;
+    pendingScrollRef.current = true;
     setPage(target);
-    // Start the new page from the top of the list (offset for the fixed navbar).
+  };
+
+  useEffect(() => {
+    if (!pendingScrollRef.current) return;
+    pendingScrollRef.current = false;
     if (gridRef.current) {
       const y = gridRef.current.getBoundingClientRect().top + window.scrollY - 96;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
-  };
+  }, [currentPage]);
 
   // CMS-only: nothing to list → hide the section entirely.
   if (POSTS.length === 0) return null;
