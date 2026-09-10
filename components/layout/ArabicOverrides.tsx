@@ -302,6 +302,43 @@ export const EN_TO_AR: Record<string, string> = {
   "Optimal Safety With EHSWatch": "سلامة مثالية مع EHSWatch",
 
   // ── /iris ───────────────────────────────────────────────────────────────
+  // IRISChatShowcase.tsx — animated chat mockup (MSGS array). Renders each
+  // string into its own stable <p>/<span>, so whole-element exact match
+  // catches these; must include the emoji prefixes verbatim since the
+  // match is on the full rendered text.
+  "Oil spill in hallway, main building sector A, Hyderabad. No immediate actions taken.":
+    "انسكاب زيت في الممر، المبنى الرئيسي القطاع A، حيدر أباد. لم تُتخذ أي إجراءات فورية.",
+  "Environmental incident pre-filled ✅": "تمت التعبئة المسبقة للحادثة البيئية ✅",
+  "📍 Main Building, Sector A, Hyderabad": "📍 المبنى الرئيسي، القطاع A، حيدر أباد",
+  "⚠️ Type: Environmental - Oil Spill": "⚠️ النوع: بيئي - انسكاب زيت",
+  "🔴 Severity: Medium  ·  Actions: None taken": "🔴 الخطورة: متوسطة  ·  الإجراءات: لم تُتخذ",
+  "What should we do next?": "ماذا يجب أن نفعل بعد ذلك؟",
+  "Prioritised corrective actions - 47 similar incidents analysed:":
+    "إجراءات تصحيحية ذات أولوية - تم تحليل 47 حادثة مشابهة:",
+  "🔴 Deploy absorbent mats & cordon off area now": "🔴 انشر حصائر ماصة وقم بتطويق المنطقة الآن",
+  "🟡 Identify oil source; inspect adjacent machinery": "🟡 حدّد مصدر الزيت؛ افحص الآلات المجاورة",
+  "🟢 Schedule deep clean & update MSDS register": "🟢 جدول تنظيفاً عميقاً وحدّث سجل صحائف بيانات السلامة",
+  "Can you identify the root cause?": "هل يمكنك تحديد السبب الجذري؟",
+  "5-Why Root Cause Analysis:": "تحليل السبب الجذري بطريقة الأسباب الخمسة:",
+  "Hydraulic line leak → Machine B-04": "تسرب في خط هيدروليكي → الآلة B-04",
+  "Maintenance overdue by 18 days": "الصيانة متأخرة بمقدار 18 يوماً",
+  "Root cause: PM system integration gap": "السبب الجذري: فجوة في تكامل نظام الصيانة الوقائية",
+  "Have we seen anything like this before?": "هل رأينا شيئاً مشابهاً لهذا من قبل؟",
+  "🔍 3 similar clusters across 1,240 records:": "🔍 3 مجموعات مشابهة عبر 1,240 سجلاً:",
+  "Sector A - oil spill (2× in last 6 months)": "القطاع A - انسكاب زيت (مرتان خلال آخر 6 أشهر)",
+  "Machine B-series failures - 4 events Q3–Q4": "أعطال سلسلة الآلات B - 4 أحداث في الربعين الثالث والرابع",
+  "Overdue PM trend → emerging leading indicator ⚠️": "اتجاه تأخر الصيانة الوقائية → مؤشر استباقي ناشئ ⚠️",
+  "Summarise this for my board report.": "لخّص هذا لتقرير مجلس الإدارة الخاص بي.",
+  "Executive EHS summary - board-ready:": "ملخص تنفيذي للصحة والسلامة والبيئة - جاهز لمجلس الإدارة:",
+  "3 spills linked to maintenance scheduling gap": "3 انسكابات مرتبطة بفجوة في جدولة الصيانة",
+  "Corrective actions 87% closed": "الإجراءات التصحيحية مغلقة بنسبة 87%",
+  "17.5 hrs saved on reporting this month": "توفير 17.5 ساعة في الإبلاغ هذا الشهر",
+  "Sending field photo…": "جارٍ إرسال صورة ميدانية…",
+  "🤖 Image Analysis Complete:": "🤖 اكتمل تحليل الصورة:",
+  "⚠️ PPE violation - missing hard hat & hi-vis vest": "⚠️ مخالفة معدات الحماية الشخصية - خوذة صلبة وسترة عاكسة مفقودتان",
+  "📍 Location: Warehouse Bay 3": "📍 الموقع: مستودع الرصيف 3",
+  "Supervisor Rajan M. alerted in real-time. Confirm to submit?": "تم تنبيه المشرف Rajan M. فورياً. أكّد للإرسال؟",
+
   "Meet": "تعرّف على",
   "EHSWatch's Intelligent Risk & Insight System": "نظام EHSWatch الذكي للمخاطر والرؤى",
   "Six AI capabilities embedded across your EHSQ workflows.":
