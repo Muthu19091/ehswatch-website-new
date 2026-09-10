@@ -107,6 +107,19 @@ export const EN_TO_AR: Record<string, string> = {
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
+  "Support Ticket": "تذكرة الدعم",
+  // Also feeds GoogleTranslate.tsx's placeholder-swap (see EN_TO_AR export
+  // note) -- the Comments textarea's placeholder duplicates its label text.
+  "Comments": "تعليقات",
+  // Contact page — "Global and Regional Operations" hub list. Confirmed fully
+  // untranslated in a client screenshot; each is a self-contained <p>
+  // (CSS-uppercased via the `uppercase` class, not literal-uppercase text).
+  "Global and Regional Operations": "العمليات العالمية والإقليمية",
+  "Americas Hub": "مركز الأمريكتين",
+  "Middle East Hub": "مركز الشرق الأوسط",
+  "Development Center": "مركز التطوير",
+  "APAC Tech Center": "مركز APAC التقني",
+  "Email Us": "راسلنا",
   // Industries CTA heading — use قطاعك (sector), not عملك (work), per client.
   "Does EHSWatch work for your industry?": "هل يعمل EHSWatch في قطاعك؟",
   // Footer copyright — keep © 2026 EHSWatch, translate the rest.
@@ -134,6 +147,10 @@ const LABEL_EN_TO_AR: Record<string, string> = {
   "Name": "الاسم الكامل",
   "Company": "اسم الشركة",
   "Company Name": "اسم الشركة",
+  // Contact form fields — confirmed untranslated in a client screenshot.
+  "Work Email": "البريد الإلكتروني للعمل",
+  "Mobile Number": "رقم الجوال",
+  "Comments": "تعليقات",
 };
 
 // Overrides whose text starts with a Latin brand ("EHSWatch: …"): force the
