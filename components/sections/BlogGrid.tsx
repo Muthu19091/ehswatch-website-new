@@ -381,24 +381,35 @@ export default function BlogGrid({
           </div>
         ) : (
           <div ref={gridRef} className="flex flex-col gap-6 scroll-mt-24">
-            {/* Both rows are a flex COLUMN on phones and only become a CSS grid
-                from the breakpoint up (md/sm). A phone shows a single column
-                either way, but iOS 17 Safari mis-sizes a `h-full` card whose
-                image uses `aspect-ratio` inside an auto grid row — the card
-                inflates and the text below the image stops painting (fine on
-                iOS 18 / Chromium). Flexbox avoids that grid track-sizing bug. */}
-            {/* Row 1 — featured 2-col */}
+            {/* Both rows stay flex-wrap at EVERY breakpoint, never CSS grid.
+                iOS Safari mis-sizes a `h-full` card whose image uses
+                `aspect-ratio` inside an auto grid row — the card inflates and
+                the text below the image stops painting (fine on Chromium).
+                An earlier version of this fix only applied below md/sm and
+                switched back to CSS grid above it — which meant an iPad
+                (portrait hits sm/md, landscape hits lg) got zero protection
+                and still hit the bug. flex-wrap + basis percentages replicate
+                the same column counts without ever using grid, at any width. */}
+            {/* Row 1 — featured 2-col from md up */}
             {featured.length > 0 && (
-              <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
-                {featured.map((p) => <FeaturedCard key={p.slug} post={p} listingSlug={listingSlug} />)}
-                {featured.length === 1 && <div className="hidden md:block" />}
+              <div className="flex flex-wrap gap-6">
+                {featured.map((p) => (
+                  <div key={p.slug} className="w-full md:basis-[calc(50%-0.75rem)]">
+                    <FeaturedCard post={p} listingSlug={listingSlug} />
+                  </div>
+                ))}
+                {featured.length === 1 && <div className="hidden md:block md:basis-[calc(50%-0.75rem)]" />}
               </div>
             )}
 
-            {/* Row 2 — standard cards: full-width on mobile, 2-col tablet, 4-col desktop */}
+            {/* Row 2 — standard cards: full-width on mobile, 2-col from sm, 4-col from lg */}
             {standard.length > 0 && (
-              <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {standard.map((p) => <StandardCard key={p.slug} post={p} listingSlug={listingSlug} />)}
+              <div className="flex flex-wrap gap-6">
+                {standard.map((p) => (
+                  <div key={p.slug} className="w-full sm:basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)]">
+                    <StandardCard post={p} listingSlug={listingSlug} />
+                  </div>
+                ))}
               </div>
             )}
 
