@@ -105,9 +105,35 @@ export const EN_TO_AR: Record<string, string> = {
   "Implementation support, configuration, and role-based access are built into the way pricing is structured, so you can focus on improving safety and compliance instead of deciphering licence tiers.":
     "دعم التنفيذ والتهيئة والوصول القائم على الأدوار مدمجة ضمن هيكلة التسعير، بحيث يمكنك التركيز على تحسين السلامة والامتثال بدلاً من فك رموز مستويات الترخيص.",
   // Contact/Support form heading + submit button (authored Arabic).
-  "Get in Touch with Our Team": "تواصل مع فريقنا",
+  // Split lead-in + highlighted-span text nodes (see EN_TO_AR export note) —
+  // "Get in Touch with Our Team" as one key never matched, since the DOM is
+  // "Get in Touch with <span>Our Team</span>": two separate text nodes.
+  "Get in Touch with": "تواصل مع",
+  "Our Team": "فريقنا",
   "Submit": "إرسال",
   "Support Ticket": "تذكرة الدعم",
+  // Contact page hero.
+  "Talk to an EHS Digital Transformation Specialist": "تحدث إلى أخصائي التحول الرقمي في EHS",
+  "Schedule a tailored platform walkthrough, explore custom module configurations, or consult with our regional safety technology experts.":
+    "حدد موعداً لجولة مخصصة في المنصة، أو استكشف تهيئات وحدات مخصصة، أو استشر خبراء تقنية السلامة الإقليميين لدينا.",
+  "ISO 27001 Certified": "معتمدة وفق ISO 27001",
+  "4-Hour SLA Response": "استجابة خلال 4 ساعات وفق اتفاقية مستوى الخدمة",
+  "Rapid Deployment": "نشر سريع",
+  "Most enquiries get a response within one business day.": "تحصل معظم الاستفسارات على رد خلال يوم عمل واحد.",
+  // Support Ticket tab form (distinct fields from the Contact Us tab form).
+  "Email": "البريد الإلكتروني",
+  "Your Name": "اسمك",
+  "Issue Category": "فئة المشكلة",
+  "Select Issue Category": "حدد فئة المشكلة",
+  "Subject": "الموضوع",
+  "One-line summary": "ملخص من سطر واحد",
+  "Priority": "الأولوية",
+  "Urgent": "عاجل",
+  "High": "مرتفعة",
+  "Normal": "عادية",
+  "Low": "منخفضة",
+  "Describe the Issue": "صف المشكلة",
+  "Include reproduction steps if it's a bug.": "أدرج خطوات إعادة إنتاج المشكلة إن كانت خللاً برمجياً.",
   // Also feeds GoogleTranslate.tsx's placeholder-swap (see EN_TO_AR export
   // note) -- the Comments textarea's placeholder duplicates its label text.
   "Comments": "تعليقات",
@@ -445,6 +471,17 @@ export const EN_TO_AR: Record<string, string> = {
     "EHSWatch قابلة للتخصيص وفق احتياجات أعمالنا، وسهلة التصفح وسهلة الاستخدام.",
   "Latest Insights on EHS & Quality": "أحدث الرؤى حول الصحة والسلامة والبيئة والجودة",
   "View All Articles": "عرض جميع المقالات",
+  // Shared bottom CTA — appears on blog and other listing pages.
+  "Reading is a start. Now is your time to take action.": "القراءة هي البداية. حان الآن وقت التحرك.",
+
+  // ── /case-studies — hero (lead-in + highlighted span, same pattern). ────
+  "Proof from the Field,": "دليل من الميدان،",
+  "Not the Pitch": "لا العرض التسويقي",
+  "EHSQ teams across construction, energy, manufacturing, logistics and other sectors use EHSWatch to cut reporting time, accelerate audits, close actions faster and gain clear visibility into risk across every site.":
+    "تستخدم فرق EHSQ في قطاعات البناء والطاقة والتصنيع والخدمات اللوجستية وقطاعات أخرى EHSWatch لتقليل وقت الإبلاغ، وتسريع التدقيقات، وإغلاق الإجراءات بشكل أسرع، واكتساب رؤية واضحة للمخاطر عبر كل موقع.",
+  "Talk to Experts": "تحدث إلى الخبراء",
+  "Explore Case Studies": "استكشف دراسات الحالة",
+  "Know more": "اعرف المزيد",
   "Give your teams a simple way to report, respond and prevent incidents – without adding more admins.":
     "امنح فرقك طريقة بسيطة للإبلاغ والاستجابة ومنع الحوادث — دون إضافة المزيد من الإداريين.",
 
@@ -682,6 +719,129 @@ export const EN_TO_AR: Record<string, string> = {
   "If you have questions about our use of cookies, please contact us at:":
     "إذا كانت لديك أسئلة حول استخدامنا لملفات تعريف الارتباط، يُرجى التواصل معنا على:",
 
+  // ── /iris — lead-in text node before the highlighted "more on the way." span.
+  "6 AI agents available today,": "6 وكلاء ذكاء اصطناعي متاحون اليوم،",
+
+  // ── /product — remaining 6 module cards (revealed by "View more"), missed
+  // by the earlier static-HTML extraction pass since they're client-toggled.
+  "Control operational and process changes with structured reviews, risk assessments, approvals, and full implementation traceability.":
+    "التحكم في التغييرات التشغيلية والإجرائية من خلال مراجعات منظمة وتقييمات مخاطر وموافقات وتتبع كامل للتنفيذ.",
+  "Maintain a central record of legal and regulatory obligations so your teams can monitor updates and stay audit-ready.":
+    "الاحتفاظ بسجل مركزي للالتزامات القانونية والتنظيمية بحيث يمكن لفرقك مراقبة التحديثات والبقاء جاهزة للتدقيق.",
+  "Manage training records, competency requirements, certification expiries, and gap analysis to keep every worker qualified and current.":
+    "إدارة سجلات التدريب ومتطلبات الكفاءة وتواريخ انتهاء الشهادات وتحليل الفجوات للحفاظ على تأهيل جميع العمال وتحديثه.",
+  "Digitise high-risk work permits with configurable approvals, linked controls, expiry tracking, and live permit visibility.":
+    "رقمنة تصاريح العمل عالية الخطورة بموافقات قابلة للتخصيص وضوابط مرتبطة وتتبع انتهاء الصلاحية ورؤية فورية للتصاريح.",
+  "Record non-conformances across safety, quality and environmental processes, investigate root causes, assign corrective actions, and monitor closure to prevent recurrence.":
+    "تسجيل حالات عدم المطابقة عبر عمليات السلامة والجودة والبيئة، والتحقيق في الأسباب الجذرية، وإسناد الإجراءات التصحيحية، ومراقبة الإغلاق لمنع التكرار.",
+  "Capture meeting decisions, assign actions live, and track follow-through so safety commitments do not get lost after the meeting ends.":
+    "تسجيل قرارات الاجتماعات، وإسناد الإجراءات مباشرة، وتتبع المتابعة حتى لا تُفقد التزامات السلامة بعد انتهاء الاجتماع.",
+  "View less": "عرض أقل",
+
+  // ── /pricing — "Build Your Package" wizard (4 steps) + FAQ. Descriptions
+  // here are package-builder-specific wording, shorter than /product's
+  // module-card copy — distinct strings, not duplicates.
+  "Build Your Package": "أنشئ باقتك",
+  "Build Your": "أنشئ",
+  "Package": "باقتك",
+  "Select what you need and we will put together a tailored proposal.":
+    "حدد ما تحتاجه وسنقوم بإعداد عرض مخصص لك.",
+  "Advanced Features (Add-Ons)": "ميزات متقدمة (إضافات)",
+  "Organisation Details": "بيانات المؤسسة",
+  "Get Proposal": "احصل على عرض",
+  "Step": "الخطوة",
+  "of": "من",
+  "Select the applications you need in your organisation": "حدد التطبيقات التي تحتاجها مؤسستك",
+  "Tick every module you need. The package summary on the right updates live.":
+    "حدد كل وحدة تحتاجها. يتحدث ملخص الباقة على اليمين مباشرة.",
+  "Track corrective actions to closure with accountability.": "تتبّع الإجراءات التصحيحية حتى إغلاقها مع المساءلة.",
+  "8D Report": "تقرير 8D",
+  "Structured 8-discipline problem-solving reports.": "تقارير حل مشكلات منظمة بمنهجية الانضباطات الثمانية (8D).",
+  "Plan audits, capture findings, close compliance gaps.": "خطّط للتدقيقات، وسجّل النتائج، وأغلق فجوات الامتثال.",
+  "Communications": "الاتصالات",
+  "Share safety alerts, updates and bulletins org-wide.": "شارك تنبيهات السلامة والتحديثات والنشرات على مستوى المؤسسة.",
+  "Structured complaints workflow with full audit trail.": "سير عمل منظم للشكاوى مع سجل تدقيق كامل.",
+  "Schedule drills and capture lessons learned.": "جدول التدريبات وسجّل الدروس المستفادة.",
+  "Version-controlled EHSQ documents with access control.": "وثائق EHSQ بإصدارات موثقة وتحكم في الوصول.",
+  "HSE Monthly Statistics": "إحصاءات الصحة والسلامة الشهرية",
+  "Aggregate and report monthly HSE performance data.": "تجميع بيانات أداء الصحة والسلامة الشهرية وإعداد تقاريرها.",
+  "HSE Plans": "خطط الصحة والسلامة",
+  "Build and track health & safety plans across sites.": "أنشئ خطط الصحة والسلامة وتتبعها عبر المواقع.",
+  "Capture unsafe acts and positive safety behaviours.": "سجّل التصرفات غير الآمنة والسلوكيات الإيجابية للسلامة.",
+  "Conduct digital inspections with custom checklists.": "نفّذ عمليات تفتيش رقمية بقوائم تحقق مخصصة.",
+  "Report, investigate and close incidents end-to-end.": "أبلغ عن الحوادث وحقق فيها وأغلقها من البداية للنهاية.",
+  "Track regulatory obligations and stay audit-ready.": "تتبّع الالتزامات التنظيمية وابقَ جاهزاً للتدقيق.",
+  "Capture decisions and track action follow-through.": "سجّل القرارات وتتبّع متابعة الإجراءات.",
+  "Mutual Aid": "المساعدة المتبادلة",
+  "Coordinate shared resources and emergency assistance.": "نسّق الموارد المشتركة والمساعدة في حالات الطوارئ.",
+  "Non Conformance": "عدم المطابقة",
+  "Record, investigate and prevent recurring issues.": "سجّل المشكلات المتكررة وحقق فيها وامنع تكرارها.",
+  "Digitise high-risk work permits with approval workflows.": "رقمنة تصاريح العمل عالية الخطورة بسير عمل الموافقات.",
+  "Risk Assessments": "تقييمات المخاطر",
+  "Identify hazards, assess risk and document controls.": "حدّد المخاطر وقيّمها ووثّق الضوابط.",
+  "Survey": "استبيان",
+  "Create and distribute safety culture surveys.": "أنشئ استبيانات ثقافة السلامة ووزّعها.",
+  "Manage training records and certification expiries.": "أدر سجلات التدريب وتواريخ انتهاء الشهادات.",
+  "Your Package": "باقتك",
+  "No applications selected yet": "لم يتم اختيار أي تطبيقات بعد",
+  "Complete all steps to receive a tailored proposal from our team.":
+    "أكمل جميع الخطوات لتصلك عرضاً مخصصاً من فريقنا.",
+  // Advanced Features (Add-Ons) step.
+  "Enhance your EHSWatch experience (optional)": "عزّز تجربتك مع EHSWatch (اختياري)",
+  "API Integrations": "تكاملات API",
+  "Connect with existing systems": "الاتصال بالأنظمة الحالية",
+  "WhatsApp Reporting": "الإبلاغ عبر واتساب",
+  "Report incidents directly from WhatsApp": "أبلغ عن الحوادث مباشرة من واتساب",
+  "IRIS AI": "الذكاء الاصطناعي IRIS",
+  "AI incident analysis & smart insights": "تحليل الحوادث بالذكاء الاصطناعي ورؤى ذكية",
+  "Single Sign On (SSO)": "تسجيل الدخول الموحد (SSO)",
+  "Azure / Google / Active Directory login": "تسجيل الدخول عبر Azure / Google / Active Directory",
+  "HR Integration": "تكامل الموارد البشرية",
+  "Sync users from your HRMS": "مزامنة المستخدمين من نظام إدارة الموارد البشرية لديك",
+  "3rd Party BI Connector": "موصل ذكاء أعمال خارجي",
+  "Power BI / Tableau connectivity": "الاتصال بـ Power BI / Tableau",
+  // Organisation Details step.
+  "Tell us about your organisation so we can size the proposal.":
+    "أخبرنا عن مؤسستك حتى نتمكن من تحديد حجم العرض المناسب.",
+  "Number of Employees": "عدد الموظفين",
+  "Select Number of Employees": "حدد عدد الموظفين",
+  "Number of Sites": "عدد المواقع",
+  "Select Number of Sites": "حدد عدد المواقع",
+  "Industry": "القطاع",
+  "Select Industry": "حدد القطاع",
+  "Organisation": "المؤسسة",
+  "Chemical & Pharma": "الكيماويات والأدوية",
+  "Facilities Management": "إدارة المرافق",
+  "Healthcare": "الرعاية الصحية",
+  "Manufacturing": "التصنيع",
+  "Mining": "التعدين",
+  "Oil & Gas": "النفط والغاز",
+  "Retail": "التجزئة",
+  "Transportation & Logistics": "النقل والخدمات اللوجستية",
+  "Utilities": "المرافق العامة",
+  "Other": "أخرى",
+  "ADD-ONS": "الإضافات",
+  "ORGANISATION": "المؤسسة",
+  "Number of Employees :": "عدد الموظفين:",
+  "Number of Sites :": "عدد المواقع:",
+  "Industry:": "القطاع:",
+  // Get Proposal step.
+  "Where should we send your tailored proposal?": "إلى أين نرسل عرضك المخصص؟",
+  "Phone Number": "رقم الهاتف",
+  "Your organisations": "مؤسستك",
+  "Message (optional)": "رسالة (اختياري)",
+  "Anything specific you would like us to know?": "هل هناك أي شيء محدد تود إخبارنا به؟",
+  "Get My EHSWatch Proposal": "احصل على عرض EHSWatch الخاص بي",
+  "No commitment required. We'll follow up within 1 business day.":
+    "لا يوجد التزام مطلوب. سنتابع معك خلال يوم عمل واحد.",
+  "Proposal Request Sent!": "تم إرسال طلب العرض!",
+  // FAQ.
+  "Are there hidden fees or setup costs?": "هل هناك رسوم خفية أو تكاليف إعداد؟",
+  "Is there a free trial or demo?": "هل توجد نسخة تجريبية مجانية أو عرض توضيحي؟",
+  "Do you offer customised packages?": "هل تقدمون باقات مخصصة؟",
+  "Yes, packages are fully customisable. Select the EHSWatch modules that match your organisation and only pay for what you use.":
+    "نعم، الباقات قابلة للتخصيص بالكامل. اختر وحدات EHSWatch التي تناسب مؤسستك وادفع فقط مقابل ما تستخدمه.",
+
   // Footer copyright — keep © 2026 EHSWatch, translate the rest.
   "© 2026 EHSWatch. All rights reserved.":
     "© 2026 EHSWatch. جميع الحقوق محفوظة.",
@@ -711,6 +871,13 @@ const LABEL_EN_TO_AR: Record<string, string> = {
   "Work Email": "البريد الإلكتروني للعمل",
   "Mobile Number": "رقم الجوال",
   "Comments": "تعليقات",
+  // Support Ticket tab form fields (distinct from the Contact Us tab above).
+  "Your Name": "اسمك",
+  "Email": "البريد الإلكتروني",
+  "Issue Category": "فئة المشكلة",
+  "Subject": "الموضوع",
+  "Priority": "الأولوية",
+  "Describe the Issue": "صف المشكلة",
 };
 
 // Overrides whose text starts with a Latin brand ("EHSWatch: …"): force the
@@ -826,12 +993,17 @@ export default function ArabicOverrides() {
         if (enHit && EN_TO_AR[enHit] !== undefined) {
           // Skip wrapper containers — target the inner element so we keep its styling.
           if (isWrapperFor(el, enHit)) return;
-          // Skip elements that hold non-text children (icons, nested spans) —
-          // el.textContent = "..." below would silently delete them (e.g. the
-          // "Resources" nav button's dropdown-chevron <svg>). GoogleTranslate's
-          // own text-node-level pass (which this map also feeds) still swaps
-          // the visible text correctly without touching siblings.
-          if (el.children.length > 0) return;
+          // Skip elements that hold an icon/image child (svg/img) — el.textContent
+          // = "..." below would silently delete it (e.g. the "Resources" nav
+          // button's dropdown-chevron <svg>). GoogleTranslate's own text-node-level
+          // pass (which this map also feeds) still swaps the visible text correctly
+          // without touching siblings.
+          // NOTE: this must NOT reject on ANY child — a heading like "About
+          // <span class='notranslate'>IRIS</span>" has a child that's itself part
+          // of the same translatable phrase (already-protected nested text, not a
+          // foreign icon); blocking those broke "About IRIS" entirely, since the
+          // whole-element rewrite is what applies FORCE_LTR/the curated Arabic here.
+          if (el.querySelector("svg, img")) return;
           if (!el.getAttribute("data-ar-en")) el.setAttribute("data-ar-en", enHit);
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");

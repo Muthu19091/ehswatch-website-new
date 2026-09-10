@@ -176,8 +176,11 @@ export default function GoogleTranslate() {
       if (!cancelled) { swap(nodes); swapPh(phEls); }
     };
 
-    // useCloak: true only for the first paint, so the initial view never shows
-    // the English→Arabic reflow. A manual toggle swaps live (no cloak/blank).
+    // useCloak hides the whole page (visibility:hidden on <body>) while the
+    // swap runs, so no one ever sees a page mid-translation — some content
+    // already Arabic, the rest still English. Used both for the first paint
+    // AND for a live EN→AR switch (client confirmed the visible flash during a
+    // live switch was worth trading for a brief full-page blank instead).
     const applyAr = async (useCloak: boolean) => {
       if (useCloak) cloak();
       try { await run(collect(), collectPh()); } finally { if (useCloak) reveal(); }
@@ -197,10 +200,12 @@ export default function GoogleTranslate() {
     if (isArabic()) applyAr(true);
     else reveal();
 
-    // Live switch from the language button — no reload, no blank.
+    // Live switch from the language button — no reload. EN→AR cloaks (see
+    // applyAr) so the visible flash of a page mid-translation is never shown;
+    // AR→EN restores from memory, which is already instant, so no cloak needed.
     const onLocale = (e: Event) => {
       const to = (e as CustomEvent).detail;
-      if (to === "ar") applyAr(false);
+      if (to === "ar") applyAr(true);
       else revertEn();
     };
     window.addEventListener("ehs-locale", onLocale);
