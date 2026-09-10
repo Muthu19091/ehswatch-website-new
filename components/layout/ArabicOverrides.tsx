@@ -543,6 +543,240 @@ export const EN_TO_AR: Record<string, string> = {
   "Ready to bring this level of visibility to your EHS operations?":
     "هل أنت مستعد لجلب هذا المستوى من الرؤية إلى عمليات الصحة والسلامة والبيئة لديك؟",
 
+  // ── /blog/scaling-ai-in-ehs-sustainability ────────────────────────────────
+  "Scaling AI in EHS & Sustainability: From Pilot to Enterprise Value":
+    "توسيع نطاق الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة: من التجربة إلى قيمة المؤسسة",
+  "Introduction": "مقدمة",
+  "Artificial Intelligence (AI) is rapidly reshaping the way organizations manage Environment, Health & Safety (EHS) and sustainability. With increasing regulatory pressure, rising safety expectations, and the need for sustainable operations, businesses are turning to AI-powered solutions to stay ahead.":
+    "يعيد الذكاء الاصطناعي بسرعة تشكيل طريقة إدارة المؤسسات للبيئة والصحة والسلامة والاستدامة. مع تزايد الضغط التنظيمي وارتفاع توقعات السلامة والحاجة إلى عمليات مستدامة، تتجه الشركات إلى حلول مدعومة بالذكاء الاصطناعي للبقاء في الصدارة.",
+  "While many companies begin with small pilot programs, the real value of AI is realized when it is scaled across the enterprise. From improving workplace safety to enhancing environmental performance, AI is becoming a critical driver of modern EHS management.":
+    "بينما تبدأ العديد من الشركات ببرامج تجريبية صغيرة، تتحقق القيمة الحقيقية للذكاء الاصطناعي عند توسيع نطاقه عبر المؤسسة. من تحسين سلامة مكان العمل إلى تعزيز الأداء البيئي، يصبح الذكاء الاصطناعي محركاً أساسياً لإدارة الصحة والسلامة والبيئة الحديثة.",
+  "Understanding AI in EHS & Sustainability": "فهم الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة",
+  "AI in EHS refers to the use of advanced technologies such as machine learning, automation, and data analytics to improve safety processes, ensure compliance, and support sustainability goals.":
+    "يشير الذكاء الاصطناعي في الصحة والسلامة والبيئة إلى استخدام تقنيات متقدمة مثل التعلم الآلي والأتمتة وتحليلات البيانات لتحسين عمليات السلامة وضمان الامتثال ودعم أهداف الاستدامة.",
+  "By integrating AI into EHS systems, organizations can analyze large volumes of data, identify patterns, and generate actionable insights in real time. This enables a shift from reactive safety management to proactive risk prevention.":
+    "من خلال دمج الذكاء الاصطناعي في أنظمة الصحة والسلامة والبيئة، يمكن للمؤسسات تحليل كميات كبيرة من البيانات وتحديد الأنماط وإنشاء رؤى قابلة للتنفيذ في الوقت الفعلي. يتيح ذلك الانتقال من إدارة السلامة التفاعلية إلى الوقاية الاستباقية من المخاطر.",
+  "AI also plays a significant role in sustainability by helping organizations monitor emissions, optimize resource usage, and meet environmental regulations more efficiently":
+    "يلعب الذكاء الاصطناعي أيضاً دوراً مهماً في الاستدامة من خلال مساعدة المؤسسات على مراقبة الانبعاثات وتحسين استخدام الموارد وتلبية اللوائح البيئية بكفاءة أكبر",
+  "AI Pilot Programs: The Starting Point": "برامج الذكاء الاصطناعي التجريبية: نقطة البداية",
+  "Most organizations begin their AI journey in EHS with pilot programs focused on specific use cases. These pilots help test the feasibility of AI and demonstrate its potential value.":
+    "تبدأ معظم المؤسسات رحلتها مع الذكاء الاصطناعي في الصحة والسلامة والبيئة ببرامج تجريبية تركز على حالات استخدام محددة. تساعد هذه التجارب في اختبار جدوى الذكاء الاصطناعي وإظهار قيمته المحتملة.",
+  "Common applications include predictive analytics for incident prevention, automated incident reporting, and real-time environmental monitoring. These initial implementations often deliver promising results, such as improved reporting accuracy and better visibility into workplace risks.":
+    "تشمل التطبيقات الشائعة التحليلات التنبؤية للوقاية من الحوادث، والإبلاغ الآلي عن الحوادث، والمراقبة البيئية الفورية. غالباً ما تقدم هذه التطبيقات الأولية نتائج واعدة، مثل تحسين دقة الإبلاغ ورؤية أفضل لمخاطر مكان العمل.",
+  "However, pilot programs are only the first step. The true impact of AI is achieved when these solutions move beyond isolated use cases and become part of a larger, integrated system.":
+    "لكن البرامج التجريبية ليست سوى الخطوة الأولى. يتحقق التأثير الحقيقي للذكاء الاصطناعي عندما تتجاوز هذه الحلول حالات الاستخدام المعزولة وتصبح جزءاً من نظام أكبر ومتكامل.",
+  "Impact of AI on Workplace Safety": "تأثير الذكاء الاصطناعي على سلامة مكان العمل",
+  "One of the most significant benefits of AI in EHS is its ability to improve workplace safety. By analyzing historical data and identifying patterns, AI can predict potential hazards before they result in incidents.":
+    "من أبرز فوائد الذكاء الاصطناعي في الصحة والسلامة والبيئة قدرته على تحسين سلامة مكان العمل. من خلال تحليل البيانات التاريخية وتحديد الأنماط، يمكن للذكاء الاصطناعي التنبؤ بالمخاطر المحتملة قبل أن تتحول إلى حوادث.",
+  "This predictive capability allows organizations to take preventive actions, reducing the likelihood of accidents and injuries. AI also improves incident reporting by automating data capture and classification, ensuring more accurate and timely records.":
+    "تتيح هذه القدرة التنبؤية للمؤسسات اتخاذ إجراءات وقائية، مما يقلل احتمالية وقوع الحوادث والإصابات. يحسّن الذكاء الاصطناعي أيضاً الإبلاغ عن الحوادث من خلال أتمتة التقاط البيانات وتصنيفها، بما يضمن سجلات أكثر دقة وفي وقتها.",
+  "Additionally, technologies such as computer vision can detect unsafe behaviors in real time, helping organizations create safer work environments.":
+    "بالإضافة إلى ذلك، يمكن لتقنيات مثل الرؤية الحاسوبية اكتشاف السلوكيات غير الآمنة في الوقت الفعلي، مما يساعد المؤسسات على إنشاء بيئات عمل أكثر أماناً.",
+  "Enhancing Sustainability with AI": "تعزيز الاستدامة بالذكاء الاصطناعي",
+  "AI is also transforming sustainability management by enabling organizations to track and optimize their environmental impact. Through real-time monitoring and data analysis, businesses can gain better visibility into energy consumption, emissions, and waste generation.":
+    "يعيد الذكاء الاصطناعي أيضاً تشكيل إدارة الاستدامة من خلال تمكين المؤسسات من تتبع أثرها البيئي وتحسينه. من خلال المراقبة الفورية وتحليل البيانات، يمكن للشركات اكتساب رؤية أفضل لاستهلاك الطاقة والانبعاثات وتوليد النفايات.",
+  "This allows companies to identify inefficiencies, reduce resource usage, and align with sustainability goals and ESG standards. AI-driven insights make it easier to comply with environmental regulations while improving overall operational performance.":
+    "يتيح ذلك للشركات تحديد أوجه القصور وتقليل استخدام الموارد والتوافق مع أهداف الاستدامة ومعايير الحوكمة البيئية والاجتماعية. تُسهّل الرؤى المدعومة بالذكاء الاصطناعي الامتثال للوائح البيئية مع تحسين الأداء التشغيلي العام.",
+  "Future of AI in EHS & Sustainability": "مستقبل الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة",
+  "The future of AI in EHS and sustainability lies in more advanced and integrated systems. Emerging technologies will further enhance predictive capabilities, automate complex processes, and provide deeper insights into safety and environmental performance.":
+    "يكمن مستقبل الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة في أنظمة أكثر تقدماً وتكاملاً. ستعزز التقنيات الناشئة القدرات التنبؤية بشكل أكبر، وتؤتمت العمليات المعقدة، وتوفر رؤى أعمق لأداء السلامة والبيئة.",
+  "As organizations continue to adopt digital solutions, AI will play a central role in shaping safer workplaces and more sustainable operations.":
+    "مع استمرار المؤسسات في تبني الحلول الرقمية، سيلعب الذكاء الاصطناعي دوراً محورياً في تشكيل أماكن عمل أكثر أماناً وعمليات أكثر استدامة.",
+  "Conclusion": "الخاتمة",
+  "Scaling AI in EHS and sustainability is transforming how organizations approach safety, compliance, and environmental responsibility. Moving from pilot programs to enterprise-wide implementation enables businesses to unlock the full potential of AI.":
+    "يعيد توسيع نطاق الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة تشكيل نهج المؤسسات تجاه السلامة والامتثال والمسؤولية البيئية. يتيح الانتقال من البرامج التجريبية إلى التنفيذ على مستوى المؤسسة للشركات إطلاق كامل إمكانات الذكاء الاصطناعي.",
+  "With improved visibility, predictive insights, and enhanced efficiency, AI is not just a technological advancement-it is a strategic enabler for building safer, smarter, and more sustainable organizations.":
+    "بفضل الرؤية المحسّنة والرؤى التنبؤية والكفاءة المعززة، لا يُعد الذكاء الاصطناعي مجرد تقدم تقني — بل عامل تمكين استراتيجي لبناء مؤسسات أكثر أماناً وذكاءً واستدامة.",
+
+  // ── /blog/manual-incident-reporting-vs-digital-reporting-which-is-better-for-workplace-safety
+  "Manual Incident Reporting vs Digital Reporting: Which Is Better for Workplace Safety?":
+    "الإبلاغ اليدوي عن الحوادث مقابل الإبلاغ الرقمي: أيهما أفضل لسلامة مكان العمل؟",
+  "Every workplace faces incidents at some point - from near misses to equipment failures or employee injuries. But in many companies, the real challenge starts after the incident happens: reporting and managing it properly.":
+    "يواجه كل مكان عمل حوادث في مرحلة ما — من الحوادث الوشيكة إلى أعطال المعدات أو إصابات الموظفين. لكن في العديد من الشركات، يبدأ التحدي الحقيقي بعد وقوع الحادث: الإبلاغ عنه وإدارته بشكل صحيح.",
+  "Many organizations still rely on paper forms, Excel sheets, emails, or WhatsApp messages to record incidents. While this may seem manageable, it often creates delays, missing information, and confusion between teams. Important corrective actions can also get delayed because the data is scattered across different platforms.":
+    "لا تزال العديد من المؤسسات تعتمد على النماذج الورقية أو جداول إكسل أو البريد الإلكتروني أو رسائل واتساب لتسجيل الحوادث. وبينما قد يبدو هذا قابلاً للإدارة، إلا أنه غالباً ما يخلق تأخيرات ومعلومات ناقصة وارتباكاً بين الفرق. يمكن أيضاً أن تتأخر الإجراءات التصحيحية المهمة لأن البيانات مبعثرة عبر منصات مختلفة.",
+  "That’s why more businesses are shifting toward digital incident reporting systems.":
+    "لهذا السبب تتجه المزيد من الشركات نحو أنظمة الإبلاغ الرقمي عن الحوادث.",
+  "Problems with Manual Incident Reporting": "مشكلات الإبلاغ اليدوي عن الحوادث",
+  "Manual reporting mainly depends on paperwork and back-and-forth communication. Employees report issues to supervisors, who then pass the details to safety teams through calls, emails, or spreadsheets. As operations grow, this process becomes difficult to manage.":
+    "يعتمد الإبلاغ اليدوي بشكل أساسي على الأعمال الورقية والتواصل المتكرر ذهاباً وإياباً. يُبلغ الموظفون المشرفين بالمشكلات، الذين ينقلون بدورهم التفاصيل إلى فرق السلامة عبر المكالمات أو البريد الإلكتروني أو جداول البيانات. مع نمو العمليات، تصبح هذه العملية صعبة الإدارة.",
+  "Common challenges include:": "تشمل التحديات الشائعة:",
+  "Delayed reporting": "الإبلاغ المتأخر",
+  "Missing or incomplete records": "سجلات مفقودة أو غير مكتملة",
+  "Human errors in data entry": "أخطاء بشرية في إدخال البيانات",
+  "Difficulty tracking corrective actions": "صعوبة تتبع الإجراءات التصحيحية",
+  "Slow investigations and approvals": "تحقيقات وموافقات بطيئة",
+  "Lack of real-time visibility": "غياب الرؤية الفورية",
+  "Over time, these issues increase workload for safety teams and slow down response times.":
+    "بمرور الوقت، تزيد هذه المشكلات عبء العمل على فرق السلامة وتبطئ أوقات الاستجابة.",
+  "How Digital Incident Reporting Helps": "كيف يساعد الإبلاغ الرقمي عن الحوادث",
+  "Digital systems simplify the entire reporting process. Employees can report incidents instantly through a mobile app or web platform, and the information immediately reaches the concerned teams.":
+    "تبسّط الأنظمة الرقمية عملية الإبلاغ بأكملها. يمكن للموظفين الإبلاغ عن الحوادث فوراً عبر تطبيق جوال أو منصة ويب، وتصل المعلومات على الفور إلى الفرق المعنية.",
+  "This helps organizations:": "يساعد هذا المؤسسات على:",
+  "Respond faster to incidents": "الاستجابة بشكل أسرع للحوادث",
+  "Store all records in one place": "تخزين كل السجلات في مكان واحد",
+  "Reduce manual errors": "تقليل الأخطاء اليدوية",
+  "Track corrective actions easily": "تتبع الإجراءات التصحيحية بسهولة",
+  "Monitor safety trends through dashboards": "مراقبة اتجاهات السلامة عبر لوحات المعلومات",
+  "Simplify compliance and audits": "تبسيط الامتثال والتدقيقات",
+  "Digital reporting also encourages employees to report hazards more quickly because the process becomes simple and accessible.":
+    "يشجع الإبلاغ الرقمي أيضاً الموظفين على الإبلاغ عن المخاطر بشكل أسرع لأن العملية تصبح بسيطة وسهلة الوصول.",
+  "Manual vs Digital Reporting": "الإبلاغ اليدوي مقابل الرقمي",
+  "Feature": "الميزة",
+  "Manual Reporting": "الإبلاغ اليدوي",
+  "Digital Reporting": "الإبلاغ الرقمي",
+  "Reporting Speed": "سرعة الإبلاغ",
+  "Slow": "بطيء",
+  "Instant": "فوري",
+  "Record Keeping": "حفظ السجلات",
+  "Hard to manage": "صعب الإدارة",
+  "Centralized": "مركزي",
+  "Tracking": "التتبع",
+  "Manual follow-up": "متابعة يدوية",
+  "Automated": "آلي",
+  "Accuracy": "الدقة",
+  "Higher chance of errors": "احتمالية أعلى للأخطاء",
+  "More consistent": "أكثر اتساقاً",
+  "Accessibility": "سهولة الوصول",
+  "Limited": "محدودة",
+  "Real-time access": "وصول فوري",
+  "Why Businesses Are Moving Digital": "لماذا تتجه الشركات نحو الرقمنة",
+  "Modern workplaces need faster communication, better visibility, and organized safety management. Paper-based systems often fail to provide that level of efficiency. Digital reporting helps companies improve accountability, reduce delays, and manage workplace safety more effectively.":
+    "تحتاج أماكن العمل الحديثة إلى تواصل أسرع ورؤية أفضل وإدارة سلامة منظمة. غالباً ما تفشل الأنظمة الورقية في توفير هذا المستوى من الكفاءة. يساعد الإبلاغ الرقمي الشركات على تحسين المساءلة وتقليل التأخيرات وإدارة سلامة مكان العمل بفعالية أكبر.",
+  "Final Thoughts": "أفكار ختامية",
+  "Manual reporting methods may still work for some businesses, but they often create unnecessary delays and increase administrative effort. Digital incident reporting offers a faster, smarter, and more organized way to manage workplace safety.":
+    "قد لا تزال طرق الإبلاغ اليدوي تعمل لبعض الشركات، لكنها غالباً ما تخلق تأخيرات غير ضرورية وتزيد الجهد الإداري. يقدم الإبلاغ الرقمي عن الحوادث طريقة أسرع وأذكى وأكثر تنظيماً لإدارة سلامة مكان العمل.",
+  "As companies continue focusing on employee safety and compliance, digital EHS solutions are becoming an essential part of modern incident management.":
+    "مع استمرار الشركات في التركيز على سلامة الموظفين والامتثال، تصبح حلول الصحة والسلامة والبيئة الرقمية جزءاً أساسياً من إدارة الحوادث الحديثة.",
+
+  // ── /blog/what-is-ehs-compliance-and-why-do-businesses-and-industries-need-it
+  "What is EHS Compliance and Why Do Businesses and Industries Need It?":
+    "ما هو الامتثال للصحة والسلامة والبيئة ولماذا تحتاجه الشركات والصناعات؟",
+  "In today's fast-paced industrial environment, maintaining a safe, healthy, and environmentally responsible workplace is no longer optional-it's a business necessity. Organizations across manufacturing, construction, pharmaceuticals, logistics, oil & gas, and other sectors are expected to comply with Environmental, Health, and Safety (EHS) regulations to protect employees, communities, and the environment.":
+    "في البيئة الصناعية سريعة الوتيرة اليوم، لم يعد الحفاظ على مكان عمل آمن وصحي ومسؤول بيئياً أمراً اختيارياً — بل ضرورة تجارية. يُتوقع من المؤسسات في التصنيع والبناء والأدوية والخدمات اللوجستية والنفط والغاز وقطاعات أخرى الامتثال للوائح البيئة والصحة والسلامة لحماية الموظفين والمجتمعات والبيئة.",
+  "EHS compliance is not just about meeting legal requirements; it is about creating a culture of safety, reducing operational risks, and ensuring long-term business sustainability.":
+    "الامتثال للصحة والسلامة والبيئة ليس مجرد تلبية للمتطلبات القانونية؛ بل يتعلق ببناء ثقافة سلامة وتقليل المخاطر التشغيلية وضمان استدامة الأعمال على المدى الطويل.",
+  "With digital solutions like EHSWatch, organizations can streamline compliance management, identify workplace hazards proactively, and improve overall safety performance.":
+    "باستخدام حلول رقمية مثل EHSWatch، يمكن للمؤسسات تبسيط إدارة الامتثال وتحديد مخاطر مكان العمل بشكل استباقي وتحسين أداء السلامة العام.",
+  "What is EHS Compliance?": "ما هو الامتثال للصحة والسلامة والبيئة؟",
+  "EHS Compliance refers to an organization's adherence to environmental, health, and safety laws, regulations, standards, and internal policies designed to protect people, property, and the environment.":
+    "يشير الامتثال للصحة والسلامة والبيئة إلى التزام المؤسسة بالقوانين واللوائح والمعايير والسياسات الداخلية البيئية والصحية والسلامية المصممة لحماية الأشخاص والممتلكات والبيئة.",
+  "1. Environmental Compliance": "1. الامتثال البيئي",
+  "Environmental regulations focus on reducing an organization's impact on the environment. This includes:":
+    "تركز اللوائح البيئية على تقليل تأثير المؤسسة على البيئة. ويشمل ذلك:",
+  "Waste management": "إدارة النفايات",
+  "Air and water pollution control": "التحكم في تلوث الهواء والماء",
+  "Hazardous material handling": "التعامل مع المواد الخطرة",
+  "Energy efficiency initiatives": "مبادرات كفاءة الطاقة",
+  "Environmental reporting and audits": "التقارير والتدقيقات البيئية",
+  "2. Health Compliance": "2. الامتثال الصحي",
+  "Health compliance ensures employee well-being by addressing:": "يضمن الامتثال الصحي رفاهية الموظفين من خلال معالجة:",
+  "Occupational health risks": "مخاطر الصحة المهنية",
+  "Exposure to hazardous substances": "التعرض للمواد الخطرة",
+  "Ergonomic assessments": "تقييمات بيئة العمل",
+  "Employee wellness programs": "برامج رفاهية الموظفين",
+  "Health monitoring and medical surveillance": "المراقبة الصحية والإشراف الطبي",
+  "3. Safety Compliance": "3. الامتثال للسلامة",
+  "Safety compliance aims to prevent workplace accidents and injuries through:":
+    "يهدف الامتثال للسلامة إلى منع حوادث وإصابات مكان العمل من خلال:",
+  "Hazard identification and risk assessment": "تحديد المخاطر وتقييمها",
+  "Incident reporting and investigation": "الإبلاغ عن الحوادث والتحقيق فيها",
+  "Safety training and awareness programs": "برامج التدريب والتوعية بالسلامة",
+  "Personal Protective Equipment (PPE) management": "إدارة معدات الحماية الشخصية",
+  "Emergency preparedness and response planning": "التخطيط للاستعداد والاستجابة للطوارئ",
+  "Why Do Businesses and Industries Need EHS Compliance?": "لماذا تحتاج الشركات والصناعات إلى الامتثال للصحة والسلامة والبيئة؟",
+  "1. Protect Employee Health and Safety": "1. حماية صحة وسلامة الموظفين",
+  "Employees are the backbone of every organization. A safe workplace reduces accidents, injuries, illnesses, and fatalities while improving employee morale and productivity.":
+    "الموظفون هم العمود الفقري لأي مؤسسة. يقلل مكان العمل الآمن من الحوادث والإصابات والأمراض والوفيات مع تحسين معنويات الموظفين وإنتاجيتهم.",
+  "Organizations that prioritize EHS compliance demonstrate their commitment to workforce well-being.":
+    "تُظهر المؤسسات التي تُولي الأولوية للامتثال للصحة والسلامة والبيئة التزامها برفاهية القوى العاملة.",
+  "2. Meet Legal and Regulatory Requirements": "2. تلبية المتطلبات القانونية والتنظيمية",
+  "Governments and regulatory authorities have established strict EHS regulations to protect workers and the environment.":
+    "وضعت الحكومات والجهات التنظيمية لوائح صارمة للصحة والسلامة والبيئة لحماية العمال والبيئة.",
+  "Non-compliance can result in:": "يمكن أن يؤدي عدم الامتثال إلى:",
+  "Heavy fines and penalties": "غرامات وعقوبات باهظة",
+  "Legal action": "إجراءات قانونية",
+  "Business interruptions": "توقف الأعمال",
+  "License suspension": "تعليق التراخيص",
+  "Reputational damage": "الإضرار بالسمعة",
+  "Maintaining compliance helps organizations avoid these risks while ensuring smooth operations.":
+    "يساعد الحفاظ على الامتثال المؤسسات على تجنب هذه المخاطر مع ضمان سير العمليات بسلاسة.",
+  "3. Reduce Workplace Incidents": "3. تقليل حوادث مكان العمل",
+  "Many workplace incidents occur because hazards go unnoticed or are not addressed promptly.":
+    "تقع العديد من حوادث مكان العمل لأن المخاطر تمر دون ملاحظة أو لا تُعالَج بسرعة.",
+  "An effective EHS compliance program helps organizations:": "يساعد برنامج امتثال فعال للصحة والسلامة والبيئة المؤسسات على:",
+  "Identify hazards early": "تحديد المخاطر مبكراً",
+  "Conduct risk assessments": "إجراء تقييمات المخاطر",
+  "Implement corrective actions": "تنفيذ الإجراءات التصحيحية",
+  "Prevent accidents before they occur": "منع الحوادث قبل وقوعها",
+  "4. Improve Operational Efficiency": "4. تحسين الكفاءة التشغيلية",
+  "A safe and compliant workplace experiences fewer disruptions caused by accidents, equipment damage, investigations, and downtime.":
+    "يشهد مكان العمل الآمن والملتزم اضطرابات أقل ناتجة عن الحوادث وتلف المعدات والتحقيقات وتوقف العمل.",
+  "This leads to:": "يؤدي هذا إلى:",
+  "Higher productivity": "إنتاجية أعلى",
+  "Reduced operational costs": "تكاليف تشغيلية أقل",
+  "Better resource utilization": "استخدام أفضل للموارد",
+  "Improved business continuity": "استمرارية أعمال محسّنة",
+  "5. Enhance Corporate Reputation": "5. تعزيز سمعة الشركة",
+  "Customers, investors, employees, and stakeholders increasingly expect businesses to operate responsibly.":
+    "يتوقع العملاء والمستثمرون والموظفون وأصحاب المصلحة بشكل متزايد أن تعمل الشركات بمسؤولية.",
+  "Organizations with strong EHS practices are viewed as:": "يُنظر إلى المؤسسات ذات الممارسات القوية للصحة والسلامة والبيئة على أنها:",
+  "Reliable": "موثوقة",
+  "Responsible": "مسؤولة",
+  "Sustainable": "مستدامة",
+  "Employee-focused": "تُركّز على الموظفين",
+  "A strong safety culture can significantly enhance brand reputation and stakeholder trust.":
+    "يمكن لثقافة السلامة القوية أن تعزز بشكل كبير سمعة العلامة التجارية وثقة أصحاب المصلحة.",
+  "6. Support Sustainability Goals": "6. دعم أهداف الاستدامة",
+  "Environmental compliance plays a critical role in achieving sustainability objectives.":
+    "يلعب الامتثال البيئي دوراً حاسماً في تحقيق أهداف الاستدامة.",
+  "Businesses can reduce their environmental footprint through:": "يمكن للشركات تقليل بصمتها البيئية من خلال:",
+  "Responsible waste management": "إدارة نفايات مسؤولة",
+  "Pollution prevention": "الوقاية من التلوث",
+  "Resource conservation": "الحفاظ على الموارد",
+  "Sustainable operations": "عمليات مستدامة",
+  "This contributes to long-term business growth while supporting environmental stewardship.":
+    "يساهم هذا في نمو الأعمال على المدى الطويل مع دعم الإشراف البيئي.",
+  "Common EHS Compliance Challenges": "التحديات الشائعة للامتثال للصحة والسلامة والبيئة",
+  "Many organizations still rely on manual processes, spreadsheets, and paper-based systems, making compliance management difficult.":
+    "لا تزال العديد من المؤسسات تعتمد على العمليات اليدوية وجداول البيانات والأنظمة الورقية، مما يجعل إدارة الامتثال صعبة.",
+  "Delayed hazard reporting": "الإبلاغ المتأخر عن المخاطر",
+  "Incomplete safety records": "سجلات سلامة غير مكتملة",
+  "Missed inspections and audits": "تفتيشات وتدقيقات فائتة",
+  "Poor corrective action tracking": "تتبع ضعيف للإجراءات التصحيحية",
+  "Compliance documentation issues": "مشكلات في توثيق الامتثال",
+  "These challenges can increase compliance risks and hinder safety performance.":
+    "يمكن أن تزيد هذه التحديات مخاطر الامتثال وتعيق أداء السلامة.",
+  "How EHSWatch Helps Organizations Stay Compliant": "كيف تساعد EHSWatch المؤسسات على البقاء ممتثلة",
+  "EHSWatch is an intelligent workplace safety and compliance management platform designed to simplify EHS processes and strengthen safety cultures.":
+    "EHSWatch منصة ذكية لإدارة سلامة مكان العمل والامتثال مصممة لتبسيط عمليات الصحة والسلامة والبيئة وتعزيز ثقافات السلامة.",
+  "Key Benefits of EHSWatch": "الفوائد الرئيسية لـ EHSWatch",
+  "Real-Time Hazard Reporting - Enable employees to report hazards instantly using digital tools, ensuring faster response and corrective action.":
+    "الإبلاغ الفوري عن المخاطر - تمكين الموظفين من الإبلاغ عن المخاطر فوراً باستخدام أدوات رقمية، بما يضمن استجابة وإجراءً تصحيحياً أسرع.",
+  "Incident Management - Capture, investigate, and track workplace incidents from a centralized platform.":
+    "إدارة الحوادث - تسجيل حوادث مكان العمل والتحقيق فيها وتتبعها من منصة مركزية.",
+  "Compliance Monitoring - Monitor regulatory requirements, inspections, and corrective actions to ensure ongoing compliance.":
+    "مراقبة الامتثال - مراقبة المتطلبات التنظيمية والتفتيشات والإجراءات التصحيحية لضمان استمرار الامتثال.",
+  "Safety Audits and Inspections - Digitize audits and inspections to improve accuracy, accountability, and efficiency.":
+    "تدقيقات وتفتيشات السلامة - رقمنة التدقيقات والتفتيشات لتحسين الدقة والمساءلة والكفاءة.",
+  "Data-Driven Insights - Leverage analytics and dashboards to identify trends, evaluate risks, and make informed decisions.":
+    "رؤى مبنية على البيانات - الاستفادة من التحليلات ولوحات المعلومات لتحديد الاتجاهات وتقييم المخاطر واتخاذ قرارات مستنيرة.",
+  "Improved Workplace Safety Culture - Empower employees to actively participate in safety initiatives and hazard identification.":
+    "ثقافة سلامة مكان عمل محسّنة - تمكين الموظفين من المشاركة الفعالة في مبادرات السلامة وتحديد المخاطر.",
+  "The Future of EHS Compliance": "مستقبل الامتثال للصحة والسلامة والبيئة",
+  "As industries continue to embrace digital transformation, EHS compliance is evolving from reactive management to proactive risk prevention.":
+    "مع استمرار الصناعات في تبني التحول الرقمي، يتطور الامتثال للصحة والسلامة والبيئة من الإدارة التفاعلية إلى الوقاية الاستباقية من المخاطر.",
+  "Technologies such as Artificial Intelligence (AI), predictive analytics, mobile reporting, and automated compliance tracking are helping organizations identify potential risks before incidents occur.":
+    "تساعد تقنيات مثل الذكاء الاصطناعي والتحليلات التنبؤية والإبلاغ عبر الجوال وتتبع الامتثال الآلي المؤسسات على تحديد المخاطر المحتملة قبل وقوع الحوادث.",
+  "Modern EHS platforms like EHSWatch enable businesses to move beyond basic compliance and build safer, smarter, and more resilient workplaces.":
+    "تُمكّن منصات الصحة والسلامة والبيئة الحديثة مثل EHSWatch الشركات من تجاوز الامتثال الأساسي وبناء أماكن عمل أكثر أماناً وذكاءً ومرونة.",
+  "EHS compliance is essential for protecting employees, meeting regulatory requirements, reducing risks, and ensuring sustainable business growth. Organizations that invest in effective EHS programs not only avoid legal and financial consequences but also create safer and more productive workplaces.":
+    "الامتثال للصحة والسلامة والبيئة ضروري لحماية الموظفين وتلبية المتطلبات التنظيمية وتقليل المخاطر وضمان نمو مستدام للأعمال. لا تتجنب المؤسسات التي تستثمر في برامج فعالة للصحة والسلامة والبيئة العواقب القانونية والمالية فحسب، بل تُنشئ أيضاً أماكن عمل أكثر أماناً وإنتاجية.",
+  "By leveraging digital solutions like EHSWatch, businesses can simplify compliance management, proactively identify hazards, and foster a culture of continuous safety improvement.":
+    "من خلال الاستفادة من حلول رقمية مثل EHSWatch، يمكن للشركات تبسيط إدارة الامتثال وتحديد المخاطر بشكل استباقي وتعزيز ثقافة التحسين المستمر للسلامة.",
+  "In a world where workplace safety and sustainability are increasingly important, EHS compliance is not just a requirement-it is a strategic advantage.":
+    "في عالم تزداد فيه أهمية سلامة مكان العمل والاستدامة، لا يُعد الامتثال للصحة والسلامة والبيئة مجرد متطلب — بل ميزة استراتيجية.",
+
   // ── /modules/* — shared template strings (identical across all 14 module
   // pages), highest leverage: each translated once here, applies everywhere.
   "See Key Features": "شاهد الميزات الرئيسية",
