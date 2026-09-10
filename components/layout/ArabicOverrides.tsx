@@ -17,7 +17,16 @@ import { useEffect } from "react";
    ──────────────────────────────────────────────────────────────────────── */
 
 // English source (whitespace-normalised) → authored Arabic.
-const EN_TO_AR: Record<string, string> = {
+// Exported: GoogleTranslate.tsx also consults this map at the raw TEXT-NODE
+// level (see its `run()`), which is what lets an entry here override a plain
+// text node that sits BEFORE a nested inline span — e.g. "Designed Around
+// Your <span class='hd-hl'>EHS Needs</span>, Not a Template". This component's
+// own element-matching below only ever sees the whole heading's concatenated
+// textContent ("Designed Around Your EHS Needs, Not a Template"), so an entry
+// keyed on just the lead-in fragment can never match through THIS component
+// alone — GoogleTranslate.tsx's text-node-level pass is what actually applies
+// it. Both consumers share one source of truth either way.
+export const EN_TO_AR: Record<string, string> = {
   "Back": "رجوع",
   "Book a Demo": "احجز عرضاً توضيحياً",
   "Step 1": "الخطوة الأولى",
@@ -55,13 +64,23 @@ const EN_TO_AR: Record<string, string> = {
   "Support": "الدعم",
   "Industries": "الصناعات",
   "Contact Us": "اتصل بنا",
+  "Resources": "الموارد",
   // Pricing page headline fragments -- confirmed via direct API testing that
   // Google's free translate endpoint returns these 3 specific fragments
   // completely UNCHANGED (untranslated), even though the rest of the page
   // translates fine. Each one leads into a CMS-authored Arabic <span> that's
   // already correct, so only the plain-text lead-in needed a fix.
   "Simple, Flexible Pricing for": "أسعار بسيطة ومرنة لـ",
+  // The hero's highlighted span (2nd text node of the same heading) --
+  // confirmed via the same architectural fix (see EN_TO_AR export note above)
+  // that only the lead-in was reachable before; this completes the heading.
+  "Enterprise-Grade EHSQ Management": "إدارة EHSQ على مستوى المؤسسات",
   "Designed Around Your": "مصمم حول",
+  // The other 2 text nodes of this same heading -- the highlighted span
+  // ("EHS Needs") and the trailing text after it (", Not a Template") --
+  // confirmed unreliable the same way; completes the heading.
+  "EHS Needs": "احتياجات EHS",
+  ", Not a Template": "، وليس قالبًا جاهزًا",
   "Custom pricing is available": "التسعير المخصص متاح",
   // Same Google-API-unreliable pattern as above -- confirmed via direct
   // testing that these two specifically come back unchanged (the third
@@ -74,6 +93,17 @@ const EN_TO_AR: Record<string, string> = {
     "مجموعات وحدات محددة لوحدات الأعمال المختلفة",
   "Multi-site or multi-country deployments with regional configuration":
     "عمليات نشر متعددة المواقع أو الدول بتكوين إقليمي",
+  // Same page, third pill -- confirmed AGAIN unreliable (untranslated in a
+  // fresh client screenshot) despite y-day's note that it "translates fine
+  // every time". Non-deterministic, so curated like its two siblings above.
+  "Integration with existing ERP, HRMS or BI systems":
+    "التكامل مع أنظمة تخطيط موارد المؤسسات (ERP) أو إدارة الموارد البشرية (HRMS) أو أنظمة ذكاء الأعمال (BI) الحالية",
+  // Pricing page body copy -- both paragraphs confirmed fully untranslated in
+  // the same screenshot (same non-deterministic Google free-API failure).
+  "EHSWatch is built for organisations that cannot afford generic templates or rigid licensing. Our pricing reflects how you actually use EHSQ software — across sites, modules, users, and compliance requirements. With EHSWatch, you pay for the capabilities you need, not for bundled features you won’t use.":
+    "تم تصميم EHSWatch للمؤسسات التي لا يمكنها الاعتماد على القوالب العامة أو نماذج الترخيص الجامدة. يعكس نظام التسعير لدينا طريقة استخدامك الفعلية لبرنامج EHSQ — عبر المواقع والوحدات والمستخدمين ومتطلبات الامتثال. مع EHSWatch، أنت تدفع مقابل الإمكانيات التي تحتاجها فعلاً، وليس مقابل ميزات مجمّعة لن تستخدمها.",
+  "Implementation support, configuration, and role-based access are built into the way pricing is structured, so you can focus on improving safety and compliance instead of deciphering licence tiers.":
+    "دعم التنفيذ والتهيئة والوصول القائم على الأدوار مدمجة ضمن هيكلة التسعير، بحيث يمكنك التركيز على تحسين السلامة والامتثال بدلاً من فك رموز مستويات الترخيص.",
   // Contact/Support form heading + submit button (authored Arabic).
   "Get in Touch with Our Team": "تواصل مع فريقنا",
   "Submit": "إرسال",
@@ -200,6 +230,12 @@ export default function ArabicOverrides() {
         if (enHit && EN_TO_AR[enHit] !== undefined) {
           // Skip wrapper containers — target the inner element so we keep its styling.
           if (isWrapperFor(el, enHit)) return;
+          // Skip elements that hold non-text children (icons, nested spans) —
+          // el.textContent = "..." below would silently delete them (e.g. the
+          // "Resources" nav button's dropdown-chevron <svg>). GoogleTranslate's
+          // own text-node-level pass (which this map also feeds) still swaps
+          // the visible text correctly without touching siblings.
+          if (el.children.length > 0) return;
           if (!el.getAttribute("data-ar-en")) el.setAttribute("data-ar-en", enHit);
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");

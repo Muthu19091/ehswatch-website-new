@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { basePath } from "@/lib/basePath";
+import { EN_TO_AR as CURATED_AR } from "./ArabicOverrides";
 
 /* ────────────────────────────────────────────────────────────────────────────
    First-party Arabic translator.
@@ -136,14 +137,26 @@ export default function GoogleTranslate() {
     };
 
     const run = async (nodes: MTNode[], phEls: PhEl[] = []) => {
-      const need = [
-        ...new Set(
-          [
-            ...nodes.map((n) => (n.nodeValue || "").trim()),
-            ...phEls.map((el) => (el.getAttribute("placeholder") || "").trim()),
-          ].filter((t) => t && !dict.has(t)),
-        ),
+      // Curated fragments win before we ever touch the network. This is what
+      // makes an ArabicOverrides entry apply to a plain text node that sits
+      // BEFORE a nested inline span (e.g. a heading's lead-in text ahead of
+      // a highlighted "hd-hl" span) — ArabicOverrides' own element-matching
+      // only ever sees a whole element's concatenated textContent, so a
+      // lead-in-only key can never match there. Matching here, at the same
+      // per-text-node granularity this TreeWalker already operates at, is
+      // what actually applies it. Also guarantees correctness for any
+      // fragment the free Google endpoint has shown to translate
+      // inconsistently, regardless of DOM shape.
+      const allTexts = [
+        ...nodes.map((n) => (n.nodeValue || "").trim()),
+        ...phEls.map((el) => (el.getAttribute("placeholder") || "").trim()),
       ];
+      for (const t of allTexts) {
+        if (t && !dict.has(t) && Object.prototype.hasOwnProperty.call(CURATED_AR, t)) {
+          dict.set(t, CURATED_AR[t]);
+        }
+      }
+      const need = [...new Set(allTexts.filter((t) => t && !dict.has(t)))];
       if (need.length) {
         try {
           const res = await fetch(`${basePath}/api/translate/`, {
