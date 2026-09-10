@@ -593,6 +593,8 @@ export const EN_TO_AR: Record<string, string> = {
   "Safety Culture": "ثقافة السلامة",
   "Format: All formats": "التنسيق: كل التنسيقات",
   "Article": "مقالة",
+  "No articles match your filters.": "لا توجد مقالات تطابق عوامل التصفية لديك.",
+  "Search by keyword, topic, regulation, site issue...": "ابحث بالكلمة المفتاحية أو الموضوع أو اللائحة أو مشكلة الموقع...",
 
   // ── /blog/scaling-ai-in-ehs-sustainability ────────────────────────────────
   "Scaling AI in EHS & Sustainability: From Pilot to Enterprise Value":
