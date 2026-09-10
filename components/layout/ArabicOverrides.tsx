@@ -734,7 +734,26 @@ const AR_FIX: Record<string, string> = {
 };
 
 // Terms that must stay in English (never translated/transliterated).
-const KEEP_ENGLISH = new Set(["IRIS"]);
+// Brand + acronyms, plus testimonial attribution lines (name, title, company)
+// — proper nouns that Google's live API would otherwise be free to mangle
+// for any fragment not covered by a curated EN_TO_AR entry above.
+// Exported: GoogleTranslate.tsx unions this into its own text-node-level KEEP
+// set, so there's one source of truth instead of two lists that can drift.
+export const KEEP_ENGLISH = new Set([
+  "IRIS",
+  "EHSWatch",
+  "WhatsApp",
+  "Google",
+  "Muhammad Fahad A, SR. QHSE ADVISOR, BARIK GROUP",
+  "Afad K, HSE OFFICER, AL BARAKA OILFIELD SERVICES",
+  "Dijin D, HSE ENGINEER, POWER CHINA – HDEC",
+  "Mohammed Al Harthy, HSE MANAGER, AL SUMRI TRANSPORT CO.",
+  "GK Yuvaraj P, OMAN NATIONAL ENGINEERING AND INVESTMENT CO.",
+  "Anish R, SPECIAL OILFIELD SERVICES",
+  "Basma, HSE OFFICER, OMAN CABLES",
+  "Amwaj A, QUALITY ASSURANCE ENGINEER, OMAN CABLES",
+  "Asif Ali, QUALITY MANAGER, SPECIAL OILFIELD SERVICES",
+]);
 
 // Only look at elements that hold short, translatable text.
 const CANDIDATE = "h1,h2,h3,h4,p,span,a,button,li,label,div";

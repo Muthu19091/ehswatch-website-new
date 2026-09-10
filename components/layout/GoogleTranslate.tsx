@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { basePath } from "@/lib/basePath";
-import { EN_TO_AR as CURATED_AR } from "./ArabicOverrides";
+import { EN_TO_AR as CURATED_AR, KEEP_ENGLISH } from "./ArabicOverrides";
 
 /* ────────────────────────────────────────────────────────────────────────────
    First-party Arabic translator.
@@ -35,7 +35,9 @@ const SKIP_TAGS = new Set([
   // DISPLAY text only; its value attribute (what forms submit / filters compare)
   // is left untouched, so form logic keeps working.
 ]);
-const KEEP = new Set(["IRIS", "EHSWatch", "EN", "AR"]);
+// "EN"/"AR" are the language-switcher's own button labels, not content — kept
+// here rather than in the shared KEEP_ENGLISH list, which is content-scoped.
+const KEEP = new Set(["EN", "AR", ...KEEP_ENGLISH]);
 const hasLetters = (s: string) => /[A-Za-z]/.test(s);
 
 const cloak = () => document.documentElement.classList.add("gt-cloak");
