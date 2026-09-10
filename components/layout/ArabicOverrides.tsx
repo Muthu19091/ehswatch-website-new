@@ -47,6 +47,8 @@ export const EN_TO_AR: Record<string, string> = {
     "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
   "AI-powered EHS platform helping teams stay safe, compliant, and in control.":
     "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
+  "AI-Powered EHSQ platform helping teams stay safe, compliant, and in control.":
+    "منصة الصحة والسلامة والبيئة المدعومة بالذكاء الاصطناعي، تمكّن الفرق من العمل بأمان، والامتثال للوائح، وإدارة العمليات بكفاءة.",
   "Turn Findings Into Results": "حوّل النتائج إلى نتائج قابلة للتنفيذ",
   "Why Traditional EHS Systems Fall Short": "لماذا تقصر أنظمة الصحة والسلامة والبيئة التقليدية؟",
   "What Sets EHSWatch Action Tracker Apart": "ما الذي يميز نظام EHSWatch Action Tracker؟",
@@ -663,6 +665,708 @@ export const EN_TO_AR: Record<string, string> = {
     "حدّد المخاطر ووثّق الضوابط — استخدم بيانات اتجاهات الحوادث ونتائج الأسباب الجذرية لتحديث تقييمات المخاطر والتحقق من فعالية الضوابط عبر المواقع.",
   "Apply AI root cause analysis, event similarity detection and predictive risk scoring to incident data — surfacing patterns and systemic risks automatically across your safety record.":
     "طبّق تحليل السبب الجذري بالذكاء الاصطناعي وكشف تشابه الأحداث وتقييم المخاطر التنبؤي على بيانات الحوادث — للكشف التلقائي عن الأنماط والمخاطر المنهجية عبر سجل السلامة لديك.",
+
+  // ── /modules/training-management ─────────────────────────────────────────
+  "See Training Management in Action": "شاهد إدارة التدريب أثناء العمل",
+  "From role requirements to verified competence — every worker, every site, every qualification":
+    "من متطلبات الدور إلى الكفاءة الموثّقة — كل عامل، وكل موقع، وكل مؤهل",
+  "Centralised Training Records": "سجلات تدريب مركزية",
+  "Competency Matrix Builder": "أداة بناء مصفوفة الكفاءة",
+  "Define the exact training and certification requirements for every role, and apply them automatically to each worker assigned to that role — so nothing is left to manual tracking.":
+    "حدّد متطلبات التدريب والشهادات الدقيقة لكل دور، وطبّقها تلقائياً على كل عامل مُسند إلى ذلك الدور — بحيث لا يُترك شيء للتتبع اليدوي.",
+  "Automated Expiry Tracking & Alerts": "تتبع تلقائي لانتهاء الصلاحية وتنبيهات",
+  "Track certification expiry dates across every qualification, and send configurable alerts to the worker, their line manager and the training coordinator at defined intervals before each one lapses.":
+    "تتبّع تواريخ انتهاء صلاحية الشهادات عبر كل مؤهل، وأرسل تنبيهات قابلة للتخصيص إلى العامل ومديره المباشر ومنسّق التدريب في فترات محددة قبل انتهاء كل شهادة.",
+  "Training Gap Matrix": "مصفوفة فجوات التدريب",
+  "Identify every worker missing a required qualification for their role, site or upcoming task before a visit — generated in real time and exportable for HSE reviews, tender submissions and contract compliance.":
+    "حدّد كل عامل تنقصه مؤهل مطلوب لدوره أو موقعه أو مهمته القادمة قبل الزيارة — يُنشأ في الوقت الفعلي وقابل للتصدير لمراجعات الصحة والسلامة وتقديم العطاءات والامتثال التعاقدي.",
+  "HRMS Integration": "تكامل مع نظام إدارة الموارد البشرية",
+  "Integrate with your existing HR system to synchronise worker data automatically, keeping records aligned across platforms without duplicate entry.":
+    "تكامل مع نظام الموارد البشرية الحالي لديك لمزامنة بيانات العمال تلقائياً، مع إبقاء السجلات متوافقة عبر المنصات دون إدخال مكرر.",
+  "Multi-Site & Multi-Jurisdiction Support": "دعم مواقع متعددة ونطاقات قانونية متعددة",
+  "Manage different training and certification requirements across sites, countries and operating contexts — including jurisdiction-specific mandatory qualifications and client-mandated standards — all in one system.":
+    "أدر متطلبات تدريب وشهادات مختلفة عبر المواقع والدول وسياقات التشغيل — بما في ذلك المؤهلات الإلزامية الخاصة بكل نطاق قانوني والمعايير التي يفرضها العملاء — كل ذلك في نظام واحد.",
+  "A configurable competency matrix at its core, mapping exactly what every worker needs by role, siteand task, and applying it automatically so no requirement is missed.":
+    "مصفوفة كفاءة قابلة للتخصيص في صميمها، تحدد بدقة ما يحتاجه كل عامل حسب الدور والموقع والمهمة، وتطبّقه تلقائياً بحيث لا تُفوَّت أي متطلبات.",
+  "Proactive expiry management with advance alerts, so certifications are renewed before they lapse.":
+    "إدارة استباقية لانتهاء الصلاحية بتنبيهات مسبقة، بحيث تُجدَّد الشهادات قبل انتهائها.",
+  "New starters are auto-assigned with their required trainings from day one using the pre-configure role matrix requirement.":
+    "يُسند للموظفين الجدد تدريباتهم المطلوبة تلقائياً منذ اليوم الأول باستخدام متطلبات مصفوفة الدور المُعدَّة مسبقاً.",
+  "Update the matrix when a regulation changes and instantly see every worker affected.":
+    "حدّث المصفوفة عند تغيّر لائحة ما، وشاهد فوراً كل عامل متأثر بذلك.",
+  "Built to support global frameworks and schemes, including ISO 45001, OSHA, UK HSE, and other industry schemes.":
+    "مصممة لدعم الأطر والأنظمة العالمية، بما في ذلك ISO 45001 وOSHA وهيئة الصحة والسلامة البريطانية وأنظمة صناعية أخرى.",
+  "Part of a unified EHSWatch platform, so workforce competence connects directly with permits, risk assessments and incident investigations.":
+    "جزء من منصة EHSWatch الموحدة، بحيث ترتبط كفاءة القوى العاملة مباشرة بالتصاريح وتقييمات المخاطر وتحقيقات الحوادث.",
+  "Trusted by Workforce Safety and Competence Teams Across Industries": "موثوقة من فرق سلامة وكفاءة القوى العاملة في مختلف القطاعات",
+  "What does EHSWatch Training Management do?": "ماذا تفعل وحدة إدارة التدريب من EHSWatch؟",
+  "What is the competency matrix and how does it work?": "ما هي مصفوفة الكفاءة وكيف تعمل؟",
+  "How does the module handle certification expiries?": "كيف تتعامل الوحدة مع انتهاء صلاحية الشهادات؟",
+  "Can it integrate with our HR and learning management systems?": "هل يمكنها التكامل مع أنظمة الموارد البشرية وإدارة التعلم لدينا؟",
+  "Can it manage different training requirements across different sites and countries?": "هل يمكنها إدارة متطلبات تدريب مختلفة عبر مواقع ودول مختلفة؟",
+  "How does it help during audits and contract safety reviews?": "كيف تساعد أثناء التدقيقات ومراجعات السلامة التعاقدية؟",
+  "Ready to See Exactly Who Is Qualified — and Who Is Not?": "هل أنت مستعد لمعرفة من هو مؤهل بالضبط — ومن ليس كذلك؟",
+  "Verify worker competency within the permit authorisation workflow — preventing unqualified personnel from being authorised for high-risk activities before their certification is confirmed.":
+    "تحقق من كفاءة العامل ضمن سير عمل اعتماد التصاريح — لمنع اعتماد أفراد غير مؤهلين لأنشطة عالية الخطورة قبل تأكيد شهاداتهم.",
+  "Connect training requirements to specific high-hazard activitie ensuring every task-level risk assessment identifies the qualifications required to perform the work safely.":
+    "اربط متطلبات التدريب بأنشطة محددة عالية الخطورة بما يضمن تحديد كل تقييم مخاطر على مستوى المهمة للمؤهلات اللازمة لأداء العمل بأمان.",
+  "Investigate incidents and identify competency gaps as contributing factors — link training record evidence to investigation findings and corrective action plans.":
+    "حقق في الحوادث وحدّد فجوات الكفاءة كعوامل مساهمة — اربط أدلة سجل التدريب بنتائج التحقيق وخطط الإجراءات التصحيحية.",
+  "Assign and track corrective actions arising from training gap analyses, expired certification reviews and competency audit findings with defined ownership and escalation.":
+    "أسند وتتبع الإجراءات التصحيحية الناشئة عن تحليلات فجوات التدريب ومراجعات الشهادات المنتهية ونتائج تدقيق الكفاءة بمسؤولية محددة وتصعيد.",
+  "Conduct ISO 45001 and internal competence audits so training records and gap analyses are accessible as audit evidence without manual assembly from multiple systems.":
+    "نفّذ تدقيقات ISO 45001 والكفاءة الداخلية بحيث تكون سجلات التدريب وتحليلات الفجوات متاحة كأدلة تدقيق دون تجميع يدوي من أنظمة متعددة.",
+
+  // ── /modules/permit-to-work ───────────────────────────────────────────────
+  "EHSWatch Permit to Work gives your teams a structured, fully digital system to request, assess, review, authorise and monitor every work permit — from hot work and confined space entry to electrical isolation and work at height. Every critical safety step is enforced in the workflow before work can begin.":
+    "تمنح وحدة تصريح العمل من EHSWatch فرقك نظاماً منظماً ورقمياً بالكامل لطلب كل تصريح عمل وتقييمه ومراجعته واعتماده ومراقبته — من الأعمال الساخنة والدخول إلى الأماكن المحصورة إلى العزل الكهربائي والعمل في الأماكن المرتفعة. تُفرض كل خطوة سلامة حاسمة ضمن سير العمل قبل بدء العمل.",
+  "Control every permit with confidence. Let nothing reach the field unchecked.":
+    "تحكّم في كل تصريح بثقة. لا تدع شيئاً يصل إلى الميدان دون فحص.",
+  "Why Permit to Work?": "لماذا تصريح العمل؟",
+  "See Permit to Work in Action": "شاهد تصريح العمل أثناء العمل",
+  "Enforce every step. Authorise every permit with confidence.": "افرض كل خطوة. اعتمد كل تصريح بثقة.",
+  "Digital Permit Initiation": "إنشاء تصريح رقمي",
+  "Create permits from any device — no paper forms or email attachments. Configurable templates capture all required hazard identification, pre-work safety information and resource details at initiation, so reviews begin with complete data.":
+    "أنشئ التصاريح من أي جهاز — دون نماذج ورقية أو مرفقات بريد إلكتروني. تلتقط القوالب القابلة للتخصيص كل تحديد المخاطر المطلوب ومعلومات السلامة قبل العمل وتفاصيل الموارد عند الإنشاء، بحيث تبدأ المراجعات ببيانات كاملة.",
+  "Configurable Permit Types": "أنواع تصاريح قابلة للتخصيص",
+  "Support Hot Work, Confined Space Entry, Electrical Isolation, Work at Height, Excavation, Radiography, Chemical Handling and any custom permit types specific to your sites or regulatory requirements.":
+    "دعم الأعمال الساخنة، والدخول إلى الأماكن المحصورة، والعزل الكهربائي، والعمل في الأماكن المرتفعة، والحفر، والتصوير الإشعاعي، والتعامل مع المواد الكيميائية، وأي أنواع تصاريح مخصصة خاصة بمواقعك أو متطلباتك التنظيمية.",
+  "Multi-Level Approval Workflow": "سير عمل موافقات متعدد المستويات",
+  "Route permits through required approvers, issuers, area authorities and safety officers with configurable sign-off steps — so every permit reaches the right people, in the right order, before work is authorised.":
+    "وجّه التصاريح عبر الموافقين والمُصدرين ومسؤولي المنطقة وضباط السلامة المطلوبين بخطوات اعتماد قابلة للتخصيص — بحيث يصل كل تصريح إلى الأشخاص المناسبين، بالترتيب الصحيح، قبل اعتماد العمل.",
+  "Isolation & LOTO Management": "إدارة العزل والإغلاق والوسم (LOTO)",
+  "Link Lockout/Tagout registers and isolation schedules directly to permit records, so energy isolation is verified and documented before high-risk work begins — with isolation point status tracked in real time for all stakeholders.":
+    "اربط سجلات الإغلاق والوسم وجداول العزل مباشرة بسجلات التصاريح، بحيث يُتحقق من عزل الطاقة ويُوثَّق قبل بدء العمل عالي الخطورة — مع تتبع حالة نقاط العزل في الوقت الفعلي لجميع الأطراف المعنية.",
+  "Expiry & Extension Management": "إدارة انتهاء الصلاحية والتمديد",
+  "Track permit validity in real time with automated alerts before expiry. Extension requests follow the same approval workflow as the original permit, preventing informal verbal extensions that bypass authorisation.":
+    "تتبّع صلاحية التصريح في الوقت الفعلي بتنبيهات تلقائية قبل الانتهاء. تتبع طلبات التمديد نفس سير عمل الموافقة الخاص بالتصريح الأصلي، بما يمنع التمديدات الشفهية غير الرسمية التي تتجاوز الاعتماد.",
+  "Real-Time Permit Dashboard": "لوحة معلومات فورية للتصاريح",
+  "View every open, pending, suspended and expired permit across all sites and work areas in one central dashboard — with complete real-time visibility of authorised work, pending conflicts and expiry alerts.":
+    "شاهد كل تصريح مفتوح أو معلّق أو موقوف أو منتهي الصلاحية عبر جميع المواقع ومناطق العمل في لوحة معلومات مركزية واحدة — مع رؤية فورية كاملة للعمل المعتمد والتعارضات المعلّقة وتنبيهات الانتهاء.",
+  "The last line of defence, genuinely digitised — enforcement is structural, not procedural. A permit cannot be issued with a step skipped, a signatory missing or a safety check bypassed. The process works by design, not by memory.":
+    "خط الدفاع الأخير، رقمي بالكامل فعلاً — الفرض هيكلي لا إجرائي. لا يمكن إصدار تصريح مع تخطي خطوة أو غياب موقّع أو تجاوز فحص سلامة. تعمل العملية بالتصميم، لا بالاعتماد على الذاكرة.",
+  "Gas testing and atmospheric monitoring results are captured within the permit workflow with configurable pass/fail thresholds.":
+    "تُلتقط نتائج اختبار الغازات ومراقبة الأجواء ضمن سير عمل التصريح بعتبات نجاح/فشل قابلة للتخصيص.",
+  "Real-time active permit dashboard gives permit controllers and HSE officers a complete, live picture of all authorised work across every site.":
+    "تمنح لوحة معلومات التصاريح النشطة الفورية مراقبي التصاريح وضباط الصحة والسلامة صورة حية كاملة لكل العمل المعتمد عبر كل موقع.",
+  "Built within the unified EHSWatch EHSQ platform, permits link directly to risk assessments, Management of Change records, incident investigations and inspection findings for full end-to-end operational safety traceability.":
+    "مبنية ضمن منصة EHSQ الموحدة من EHSWatch، ترتبط التصاريح مباشرة بتقييمات المخاطر وسجلات إدارة التغيير وتحقيقات الحوادث ونتائج التفتيش لتتبع تشغيلي كامل للسلامة من البداية إلى النهاية.",
+  "Helps teams stay aligned with high-risk work, isolation control and regulatory requirements.":
+    "يساعد الفرق على البقاء متوافقة مع العمل عالي الخطورة والتحكم في العزل والمتطلبات التنظيمية.",
+  "Permanent, retrievable audit trail for every permit demonstrating to regulators, insurers and investigators that every required step was completed, every approval was given and every safety check was documented before work began.":
+    "مسار تدقيق دائم وقابل للاسترجاع لكل تصريح يثبت للجهات التنظيمية وشركات التأمين والمحققين أن كل خطوة مطلوبة اكتملت، وكل موافقة أُعطيت، وكل فحص سلامة وُثّق قبل بدء العمل.",
+  "What is EHSWatch Permit to Work?": "ما هي وحدة تصريح العمل من EHSWatch؟",
+  "Which types of permits does it support?": "ما أنواع التصاريح التي تدعمها؟",
+  "Can permits be approved from mobile devices?": "هل يمكن اعتماد التصاريح من الأجهزة المحمولة؟",
+  "Does it handle gas testing and atmospheric monitoring?": "هل تتعامل مع اختبار الغازات ومراقبة الأجواء؟",
+  "Does it support isolation and LOTO controls?": "هل تدعم ضوابط العزل والإغلاق والوسم؟",
+  "How does it support regulatory compliance and audit requirements?": "كيف تدعم الامتثال التنظيمي ومتطلبات التدقيق؟",
+  "Does it manage permit expiry and extensions?": "هل تدير انتهاء صلاحية التصاريح وتمديدها؟",
+  "Ready to Digitise Your Work Permit Process?": "هل أنت مستعد لرقمنة عملية تصاريح العمل لديك؟",
+  "Control equipment, process and procedure changes before they generate new hazards — link approved MoC records directly to the permits authorising physical implementation.":
+    "تحكّم في تغييرات المعدات والعمليات والإجراءات قبل أن تولّد مخاطر جديدة — اربط سجلات إدارة التغيير المعتمدة مباشرة بالتصاريح التي تعتمد التنفيذ الفعلي.",
+  "Identify hazards and document controls for high-risk activities — risk assessments link directly to the permit record they underpin, ensuring permits are based on current, documented risk evaluations.":
+    "حدّد المخاطر ووثّق الضوابط للأنشطة عالية الخطورة — ترتبط تقييمات المخاطر مباشرة بسجل التصريح الذي تدعمه، بما يضمن استناد التصاريح إلى تقييمات مخاطر حديثة وموثقة.",
+  "Investigate work-related incidents — link incident records to the permit under which the work was being performed for a complete picture of the authorisation chain preceding the event.":
+    "حقق في الحوادث المرتبطة بالعمل — اربط سجلات الحوادث بالتصريح الذي كان يُنفَّذ العمل بموجبه للحصول على صورة كاملة لسلسلة الاعتماد قبل الحدث.",
+  "Track corrective actions arising from permit process audits, near-miss investigations and SIMOPS conflict reviews — with defined ownership and verified closure.":
+    "تتبّع الإجراءات التصحيحية الناشئة عن تدقيقات عملية التصاريح وتحقيقات الحوادث الوشيكة ومراجعات تعارضات العمليات المتزامنة — بمسؤولية محددة وإغلاق موثّق.",
+  "Apply AI analysis to permit data — identifying patterns in permit delays, recurring SIMOPS conflicts and permit-related near-miss trends automatically.":
+    "طبّق تحليل الذكاء الاصطناعي على بيانات التصاريح — لتحديد أنماط تأخير التصاريح وتعارضات العمليات المتزامنة المتكررة واتجاهات الحوادث الوشيكة المرتبطة بالتصاريح تلقائياً.",
+
+  // ── /modules/non-conformance ──────────────────────────────────────────────
+  "EHSWatch Non-Conformance gives your teams a faster, more reliable way to handle every deviation — identify and log issues quickly, route them to the right people automatically, investigate root causes with structured CAPA workflows, and analyse trends to drive data-driven quality improvement.":
+    "تمنح وحدة عدم المطابقة من EHSWatch فرقك طريقة أسرع وأكثر موثوقية للتعامل مع كل انحراف — تحديد المشكلات وتسجيلها بسرعة، وتوجيهها تلقائياً إلى الأشخاص المناسبين، والتحقيق في الأسباب الجذرية عبر سير عمل CAPA منظم، وتحليل الاتجاهات لدفع تحسين الجودة المبني على البيانات.",
+  "Catch issues early. Address root causes completely. Stop them returning for good.":
+    "اكتشف المشكلات مبكراً. عالج الأسباب الجذرية بالكامل. أوقف تكرارها نهائياً.",
+  "Why Non-Conformance?": "لماذا عدم المطابقة؟",
+  "When a deviation goes unlogged — or is logged but never properly investigated — the cost rarely stays contained. Issues recur because the root cause was never addressed, corrective actions are tracked in spreadsheets and quietly dropped once the pressure passes, and scattered records hide the true pattern of failures until an audit or major complaint forces it into view.":
+    "عندما لا يُسجَّل الانحراف — أو يُسجَّل لكنه لا يُحقَّق فيه بشكل صحيح أبداً — نادراً ما تبقى التكلفة محدودة. تتكرر المشكلات لأن السبب الجذري لم يُعالَج أبداً، وتُتبَّع الإجراءات التصحيحية في جداول بيانات وتُهمل بهدوء بمجرد زوال الضغط، وتُخفي السجلات المشتتة نمط الإخفاقات الحقيقي حتى يُجبره تدقيق أو شكوى كبرى على الظهور.",
+  "EHSWatch Non-Conformance changes that. Issues are reported quickly, routed to the right people automatically and investigated through structured CAPA workflows that address the root cause, not just the symptom. Real-time trend analytics reveal recurring non-conformance types, problem suppliers and high-failure process areas before they generate the next audit finding.":
+    "تغيّر وحدة عدم المطابقة من EHSWatch ذلك. تُبلَّغ المشكلات بسرعة، وتُوجَّه تلقائياً إلى الأشخاص المناسبين، ويُحقَّق فيها عبر سير عمل CAPA منظم يعالج السبب الجذري، لا مجرد العرض. تكشف تحليلات الاتجاهات الفورية أنواع عدم المطابقة المتكررة والموردين الإشكاليين ومناطق العمليات عالية الإخفاق قبل أن تولّد نتيجة التدقيق التالية.",
+  "See Non-Conformance in Action": "شاهد عدم المطابقة أثناء العمل",
+  "Everything your team needs to catch, resolve and prevent quality issues.":
+    "كل ما يحتاجه فريقك لاكتشاف مشكلات الجودة وحلها ومنعها.",
+  "Quick Identification & Logging": "تحديد وتسجيل سريعان",
+  "Log product and batch defects, in-process failures, material rejections, service deviations, supplier issues and environmental non-conformances at the point of detection — through configurable digital forms that capture full investigation detail, not reconstructed later from memory.":
+    "سجّل عيوب المنتجات والدفعات، وإخفاقات العمليات، ورفض المواد، وانحرافات الخدمة، ومشكلات الموردين، وحالات عدم المطابقة البيئية عند نقطة الاكتشاف — عبر نماذج رقمية قابلة للتخصيص تلتقط تفاصيل التحقيق كاملة، لا يُعاد بناؤها لاحقاً من الذاكرة.",
+  "Automated Routing & Assignment": "توجيه وإسناد تلقائيان",
+  "Route every non-conformance automatically to the right quality engineer, supplier quality manager or operations lead — by type, severity, product category or site — eliminating manual triage so nothing waits for investigation.":
+    "وجّه كل حالة عدم مطابقة تلقائياً إلى مهندس الجودة أو مدير جودة الموردين أو قائد العمليات المناسب — حسب النوع أو الخطورة أو فئة المنتج أو الموقع — مما يلغي الفرز اليدوي بحيث لا ينتظر شيء التحقيق.",
+  "CAPA & Root Cause Analysis": "CAPA وتحليل السبب الجذري",
+  "Supplier Non-Conformance Management": "إدارة عدم مطابقة الموردين",
+  "Log, investigate and track supplier-originated non-conformances with automated notification to the supplier quality contact and a tracked corrective action request requiring supplier response and closure confirmation.":
+    "سجّل حالات عدم المطابقة الناشئة من الموردين وحقق فيها وتتبعها مع إشعار تلقائي لجهة اتصال جودة المورد وطلب إجراء تصحيحي متتبَّع يتطلب رد المورد وتأكيد الإغلاق.",
+  "Real-Time Analytics & Reporting": "تحليلات وتقارير فورية",
+  "Monitor volumes, resolution cycle times, recurring failure types, supplier performance and CAPA close-out rates through live dashboards and exportable reports — surfacing the systemic issues individual records never reveal in isolation.":
+    "راقب الأحجام وأوقات دورة الحل وأنواع الإخفاق المتكررة وأداء الموردين ومعدلات إغلاق CAPA من خلال لوحات معلومات حية وتقارير قابلة للتصدير — للكشف عن المشكلات المنهجية التي لا تكشفها السجلات الفردية بمعزل عن غيرها.",
+  "ISO 9001 Compliance Support": "دعم الامتثال لمعيار ISO 9001",
+  "The full workflow — identification, investigation, root cause, corrective action, effectiveness review and closure — is structured to satisfy ISO 9001 Clause 10.2, with every record retained on a complete audit trail for certification and customer audits.":
+    "سير العمل الكامل — التحديد والتحقيق والسبب الجذري والإجراء التصحيحي ومراجعة الفعالية والإغلاق — منظَّم لتلبية البند 10.2 من ISO 9001، مع الاحتفاظ بكل سجل ضمن مسار تدقيق كامل لتدقيقات الاعتماد والعملاء.",
+  "Goes beyond logging to full CAPA - every non-conformance is not just recorded but investigated to root cause and closed with verified corrective action, so issues are genuinely prevented from recurring rather than just documented.":
+    "يتجاوز مجرد التسجيل إلى CAPA كامل — لا تُسجَّل كل حالة عدم مطابقة فحسب، بل يُحقَّق فيها حتى السبب الجذري وتُغلَق بإجراء تصحيحي موثَّق، بحيث تُمنع المشكلات من التكرار فعلياً لا أن تُوثَّق فقط.",
+  "Built-in root cause analysis tools such as 5-Why and Fishbone that address the source of a problem, not just its symptoms.":
+    "أدوات تحليل سبب جذري مدمجة مثل الأسباب الخمسة ومخطط إيشيكاوا تعالج مصدر المشكلة، لا أعراضها فقط.",
+  "Workflow automation that routes tasks and notifications automatically, keeping resolution on track without manual chasing.":
+    "أتمتة سير العمل التي توجّه المهام والإشعارات تلقائياً، مما يبقي الحل على المسار الصحيح دون متابعة يدوية.",
+  "An ISO 9001 Clause 10.2-aligned workflow provides documented evidence of nonconformity management that certification auditors and customer quality teams can inspect, without requiring separate record-keeping outside the platform.":
+    "يوفر سير عمل متوافق مع البند 10.2 من ISO 9001 دليلاً موثَّقاً على إدارة عدم المطابقة يمكن لمدققي الاعتماد وفرق جودة العملاء فحصه، دون الحاجة إلى حفظ سجلات منفصلة خارج المنصة.",
+  "Real-time trend analytics identify recurring failure types and high-frequency non-conformance sources before they generate the next major quality event, audit non-compliance or customer escalation.":
+    "تحدد تحليلات الاتجاهات الفورية أنواع الإخفاق المتكررة ومصادر عدم المطابقة عالية التكرار قبل أن تولّد حدث جودة كبير تالياً، أو عدم امتثال في التدقيق، أو تصعيداً من العميل.",
+  "Trusted by Quality and Safety Teams Across Industries": "موثوقة من فرق الجودة والسلامة في مختلف القطاعات",
+  "What is non-conformance, and why does structured management matter?": "ما هو عدم المطابقة، ولماذا تهم الإدارة المنظمة؟",
+  "What types of non-conformance does the module handle?": "ما أنواع عدم المطابقة التي تتعامل معها الوحدة؟",
+  "How does it improve operational efficiency?": "كيف تحسّن الكفاءة التشغيلية؟",
+  "How does the module support root cause analysis?": "كيف تدعم الوحدة تحليل السبب الجذري؟",
+  "Does it support supplier non-conformances?": "هل تدعم حالات عدم مطابقة الموردين؟",
+  "How does the module support ISO 9001 requirements?": "كيف تدعم الوحدة متطلبات ISO 9001؟",
+  "Does it integrate with other EHSWatch modules?": "هل تتكامل مع وحدات EHSWatch الأخرى؟",
+  "What reporting and analytics does the module provide?": "ما التقارير والتحليلات التي توفرها الوحدة؟",
+  "Ready to Turn Non-Conformances Into Permanent Improvements?": "هل أنت مستعد لتحويل حالات عدم المطابقة إلى تحسينات دائمة؟",
+  "Link customer complaints directly to the non-conformances that generated them — manage both within one connected quality workflow from detection to closure.":
+    "اربط شكاوى العملاء مباشرة بحالات عدم المطابقة التي ولّدتها — أدر كليهما ضمن سير عمل جودة واحد متصل من الاكتشاف إلى الإغلاق.",
+  "Plan and conduct ISO 9001 quality audits — audit findings that identify non-conformances link directly to the non-conformance investigation and CAPA record.":
+    "خطّط لتدقيقات جودة ISO 9001 ونفّذها — ترتبط نتائج التدقيق التي تحدد حالات عدم المطابقة مباشرة بسجل تحقيق عدم المطابقة وCAPA.",
+  "Connect quality failures with safety implications to the incident management workflow — non-conformances involving hazardous materials or process safety deviations require both records.":
+    "اربط إخفاقات الجودة ذات الآثار على السلامة بسير عمل إدارة الحوادث — تتطلب حالات عدم المطابقة المتعلقة بمواد خطرة أو انحرافات سلامة العمليات كلا السجلين.",
+  "Track CAPA actions from non-conformance investigations — with assigned ownership, due dates, effectiveness review checkpoints and full closure accountability.":
+    "تتبّع إجراءات CAPA من تحقيقات عدم المطابقة — بمسؤولية مُسندة ومواعيد استحقاق ونقاط مراجعة فعالية ومساءلة إغلاق كاملة.",
+  "Conduct production and quality inspections — in-process findings and incoming inspection failures link directly to non-conformance records for structured follow-up.":
+    "نفّذ عمليات تفتيش الإنتاج والجودة — ترتبط نتائج العمليات الجارية وإخفاقات الفحص الوارد مباشرة بسجلات عدم المطابقة للمتابعة المنظمة.",
+
+  // ── /modules/meetings-management ─────────────────────────────────────────
+  "EHSWatch Meetings Management gives every safety team a structured digital workflow to capture decisions in real time, assign actions with owners and deadlines during the meeting itself, and track every commitment through to verified completion — from toolbox talks and safety committee reviews to ISO 45001 management reviews.":
+    "تمنح وحدة إدارة الاجتماعات من EHSWatch كل فريق سلامة سير عمل رقمياً منظماً لتسجيل القرارات في الوقت الفعلي، وإسناد الإجراءات بمسؤولين ومواعيد نهائية أثناء الاجتماع نفسه، وتتبع كل التزام حتى إتمامه الموثّق — من جلسات صندوق الأدوات ومراجعات لجنة السلامة إلى مراجعات إدارة ISO 45001.",
+  "Turn every meeting into accountable action, and every action into a closed record.":
+    "حوّل كل اجتماع إلى إجراء خاضع للمساءلة، وكل إجراء إلى سجل مغلق.",
+  "Why Meetings Management?": "لماذا إدارة الاجتماعات؟",
+  "In most organisations, meeting minutes are captured in Word documents, action lists live in spreadsheets, and follow-ups happen through a chain of emails that quickly fragments across inboxes. The result is predictable: decisions are forgotten, responsibilities are disputed, and recurring safety issues remain unresolved because the action assigned to address them three meetings ago was never properly tracked.":
+    "في معظم المؤسسات، تُسجَّل محاضر الاجتماعات في مستندات وورد، وتعيش قوائم الإجراءات في جداول بيانات، وتحدث المتابعات عبر سلسلة رسائل بريد إلكتروني تتشتت بسرعة عبر صناديق الوارد. والنتيجة متوقعة: تُنسى القرارات، وتُتنازع المسؤوليات، وتبقى مشكلات السلامة المتكررة دون حل لأن الإجراء المُسند لمعالجتها قبل ثلاثة اجتماعات لم يُتبَّع بشكل صحيح أبداً.",
+  "EHSWatch Meetings Management replaces that gap with a single, structured workflow. Actions are captured and assigned with named owners during the meeting itself, not typed up retrospectively from handwritten notes. Every open action is visible in one dashboard. Reminders go out automatically. Overdue actions escalate without anyone having to chase. And when your next ISO 45001 surveillance audit asks for evidence of management review compliance, the complete documented record is already there.":
+    "تسد وحدة إدارة الاجتماعات من EHSWatch هذه الفجوة بسير عمل واحد منظم. تُسجَّل الإجراءات وتُسند بمسؤولين محددين أثناء الاجتماع نفسه، لا أن تُكتب لاحقاً من ملاحظات مكتوبة بخط اليد. كل إجراء مفتوح مرئي في لوحة معلومات واحدة. تُرسَل التذكيرات تلقائياً. تُصعَّد الإجراءات المتأخرة دون أن يحتاج أحد للمتابعة. وعندما يطلب تدقيق ISO 45001 الإشرافي القادم دليلاً على الامتثال لمراجعة الإدارة، يكون السجل الموثَّق الكامل موجوداً بالفعل.",
+  "See Meetings Management in Action": "شاهد إدارة الاجتماعات أثناء العمل",
+  "Everything your team needs to manage safety meetings with clarity and control.":
+    "كل ما يحتاجه فريقك لإدارة اجتماعات السلامة بوضوح وتحكم.",
+  "Live Action Capture": "تسجيل فوري للإجراءات",
+  "Instant Minute Generation": "إنشاء فوري للمحاضر",
+  "Generate a structured, formatted meeting record automatically at meeting close — covering attendance, agenda items, decisions, assigned actions and any referenced documents.":
+    "أنشئ سجل اجتماع منظماً ومنسَّقاً تلقائياً عند إغلاق الاجتماع — يغطي الحضور وبنود جدول الأعمال والقرارات والإجراءات المُسندة وأي مستندات مرجعية.",
+  "Unified Action Dashboard": "لوحة معلومات موحدة للإجراءات",
+  "View every open action from every meeting — across all sites, teams and meeting types — in one consolidated dashboard, so nothing is overlooked between meetings.":
+    "شاهد كل إجراء مفتوح من كل اجتماع — عبر جميع المواقع والفرق وأنواع الاجتماعات — في لوحة معلومات موحدة واحدة، بحيث لا يُتجاهل شيء بين الاجتماعات.",
+  "Automated Reminders & Escalations": "تذكيرات وتصعيدات تلقائية",
+  "Send configurable notifications to action owners ahead of deadlines, and escalate overdue actions automatically to the responsible manager or safety officer — with no manual chasing.":
+    "أرسل إشعارات قابلة للتخصيص لمسؤولي الإجراءات قبل المواعيد النهائية، وصعّد الإجراءات المتأخرة تلقائياً إلى المدير المسؤول أو ضابط السلامة — دون متابعة يدوية.",
+  "Recurring Meeting Support": "دعم الاجتماعات المتكررة",
+  "Configure recurring meetings with saved templates, standing agenda items and standard attendee lists — so teams never rebuild the meeting structure each time.":
+    "هيّئ الاجتماعات المتكررة بقوالب محفوظة وبنود جدول أعمال ثابتة وقوائم حضور معيارية — بحيث لا تُعيد الفرق بناء هيكل الاجتماع في كل مرة.",
+  "Meeting Type Flexibility": "مرونة أنواع الاجتماعات",
+  "Support every safety and compliance meeting in one system — committee meetings, ISO 45001 management reviews, incident reviews, toolbox talks, pre-task briefings and departmental reviews — each with its own configurable template.":
+    "دعم كل اجتماع سلامة وامتثال في نظام واحد — اجتماعات اللجان، ومراجعات إدارة ISO 45001، ومراجعات الحوادث، وجلسات صندوق الأدوات، وإحاطات ما قبل المهمة، ومراجعات الأقسام — لكل منها قالبه القابل للتخصيص.",
+  "Actions are captured and assigned with named owners during the meeting itself — not typed up retrospectively — eliminating the ambiguity that causes safety commitments to be forgotten or disputed after the fact.":
+    "تُسجَّل الإجراءات وتُسند بمسؤولين محددين أثناء الاجتماع نفسه — لا تُكتب لاحقاً — مما يلغي الغموض الذي يتسبب في نسيان التزامات السلامة أو التنازع عليها لاحقاً.",
+  "Unified action dashboard across all meeting types and sites gives safety leaders visibility of every open commitment — not just the ones from the last meeting they attended.":
+    "تمنح لوحة معلومات الإجراءات الموحدة عبر جميع أنواع الاجتماعات والمواقع قادة السلامة رؤية لكل التزام مفتوح — لا الالتزامات من آخر اجتماع حضروه فقط.",
+  "Supports structured collaboration while keeping minutes, actions and approvals organised.":
+    "يدعم التعاون المنظم مع إبقاء المحاضر والإجراءات والموافقات منظمة.",
+  "Automatic escalation of overdue actions ensures that missed deadlines generate management attention without anyone having to remember to chase — accountability is structural, not dependent on individual diligence.":
+    "يضمن التصعيد التلقائي للإجراءات المتأخرة أن تولّد المواعيد النهائية الفائتة اهتمام الإدارة دون أن يحتاج أحد لتذكّر المتابعة — المساءلة هيكلية، لا معتمدة على اجتهاد الأفراد.",
+  "ISO 45001 Clause 9.3 management review documentation is built into the workflow, with every required input, output, decision and action captured in a format that satisfies certification audit requirements.":
+    "توثيق مراجعة الإدارة وفق البند 9.3 من ISO 45001 مدمج في سير العمل، مع تسجيل كل مدخل ومخرج وقرار وإجراء مطلوب بصيغة تلبي متطلبات تدقيق الاعتماد.",
+  "Connected to the EHSWatch EHSQ platform — meeting actions link to incident records, audit findings, risk assessments and corrective action workflows rather than sitting in a separate meeting management tool with no connection to operational safety data.":
+    "متصلة بمنصة EHSQ من EHSWatch — ترتبط إجراءات الاجتماعات بسجلات الحوادث ونتائج التدقيق وتقييمات المخاطر وسير عمل الإجراءات التصحيحية بدلاً من البقاء في أداة إدارة اجتماعات منفصلة دون اتصال ببيانات السلامة التشغيلية.",
+  "Trusted by EHSQ and Compliance Teams Across Industries": "موثوقة من فرق EHSQ والامتثال في مختلف القطاعات",
+  "What is EHSWatch Meetings Management?": "ما هي وحدة إدارة الاجتماعات من EHSWatch؟",
+  "What types of meetings does it support?": "ما أنواع الاجتماعات التي تدعمها؟",
+  "Can we assign actions during the meeting itself?": "هل يمكننا إسناد الإجراءات أثناء الاجتماع نفسه؟",
+  "Does it generate meeting minutes automatically?": "هل تُنشئ محاضر الاجتماعات تلقائياً؟",
+  "Can we track open actions across multiple meetings?": "هل يمكننا تتبع الإجراءات المفتوحة عبر اجتماعات متعددة؟",
+  "How does it help with compliance and governance?": "كيف تساعد في الامتثال والحوكمة؟",
+  "Ready to Turn Safety Meetings Into Measurable Action?": "هل أنت مستعد لتحويل اجتماعات السلامة إلى إجراءات قابلة للقياس؟",
+  "Assign, track and close corrective and preventive actions generated across meetings, audits, incidents and observations — with full ownership, deadline management and audit trail.":
+    "أسند الإجراءات التصحيحية والوقائية الناتجة عبر الاجتماعات والتدقيقات والحوادث والملاحظات وتتبعها وأغلقها — بمسؤولية كاملة وإدارة مواعيد نهائية ومسار تدقيق.",
+  "Capture and investigate safety incidents, link incident review meeting actions to the originating investigation record and track them to verified closure.":
+    "سجّل حوادث السلامة وحقق فيها، واربط إجراءات اجتماع مراجعة الحوادث بسجل التحقيق الأصلي وتتبعها حتى الإغلاق الموثّق.",
+  "Plan and conduct compliance and management system audits, and link audit debrief meeting actions directly to the findings and corrective action workflows they address.":
+    "خطّط لتدقيقات الامتثال ونظام الإدارة ونفّذها، واربط إجراءات اجتماع استخلاص التدقيق مباشرة بالنتائج وسير عمل الإجراءات التصحيحية التي تعالجها.",
+  "Manage and update risk assessments — connect risk review meeting decisions to the relevant risk records within the same platform.":
+    "أدر تقييمات المخاطر وحدّثها — اربط قرارات اجتماع مراجعة المخاطر بسجلات المخاطر ذات الصلة ضمن المنصة نفسها.",
+  "Capture field observations between formal meetings and link observation trends to the safety committee agenda items they should be informing.":
+    "سجّل الملاحظات الميدانية بين الاجتماعات الرسمية واربط اتجاهات الملاحظات ببنود جدول أعمال لجنة السلامة التي يجب أن تُثريها.",
+
+  // ── /modules/management-of-change ────────────────────────────────────────
+  "Control Every": "تحكّم في كل",
+  "Before It Becomes a Risk": "قبل أن يتحول إلى خطر",
+  "No change goes unreviewed. No approval goes undocumented.": "لا يمرّ تغيير دون مراجعة. ولا توثَّق موافقة إلا بالكامل.",
+  "Why Management of Change?": "لماذا إدارة التغيير؟",
+  "See Management of Change in Action": "شاهد إدارة التغيير أثناء العمل",
+  "Everything your team needs to review, approve and document change — before it reaches the floor.":
+    "كل ما يحتاجه فريقك لمراجعة التغيير واعتماده وتوثيقه — قبل أن يصل إلى أرض العمل.",
+  "Digital MoC Initiation": "إنشاء رقمي لطلبات إدارة التغيير",
+  "Initiate change requests from any device or browser — no paper forms or email attachments. Configurable templates capture all required information at initiation, so reviews begin with complete, accurate data.":
+    "أنشئ طلبات التغيير من أي جهاز أو متصفح — دون نماذج ورقية أو مرفقات بريد إلكتروني. تلتقط القوالب القابلة للتخصيص كل المعلومات المطلوبة عند الإنشاء، بحيث تبدأ المراجعات ببيانات كاملة ودقيقة.",
+  "Configurable Change Types": "أنواع تغيير قابلة للتخصيص",
+  "Define every change category your operations need — temporary, permanent, emergency, like-for-like, organisational, procedural and process. Each type follows its own workflow, so minor replacements and major modifications are each reviewed at the rigour the risk warrants.":
+    "حدّد كل فئة تغيير تحتاجها عملياتك — مؤقت، دائم، طارئ، بديل مماثل، تنظيمي، إجرائي، وعملياتي. يتبع كل نوع سير عمله الخاص، بحيث تُراجَع الاستبدالات البسيطة والتعديلات الكبرى بالدقة التي تستدعيها المخاطر.",
+  "Integrated Risk Assessment": "تقييم مخاطر مدمج",
+  "Risk assessment is built into the request itself — every change prompts structured hazard identification, risk scoring and control documentation before approval begins. A change cannot progress until its risk assessment is complete.":
+    "تقييم المخاطر مدمج في الطلب نفسه — يستدعي كل تغيير تحديداً منظماً للمخاطر وتقييماً لدرجتها وتوثيقاً للضوابط قبل بدء الاعتماد. لا يمكن أن يتقدم التغيير حتى يكتمل تقييم مخاطره.",
+  "Multi-Level Approval Routing": "توجيه موافقات متعدد المستويات",
+  "Pre-Startup Safety Review (PSSR)": "مراجعة السلامة قبل بدء التشغيل (PSSR)",
+  "A built-in PSSR anchors closure — the final confirmation that the change is safely implemented as approved, all tasks are complete, and the affected process, asset or team is ready to return to operation. No PSSR, no closure.":
+    "ترسّخ مراجعة السلامة قبل بدء التشغيل المدمجة الإغلاق — التأكيد النهائي بأن التغيير نُفِّذ بأمان كما اعتُمد، واكتملت كل المهام، وأن العملية أو الأصل أو الفريق المتأثر جاهز للعودة إلى التشغيل. لا إغلاق دون مراجعة السلامة قبل بدء التشغيل.",
+  "Linked Document Management": "إدارة مستندات مرتبطة",
+  "Attach design drawings, procedure updates, safety data sheets, engineering assessments and method statements directly to the change record — so all supporting documentation lives with the change.":
+    "أرفق مخططات التصميم وتحديثات الإجراءات وصحائف بيانات السلامة والتقييمات الهندسية وبيانات طرق العمل مباشرة بسجل التغيير — بحيث تبقى كل المستندات الداعمة مرتبطة بالتغيير.",
+  "Enforced workflows that make non-compliance structurally impossible: a change cannot advance with a required step skipped or a signatory missing.":
+    "سير عمل مفروض يجعل عدم الامتثال مستحيلاً هيكلياً: لا يمكن أن يتقدم التغيير مع تخطي خطوة مطلوبة أو غياب موقّع.",
+  "Risk assessment embedded in the request itself, not an optional attachment added after approval; ensuring hazard identification and control documentation happen before commitment to a change, not after implementation.":
+    "تقييم المخاطر مدمج في الطلب نفسه، لا كمرفق اختياري يُضاف بعد الاعتماد؛ بما يضمن حدوث تحديد المخاطر وتوثيق الضوابط قبل الالتزام بالتغيير، لا بعد تنفيذه.",
+  "PSSR built into change closure, confirming safe implementation is a mandatory workflow step, not an optional post-change checklist that can be skipped under operational pressure.":
+    "مراجعة السلامة قبل بدء التشغيل مدمجة في إغلاق التغيير، وتأكيد التنفيذ الآمن خطوة إلزامية في سير العمل، لا قائمة تحقق اختيارية بعد التغيير يمكن تخطيها تحت ضغط التشغيل.",
+  "Full end-to-end integration with Permit to Work, Incident Management, Risk Register and Action Management, changes exist within the wider safety management system, not in isolation.":
+    "تكامل كامل من البداية إلى النهاية مع تصريح العمل وإدارة الحوادث وسجل المخاطر وإدارة الإجراءات، بحيث توجد التغييرات ضمن نظام إدارة السلامة الأوسع، لا بمعزل عنه.",
+  "Built to support ISO 45001, OSHA PSM, Seveso III, COMAH, API RP 750, IEC 61511 and industry-specific change control requirements across oil and gas, chemicals, pharma and energy.":
+    "مصممة لدعم ISO 45001 وOSHA PSM وSeveso III وCOMAH وAPI RP 750 وIEC 61511 ومتطلبات ضبط التغيير الخاصة بالصناعات في النفط والغاز والكيماويات والأدوية والطاقة.",
+  "Permanently searchable change history turns audit preparation from a multi-day document scramble into a few clicks, with every decision and sign-off instantly retrievable.":
+    "يحوّل سجل التغييرات القابل للبحث الدائم التحضير للتدقيق من عملية بحث مستندات تستغرق أياماً إلى بضع نقرات، مع إمكانية استرجاع كل قرار وتوقيع فوراً.",
+  "Trusted by Process Safety Teams Across High-Hazard Industries": "موثوقة من فرق سلامة العمليات في الصناعات عالية الخطورة",
+  "What is Management of Change (MoC)?": "ما هي إدارة التغيير (MoC)؟",
+  "Why use a digital MoC system rather than paper or email-based change control?": "لماذا استخدام نظام رقمي لإدارة التغيير بدلاً من ضبط التغيير الورقي أو عبر البريد الإلكتروني؟",
+  "What types of changes can the module handle?": "ما أنواع التغييرات التي تتعامل معها الوحدة؟",
+  "How does the module integrate with Permit to Work?": "كيف تتكامل الوحدة مع تصريح العمل؟",
+  "Which compliance frameworks and regulatory standards does the module support?": "ما أطر الامتثال والمعايير التنظيمية التي تدعمها الوحدة؟",
+  "What is a Pre-Startup Safety Review (PSSR), and how does the module handle it?": "ما هي مراجعة السلامة قبل بدء التشغيل، وكيف تتعامل معها الوحدة؟",
+  "How does the module maintain an auditable change record?": "كيف تحافظ الوحدة على سجل تغيير قابل للتدقيق؟",
+  "Ready to Take Control of Change?": "هل أنت مستعد للسيطرة على التغيير؟",
+  "Authorise and control high-hazard work linked to approved changes — with enforced digital permit workflows, isolation management and live permit visibility.":
+    "اعتمد وتحكّم في العمل عالي الخطورة المرتبط بتغييرات معتمدة — بسير عمل تصاريح رقمي مفروض، وإدارة عزل، ورؤية فورية للتصاريح.",
+  "Link post-change incidents to the change record that preceded them, supporting root cause investigation and demonstrating that the change control process was followed correctly.":
+    "اربط الحوادث اللاحقة للتغيير بسجل التغيير الذي سبقها، بما يدعم تحقيق السبب الجذري ويثبت اتباع عملية ضبط التغيير بشكل صحيح.",
+  "Identify and document hazards introduced by proposed changes; risk assessments embedded in the MoC workflow connect directly to the wider risk register.":
+    "حدّد ووثّق المخاطر التي تُدخلها التغييرات المقترحة؛ ترتبط تقييمات المخاطر المدمجة في سير عمل إدارة التغيير مباشرة بسجل المخاطر الأوسع.",
+  "Track corrective actions arising from MoC reviews, PSSR findings and post-implementation audits with ownership, deadlines and full closure accountability.":
+    "تتبّع الإجراءات التصحيحية الناشئة عن مراجعات إدارة التغيير ونتائج مراجعة السلامة قبل بدء التشغيل والتدقيقات اللاحقة للتنفيذ بمسؤولية ومواعيد نهائية ومساءلة إغلاق كاملة.",
+  "Plan and conduct process safety and management system audits where MoC records and change histories are accessible as audit evidence without manual assembly.":
+    "خطّط لتدقيقات سلامة العمليات ونظام الإدارة ونفّذها حيث تكون سجلات إدارة التغيير وتاريخ التغييرات متاحة كأدلة تدقيق دون تجميع يدوي.",
+
+  // ── /modules/legal-register ───────────────────────────────────────────────
+  "Never Miss a": "لا تفوّت أبداً",
+  "Compliance": "امتثال",
+  "Obligation Again": "التزاماً بعد الآن",
+  "EHSWatch Legal Register brings every applicable environmental, health, safety and quality regulation, obligation and deadline into one structured place. Access and manage all your EHSQ legal requirements centrally, tailor compliance workflows to your organisation, and let automated notifications keep every task on track.":
+    "تجمع وحدة السجل القانوني من EHSWatch كل لائحة والتزام وموعد نهائي بيئي وصحي وسلامي وجودي ساري المفعول في مكان واحد منظم. اطّلع على كل متطلباتك القانونية للصحة والسلامة والبيئة وأدرها مركزياً، وخصّص سير عمل الامتثال ليناسب مؤسستك، ودع الإشعارات التلقائية تبقي كل مهمة على المسار الصحيح.",
+  "Track every regulation, deadline and duty — with reminders that keep you ahead.":
+    "تتبّع كل لائحة وموعد نهائي والتزام — بتذكيرات تبقيك متقدماً.",
+  "Compliance rarely fails because of one big oversight. It fails in the gaps — a regulation that changed without anyone noticing, a renewal deadline buried in a spreadsheet, an obligation owed by someone who has since left. Track all this manually across several sites, and something eventually slips, often surfacing only during an audit.":
+    "نادراً ما يفشل الامتثال بسبب إغفال كبير واحد. بل يفشل في الفجوات — لائحة تغيّرت دون أن يلاحظ أحد، أو موعد تجديد مدفون في جدول بيانات، أو التزام يقع على عاتق شخص غادر منذ ذلك الحين. تتبّع كل هذا يدوياً عبر عدة مواقع، وسيفلت شيء ما في النهاية، وغالباً ما يظهر فقط أثناء التدقيق.",
+  "EHSWatch Legal Register closes those gaps. Every applicable law and obligation lives in one register, mapped to the site it affects. Responsibilities are assigned, deadlines tracked, and automated reminders prompt the right people before anything falls due — so you move from scrambling to prove compliance to demonstrating it with confidence.":
+    "تسد وحدة السجل القانوني من EHSWatch هذه الفجوات. يعيش كل قانون والتزام ساري المفعول في سجل واحد، مرتبط بالموقع الذي يؤثر فيه. تُسند المسؤوليات، وتُتبَّع المواعيد النهائية، وتحث الإشعارات التلقائية الأشخاص المناسبين قبل استحقاق أي شيء — بحيث تنتقل من التسابق لإثبات الامتثال إلى إثباته بثقة.",
+  "See Legal Register in Action": "شاهد السجل القانوني أثناء العمل",
+  "Everything your team needs to stay compliant, organised and audit-ready.":
+    "كل ما يحتاجه فريقك للبقاء ممتثلاً ومنظماً وجاهزاً للتدقيق.",
+  "Centralised Compliance Register": "سجل امتثال مركزي",
+  "Store all applicable laws, regulations, standards, codes of practice and permit conditions in one secure register — categorised by jurisdiction, topic area, business unit and site.":
+    "خزّن كل القوانين واللوائح والمعايير ومدونات الممارسة وشروط التصاريح السارية في سجل آمن واحد — مصنَّفة حسب النطاق القانوني ومجال الموضوع ووحدة العمل والموقع.",
+  "Jurisdiction & Site Filtering": "تصفية حسب النطاق القانوني والموقع",
+  "Obligation Ownership & Assignment": "ملكية الالتزامات وإسنادها",
+  "Assign every regulatory requirement to a named owner with a defined review date and compliance responsibility — so each obligation has someone accountable and a deadline by which it must be addressed.":
+    "أسند كل متطلب تنظيمي إلى مالك محدد بتاريخ مراجعة ومسؤولية امتثال محددين — بحيث يكون لكل التزام شخص مسؤول وموعد نهائي يجب معالجته بحلوله.",
+  "Compliance Tracking Status": "حالة تتبع الامتثال",
+  "Monitor the status of every obligation in real time across sites, jurisdictions and topic areas — with leadership dashboards that surface what needs immediate attention, no manual register review required.":
+    "راقب حالة كل التزام في الوقت الفعلي عبر المواقع والنطاقات القانونية ومجالات الموضوعات — بلوحات معلومات للقيادة تكشف ما يحتاج اهتماماً فورياً، دون حاجة لمراجعة السجل يدوياً.",
+  "Review & Update Workflows": "سير عمل للمراجعة والتحديث",
+  "Manage periodic reviews through configurable workflows — with assigned reviewers, deadlines, documented outcomes and automatic escalation for overdue reviews — creating the governance evidence ISO management standards require.":
+    "أدر المراجعات الدورية عبر سير عمل قابل للتخصيص — بمراجعين مُسندين ومواعيد نهائية ونتائج موثقة وتصعيد تلقائي للمراجعات المتأخرة — مما يوفر أدلة الحوكمة التي تتطلبها معايير إدارة ISO.",
+  "Compliance Audit Trail": "مسار تدقيق الامتثال",
+  "Every change — additions, updates, status changes, review completions and regulatory amendments — is logged with a timestamp and user attribution, retrievable instantly for inspections, ISO audits and post-incident investigations.":
+    "يُسجَّل كل تغيير — إضافات وتحديثات وتغييرات حالة واستكمال مراجعات وتعديلات تنظيمية — بطابع زمني ونسب للمستخدم، وقابل للاسترجاع فوراً للتفتيش وتدقيقات ISO وتحقيقات ما بعد الحوادث.",
+  "A single source of compliance truth, replacing scattered spreadsheets with one live register mapped to every site and obligation.":
+    "مصدر واحد لحقيقة الامتثال، يستبدل جداول البيانات المتناثرة بسجل حي واحد مرتبط بكل موقع والتزام.",
+  "Proactive, not reactive, with automated reminders that prompt action before a deadline passes, rather than flagging it after.":
+    "استباقية لا رد فعل، بإشعارات تلقائية تحث على الإجراء قبل انقضاء الموعد النهائي، لا الإبلاغ عنه بعد فوات الأوان.",
+  "Built-in CAPA management, so any gap or non-compliance flows straight into tracked corrective actions instead of a separate to-do list.":
+    "إدارة CAPA مدمجة، بحيث تنتقل أي فجوة أو عدم امتثال مباشرة إلى إجراءات تصحيحية متتبَّعة بدلاً من قائمة مهام منفصلة.",
+  "Part of a unified EHSQ platform, connecting legal obligations with audits, risk assessments and wider workflows for joined-up compliance.":
+    "جزء من منصة EHSQ موحدة، تربط الالتزامات القانونية بالتدقيقات وتقييمات المخاطر وسير العمل الأوسع لامتثال متكامل.",
+  "Audit-ready by default, with accurate record-keeping and a clear compliance status you can demonstrate in seconds, not days.":
+    "جاهزة للتدقيق افتراضياً، بحفظ سجلات دقيق وحالة امتثال واضحة يمكنك إثباتها في ثوانٍ، لا أيام.",
+  "Cost-effective by design, delivering significant savings over the manual, labour-intensive methods of maintaining a legal register.":
+    "فعّالة من حيث التكلفة بالتصميم، توفّر وفورات كبيرة مقارنة بالطرق اليدوية كثيفة العمالة لصيانة سجل قانوني.",
+  "Trusted by Compliance and Safety Teams Across Industries": "موثوقة من فرق الامتثال والسلامة في مختلف القطاعات",
+  "What is a legal register and why do I need one?": "ما هو السجل القانوني ولماذا أحتاج إليه؟",
+  "How does EHSWatch Legal Register help with deadlines?": "كيف يساعد السجل القانوني من EHSWatch في المواعيد النهائية؟",
+  "Can I maintain separate registers for different sites?": "هل يمكنني الاحتفاظ بسجلات منفصلة لمواقع مختلفة؟",
+  "Does it help manage corrective actions?": "هل تساعد في إدارة الإجراءات التصحيحية؟",
+  "How secure is our compliance data?": "ما مدى أمان بيانات الامتثال لدينا؟",
+  "Can EHSWatch Legal Register integrate with other modules?": "هل يمكن للسجل القانوني من EHSWatch التكامل مع وحدات أخرى؟",
+  "Ready to Take Control of Compliance?": "هل أنت مستعد للسيطرة على الامتثال؟",
+  "Plan and conduct audits, drawing on your legal register to verify compliance against the obligations that apply to each site.":
+    "خطّط للتدقيقات ونفّذها، بالاستناد إلى سجلك القانوني للتحقق من الامتثال مقابل الالتزامات السارية على كل موقع.",
+  "Identify hazards and document controls, linking legal requirements to the risks they govern.":
+    "حدّد المخاطر ووثّق الضوابط، واربط المتطلبات القانونية بالمخاطر التي تحكمها.",
+  "Assign, track and close the corrective actions raised against compliance gaps, with full ownership and audit trail.":
+    "أسند الإجراءات التصحيحية المثارة ضد فجوات الامتثال وتتبعها وأغلقها، بمسؤولية كاملة ومسار تدقيق.",
+  "Report and investigate incidents, connecting regulatory reporting duties to the obligations in your register.":
+    "أبلغ عن الحوادث وحقق فيها، واربط واجبات الإبلاغ التنظيمي بالالتزامات في سجلك.",
+  "Apply AI to inspection data to detect recurring finding patterns, predict high-risk inspection areas and generate compliant.":
+    "طبّق الذكاء الاصطناعي على بيانات التفتيش لاكتشاف أنماط النتائج المتكررة، والتنبؤ بمناطق التفتيش عالية الخطورة، وإنشاء تقارير امتثال.",
+
+  // ── /modules/inspections ──────────────────────────────────────────────────
+  "Turn Every Inspection Into Actionable Safety": "حوّل كل تفتيش إلى سلامة قابلة للتنفيذ",
+  "Intelligence": "استخباراتية",
+  "EHSWatch Inspections lets your teams create, schedule, conduct and analyse safety inspections from any device — with configurable checklists tailored to each site, asset or task type, automatic corrective action assignment and real-time analytics that surface risk trends before they become incidents.":
+    "تتيح وحدة التفتيش من EHSWatch لفرقك إنشاء تفتيشات السلامة وجدولتها وإجراءها وتحليلها من أي جهاز — بقوائم تحقق قابلة للتخصيص مصممة لكل موقع أو أصل أو نوع مهمة، وإسناد تلقائي للإجراءات التصحيحية، وتحليلات فورية تكشف اتجاهات المخاطر قبل أن تصبح حوادث.",
+  "Shift from reactive checks to proactive risk control — one inspection at a time.":
+    "انتقل من الفحوصات التفاعلية إلى التحكم الاستباقي في المخاطر — تفتيشاً واحداً في كل مرة.",
+  "Why Inspections?": "لماذا التفتيش؟",
+  "Manual inspections are slow, inconsistent and hard to act on. Findings sit in notebooks for days before they are typed up, follow-up actions are assigned by email and lost in inboxes, and leadership only sees a safety problem once it has grown into a recordable incident or a failed audit.":
+    "التفتيشات اليدوية بطيئة وغير متسقة ويصعب التصرف بناءً عليها. تبقى النتائج في الدفاتر أياماً قبل كتابتها، وتُسند إجراءات المتابعة عبر البريد الإلكتروني وتضيع في صناديق الوارد، ولا ترى القيادة مشكلة السلامة إلا بعد أن تتحول إلى حادثة قابلة للتسجيل أو تدقيق فاشل.",
+  "EHSWatch Inspections closes that gap. Field teams capture findings on any device — including offline at remote sites — while corrective actions are raised, assigned and tracked automatically within the same platform. Standardised templates keep every inspection consistent, and real-time analytics surface recurring trends before they escalate.":
+    "تسد وحدة التفتيش من EHSWatch هذه الفجوة. تلتقط فرق الميدان النتائج من أي جهاز — بما في ذلك دون اتصال في المواقع النائية — بينما تُثار الإجراءات التصحيحية وتُسند وتُتبَّع تلقائياً ضمن المنصة نفسها. تحافظ القوالب الموحدة على اتساق كل تفتيش، وتكشف التحليلات الفورية الاتجاهات المتكررة قبل تصاعدها.",
+  "See Inspections in Action": "شاهد التفتيش أثناء العمل",
+  "From inspection scheduling to corrective action closure — all in one connected workflow.":
+    "من جدولة التفتيش إلى إغلاق الإجراء التصحيحي — كل ذلك في سير عمل واحد متصل.",
+  "Configurable Inspection Templates": "قوالب تفتيش قابلة للتخصيص",
+  "Build checklists tailored to each site, asset, work type or regulation — with custom question types and scoring. Standardised templates deploy across every location, so each site is inspected to the same standard, with results in one consolidated view for leadership.":
+    "ابنِ قوائم تحقق مصممة لكل موقع أو أصل أو نوع عمل أو لائحة — بأنواع أسئلة وتقييم مخصصة. تُنشَر القوالب الموحدة عبر كل موقع، بحيث يُفتَّش كل موقع بنفس المعيار، مع النتائج في عرض موحد واحد للقيادة.",
+  "Flexible Scheduling": "جدولة مرنة",
+  "Schedule one-off, recurring and ad-hoc inspections in advance, with automated reminders to inspectors and supervisors so nothing is missed. Recurring schedules are managed centrally and visible across the platform in real time.":
+    "جدول التفتيشات لمرة واحدة والمتكررة والعرضية مسبقاً، مع تذكيرات تلقائية للمفتشين والمشرفين بحيث لا يُفوَّت شيء. تُدار الجداول المتكررة مركزياً ومرئية عبر المنصة في الوقت الفعلي.",
+  "Mobile & Offline Data Capture": "التقاط بيانات عبر الجوال ودون اتصال",
+  "Conduct inspections and capture findings from any smartphone or tablet — including offline in remote, underground or low-signal sites. Data syncs automatically when connectivity returns, with no manual upload step.":
+    "أجرِ التفتيشات والتقط النتائج من أي هاتف ذكي أو جهاز لوحي — بما في ذلك دون اتصال في المواقع النائية أو تحت الأرض أو ضعيفة الإشارة. تتزامن البيانات تلقائياً عند عودة الاتصال، دون خطوة رفع يدوية.",
+  "Automatic Corrective Action Assignment": "إسناد تلقائي للإجراءات التصحيحية",
+  "Convert findings directly into tracked corrective actions — with owners, due dates, priorities and escalation paths — no manual re-entry. Actions flow automatically into Action Tracker for full closure accountability.":
+    "حوّل النتائج مباشرة إلى إجراءات تصحيحية متتبَّعة — بمسؤولين ومواعيد استحقاق وأولويات ومسارات تصعيد — دون إعادة إدخال يدوية. تتدفق الإجراءات تلقائياً إلى متعقب الإجراءات لمساءلة إغلاق كاملة.",
+  "Monitor completion rates, open findings, overdue actions and recurring hazard patterns across sites, teams and time periods through live dashboards and exportable reports — shifting inspections into a forward-looking risk tool.":
+    "راقب معدلات الإنجاز والنتائج المفتوحة والإجراءات المتأخرة وأنماط المخاطر المتكررة عبر المواقع والفرق والفترات الزمنية من خلال لوحات معلومات حية وتقارير قابلة للتصدير — محوّلاً التفتيش إلى أداة مخاطر استشرافية.",
+  "Every record — checklist responses, findings, photo evidence, corrective actions and closure confirmations — is stored with a complete, timestamped audit trail, exportable for regulatory inspections, ISO audits and insurance reviews.":
+    "يُخزَّن كل سجل — ردود قوائم التحقق والنتائج وأدلة الصور والإجراءات التصحيحية وتأكيدات الإغلاق — بمسار تدقيق كامل موثَّق زمنياً، قابل للتصدير للتفتيش التنظيمي وتدقيقات ISO ومراجعات التأمين.",
+  "Part of a unified EHSQ platform, so every finding flows straight into actions, incidents and wider workflows; nothing is logged and forgotten.":
+    "جزء من منصة EHSQ موحدة، بحيث تتدفق كل نتيجة مباشرة إلى الإجراءات والحوادث وسير العمل الأوسع؛ لا يُسجَّل شيء ثم يُنسى.",
+  "Built for high-risk, multi-site operations, with a single source of truth for frontline inspectors and HSE leadership alike.":
+    "مصممة للعمليات عالية الخطورة متعددة المواقع، بمصدر حقيقة واحد لمفتشي الخطوط الأمامية وقيادة الصحة والسلامة على حد سواء.",
+  "Offline-ready mobile access that captures findings anywhere and syncs instantly once connected, ensuring inspection coverage is never limited by signal availability.":
+    "وصول جوال جاهز للعمل دون اتصال يلتقط النتائج في أي مكان ويتزامن فوراً عند الاتصال، بما يضمن ألا تكون تغطية التفتيش محدودة أبداً بتوفر الإشارة.",
+  "Unlimited users, so every team member can inspect and report without licence limits.":
+    "مستخدمون غير محدودين، بحيث يمكن لكل عضو فريق التفتيش والإبلاغ دون حدود ترخيص.",
+  "Configurable templates built for high-risk, multi-site operations — one platform that replaces multiple disconnected inspection tools and gives HSE leadership a single source of truth across the organisation.":
+    "قوالب قابلة للتخصيص مصممة للعمليات عالية الخطورة متعددة المواقع — منصة واحدة تستبدل أدوات تفتيش متعددة منفصلة وتمنح قيادة الصحة والسلامة مصدر حقيقة واحد عبر المؤسسة.",
+  "Trusted by Safety Inspection Teams Across Industries": "موثوقة من فرق تفتيش السلامة في مختلف القطاعات",
+  "What types of inspections does EHSWatch Inspections support?": "ما أنواع التفتيش التي تدعمها وحدة التفتيش من EHSWatch؟",
+  "Can we customise inspection templates and checklists?": "هل يمكننا تخصيص قوالب التفتيش وقوائم التحقق؟",
+  "Are EHSWatch Inspections available on mobile devices?": "هل وحدة التفتيش من EHSWatch متاحة على الأجهزة المحمولة؟",
+  "Can we schedule recurring inspections automatically?": "هل يمكننا جدولة تفتيشات متكررة تلقائياً؟",
+  "How do inspection findings convert into corrective actions?": "كيف تتحول نتائج التفتيش إلى إجراءات تصحيحية؟",
+  "Can inspection records be used as compliance evidence?": "هل يمكن استخدام سجلات التفتيش كأدلة امتثال؟",
+  "What analytics and reporting does the module provide?": "ما التحليلات والتقارير التي توفرها الوحدة؟",
+  "Ready to Make Every Inspection Count?": "هل أنت مستعد لجعل كل تفتيش ذا قيمة؟",
+  "Report and investigate incidents identified during or triggered by inspections — with root cause analysis, investigation workflows and regulatory reporting outputs.":
+    "أبلغ عن الحوادث المحددة أثناء التفتيشات أو الناتجة عنها وحقق فيها — بتحليل السبب الجذري وسير عمل التحقيق ومخرجات الإبلاغ التنظيمي.",
+  "Assign, monitor and close corrective actions from inspection findings — with defined ownership, due dates, escalation paths and a complete closure audit trail.":
+    "أسند الإجراءات التصحيحية من نتائج التفتيش وراقبها وأغلقها — بمسؤولية محددة ومواعيد استحقاق ومسارات تصعيد ومسار تدقيق إغلاق كامل.",
+  "Identify hazards and document controls — use inspection trend data to validate control effectiveness and update risk assessments based on field findings.":
+    "حدّد المخاطر ووثّق الضوابط — استخدم بيانات اتجاهات التفتيش للتحقق من فعالية الضوابط وتحديث تقييمات المخاطر بناءً على النتائج الميدانية.",
+  "Capture unsafe acts and unsafe conditions between formal inspections — observations and inspections together provide a complete picture of field safety conditions.":
+    "سجّل الأفعال والظروف غير الآمنة بين التفتيشات الرسمية — توفر الملاحظات والتفتيشات معاً صورة كاملة لظروف السلامة الميدانية.",
+  "Apply AI to inspection data to detect recurring finding patterns, predict high-risk inspection areas and generate compliance trend insights automatically.":
+    "طبّق الذكاء الاصطناعي على بيانات التفتيش لاكتشاف أنماط النتائج المتكررة، والتنبؤ بمناطق التفتيش عالية الخطورة، وإنشاء رؤى اتجاهات الامتثال تلقائياً.",
+
+  // ── /modules/file-management ──────────────────────────────────────────────
+  "Control Your Critical Documents With": "تحكّم في مستنداتك الحيوية بـ",
+  "Confidence": "ثقة",
+  "EHSWatch File Management gives your teams one secure, centralised place to store, organise, access and manage critical files — from safety policies and SOPs to work instructions, permit templates, risk assessments and compliance records. Every document is version-controlled, access-protected and searchable.":
+    "تمنح وحدة إدارة الملفات من EHSWatch فرقك مكاناً آمناً ومركزياً واحداً لتخزين الملفات الحيوية وتنظيمها والوصول إليها وإدارتها — من سياسات السلامة وإجراءات التشغيل الموحدة إلى تعليمات العمل وقوالب التصاريح وتقييمات المخاطر وسجلات الامتثال. كل مستند خاضع للتحكم بالإصدارات ومحمي بالوصول وقابل للبحث.",
+  "Built for ISO 45001, 9001 and 14001 document control.": "مصممة لضبط المستندات وفق ISO 45001 وISO 9001 وISO 14001.",
+  "Why File Management?": "لماذا إدارة الملفات؟",
+  "In many organisations, critical safety and compliance documents are still scattered across desktop folders, shared drives, inboxes and disconnected cloud storage. The result is predictable: teams work from outdated versions without knowing it, documents miss their review cycles because no one is tracking them, and assembling an audit trail takes hours.":
+    "في العديد من المؤسسات، لا تزال مستندات السلامة والامتثال الحيوية مبعثرة عبر مجلدات سطح المكتب ومحركات الأقراص المشتركة وصناديق الوارد وتخزين سحابي منفصل. والنتيجة متوقعة: تعمل الفرق من نسخ قديمة دون أن تدري، وتفوت المستندات دورات مراجعتها لأن لا أحد يتتبعها، ويستغرق تجميع مسار التدقيق ساعات.",
+  "EHSWatch File Management replaces that fragmentation with a controlled document environment — one system where every file has a current version, a review schedule, an approval record and a complete change history. So when your next ISO audit or inspection arrives, your documentation is already in order.":
+    "تستبدل وحدة إدارة الملفات من EHSWatch هذا التشتت ببيئة مستندات محكومة — نظام واحد يكون فيه لكل ملف إصدار حالي وجدول مراجعة وسجل اعتماد وتاريخ تغيير كامل. بحيث تكون مستنداتك منظمة بالفعل عند وصول تدقيق أو تفتيش ISO القادم.",
+  "See File Management in Action": "شاهد إدارة الملفات أثناء العمل",
+  "Everything your team needs to manage documents securely, efficiently and with full compliance visibility.":
+    "كل ما يحتاجه فريقك لإدارة المستندات بأمان وكفاءة ورؤية امتثال كاملة.",
+  "Centralised Repository": "مستودع مركزي",
+  "Store safety policies, procedures, work instructions, permit templates, risk assessments and compliance records in one secure, structured location — accessible to the right people from any device, across every site.":
+    "خزّن سياسات السلامة والإجراءات وتعليمات العمل وقوالب التصاريح وتقييمات المخاطر وسجلات الامتثال في موقع آمن ومنظم واحد — يمكن للأشخاص المناسبين الوصول إليه من أي جهاز، عبر كل موقع.",
+  "Access Control": "التحكم في الوصول",
+  "Keep documents visible and editable only by authorised users, with permissions configurable by role, department, site or category — protecting sensitive files without restricting legitimate operational access.":
+    "أبقِ المستندات مرئية وقابلة للتعديل فقط من قبل المستخدمين المصرَّح لهم، بصلاحيات قابلة للتخصيص حسب الدور أو القسم أو الموقع أو الفئة — لحماية الملفات الحساسة دون تقييد الوصول التشغيلي المشروع.",
+  "Advanced Search & Filtering": "بحث وتصفية متقدمان",
+  "Locate any document instantly by keyword, category, type, site, date range or review status — eliminating time lost to manual folder navigation across disconnected storage systems.":
+    "حدّد موقع أي مستند فوراً بالكلمة المفتاحية أو الفئة أو النوع أو الموقع أو نطاق التاريخ أو حالة المراجعة — لإلغاء الوقت الضائع في تصفح المجلدات يدوياً عبر أنظمة تخزين منفصلة.",
+  "Version Control": "التحكم بالإصدارات",
+  "Maintain a complete, timestamped version history for every document, so teams always work from the latest approved version — with the full revision trail retained and audit-ready, no manual record-keeping.":
+    "احتفظ بتاريخ إصدارات كامل موثَّق زمنياً لكل مستند، بحيث تعمل الفرق دائماً من أحدث نسخة معتمدة — مع الاحتفاظ بمسار المراجعة الكامل وجاهزيته للتدقيق، دون حفظ سجلات يدوي.",
+  "Review & Approval Workflows": "سير عمل للمراجعة والاعتماد",
+  "Manage the full document lifecycle through configurable review and approval workflows — with reviewer assignments, response deadlines and documented approvals that satisfy ISO and internal governance requirements.":
+    "أدر دورة حياة المستند الكاملة عبر سير عمل مراجعة واعتماد قابل للتخصيص — بإسناد مراجعين ومواعيد استجابة نهائية واعتمادات موثقة تلبي متطلبات ISO والحوكمة الداخلية.",
+  "Audit Trail Visibility": "رؤية مسار التدقيق",
+  "Every action — upload, revision, review, approval, version change and access — is logged with a timestamp and user attribution, giving you a complete trail for audits, inspections and governance reviews.":
+    "يُسجَّل كل إجراء — رفع ومراجعة وموافقة وتغيير إصدار ووصول — بطابع زمني ونسب للمستخدم، مما يمنحك مساراً كاملاً للتدقيقات والتفتيش ومراجعات الحوكمة.",
+  "Rapid deployment within the wider EHSWatch platform, without needing disconnected document tools.":
+    "نشر سريع ضمن منصة EHSWatch الأوسع، دون الحاجة إلى أدوات مستندات منفصلة.",
+  "Document lifecycle automation ensures review schedules are met without manual intervention — reducing the risk of expired safety documents being accessed and used in the field.":
+    "تضمن أتمتة دورة حياة المستند الوفاء بجداول المراجعة دون تدخل يدوي — مما يقلل خطر الوصول إلى مستندات سلامة منتهية الصلاحية واستخدامها في الميدان.",
+  "Configurable approval workflows provide the documented governance trail required by ISO 45001 Clause 7.5, ISO 9001 Clause 7.5 and ISO 14001 Clause 7.5 document control requirements.":
+    "يوفر سير عمل الاعتماد القابل للتخصيص مسار الحوكمة الموثَّق المطلوب بموجب متطلبات ضبط المستندات في البند 7.5 من ISO 45001 والبند 7.5 من ISO 9001 والبند 7.5 من ISO 14001.",
+  "Supports secure collaboration while maintaining document governance and approval discipline.":
+    "يدعم التعاون الآمن مع الحفاظ على حوكمة المستندات وانضباط الاعتماد.",
+  "What is EHSWatch File Management?": "ما هي وحدة إدارة الملفات من EHSWatch؟",
+  "Can we control who has access to specific documents?": "هل يمكننا التحكم في من لديه وصول إلى مستندات معينة؟",
+  "Can we search for documents easily?": "هل يمكننا البحث عن المستندات بسهولة؟",
+  "How does version control work?": "كيف يعمل التحكم بالإصدارات؟",
+  "How does it support ISO 45001 and other compliance standards?": "كيف تدعم ISO 45001 ومعايير الامتثال الأخرى؟",
+  "Can the module automate document review reminders?": "هل يمكن للوحدة أتمتة تذكيرات مراجعة المستندات؟",
+  "How secure is document storage?": "ما مدى أمان تخزين المستندات؟",
+  "Ready to Take Control of Your Documents?": "هل أنت مستعد للسيطرة على مستنداتك؟",
+  "Plan, conduct and close compliance, internal and supplier audits":
+    "خطّط لتدقيقات الامتثال والتدقيقات الداخلية وتدقيقات الموردين ونفّذها وأغلقها",
+  "Capture and investigate incidents with structured workflows — link the relevant procedures and SOPs to every investigation record and corrective action.":
+    "سجّل الحوادث وحقق فيها بسير عمل منظم — اربط الإجراءات وإجراءات التشغيل الموحدة ذات الصلة بكل سجل تحقيق وإجراء تصحيحي.",
+  "Assign and close corrective and preventive actions — attach supporting documents and completion evidence to every action record for a complete, auditable closure trail.":
+    "أسند الإجراءات التصحيحية والوقائية وأغلقها — أرفق المستندات الداعمة وأدلة الإنجاز بكل سجل إجراء لمسار إغلاق كامل وقابل للتدقيق.",
+  "Identify hazards, evaluate risks and document controls in a structured workflow":
+    "حدّد المخاطر وقيّمها ووثّق الضوابط ضمن سير عمل منظم",
+  "Use AI-powered insights to identify patterns, surface risks and support faster decision-making":
+    "استخدم رؤى مدعومة بالذكاء الاصطناعي لتحديد الأنماط وكشف المخاطر ودعم اتخاذ قرارات أسرع",
+
+  // ── /modules/emergency-response-drills ────────────────────────────────────
+  "Real": "استجابة",
+  "EHSWatch Emergency Response Drills gives safety teams a structured, data-driven way to plan, execute, evaluate and improve emergency drills — from fire evacuations and spill responses to lockdowns and confined-space rescue scenarios.":
+    "تمنح وحدة تدريبات الاستجابة للطوارئ من EHSWatch فرق السلامة طريقة منظمة ومبنية على البيانات لتخطيط تدريبات الطوارئ وتنفيذها وتقييمها وتحسينها — من إخلاء الحرائق والاستجابة للانسكابات إلى الإغلاق الأمني وسيناريوهات الإنقاذ في الأماكن المحصورة.",
+  "Turn every drill into a better-prepared workplace.": "حوّل كل تدريب إلى مكان عمل أفضل استعداداً.",
+  "Why Emergency Response Drills Management?": "لماذا إدارة تدريبات الاستجابة للطوارئ؟",
+  "Most high-risk industries are required to run regular emergency drills. But meeting that requirement and genuinely improving readiness are two different things. Drills run without structured evaluation, documented findings and tracked corrective actions prove compliance, not improvement.":
+    "يُطلب من معظم الصناعات عالية الخطورة إجراء تدريبات طوارئ منتظمة. لكن الوفاء بهذا المتطلب وتحسين الاستعداد فعلياً أمران مختلفان. تُثبت التدريبات التي تُجرى دون تقييم منظم ونتائج موثقة وإجراءات تصحيحية متتبَّعة الامتثال فقط، لا التحسن.",
+  "EHSWatch Emergency Response Drills bridges that gap. Every drill is planned with clear objectives, monitored during execution, scored against predefined criteria and connected to improvement actions tracked to closure — so each drill makes the next real response faster and more coordinated.":
+    "تسد وحدة تدريبات الاستجابة للطوارئ من EHSWatch هذه الفجوة. يُخطَّط لكل تدريب بأهداف واضحة، ويُراقَب أثناء التنفيذ، ويُسجَّل مقابل معايير محددة مسبقاً، ويُربَط بإجراءات تحسين متتبَّعة حتى الإغلاق — بحيث يجعل كل تدريب الاستجابة الحقيقية التالية أسرع وأكثر تنسيقاً.",
+  "See Emergency Response Drills In Action": "شاهد تدريبات الاستجابة للطوارئ أثناء العمل",
+  "Stop running drills in the dark. Start measuring them with clarity.": "توقف عن إجراء التدريبات عشوائياً. ابدأ بقياسها بوضوح.",
+  "Drill Planning & Scheduling": "تخطيط التدريبات وجدولتها",
+  "Plan fire, evacuation, spill and other scenarios in advance — with defined objectives, participant lists, resources and site-specific settings — and automated reminders that notify the right people ahead of time, reducing missed drills.":
+    "خطّط لسيناريوهات الحرائق والإخلاء والانسكابات وغيرها مسبقاً — بأهداف وقوائم مشاركين وموارد وإعدادات خاصة بالموقع محددة — وتذكيرات تلقائية تُشعر الأشخاص المناسبين مسبقاً، مما يقلل التدريبات الفائتة.",
+  "Real-Time Monitoring": "مراقبة فورية",
+  "Track participation, timing and response quality as drills unfold, giving facilitators a live picture of how the emergency response is performing — not just a post-event summary.":
+    "تتبّع المشاركة والتوقيت وجودة الاستجابة أثناء سير التدريبات، مما يمنح الميسرين صورة حية لأداء استجابة الطوارئ — لا مجرد ملخص بعد الحدث.",
+  "Scenario-Based Execution": "تنفيذ قائم على السيناريوهات",
+  "Support multiple drill types across different sites, roles and emergency scenarios from one central workflow, so every exercise follows a consistent, comparable process.":
+    "ادعم أنواع تدريبات متعددة عبر مواقع وأدوار وسيناريوهات طوارئ مختلفة من سير عمل مركزي واحد، بحيث يتبع كل تمرين عملية متسقة وقابلة للمقارنة.",
+  "Evaluation & Scoring": "التقييم والتسجيل",
+  "Assess outcomes against predefined criteria, identify response strengths and gaps, and score overall readiness — creating a consistent, comparable record across every drill event.":
+    "قيّم النتائج مقابل معايير محددة مسبقاً، وحدّد نقاط قوة الاستجابة وفجواتها، وسجّل الاستعداد العام — لإنشاء سجل متسق وقابل للمقارنة عبر كل حدث تدريب.",
+  "Improvement Plans & Corrective Actions": "خطط التحسين والإجراءات التصحيحية",
+  "Convert evaluation findings directly into tracked corrective actions with assigned owners, due dates and closure requirements — linked to Action Tracker for full follow-through accountability.":
+    "حوّل نتائج التقييم مباشرة إلى إجراءات تصحيحية متتبَّعة بمسؤولين مُسندين ومواعيد استحقاق ومتطلبات إغلاق — مرتبطة بمتعقب الإجراءات لمساءلة متابعة كاملة.",
+  "Live Analytics & Trend Reporting": "تحليلات حية وتقارير اتجاهات",
+  "Access dashboards showing completion rates, response-time trends, recurring gaps, and action close-out rates — giving safety leaders the data to drive continuous improvement in preparedness.":
+    "اطّلع على لوحات معلومات تُظهر معدلات الإنجاز واتجاهات وقت الاستجابة والفجوات المتكررة ومعدلات إغلاق الإجراءات — لتزويد قادة السلامة بالبيانات لدفع التحسين المستمر في الاستعداد.",
+  "Full drill lifecycle in one platform — from advanced scheduling through live execution, corrective action assignment and closure.":
+    "دورة حياة تدريب كاملة في منصة واحدة — من الجدولة المسبقة إلى التنفيذ الحي وإسناد الإجراءات التصحيحية والإغلاق.",
+  "Real-time monitoring during drill execution gives facilitators a live picture, not just a post-event summary.":
+    "توفر المراقبة الفورية أثناء تنفيذ التدريب صورة حية للميسرين، لا مجرد ملخص بعد الحدث.",
+  "Direct integration with Incident Management and Audit Management — drill findings feed into the same corrective action and compliance record as actual safety events.":
+    "تكامل مباشر مع إدارة الحوادث وإدارة التدقيق — تُغذّي نتائج التدريب نفس سجل الإجراءات التصحيحية والامتثال الخاص بأحداث السلامة الفعلية.",
+  "Mobile-accessible for facilitators and field teams — run, score and document drills from any device during live execution.":
+    "قابلة للوصول عبر الجوال للميسرين وفرق الميدان — أجرِ التدريبات وسجّلها ووثّقها من أي جهاز أثناء التنفيذ الحي.",
+  "Generates regulatory-ready compliance evidence with a full audit trail of schedules, attendance, scores, findings and improvement actions.":
+    "تُنشئ أدلة امتثال جاهزة تنظيمياً بمسار تدقيق كامل للجداول والحضور والنتائج ونتائج التقييم وإجراءات التحسين.",
+  "Trusted by Emergency Preparedness Teams Across High-Risk Industries": "موثوقة من فرق الاستعداد للطوارئ في الصناعات عالية الخطورة",
+  "What is the EHSWatch Emergency Response Drills module?": "ما هي وحدة تدريبات الاستجابة للطوارئ من EHSWatch؟",
+  "Can we manage different types of emergency drills in the same system?": "هل يمكننا إدارة أنواع مختلفة من تدريبات الطوارئ في النظام نفسه؟",
+  "Can we track who participates in each drill?": "هل يمكننا تتبع من يشارك في كل تدريب؟",
+  "Can drill records be used as evidence during regulatory inspections or audits?": "هل يمكن استخدام سجلات التدريبات كأدلة أثناء التفتيش أو التدقيقات التنظيمية؟",
+  "How does it help us improve, not just document?": "كيف تساعدنا في التحسن، لا مجرد التوثيق؟",
+  "Can we schedule drills in advance and send reminders automatically?": "هل يمكننا جدولة التدريبات مسبقاً وإرسال تذكيرات تلقائياً؟",
+  "Is the module accessible on mobile devices?": "هل الوحدة متاحة على الأجهزة المحمولة؟",
+  "Ready to Run Drills That Actually Improve Readiness?": "هل أنت مستعد لإجراء تدريبات تحسّن الاستعداد فعلياً؟",
+  "Capture and investigate incidents faster with structured workflows, root cause analysis and full investigation records.":
+    "سجّل الحوادث وحقق فيها بشكل أسرع بسير عمل منظم وتحليل سبب جذري وسجلات تحقيق كاملة.",
+  "Plan and run compliance audits with configurable checklists, findings capture and direct CAPA integration.":
+    "خطّط لتدقيقات الامتثال وشغّلها بقوائم تحقق قابلة للتخصيص والتقاط نتائج وتكامل مباشر مع CAPA.",
+  "Assign, track and close corrective and preventive actions with defined ownership, escalation and audit trail.":
+    "أسند الإجراءات التصحيحية والوقائية وتتبعها وأغلقها بمسؤولية محددة وتصعيد ومسار تدقيق.",
+  "Identify hazards, score risk levels and document controls to prevent incidents before they occur.":
+    "حدّد المخاطر وسجّل مستوياتها ووثّق الضوابط لمنع الحوادث قبل وقوعها.",
+  "Digitise high-risk work authorisation with configurable approvals, linked controls and live permit visibility.":
+    "رقمن اعتماد العمل عالي الخطورة بموافقات قابلة للتخصيص وضوابط مرتبطة ورؤية فورية للتصاريح.",
+
+  // ── /modules/customer-complaints ──────────────────────────────────────────
+  "Every Complaint Deserves a Clear": "تستحق كل شكوى",
+  "Resolution": "حلاً واضحاً",
+  "No more scattered logs, delayed responses or missed follow-ups. EHSWatch Customer Complaints gives your team a structured, end-to-end workflow to capture, assign, investigate and resolve every complaint with full visibility. Part of the unified EHSQ platform, it links complaints to non-conformance, corrective actions and quality reporting — driving measurable improvement.":
+    "لا مزيد من السجلات المتناثرة أو الردود المتأخرة أو المتابعات الفائتة. تمنح وحدة شكاوى العملاء من EHSWatch فريقك سير عمل منظماً من البداية إلى النهاية لتسجيل كل شكوى وإسنادها والتحقيق فيها وحلها برؤية كاملة. كجزء من منصة EHSQ الموحدة، تربط الشكاوى بعدم المطابقة والإجراءات التصحيحية وتقارير الجودة — لدفع تحسن قابل للقياس.",
+  "See every complaint move from intake to resolution in one connected system.":
+    "شاهد كل شكوى تنتقل من الاستلام إلى الحل في نظام واحد متصل.",
+  "Why Customer Complaints Management?": "لماذا إدارة شكاوى العملاء؟",
+  "Complaints handled slowly, inconsistently or without a documented investigation trail damage customer trust, expose organisations to regulatory scrutiny and repeat the same root causes because no one connected the complaint to a corrective action.":
+    "تضر الشكاوى التي تُعالَج ببطء أو بتناقض أو دون مسار تحقيق موثَّق بثقة العملاء، وتعرّض المؤسسات لتدقيق تنظيمي، وتكرر نفس الأسباب الجذرية لأن لا أحد ربط الشكوى بإجراء تصحيحي.",
+  "EHSWatch Customer Complaints replaces manual complaint tracking with a structured, accountable workflow. Every complaint is captured in one system, routed to the right handler, investigated with a documented trail and closed with evidence — giving quality managers and leadership real-time visibility over response performance and complaint trends.":
+    "تستبدل وحدة شكاوى العملاء من EHSWatch تتبع الشكاوى اليدوي بسير عمل منظم وخاضع للمساءلة. تُسجَّل كل شكوى في نظام واحد، وتُوجَّه إلى المعالج المناسب، ويُحقَّق فيها بمسار موثَّق، وتُغلَق بأدلة — مما يمنح مديري الجودة والقيادة رؤية فورية لأداء الاستجابة واتجاهات الشكاوى.",
+  "See Customer Complaints in Action": "شاهد شكاوى العملاء أثناء العمل",
+  "Stop juggling complaints manually. Start resolving them systematically.": "توقف عن إدارة الشكاوى يدوياً. ابدأ بحلها منهجياً.",
+  "Centralised Complaint Management": "إدارة شكاوى مركزية",
+  "Capture and manage complaints in one organised platform with complete visibility from initial reporting through investigation to closure — no spreadsheets, no shared inboxes.":
+    "سجّل الشكاوى وأدرها في منصة منظمة واحدة برؤية كاملة من الإبلاغ الأولي عبر التحقيق حتى الإغلاق — دون جداول بيانات، ودون صناديق وارد مشتركة.",
+  "Configurable Routing & Workflows": "توجيه وسير عمل قابلان للتخصيص",
+  "Direct each complaint to the right team or individual based on type, severity, product category or site, and tailor complaint categories, investigation steps, escalation paths and approvals to your specific quality processes and customer commitments — ensuring timely assignment without manual triage.":
+    "وجّه كل شكوى إلى الفريق أو الفرد المناسب بناءً على النوع أو الخطورة أو فئة المنتج أو الموقع، وخصّص فئات الشكاوى وخطوات التحقيق ومسارات التصعيد والموافقات لعمليات الجودة والتزامات العملاء الخاصة بك — بما يضمن إسناداً في الوقت المناسب دون فرز يدوي.",
+  "Progress Tracking": "تتبع التقدم",
+  "Monitor every complaint from submission to resolution, including all actions taken, communications made and documents attached — with a full, timestamped audit trail.":
+    "راقب كل شكوى من التقديم إلى الحل، بما في ذلك كل الإجراءات المتخذة والاتصالات التي جرت والمستندات المرفقة — بمسار تدقيق كامل موثَّق زمنياً.",
+  "Automatic Notifications": "إشعارات تلقائية",
+  "Set up configurable email and in-app alerts for new complaints, approaching deadlines and overdue responses — keeping all relevant stakeholders informed at every stage.":
+    "أعدّ تنبيهات بريد إلكتروني وداخل التطبيق قابلة للتخصيص للشكاوى الجديدة والمواعيد النهائية المقتربة والردود المتأخرة — لإبقاء كل الأطراف المعنية مطّلعة في كل مرحلة.",
+  "Reporting & Trend Analytics": "تقارير وتحليلات اتجاهات",
+  "Generate complaint volume reports, resolution time analyses and root cause trend summaries to identify systemic quality issues and demonstrate continuous improvement to customers and auditors.":
+    "أنشئ تقارير حجم الشكاوى وتحليلات وقت الحل وملخصات اتجاهات الأسباب الجذرية لتحديد مشكلات الجودة المنهجية وإثبات التحسن المستمر للعملاء والمدققين.",
+  "API Connectivity": "اتصال عبر واجهة برمجة التطبيقات",
+  "Connect to your existing CRM, ERP or customer service systems via API to centralise complaint-related data and eliminate duplicate record-keeping across platforms.":
+    "اتصل بأنظمة إدارة علاقات العملاء أو تخطيط موارد المؤسسة أو خدمة العملاء الحالية لديك عبر واجهة برمجة التطبيقات لمركزة البيانات المتعلقة بالشكاوى وإلغاء حفظ السجلات المكررة عبر المنصات.",
+  "Built within the unified EHSQ platform — complaints connect directly to non-conformance records, CAPA workflows and quality performance dashboards without manual data transfer.":
+    "مبنية ضمن منصة EHSQ الموحدة — تتصل الشكاوى مباشرة بسجلات عدم المطابقة وسير عمل CAPA ولوحات معلومات أداء الجودة دون نقل بيانات يدوي.",
+  "Workflow automation helps reduce manual effort and accelerate response.": "تساعد أتمتة سير العمل في تقليل الجهد اليدوي وتسريع الاستجابة.",
+  "Integrated root cause analysis tools such as 8D, 5-Why and Fishbone ensure every complaint drives a documented corrective action, not just a response.":
+    "تضمن أدوات تحليل السبب الجذري المدمجة مثل 8D والأسباب الخمسة ومخطط إيشيكاوا أن تدفع كل شكوى إجراءً تصحيحياً موثَّقاً، لا مجرد رد.",
+  "Analytics and trend reporting give quality managers and leadership the data they need to identify systemic issues and demonstrate programme effectiveness.":
+    "تمنح التحليلات وتقارير الاتجاهات مديري الجودة والقيادة البيانات التي يحتاجونها لتحديد المشكلات المنهجية وإثبات فعالية البرنامج.",
+  "Complete audit trail supports ISO 9001 quality management audits, regulatory inspections and customer satisfaction reviews.":
+    "يدعم مسار التدقيق الكامل تدقيقات إدارة الجودة وفق ISO 9001 والتفتيش التنظيمي ومراجعات رضا العملاء.",
+  "Trusted by Quality and EHSQ Teams Across Industries": "موثوقة من فرق الجودة وEHSQ في مختلف القطاعات",
+  "What does the Customer Complaints module do?": "ماذا تفعل وحدة شكاوى العملاء؟",
+  "Can the module be configured for our specific complaint handling process?": "هل يمكن تخصيص الوحدة لعملية معالجة الشكاوى الخاصة بنا؟",
+  "Does it integrate with our CRM or ERP system?": "هل تتكامل مع نظام إدارة علاقات العملاء أو تخطيط موارد المؤسسة لدينا؟",
+  "How does the module support ISO 9001 compliance?": "كيف تدعم الوحدة الامتثال لـ ISO 9001؟",
+  "Can different complaint types be assigned to different handlers automatically?": "هل يمكن إسناد أنواع شكاوى مختلفة إلى معالجين مختلفين تلقائياً؟",
+  "Ready to Manage Customer Complaints with More Speed and Control?": "هل أنت مستعد لإدارة شكاوى العملاء بسرعة وتحكم أكبر؟",
+  "Record, investigate and close non-conformances across safety, quality and environmental processes with full corrective action tracking.":
+    "سجّل حالات عدم المطابقة عبر عمليات السلامة والجودة والبيئة وحقق فيها وأغلقها بتتبع كامل للإجراءات التصحيحية.",
+  "Assign, track and close corrective actions from complaints, audits and incidents with defined ownership and escalation.":
+    "أسند الإجراءات التصحيحية من الشكاوى والتدقيقات والحوادث وتتبعها وأغلقها بمسؤولية محددة وتصعيد.",
+  "Plan and conduct ISO 9001 quality audits with configurable checklists and direct findings-to-CAPA integration.":
+    "خطّط لتدقيقات جودة ISO 9001 ونفّذها بقوائم تحقق قابلة للتخصيص وتكامل مباشر من النتائج إلى CAPA.",
+  "Capture and investigate workplace incidents, near misses and safety observations through a structured workflow.":
+    "سجّل حوادث مكان العمل والحوادث الوشيكة وملاحظات السلامة وحقق فيها عبر سير عمل منظم.",
+
+  // ── /modules/audit-management ─────────────────────────────────────────────
+  "Plan Every": "خطّط لكل",
+  "Audit": "تدقيق",
+  ". Close Every Gap.": ". وأغلق كل فجوة.",
+  "Move beyond scattered checklists and disconnected records. EHSWatch Audit Management gives compliance, HSE and quality teams one platform to plan audits, run structured assessments, capture findings, and drive every gap to closure. From ISO 45001 and supplier assessments to internal audits and regulatory reviews, manage every audit type in one place.":
+    "تجاوز قوائم التحقق المتناثرة والسجلات المنفصلة. تمنح وحدة إدارة التدقيق من EHSWatch فرق الامتثال والصحة والسلامة والجودة منصة واحدة لتخطيط التدقيقات وإجراء تقييمات منظمة والتقاط النتائج ودفع كل فجوة نحو الإغلاق. من ISO 45001 وتقييمات الموردين إلى التدقيقات الداخلية والمراجعات التنظيمية، أدر كل نوع تدقيق في مكان واحد.",
+  "Run every audit with more structure, better visibility, and faster follow-through.":
+    "أجرِ كل تدقيق بمزيد من التنظيم ورؤية أفضل ومتابعة أسرع.",
+  "Why Audit Management?": "لماذا إدارة التدقيق؟",
+  "Most organisations manage audits across a mix of spreadsheets, PDF checklists, email chains and shared drives. Findings get recorded but not followed up. The same gaps appear in consecutive audits. Leadership has no consolidated view of compliance performance across sites.":
+    "تدير معظم المؤسسات التدقيقات عبر مزيج من جداول البيانات وقوائم تحقق بصيغة PDF وسلاسل بريد إلكتروني ومحركات أقراص مشتركة. تُسجَّل النتائج لكن لا تُتابَع. تظهر نفس الفجوات في تدقيقات متتالية. لا تملك القيادة رؤية موحدة لأداء الامتثال عبر المواقع.",
+  "EHSWatch Audit Management replaces that fragmentation with a connected audit lifecycle — from scheduling and preparation through to execution, finding capture, corrective action assignment and closure. Every audit produces a measurable, documented improvement rather than just a report that sits in a folder.":
+    "تستبدل وحدة إدارة التدقيق من EHSWatch هذا التشتت بدورة حياة تدقيق متصلة — من الجدولة والتحضير عبر التنفيذ والتقاط النتائج وإسناد الإجراءات التصحيحية والإغلاق. يُنتج كل تدقيق تحسناً موثَّقاً وقابلاً للقياس بدلاً من مجرد تقرير يبقى في مجلد.",
+  "See Audit Management In Action": "شاهد إدارة التدقيق أثناء العمل",
+  "From audit planning to action closure, everything stays connected.": "من تخطيط التدقيق إلى إغلاق الإجراء، يبقى كل شيء متصلاً.",
+  "Audit Planning & Scheduling": "تخطيط التدقيق وجدولته",
+  "Organise compliance, supplier, internal and site audits through a structured digital workflow with advanced scheduling, resource allocation and objective-setting.":
+    "نظّم تدقيقات الامتثال والموردين والتدقيقات الداخلية وتدقيقات المواقع عبر سير عمل رقمي منظم بجدولة متقدمة وتخصيص موارد وتحديد أهداف.",
+  "Configurable Audit Checklists": "قوائم تحقق تدقيق قابلة للتخصيص",
+  "Mobile Execution & Real-Time Findings": "تنفيذ عبر الجوال ونتائج فورية",
+  "Auditors conduct assessments in the field from any smartphone or tablet, capturing observations, photos, non-conformances and improvement opportunities in real time — with offline capability for remote sites and all data kept current, categorised and accessible.":
+    "يجري المدققون التقييمات في الميدان من أي هاتف ذكي أو جهاز لوحي، ويلتقطون الملاحظات والصور وحالات عدم المطابقة وفرص التحسين في الوقت الفعلي — مع إمكانية العمل دون اتصال للمواقع النائية وبقاء كل البيانات محدَّثة ومصنَّفة ويمكن الوصول إليها.",
+  "Centralised Collaboration": "تعاون مركزي",
+  "Give auditors, site managers and leadership a shared platform for audit tasks, progress updates and sign-offs — replacing fragmented email with structured, auditable workflows.":
+    "امنح المدققين ومديري المواقع والقيادة منصة مشتركة لمهام التدقيق وتحديثات التقدم والتوقيعات — لاستبدال البريد الإلكتروني المتشتت بسير عمل منظم وقابل للتدقيق.",
+  "Analytics & Reporting": "تحليلات وتقارير",
+  "Generate audit completion reports, trends and gap summaries that help leadership track compliance performance across sites, identify recurring issues and demonstrate continuous improvement.":
+    "أنشئ تقارير إنجاز التدقيق والاتجاهات وملخصات الفجوات التي تساعد القيادة على تتبع أداء الامتثال عبر المواقع وتحديد المشكلات المتكررة وإثبات التحسن المستمر.",
+  "Complete Audit Trail": "مسار تدقيق كامل",
+  "Every audit record — findings, attachments, corrective actions and closure evidence — is stored with a full, timestamped audit trail for ISO certification audits, regulatory inspections and internal governance reviews.":
+    "يُخزَّن كل سجل تدقيق — النتائج والمرفقات والإجراءات التصحيحية وأدلة الإغلاق — بمسار تدقيق كامل موثَّق زمنياً لتدقيقات اعتماد ISO والتفتيش التنظيمي ومراجعات الحوكمة الداخلية.",
+  "Built on a unified EHSQ platform, so audits do not sit in isolation, giving leadership a consolidated view of compliance performance.":
+    "مبنية على منصة EHSQ موحدة، بحيث لا تبقى التدقيقات معزولة، مما يمنح القيادة رؤية موحدة لأداء الامتثال.",
+  "Mobile-accessible for field auditors — no paper, no retrospective data entry, no version control issues.":
+    "قابلة للوصول عبر الجوال للمدققين الميدانيين — دون ورق، ودون إدخال بيانات لاحق، ودون مشكلات في التحكم بالإصدارات.",
+  "Advanced analytics surface recurring gaps and compliance trends across sites, helping organisations move from reactive audit management to continuous improvement.":
+    "تكشف التحليلات المتقدمة الفجوات المتكررة واتجاهات الامتثال عبر المواقع، مما يساعد المؤسسات على الانتقال من إدارة التدقيق التفاعلية إلى التحسين المستمر.",
+  "Built and maintained by a team with a deep understanding of ISO management system requirements and sector-specific compliance obligations.":
+    "مبنية ومصانة من قبل فريق لديه فهم عميق لمتطلبات نظام إدارة ISO والتزامات الامتثال الخاصة بكل قطاع.",
+  "Trusted by Compliance-Focused Organisations Across Industries": "موثوقة من المؤسسات المهتمة بالامتثال في مختلف القطاعات",
+  "What types of audits does EHSWatch Audit Management support?": "ما أنواع التدقيقات التي تدعمها وحدة إدارة التدقيق من EHSWatch؟",
+  "Can the audit module be customised for our organisation?": "هل يمكن تخصيص وحدة التدقيق لمؤسستنا؟",
+  "How does the module handle audit findings and corrective actions?": "كيف تتعامل الوحدة مع نتائج التدقيق والإجراءات التصحيحية؟",
+  "Can auditors use it on mobile devices?": "هل يمكن للمدققين استخدامها على الأجهزة المحمولة؟",
+  "How does EHSWatch improve audit collaboration?": "كيف تحسّن EHSWatch التعاون في التدقيق؟",
+  "How does EHSWatch support compliance with ISO 45001 and other standards?": "كيف تدعم EHSWatch الامتثال لـ ISO 45001 ومعايير أخرى؟",
+  "Ready to Strengthen Your Audit Programme?": "هل أنت مستعد لتعزيز برنامج التدقيق لديك؟",
+  "Manage incidents, near misses and investigations through a structured workflow from report to closure.":
+    "أدر الحوادث والحوادث الوشيكة والتحقيقات عبر سير عمل منظم من الإبلاغ إلى الإغلاق.",
+  "Identify hazards, assess risk levels and document controls to support safer operational decisions.":
+    "حدّد المخاطر وقيّم مستوياتها ووثّق الضوابط لدعم قرارات تشغيلية أكثر أماناً.",
+  "Conduct digital inspections with configurable checklists, instant findings capture and follow-up workflows.":
+    "أجرِ تفتيشات رقمية بقوائم تحقق قابلة للتخصيص والتقاط فوري للنتائج وسير عمل متابعة.",
+  "Automatically surface audit finding patterns and generate compliance insights across your EHSQ data.":
+    "اكشف تلقائياً أنماط نتائج التدقيق وأنشئ رؤى امتثال عبر بيانات EHSQ لديك.",
+
+  // ── /modules/hse-observations ──────────────────────────────────────────────
+  "See Risks": "شاهد المخاطر",
+  "Earlier": "مبكراً",
+  ". Act Before Incidents Happen.": ". وتصرّف قبل وقوع الحوادث.",
+  "EHSWatch HSE Observations gives every level of your organisation — from frontline workers to supervisors and HSE leaders — a fast, structured way to report what they see in the field, classify it correctly and trigger the right response before an observation becomes a recordable event.":
+    "تمنح وحدة ملاحظات الصحة والسلامة من EHSWatch كل مستوى في مؤسستك — من عمال الخطوط الأمامية إلى المشرفين وقادة الصحة والسلامة — طريقة سريعة ومنظمة للإبلاغ عما يرونه في الميدان، وتصنيفه بشكل صحيح، وإطلاق الاستجابة المناسبة قبل أن تصبح الملاحظة حدثاً قابلاً للتسجيل.",
+  "Stop reacting to incidents. Start acting on the observations that precede them.":
+    "توقف عن رد الفعل تجاه الحوادث. ابدأ بالتصرف بناءً على الملاحظات التي تسبقها.",
+  "Why HSE Observations?": "لماذا ملاحظات الصحة والسلامة؟",
+  "In many organisations, observations are still reported informally — through phone calls, handwritten notes, WhatsApp messages or spreadsheets. That makes it nearly impossible to track trends, respond consistently, demonstrate proactive safety management to regulators, or prove that reporting is driving improvement rather than just generating paperwork.":
+    "في العديد من المؤسسات، لا تزال الملاحظات تُبلَّغ بشكل غير رسمي — عبر مكالمات هاتفية أو ملاحظات مكتوبة بخط اليد أو رسائل واتساب أو جداول بيانات. مما يجعل من شبه المستحيل تتبع الاتجاهات، أو الاستجابة بشكل متسق، أو إثبات إدارة السلامة الاستباقية للجهات التنظيمية، أو إثبات أن الإبلاغ يدفع التحسن لا مجرد توليد أعمال ورقية.",
+  "EHSWatch HSE Observations captures reports through intuitive forms built for fast completion, routes each one automatically to the responsible person, and tracks it through to acknowledgement and corrective action. Managers gain instant visibility into recurring trends and site-level risk signals — so observation data becomes a prevention tool, not just a reporting metric.":
+    "تلتقط وحدة ملاحظات الصحة والسلامة من EHSWatch التقارير عبر نماذج بديهية مصممة للإنجاز السريع، وتوجّه كل واحدة تلقائياً إلى الشخص المسؤول، وتتبعها حتى الإقرار والإجراء التصحيحي. يكتسب المديرون رؤية فورية للاتجاهات المتكررة وإشارات المخاطر على مستوى الموقع — بحيث تصبح بيانات الملاحظات أداة وقاية، لا مجرد مقياس إبلاغ.",
+  "See HSE Observations in Action": "شاهد ملاحظات الصحة والسلامة أثناء العمل",
+  "Everything your team needs to build a proactive safety reporting culture.":
+    "كل ما يحتاجه فريقك لبناء ثقافة إبلاغ سلامة استباقية.",
+  "Easy Observation Reporting": "إبلاغ سهل عن الملاحظات",
+  "Submit observations through simple, mobile-optimised forms built for fast completion by frontline workers — with offline capture on remote or low-signal sites that syncs automatically once connectivity returns, so no observation is ever lost.":
+    "قدّم الملاحظات عبر نماذج بسيطة محسَّنة للجوال ومصممة للإنجاز السريع من قبل عمال الخطوط الأمامية — مع التقاط دون اتصال في المواقع النائية أو ضعيفة الإشارة يتزامن تلقائياً عند عودة الاتصال، بحيث لا تُفقد أي ملاحظة أبداً.",
+  "Unsafe Acts & Conditions Classification": "تصنيف الأفعال والظروف غير الآمنة",
+  "Positive Safety Reinforcement": "تعزيز السلامة الإيجابي",
+  "Recognise and reinforce safe behaviours through a dedicated positive observation category, supporting a culture where recognition is as visible as hazard reporting.":
+    "اعترف بالسلوكيات الآمنة وعزّزها من خلال فئة ملاحظة إيجابية مخصصة، لدعم ثقافة يكون فيها التقدير مرئياً بقدر الإبلاغ عن المخاطر.",
+  "Real-Time Alerts": "تنبيهات فورية",
+  "Notify relevant personnel the moment an observation is submitted, enabling quicker review, acknowledgement and corrective action — because faster notification means faster intervention.":
+    "أشعر الأفراد المعنيين لحظة تقديم الملاحظة، مما يتيح مراجعة وإقراراً وإجراءً تصحيحياً أسرع — لأن الإشعار الأسرع يعني تدخلاً أسرع.",
+  "Trend & Pattern Analysis": "تحليل الاتجاهات والأنماط",
+  "Identify recurring unsafe conditions, repeated behavioural patterns and high-risk areas across sites, teams and time periods, so teams can take targeted preventive action.":
+    "حدّد الظروف غير الآمنة المتكررة والأنماط السلوكية المتكررة والمناطق عالية الخطورة عبر المواقع والفرق والفترات الزمنية، بحيث يمكن للفرق اتخاذ إجراء وقائي مستهدف.",
+  "Connected, Multi-Site Platform": "منصة متصلة متعددة المواقع",
+  "Link observations with Action Tracker, Incident and Audit Management to build a true operational safety record — with site-level filtering and consolidated cross-site dashboards for enterprise-wide visibility.":
+    "اربط الملاحظات بمتعقب الإجراءات وإدارة الحوادث والتدقيق لبناء سجل سلامة تشغيلي حقيقي — بتصفية على مستوى الموقع ولوحات معلومات موحدة عبر المواقع لرؤية على مستوى المؤسسة.",
+  "Rapid deployment with minimal IT dependency.": "نشر سريع باعتماد أدنى على تقنية المعلومات.",
+  "Designed by EHS professionals who understand the realities of field reporting.":
+    "مصممة من قبل متخصصي صحة وسلامة يفهمون واقع الإبلاغ الميداني.",
+  "Encourages reporting participation without making the process feel administrative or complex.":
+    "تشجع على المشاركة في الإبلاغ دون أن تجعل العملية تبدو إدارية أو معقدة.",
+  "Strengthens both risk prevention and positive behaviour recognition.": "تعزز كلاً من الوقاية من المخاطر والاعتراف بالسلوك الإيجابي.",
+  "Gives managers immediate visibility into trends, recurring issues and intervention priorities.":
+    "تمنح المديرين رؤية فورية للاتجاهات والمشكلات المتكررة وأولويات التدخل.",
+  "Fits naturally into a connected EHSQ platform rather than functioning as a standalone reporting tool.":
+    "تندمج بشكل طبيعي في منصة EHSQ متصلة بدلاً من العمل كأداة إبلاغ مستقلة.",
+  "Trusted By EHSQ Teams Across High-Risk Industries": "موثوقة من فرق EHSQ في الصناعات عالية الخطورة",
+  "What are EHSWatch HSE Observations?": "ما هي ملاحظات الصحة والسلامة من EHSWatch؟",
+  "What types of observations can be reported?": "ما أنواع الملاحظات التي يمكن الإبلاغ عنها؟",
+  "Is the observation form easy for frontline teams to complete?": "هل نموذج الملاحظة سهل الإكمال لفرق الخطوط الأمامية؟",
+  "Does the module work offline?": "هل تعمل الوحدة دون اتصال؟",
+  "Can observation categories be customised?": "هل يمكن تخصيص فئات الملاحظات؟",
+  "How do HSE Observations support leading indicator reporting?": "كيف تدعم ملاحظات الصحة والسلامة الإبلاغ عن المؤشرات الاستباقية؟",
+  "Can we identify recurring safety trends?": "هل يمكننا تحديد اتجاهات السلامة المتكررة؟",
+  "Who typically uses this module?": "من يستخدم هذه الوحدة عادة؟",
+  "Can the module support multiple sites?": "هل يمكن للوحدة دعم مواقع متعددة؟",
+  "Ready to Build a Safety Observation Programme That Actually Prevents Incidents?":
+    "هل أنت مستعد لبناء برنامج ملاحظات سلامة يمنع الحوادث فعلياً؟",
+  "Capture and investigate incidents with structured workflows — link observation trends directly to the incident types they precede and the root causes they reveal.":
+    "سجّل الحوادث وحقق فيها بسير عمل منظم — اربط اتجاهات الملاحظات مباشرة بأنواع الحوادث التي تسبقها والأسباب الجذرية التي تكشفها.",
+  "Plan and conduct site safety audits — use observation trend data to prioritise audit focus areas, direct inspection resources and validate the effectiveness of corrective actions.":
+    "خطّط لتدقيقات سلامة الموقع ونفّذها — استخدم بيانات اتجاهات الملاحظات لتحديد أولويات مجالات تركيز التدقيق وتوجيه موارد التفتيش والتحقق من فعالية الإجراءات التصحيحية.",
+  "Identify hazards and document controls — observation data provides field-level evidence for risk assessment updates and control effectiveness reviews across sites.":
+    "حدّد المخاطر ووثّق الضوابط — توفر بيانات الملاحظات أدلة على المستوى الميداني لتحديثات تقييم المخاطر ومراجعات فعالية الضوابط عبر المواقع.",
+  "Assign, track and close corrective actions generated by observations — with defined ownership, escalation paths and a complete audit trail from observation to verified closure.":
+    "أسند الإجراءات التصحيحية الناتجة عن الملاحظات وتتبعها وأغلقها — بمسؤولية محددة ومسارات تصعيد ومسار تدقيق كامل من الملاحظة إلى الإغلاق الموثَّق.",
 
   // ── /privacy-policy — legal text, translated at the client's explicit request.
   // Machine-quality Arabic (same process as the rest of the site); recommend a
