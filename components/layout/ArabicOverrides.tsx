@@ -1360,6 +1360,9 @@ export const EN_TO_AR: Record<string, string> = {
     "طبّق تحليل السبب الجذري بالذكاء الاصطناعي وكشف تشابه الأحداث وتقييم المخاطر التنبؤي على بيانات الحوادث — للكشف التلقائي عن الأنماط والمخاطر المنهجية عبر سجل السلامة لديك.",
 
   // ── /modules/training-management ─────────────────────────────────────────
+  "Why Training Management?": "لماذا إدارة التدريب؟",
+  "EHSWatch Training Management removes all three failure modes. A configurable competency matrix defines what each role requires — by site, risk level and jurisdiction — and applies it automatically to every worker in that role. Expiry alerts trigger well in advance, so certifications are renewed before they lapse, and a complete training record for any worker is ready in seconds.":
+    "تزيل وحدة إدارة التدريب من EHSWatch أنماط الفشل الثلاثة جميعها. تحدد مصفوفة كفاءة قابلة للتخصيص ما يتطلبه كل دور — حسب الموقع ومستوى الخطورة والنطاق القانوني — وتطبقه تلقائياً على كل عامل في ذلك الدور. تُطلَق تنبيهات الانتهاء قبل وقت كافٍ، بحيث تُجدَّد الشهادات قبل انتهائها، ويكون سجل تدريب كامل لأي عامل جاهزاً في ثوانٍ.",
   "See Training Management in Action": "شاهد إدارة التدريب أثناء العمل",
   "From role requirements to verified competence — every worker, every site, every qualification":
     "من متطلبات الدور إلى الكفاءة الموثّقة — كل عامل، وكل موقع، وكل مؤهل",
@@ -1655,6 +1658,7 @@ export const EN_TO_AR: Record<string, string> = {
     "نادراً ما يفشل الامتثال بسبب إغفال كبير واحد. بل يفشل في الفجوات — لائحة تغيّرت دون أن يلاحظ أحد، أو موعد تجديد مدفون في جدول بيانات، أو التزام يقع على عاتق شخص غادر منذ ذلك الحين. تتبّع كل هذا يدوياً عبر عدة مواقع، وسيفلت شيء ما في النهاية، وغالباً ما يظهر فقط أثناء التدقيق.",
   "EHSWatch Legal Register closes those gaps. Every applicable law and obligation lives in one register, mapped to the site it affects. Responsibilities are assigned, deadlines tracked, and automated reminders prompt the right people before anything falls due — so you move from scrambling to prove compliance to demonstrating it with confidence.":
     "تسد وحدة السجل القانوني من EHSWatch هذه الفجوات. يعيش كل قانون والتزام ساري المفعول في سجل واحد، مرتبط بالموقع الذي يؤثر فيه. تُسند المسؤوليات، وتُتبَّع المواعيد النهائية، وتحث الإشعارات التلقائية الأشخاص المناسبين قبل استحقاق أي شيء — بحيث تنتقل من التسابق لإثبات الامتثال إلى إثباته بثقة.",
+  "Why Legal Register?": "لماذا السجل القانوني؟",
   "See Legal Register in Action": "شاهد السجل القانوني أثناء العمل",
   "Everything your team needs to stay compliant, organised and audit-ready.":
     "كل ما يحتاجه فريقك للبقاء ممتثلاً ومنظماً وجاهزاً للتدقيق.",
@@ -1989,6 +1993,8 @@ export const EN_TO_AR: Record<string, string> = {
   "How does EHSWatch improve audit collaboration?": "كيف تحسّن EHSWatch التعاون في التدقيق؟",
   "How does EHSWatch support compliance with ISO 45001 and other standards?": "كيف تدعم EHSWatch الامتثال لـ ISO 45001 ومعايير أخرى؟",
   "Ready to Strengthen Your Audit Programme?": "هل أنت مستعد لتعزيز برنامج التدقيق لديك؟",
+  "Assign, track and close corrective and preventive actions with full ownership and audit trail.":
+    "أسند الإجراءات التصحيحية والوقائية وتتبعها وأغلقها بمسؤولية كاملة ومسار تدقيق.",
   "Manage incidents, near misses and investigations through a structured workflow from report to closure.":
     "أدر الحوادث والحوادث الوشيكة والتحقيقات عبر سير عمل منظم من الإبلاغ إلى الإغلاق.",
   "Identify hazards, assess risk levels and document controls to support safer operational decisions.":
@@ -2569,17 +2575,6 @@ export default function ArabicOverrides() {
         if (enHit && EN_TO_AR[enHit] !== undefined) {
           // Skip wrapper containers — target the inner element so we keep its styling.
           if (isWrapperFor(el, enHit)) return;
-          // Skip elements that hold an icon/image child (svg/img) — el.textContent
-          // = "..." below would silently delete it (e.g. the "Resources" nav
-          // button's dropdown-chevron <svg>). GoogleTranslate's own text-node-level
-          // pass (which this map also feeds) still swaps the visible text correctly
-          // without touching siblings.
-          // NOTE: this must NOT reject on ANY child — a heading like "About
-          // <span class='notranslate'>IRIS</span>" has a child that's itself part
-          // of the same translatable phrase (already-protected nested text, not a
-          // foreign icon); blocking those broke "About IRIS" entirely, since the
-          // whole-element rewrite is what applies FORCE_LTR/the curated Arabic here.
-          if (el.querySelector("svg, img")) return;
           if (!el.getAttribute("data-ar-en")) el.setAttribute("data-ar-en", enHit);
           el.setAttribute("translate", "no");
           el.classList.add("notranslate");
@@ -2587,7 +2582,38 @@ export default function ArabicOverrides() {
           if (FORCE_LTR.has(enHit)) el.setAttribute("dir", "ltr");
           else if (FORCE_RTL.has(enHit)) el.setAttribute("dir", "rtl");
           const want = ar ? EN_TO_AR[enHit] : enHit;
-          if (norm(el.textContent) !== want) el.textContent = want;
+
+          // A child ELEMENT that itself carries meaningful text (e.g. a nested
+          // "IRIS" span inside "About IRIS") is part of the same translatable
+          // phrase — the whole-element rewrite below is what applies
+          // FORCE_LTR/the curated Arabic there, so it must stay wholesale.
+          // But a child contributing NO text — a decorative icon/image, or
+          // (critically) one that hasn't mounted yet, e.g. lucide-react's
+          // DynamicIcon renders null until its async import resolves — must
+          // never be wiped by `el.textContent = ...`: that destroys the very
+          // DOM node React expects to insert the icon into moments later, and
+          // our own patched insertBefore/removeChild (GoogleTranslate.tsx,
+          // installed to stop React crashing on OUR text-node mutations)
+          // then silently drops that insert, permanently blanking the icon.
+          // Found via a real screenshot: the contact page's trust badges
+          // ("Rapid Deployment" etc.) lost their icons in Arabic only,
+          // because Arabic is the one case where the text actually changes
+          // and el.textContent fires before the icon has loaded.
+          const hasContentBearingChildEl = Array.from(el.children).some(
+            (c) => (c.textContent || "").trim().length > 0
+          );
+          if (hasContentBearingChildEl) {
+            if (norm(el.textContent) !== want) el.textContent = want;
+          } else {
+            const textNode = Array.from(el.childNodes).find(
+              (n) => n.nodeType === 3 && (n.nodeValue || "").trim().length > 0
+            );
+            if (textNode) {
+              if (norm(textNode.textContent) !== want) textNode.nodeValue = want;
+            } else if (el.children.length === 0 && norm(el.textContent) !== want) {
+              el.textContent = want;
+            }
+          }
           return;
         }
 
