@@ -777,6 +777,370 @@ export const EN_TO_AR: Record<string, string> = {
   "In a world where workplace safety and sustainability are increasingly important, EHS compliance is not just a requirement-it is a strategic advantage.":
     "في عالم تزداد فيه أهمية سلامة مكان العمل والاستدامة، لا يُعد الامتثال للصحة والسلامة والبيئة مجرد متطلب — بل ميزة استراتيجية.",
 
+  // ── /blog/impact-of-ai-in-industrial-safety ───────────────────────────────
+  "Impact of AI in Industrial Safety: Transforming Workplace Safety Through Smart Technology":
+    "تأثير الذكاء الاصطناعي على السلامة الصناعية: تحويل سلامة مكان العمل عبر التقنية الذكية",
+  "Industrial safety has always been a top priority for organizations operating in manufacturing, construction, oil and gas, mining, and other high-risk industries. Traditional safety practices, while effective, often rely on manual inspections, paper-based reporting, and reactive approaches to incident management.":
+    "كانت السلامة الصناعية دائماً أولوية قصوى للمؤسسات العاملة في التصنيع والبناء والنفط والغاز والتعدين وغيرها من الصناعات عالية الخطورة. وبينما تكون ممارسات السلامة التقليدية فعالة، إلا أنها غالباً ما تعتمد على التفتيش اليدوي والإبلاغ الورقي والنهج التفاعلي في إدارة الحوادث.",
+  "Today, Artificial Intelligence (AI) is changing the way organizations identify, prevent, and respond to workplace hazards. By analyzing large volumes of data, detecting risks in real time, and supporting informed decision-making, AI is helping industries create safer and more efficient work environments.":
+    "اليوم، يغيّر الذكاء الاصطناعي طريقة تحديد المؤسسات لمخاطر مكان العمل والوقاية منها والاستجابة لها. من خلال تحليل كميات كبيرة من البيانات واكتشاف المخاطر في الوقت الفعلي ودعم اتخاذ قرارات مستنيرة، يساعد الذكاء الاصطناعي الصناعات على إنشاء بيئات عمل أكثر أماناً وكفاءة.",
+  "This article explores the impact of AI on industrial safety and how businesses can leverage this technology to reduce risks, improve compliance, and protect their workforce. What is AI in Industrial Safety?":
+    "تستكشف هذه المقالة تأثير الذكاء الاصطناعي على السلامة الصناعية وكيف يمكن للشركات الاستفادة من هذه التقنية لتقليل المخاطر وتحسين الامتثال وحماية قوتها العاملة. ما هو الذكاء الاصطناعي في السلامة الصناعية؟",
+  "Artificial Intelligence refers to computer systems that can perform tasks requiring human intelligence, such as learning, analyzing data, recognizing patterns, and making predictions.":
+    "يشير الذكاء الاصطناعي إلى الأنظمة الحاسوبية القادرة على أداء مهام تتطلب ذكاءً بشرياً، مثل التعلم وتحليل البيانات والتعرف على الأنماط والتنبؤ.",
+  "In industrial safety, AI is used to:": "في السلامة الصناعية، يُستخدم الذكاء الاصطناعي من أجل:",
+  "Monitor workplace conditions in real time": "مراقبة ظروف مكان العمل في الوقت الفعلي",
+  "Identify potential hazards before incidents occur": "تحديد المخاطر المحتملة قبل وقوع الحوادث",
+  "Analyze safety data and trends": "تحليل بيانات واتجاهات السلامة",
+  "Automate safety reporting and inspections": "أتمتة الإبلاغ والتفتيش المتعلقين بالسلامة",
+  "Improve emergency response planning": "تحسين التخطيط للاستجابة للطوارئ",
+  "By turning safety data into actionable insights, AI helps organizations move from reactive safety management to proactive risk prevention.":
+    "من خلال تحويل بيانات السلامة إلى رؤى قابلة للتنفيذ، يساعد الذكاء الاصطناعي المؤسسات على الانتقال من إدارة السلامة التفاعلية إلى الوقاية الاستباقية من المخاطر.",
+  "Key Applications of AI in Industrial Safety": "التطبيقات الرئيسية للذكاء الاصطناعي في السلامة الصناعية",
+  "1. Predictive Risk Analysis": "1. تحليل المخاطر التنبؤي",
+  "One of the most valuable contributions of AI is its ability to predict potential safety risks before they become incidents.":
+    "من أهم مساهمات الذكاء الاصطناعي قدرته على التنبؤ بمخاطر السلامة المحتملة قبل أن تتحول إلى حوادث.",
+  "AI systems analyze data from:": "تحلل أنظمة الذكاء الاصطناعي البيانات من:",
+  "Previous incidents": "الحوادث السابقة",
+  "Near-miss reports": "تقارير الحوادث الوشيكة",
+  "Equipment performance records": "سجلات أداء المعدات",
+  "Environmental conditions": "الظروف البيئية",
+  "Employee safety observations": "ملاحظات سلامة الموظفين",
+  "By identifying patterns and trends, AI can alert safety managers to emerging risks, allowing corrective actions to be taken before accidents occur.":
+    "من خلال تحديد الأنماط والاتجاهات، يمكن للذكاء الاصطناعي تنبيه مديري السلامة إلى المخاطر الناشئة، مما يتيح اتخاذ إجراءات تصحيحية قبل وقوع الحوادث.",
+  "2. Real-Time Hazard Detection": "2. الكشف الفوري عن المخاطر",
+  "AI-powered cameras and sensors can continuously monitor workplaces and identify unsafe conditions instantly.":
+    "يمكن للكاميرات والمستشعرات المدعومة بالذكاء الاصطناعي مراقبة أماكن العمل باستمرار وتحديد الظروف غير الآمنة فوراً.",
+  "Examples include:": "تشمل الأمثلة:",
+  "Detecting workers not wearing PPE": "اكتشاف العمال الذين لا يرتدون معدات الحماية الشخصية",
+  "Identifying unauthorized entry into restricted areas": "تحديد الدخول غير المصرح به إلى المناطق المحظورة",
+  "Monitoring unsafe worker behavior": "مراقبة سلوك العمال غير الآمن",
+  "Detecting fire, smoke, or gas leaks": "اكتشاف الحرائق أو الدخان أو تسرب الغاز",
+  "Real-time alerts enable organizations to address hazards immediately and prevent serious incidents.":
+    "تتيح التنبيهات الفورية للمؤسسات معالجة المخاطر فوراً ومنع الحوادث الجسيمة.",
+  "3. Smart Video Surveillance": "3. المراقبة الفيديوية الذكية",
+  "Modern AI-enabled surveillance systems go beyond recording footage.": "تتجاوز أنظمة المراقبة الحديثة المدعومة بالذكاء الاصطناعي مجرد تسجيل اللقطات.",
+  "These systems can:": "يمكن لهذه الأنظمة:",
+  "Recognize safety violations": "التعرف على مخالفات السلامة",
+  "Monitor worker movements": "مراقبة تحركات العمال",
+  "Detect slips, trips, and falls": "اكتشاف الانزلاقات والتعثرات والسقوط",
+  "Identify unsafe equipment operation": "تحديد تشغيل المعدات غير الآمن",
+  "This allows safety teams to focus on prevention rather than reviewing hours of recorded video after an incident occurs.":
+    "يتيح هذا لفرق السلامة التركيز على الوقاية بدلاً من مراجعة ساعات من الفيديو المسجل بعد وقوع الحادث.",
+  "4. Automated Incident Reporting": "4. الإبلاغ الآلي عن الحوادث",
+  "Manual incident reporting can be time-consuming and prone to errors.": "يمكن أن يكون الإبلاغ اليدوي عن الحوادث مستهلكاً للوقت وعرضة للأخطاء.",
+  "AI-powered safety platforms streamline the process by:": "تبسّط منصات السلامة المدعومة بالذكاء الاصطناعي العملية من خلال:",
+  "Capturing incident details automatically": "التقاط تفاصيل الحادث تلقائياً",
+  "Categorizing incidents": "تصنيف الحوادث",
+  "Suggesting root causes": "اقتراح الأسباب الجذرية",
+  "Generating reports instantly": "إنشاء التقارير فوراً",
+  "This improves reporting accuracy while reducing administrative workload.": "يحسّن هذا دقة الإبلاغ مع تقليل عبء العمل الإداري.",
+  "5. Equipment Monitoring and Predictive Maintenance": "5. مراقبة المعدات والصيانة التنبؤية",
+  "Equipment failure is a major cause of workplace accidents.": "يُعد عطل المعدات سبباً رئيسياً لحوادث مكان العمل.",
+  "AI continuously monitors machinery performance and identifies signs of wear, malfunction, or abnormal behavior.":
+    "يراقب الذكاء الاصطناعي أداء الآلات باستمرار ويحدد علامات التآكل أو العطل أو السلوك غير الطبيعي.",
+  "Benefits include:": "تشمل الفوائد:",
+  "Reduced equipment downtime": "تقليل توقف المعدات",
+  "Prevention of unexpected failures": "منع الأعطال غير المتوقعة",
+  "Improved worker safety": "تحسين سلامة العمال",
+  "Lower maintenance costs": "تكاليف صيانة أقل",
+  "Predictive maintenance helps organizations fix issues before they become safety hazards.":
+    "تساعد الصيانة التنبؤية المؤسسات على إصلاح المشكلات قبل أن تتحول إلى مخاطر سلامة.",
+  "6. Enhanced Safety Training": "6. تدريب سلامة محسّن",
+  "AI is transforming employee training through personalized learning experiences.": "يعيد الذكاء الاصطناعي تشكيل تدريب الموظفين عبر تجارب تعلم مخصصة.",
+  "AI-based training platforms can:": "يمكن لمنصات التدريب المعتمدة على الذكاء الاصطناعي:",
+  "Assess employee knowledge levels": "تقييم مستويات معرفة الموظفين",
+  "Identify skill gaps": "تحديد فجوات المهارات",
+  "Recommend targeted safety training": "التوصية بتدريب سلامة مستهدف",
+  "Track training effectiveness": "تتبع فعالية التدريب",
+  "Some organizations are also using AI-powered virtual simulations to train workers for emergency situations without exposing them to real-world risks.":
+    "تستخدم بعض المؤسسات أيضاً محاكاة افتراضية مدعومة بالذكاء الاصطناعي لتدريب العمال على حالات الطوارئ دون تعريضهم لمخاطر العالم الحقيقي.",
+  "Benefits of AI in Industrial Safety": "فوائد الذكاء الاصطناعي في السلامة الصناعية",
+  "1. Improved Hazard Prevention": "1. وقاية محسّنة من المخاطر",
+  "AI helps identify risks before incidents happen, reducing workplace accidents and injuries.":
+    "يساعد الذكاء الاصطناعي على تحديد المخاطر قبل وقوع الحوادث، مما يقلل حوادث وإصابات مكان العمل.",
+  "2. Faster Decision-Making": "2. اتخاذ قرارات أسرع",
+  "Real-time data and intelligent insights enable safety managers to make quicker and more informed decisions.":
+    "تتيح البيانات الفورية والرؤى الذكية لمديري السلامة اتخاذ قرارات أسرع وأكثر استنارة.",
+  "3. Increased Compliance": "3. امتثال متزايد",
+  "AI systems can automatically track safety activities, inspections, and documentation, helping organizations maintain regulatory compliance.":
+    "يمكن لأنظمة الذكاء الاصطناعي تتبع أنشطة السلامة والتفتيشات والتوثيق تلقائياً، مما يساعد المؤسسات على الحفاظ على الامتثال التنظيمي.",
+  "4. Better Resource Utilization": "4. استخدام أفضل للموارد",
+  "Automation reduces manual tasks, allowing safety professionals to focus on high-value activities such as risk management and employee engagement.":
+    "تقلل الأتمتة المهام اليدوية، مما يتيح لمتخصصي السلامة التركيز على الأنشطة عالية القيمة مثل إدارة المخاطر وإشراك الموظفين.",
+  "5. Enhanced Workplace Culture": "5. ثقافة مكان عمل محسّنة",
+  "When employees see that safety is actively monitored and supported through technology, they are more likely to participate in safety initiatives and follow best practices.":
+    "عندما يرى الموظفون أن السلامة تُراقَب وتُدعَم بنشاط من خلال التقنية، يصبحون أكثر ميلاً للمشاركة في مبادرات السلامة واتباع أفضل الممارسات.",
+  "Challenges of Implementing AI in Safety Management": "تحديات تطبيق الذكاء الاصطناعي في إدارة السلامة",
+  "While AI offers significant benefits, organizations should also consider potential challenges:":
+    "بينما يقدم الذكاء الاصطناعي فوائد كبيرة، يجب على المؤسسات أيضاً مراعاة التحديات المحتملة:",
+  "1. Data Quality Requirements": "1. متطلبات جودة البيانات",
+  "AI systems rely on accurate and complete data. Poor-quality data can lead to inaccurate predictions and recommendations.":
+    "تعتمد أنظمة الذكاء الاصطناعي على بيانات دقيقة وكاملة. يمكن أن تؤدي البيانات ضعيفة الجودة إلى تنبؤات وتوصيات غير دقيقة.",
+  "2. Initial Investment Costs": "2. تكاليف الاستثمار الأولية",
+  "Implementing AI technology may require investments in software, sensors, cameras, and employee training.":
+    "قد يتطلب تطبيق تقنية الذكاء الاصطناعي استثمارات في البرمجيات والمستشعرات والكاميرات وتدريب الموظفين.",
+  "3. Employee Acceptance": "3. قبول الموظفين",
+  "Workers may initially have concerns about increased monitoring. Transparent communication is essential to build trust and encourage adoption.":
+    "قد يكون لدى العمال في البداية مخاوف بشأن زيادة المراقبة. التواصل الشفاف ضروري لبناء الثقة وتشجيع التبني.",
+  "4. Cybersecurity Risks": "4. مخاطر الأمن السيبراني",
+  "Connected AI systems must be protected against cyber threats to ensure the security of sensitive safety data.":
+    "يجب حماية أنظمة الذكاء الاصطناعي المتصلة من التهديدات السيبرانية لضمان أمان بيانات السلامة الحساسة.",
+  "The Future of AI in Industrial Safety": "مستقبل الذكاء الاصطناعي في السلامة الصناعية",
+  "As AI technology continues to evolve, its role in industrial safety will expand significantly.":
+    "مع استمرار تطور تقنية الذكاء الاصطناعي، سيتوسع دورها في السلامة الصناعية بشكل كبير.",
+  "Future developments may include:": "قد تشمل التطورات المستقبلية:",
+  "Autonomous safety inspections": "تفتيشات سلامة مستقلة",
+  "Advanced wearable safety devices": "أجهزة سلامة قابلة للارتداء متقدمة",
+  "AI-powered digital safety assistants": "مساعدون رقميون للسلامة مدعومون بالذكاء الاصطناعي",
+  "Predictive emergency response systems": "أنظمة استجابة تنبؤية للطوارئ",
+  "Integration with IoT and smart factories": "التكامل مع إنترنت الأشياء والمصانع الذكية",
+  "Organizations that embrace AI today will be better positioned to create safer, more resilient workplaces in the future.":
+    "ستكون المؤسسات التي تتبنى الذكاء الاصطناعي اليوم في وضع أفضل لإنشاء أماكن عمل أكثر أماناً ومرونة في المستقبل.",
+  "Artificial Intelligence is revolutionizing industrial safety by helping organizations identify risks earlier, respond faster, and make smarter safety decisions. From predictive analytics and real-time hazard detection to automated reporting and intelligent training, AI is enabling a proactive approach to workplace safety.":
+    "يُحدث الذكاء الاصطناعي ثورة في السلامة الصناعية من خلال مساعدة المؤسسات على تحديد المخاطر مبكراً والاستجابة بشكل أسرع واتخاذ قرارات سلامة أذكى. من التحليلات التنبؤية والكشف الفوري عن المخاطر إلى الإبلاغ الآلي والتدريب الذكي، يُمكّن الذكاء الاصطناعي نهجاً استباقياً لسلامة مكان العمل.",
+  "While successful implementation requires proper planning, quality data, and employee engagement, the benefits far outweigh the challenges. As industries continue their digital transformation journey, AI will play a critical role in building safer workplaces, protecting employees, and improving operational efficiency.":
+    "بينما يتطلب التطبيق الناجح تخطيطاً سليماً وبيانات عالية الجودة ومشاركة الموظفين، فإن الفوائد تفوق التحديات بكثير. مع استمرار الصناعات في رحلة التحول الرقمي، سيلعب الذكاء الاصطناعي دوراً حاسماً في بناء أماكن عمل أكثر أماناً وحماية الموظفين وتحسين الكفاءة التشغيلية.",
+  "Investing in AI-powered safety solutions is no longer just an innovation-it's becoming a necessity for organizations committed to creating a safer and smarter future.":
+    "لم يعد الاستثمار في حلول السلامة المدعومة بالذكاء الاصطناعي مجرد ابتكار — بل أصبح ضرورة للمؤسسات الملتزمة بخلق مستقبل أكثر أماناً وذكاءً.",
+
+  // ── /blog/encouraging-hazard-observation-reporting ────────────────────────
+  "Encouraging Hazard and Observation Reporting for a Safer Workplace":
+    "تشجيع الإبلاغ عن المخاطر والملاحظات من أجل مكان عمل أكثر أماناً",
+  "Creating a safe and healthy workplace requires more than compliance with safety regulations-it requires active participation from employees at every level. One of the most effective ways to prevent workplace incidents is by encouraging employees to report hazards, unsafe conditions, near misses, and safety observations before they result in accidents or injuries.":
+    "يتطلب إنشاء مكان عمل آمن وصحي أكثر من مجرد الامتثال للوائح السلامة — بل يتطلب مشاركة فعالة من الموظفين على كل المستويات. من أكثر الطرق فعالية لمنع حوادث مكان العمل تشجيع الموظفين على الإبلاغ عن المخاطر والظروف غير الآمنة والحوادث الوشيكة وملاحظات السلامة قبل أن تؤدي إلى حوادث أو إصابات.",
+  "An effective hazard and observation reporting program empowers employees to identify risks, improve safety awareness, and contribute to a proactive safety culture. Organizations that prioritize reporting can reduce workplace incidents, strengthen compliance, and create a safer environment for everyone.":
+    "يمكّن برنامج فعال للإبلاغ عن المخاطر والملاحظات الموظفين من تحديد المخاطر وتحسين الوعي بالسلامة والمساهمة في ثقافة سلامة استباقية. يمكن للمؤسسات التي تُولي الأولوية للإبلاغ تقليل حوادث مكان العمل وتعزيز الامتثال وإنشاء بيئة أكثر أماناً للجميع.",
+  "Why Hazard and Observation Reporting Matters": "لماذا يهم الإبلاغ عن المخاطر والملاحظات",
+  "Hazard and observation reporting is a critical component of any Environmental, Health, and Safety (EHS) program. It enables organizations to identify potential risks early, take preventive action, and continuously improve workplace safety performance.":
+    "يُعد الإبلاغ عن المخاطر والملاحظات عنصراً حاسماً في أي برنامج للبيئة والصحة والسلامة. فهو يمكّن المؤسسات من تحديد المخاطر المحتملة مبكراً واتخاذ إجراءات وقائية وتحسين أداء سلامة مكان العمل باستمرار.",
+  "Benefits of hazard reporting include:": "تشمل فوائد الإبلاغ عن المخاطر:",
+  "Early identification of workplace hazards": "التحديد المبكر لمخاطر مكان العمل",
+  "Prevention of accidents and injuries": "الوقاية من الحوادث والإصابات",
+  "Improved employee engagement in safety programs": "تحسين مشاركة الموظفين في برامج السلامة",
+  "Enhanced regulatory compliance": "تعزيز الامتثال التنظيمي",
+  "Stronger safety culture across the organization": "ثقافة سلامة أقوى عبر المؤسسة",
+  "Effective Strategies to Encourage Hazard and Observation Reporting": "استراتيجيات فعالة لتشجيع الإبلاغ عن المخاطر والملاحظات",
+  "1. Communicate the Importance of Reporting": "1. توضيح أهمية الإبلاغ",
+  "Employees are more likely to report hazards when they understand the value of their contributions. Organizations should clearly communicate how hazard and observation reporting helps prevent incidents, protects workers, and improves overall workplace safety.":
+    "يكون الموظفون أكثر ميلاً للإبلاغ عن المخاطر عندما يفهمون قيمة مساهماتهم. يجب على المؤسسات توضيح كيف يساعد الإبلاغ عن المخاطر والملاحظات في منع الحوادث وحماية العمال وتحسين سلامة مكان العمل بشكل عام.",
+  "Key actions include:": "تشمل الإجراءات الرئيسية:",
+  "Sharing real-world examples of incident prevention": "مشاركة أمثلة واقعية للوقاية من الحوادث",
+  "Discussing the benefits of proactive reporting": "مناقشة فوائد الإبلاغ الاستباقي",
+  "Reinforcing safety messages through meetings and communications": "تعزيز رسائل السلامة عبر الاجتماعات والاتصالات",
+  "Demonstrating management commitment to workplace safety": "إظهار التزام الإدارة بسلامة مكان العمل",
+  "2. Provide Comprehensive Training": "2. توفير تدريب شامل",
+  "Employees should be trained to recognize potential hazards and understand the reporting process. Regular training ensures that workers have the knowledge and confidence needed to identify and report safety concerns effectively.":
+    "يجب تدريب الموظفين على التعرف على المخاطر المحتملة وفهم عملية الإبلاغ. يضمن التدريب المنتظم أن يكون لدى العمال المعرفة والثقة اللازمتين لتحديد مخاوف السلامة والإبلاغ عنها بفعالية.",
+  "Training programs should cover:": "يجب أن تغطي برامج التدريب:",
+  "Hazard identification techniques": "تقنيات تحديد المخاطر",
+  "Near-miss reporting procedures": "إجراءات الإبلاغ عن الحوادث الوشيكة",
+  "Observation reporting best practices": "أفضل ممارسات الإبلاغ عن الملاحظات",
+  "Workplace safety responsibilities": "مسؤوليات سلامة مكان العمل",
+  "Regular refresher training helps maintain awareness and encourages ongoing participation.":
+    "يساعد التدريب التنشيطي المنتظم في الحفاظ على الوعي ويشجع المشاركة المستمرة.",
+  "3. Implement an Easy-to-Use Reporting System": "3. تطبيق نظام إبلاغ سهل الاستخدام",
+  "A complicated reporting process can discourage employees from reporting hazards. Organizations should provide a simple, accessible, and user-friendly reporting system that allows employees to submit reports quickly and efficiently.":
+    "يمكن لعملية إبلاغ معقدة أن تُثني الموظفين عن الإبلاغ عن المخاطر. يجب على المؤسسات توفير نظام إبلاغ بسيط وسهل الوصول وسهل الاستخدام يتيح للموظفين تقديم التقارير بسرعة وكفاءة.",
+  "An effective reporting system should include:": "يجب أن يشمل نظام الإبلاغ الفعال:",
+  "Mobile and desktop accessibility": "إمكانية الوصول عبر الجوال وسطح المكتب",
+  "Simple reporting forms": "نماذج إبلاغ بسيطة",
+  "Anonymous reporting options": "خيارات إبلاغ مجهولة",
+  "Real-time submission tracking": "تتبع فوري للتقديمات",
+  "Automated notifications and follow-ups": "إشعارات ومتابعات تلقائية",
+  "Digital EHS software solutions can significantly improve reporting rates by making the process more convenient and transparent.":
+    "يمكن لحلول برمجيات الصحة والسلامة والبيئة الرقمية تحسين معدلات الإبلاغ بشكل كبير من خلال جعل العملية أكثر ملاءمة وشفافية.",
+  "4. Provide Timely Feedback": "4. تقديم ملاحظات في الوقت المناسب",
+  "Employees want to know that their concerns are being taken seriously. When hazards or observations are reported, organizations should provide feedback regarding the actions taken and the status of the issue.":
+    "يريد الموظفون معرفة أن مخاوفهم تُؤخذ على محمل الجد. عند الإبلاغ عن المخاطر أو الملاحظات، يجب على المؤسسات تقديم ملاحظات حول الإجراءات المتخذة وحالة المشكلة.",
+  "Benefits of providing feedback include:": "تشمل فوائد تقديم الملاحظات:",
+  "Increased employee trust": "زيادة ثقة الموظفين",
+  "Higher reporting participation": "مشاركة أعلى في الإبلاغ",
+  "Improved transparency": "شفافية محسّنة",
+  "Stronger engagement in safety initiatives": "مشاركة أقوى في مبادرات السلامة",
+  "When employees see positive outcomes from their reports, they are more likely to continue participating in safety programs.":
+    "عندما يرى الموظفون نتائج إيجابية من تقاريرهم، يصبحون أكثر ميلاً لمواصلة المشاركة في برامج السلامة.",
+  "5. Recognize and Reward Safety Participation": "5. الاعتراف بالمشاركة في السلامة ومكافأتها",
+  "Recognition plays a significant role in encouraging workplace safety engagement. Organizations should acknowledge employees who actively contribute to hazard and observation reporting.":
+    "يلعب التقدير دوراً مهماً في تشجيع المشاركة في سلامة مكان العمل. يجب على المؤسسات الاعتراف بالموظفين الذين يساهمون بنشاط في الإبلاغ عن المخاطر والملاحظات.",
+  "Recognition strategies may include:": "قد تشمل استراتيجيات التقدير:",
+  "Employee safety awards": "جوائز سلامة الموظفين",
+  "Public recognition during meetings": "التقدير العلني خلال الاجتماعات",
+  "Safety achievement certificates": "شهادات إنجاز السلامة",
+  "Incentive and reward programs": "برامج الحوافز والمكافآت",
+  "Recognizing safety contributions reinforces positive behavior and motivates others to participate.":
+    "يعزز الاعتراف بمساهمات السلامة السلوك الإيجابي ويحفز الآخرين على المشاركة.",
+  "6. Foster an Open and Supportive Safety Culture": "6. تعزيز ثقافة سلامة منفتحة وداعمة",
+  "A positive safety culture encourages employees to report concerns without fear of blame, punishment, or retaliation. Organizations should create an environment where employees feel comfortable raising concerns and sharing suggestions for improvement.":
+    "تشجع ثقافة السلامة الإيجابية الموظفين على الإبلاغ عن المخاوف دون خوف من اللوم أو العقاب أو الانتقام. يجب على المؤسسات إنشاء بيئة يشعر فيها الموظفون بالراحة عند إثارة المخاوف ومشاركة اقتراحات التحسين.",
+  "To build a supportive culture:": "لبناء ثقافة داعمة:",
+  "Encourage open communication": "تشجيع التواصل المفتوح",
+  "Promote a non-punitive reporting approach": "تعزيز نهج إبلاغ غير عقابي",
+  "Involve employees in safety discussions": "إشراك الموظفين في مناقشات السلامة",
+  "Demonstrate leadership commitment to safety": "إظهار التزام القيادة بالسلامة",
+  "When employees trust that their voices will be heard, reporting rates naturally increase.":
+    "عندما يثق الموظفون بأن أصواتهم ستُسمع، ترتفع معدلات الإبلاغ بشكل طبيعي.",
+  "The Role of EHS Software in Hazard Reporting": "دور برمجيات الصحة والسلامة والبيئة في الإبلاغ عن المخاطر",
+  "Modern EHS software solutions simplify hazard and observation reporting by providing centralized platforms for capturing, tracking, and managing safety concerns. Employees can quickly report hazards through mobile devices, while managers can monitor trends, assign corrective actions, and track resolutions in real time.":
+    "تبسّط حلول برمجيات الصحة والسلامة والبيئة الحديثة الإبلاغ عن المخاطر والملاحظات من خلال توفير منصات مركزية لتسجيل مخاوف السلامة وتتبعها وإدارتها. يمكن للموظفين الإبلاغ عن المخاطر بسرعة عبر الأجهزة المحمولة، بينما يمكن للمديرين مراقبة الاتجاهات وإسناد الإجراءات التصحيحية وتتبع الحلول في الوقت الفعلي.",
+  "Key features include:": "تشمل الميزات الرئيسية:",
+  "Mobile hazard reporting": "الإبلاغ عن المخاطر عبر الجوال",
+  "Automated workflows and notifications": "سير عمل وإشعارات آلية",
+  "Corrective action tracking": "تتبع الإجراءات التصحيحية",
+  "Real-time dashboards and analytics": "لوحات معلومات وتحليلات فورية",
+  "Centralized safety data management": "إدارة مركزية لبيانات السلامة",
+  "These capabilities help organizations respond faster to risks and continuously improve workplace safety performance.":
+    "تساعد هذه القدرات المؤسسات على الاستجابة بشكل أسرع للمخاطر وتحسين أداء سلامة مكان العمل باستمرار.",
+  "Benefits of a Strong Hazard Reporting Program": "فوائد برنامج قوي للإبلاغ عن المخاطر",
+  "Organizations that actively encourage hazard and observation reporting can achieve significant safety and operational improvements, including:":
+    "يمكن للمؤسسات التي تشجع بنشاط الإبلاغ عن المخاطر والملاحظات تحقيق تحسينات كبيرة في السلامة والعمليات، بما في ذلك:",
+  "Reduced workplace incidents and injuries": "تقليل حوادث وإصابات مكان العمل",
+  "Improved regulatory compliance": "تحسين الامتثال التنظيمي",
+  "Faster risk identification and mitigation": "تحديد المخاطر والتخفيف منها بشكل أسرع",
+  "Increased employee engagement": "زيادة مشاركة الموظفين",
+  "Enhanced safety performance metrics": "مقاييس أداء سلامة محسّنة",
+  "Stronger organizational safety culture": "ثقافة سلامة مؤسسية أقوى",
+  "Encouraging hazard and observation reporting is essential for building a proactive and effective workplace safety program. By providing training, simplifying reporting processes, recognizing employee contributions, and fostering a supportive safety culture, organizations can significantly reduce risks and prevent workplace incidents.":
+    "يُعد تشجيع الإبلاغ عن المخاطر والملاحظات ضرورياً لبناء برنامج سلامة استباقي وفعال لمكان العمل. من خلال توفير التدريب وتبسيط عمليات الإبلاغ والاعتراف بمساهمات الموظفين وتعزيز ثقافة سلامة داعمة، يمكن للمؤسسات تقليل المخاطر بشكل كبير ومنع حوادث مكان العمل.",
+  "With the support of modern EHS software and strong leadership commitment, businesses can create an environment where employees actively participate in identifying hazards and improving workplace safety, leading to safer, healthier, and more productive operations.":
+    "بدعم من برمجيات الصحة والسلامة والبيئة الحديثة والتزام قيادي قوي، يمكن للشركات إنشاء بيئة يشارك فيها الموظفون بنشاط في تحديد المخاطر وتحسين سلامة مكان العمل، مما يؤدي إلى عمليات أكثر أماناً وصحة وإنتاجية.",
+
+  // ── /blog/how-to-select-ehs-software-guide ────────────────────────────────
+  "How to Select EHS Software: A Complete Guide for Businesses":
+    "كيفية اختيار برمجيات الصحة والسلامة والبيئة: دليل كامل للشركات",
+  "Choosing the right Environment, Health, and Safety (EHS) software is a critical decision that can significantly improve workplace safety, regulatory compliance, and operational efficiency. With numerous EHS solutions available in the market, selecting the best platform for your organization's unique requirements can be challenging.":
+    "يُعد اختيار برمجيات البيئة والصحة والسلامة المناسبة قراراً حاسماً يمكن أن يحسّن بشكل كبير سلامة مكان العمل والامتثال التنظيمي والكفاءة التشغيلية. مع توفر العديد من حلول الصحة والسلامة والبيئة في السوق، يمكن أن يكون اختيار أفضل منصة لمتطلبات مؤسستك الفريدة أمراً صعباً.",
+  "This guide explains the key factors you should consider before investing in an EHS management software solution.":
+    "يشرح هذا الدليل العوامل الرئيسية التي يجب مراعاتها قبل الاستثمار في حل برمجيات لإدارة الصحة والسلامة والبيئة.",
+  "Why Choosing the Right EHS Software Matters": "لماذا يهم اختيار برمجيات الصحة والسلامة والبيئة المناسبة",
+  "An effective EHS software solution helps organizations:": "يساعد حل برمجيات فعال للصحة والسلامة والبيئة المؤسسات على:",
+  "Improve workplace safety": "تحسين سلامة مكان العمل",
+  "Reduce workplace incidents and risks": "تقليل حوادث ومخاطر مكان العمل",
+  "Ensure regulatory compliance": "ضمان الامتثال التنظيمي",
+  "Streamline audits and inspections": "تبسيط التدقيقات والتفتيشات",
+  "Manage incidents and corrective actions": "إدارة الحوادث والإجراءات التصحيحية",
+  "Track employee training": "تتبع تدريب الموظفين",
+  "Generate real-time reports and analytics": "إنشاء تقارير وتحليلات فورية",
+  "Selecting software that aligns with your business processes ensures long-term value and supports a proactive safety culture.":
+    "يضمن اختيار برمجيات تتوافق مع عمليات أعمالك قيمة طويلة الأمد ويدعم ثقافة سلامة استباقية.",
+  "1. Identify Your Organization's EHS Requirements": "1. حدّد متطلبات مؤسستك للصحة والسلامة والبيئة",
+  "The first step is understanding your organization's specific Environment, Health, and Safety needs. Every business operates differently, so your software should address your operational challenges.":
+    "الخطوة الأولى هي فهم احتياجات مؤسستك المحددة للبيئة والصحة والسلامة. تعمل كل شركة بشكل مختلف، لذا يجب أن تعالج برمجياتك تحدياتك التشغيلية.",
+  "Consider whether you need features for:": "فكّر فيما إذا كنت تحتاج ميزات لـ:",
+  "Incident and accident reporting": "الإبلاغ عن الحوادث والإصابات",
+  "Hazard identification": "تحديد المخاطر",
+  "Risk assessments": "تقييمات المخاطر",
+  "Safety inspections and audits": "تفتيشات وتدقيقات السلامة",
+  "Compliance management": "إدارة الامتثال",
+  "Employee safety training": "تدريب سلامة الموظفين",
+  "Environmental reporting": "الإبلاغ البيئي",
+  "Corrective and preventive actions (CAPA)": "الإجراءات التصحيحية والوقائية (CAPA)",
+  "Clearly identifying your requirements will help you choose software that supports your safety objectives.":
+    "سيساعدك تحديد متطلباتك بوضوح على اختيار برمجيات تدعم أهداف السلامة لديك.",
+  "2. Evaluate Core Features": "2. قيّم الميزات الأساسية",
+  "Not all EHS software offers the same capabilities. Compare available features and ensure they align with your current and future business needs.":
+    "لا تقدم كل برمجيات الصحة والسلامة والبيئة نفس القدرات. قارن الميزات المتاحة وتأكد من توافقها مع احتياجات أعمالك الحالية والمستقبلية.",
+  "Essential EHS software features include:": "تشمل ميزات برمجيات الصحة والسلامة والبيئة الأساسية:",
+  "Hazard Reporting": "الإبلاغ عن المخاطر",
+  "Safety Audit Management": "إدارة تدقيق السلامة",
+  "Inspection Checklists": "قوائم تحقق التفتيش",
+  "Compliance Tracking": "تتبع الامتثال",
+  "Employee Training Management": "إدارة تدريب الموظفين",
+  "Environmental Performance Monitoring": "مراقبة الأداء البيئي",
+  "Corrective and Preventive Action (CAPA)": "الإجراءات التصحيحية والوقائية (CAPA)",
+  "Dashboard and Analytics": "لوحة معلومات وتحليلات",
+  "Mobile Accessibility": "إمكانية الوصول عبر الجوال",
+  "Choose a solution that can grow alongside your organization.": "اختر حلاً يمكن أن ينمو مع مؤسستك.",
+  "3. Look for an Easy-to-Use Interface": "3. ابحث عن واجهة سهلة الاستخدام",
+  "Even the most powerful software will not deliver results if employees find it difficult to use.":
+    "حتى أقوى البرمجيات لن تحقق نتائج إذا وجد الموظفون صعوبة في استخدامها.",
+  "An ideal EHS platform should provide:": "يجب أن توفر منصة الصحة والسلامة والبيئة المثالية:",
+  "Simple and intuitive navigation": "تنقلاً بسيطاً وبديهياً",
+  "User-friendly dashboards": "لوحات معلومات سهلة الاستخدام",
+  "Quick incident reporting": "إبلاغاً سريعاً عن الحوادث",
+  "Automated notifications and reminders": "إشعارات وتذكيرات تلقائية",
+  "Easy report generation": "إنشاء تقارير سهلاً",
+  "Mobile-friendly access": "وصولاً ملائماً للجوال",
+  "A clean interface improves user adoption and increases reporting accuracy across the organization.":
+    "تحسّن الواجهة النظيفة تبني المستخدمين وتزيد دقة الإبلاغ عبر المؤسسة.",
+  "4. Check Integration Capabilities": "4. تحقق من قدرات التكامل",
+  "Your EHS software should integrate seamlessly with your existing business systems.":
+    "يجب أن تتكامل برمجيات الصحة والسلامة والبيئة لديك بسلاسة مع أنظمة أعمالك الحالية.",
+  "Look for integration with:": "ابحث عن تكامل مع:",
+  "HR Management Systems": "أنظمة إدارة الموارد البشرية",
+  "ERP Solutions": "حلول تخطيط موارد المؤسسات",
+  "Payroll Software": "برمجيات الرواتب",
+  "Asset Management Systems": "أنظمة إدارة الأصول",
+  "Document Management Platforms": "منصات إدارة المستندات",
+  "Business Intelligence Tools": "أدوات ذكاء الأعمال",
+  "Integration eliminates duplicate data entry, improves efficiency, and ensures data consistency across departments.":
+    "يلغي التكامل إدخال البيانات المكرر، ويحسّن الكفاءة، ويضمن اتساق البيانات عبر الأقسام.",
+  "5. Assess the Vendor's Experience and Reputation": "5. قيّم خبرة المزوّد وسمعته",
+  "Choosing the right software provider is just as important as selecting the software itself.":
+    "اختيار مزوّد البرمجيات المناسب لا يقل أهمية عن اختيار البرمجيات نفسها.",
+  "Before making a decision:": "قبل اتخاذ القرار:",
+  "Review customer testimonials": "راجع شهادات العملاء",
+  "Read online reviews": "اقرأ المراجعات عبر الإنترنت",
+  "Request case studies": "اطلب دراسات حالة",
+  "Evaluate industry experience": "قيّم الخبرة في القطاع",
+  "Ask for product demonstrations": "اطلب عروضاً توضيحية للمنتج",
+  "Check implementation success stories": "تحقق من قصص نجاح التطبيق",
+  "A trusted vendor with industry expertise is more likely to deliver reliable support and continuous product improvements.":
+    "من المرجح أن يقدم المزوّد الموثوق ذو الخبرة القطاعية دعماً موثوقاً وتحسينات مستمرة للمنتج.",
+  "6. Evaluate Customer Support": "6. قيّم دعم العملاء",
+  "Reliable customer support is essential for successful implementation and long-term software adoption.":
+    "دعم العملاء الموثوق ضروري للتطبيق الناجح والتبني طويل الأمد للبرمجيات.",
+  "Ensure the vendor provides:": "تأكد من أن المزوّد يوفر:",
+  "Quick technical support": "دعماً تقنياً سريعاً",
+  "Implementation assistance": "مساعدة في التطبيق",
+  "User training": "تدريب المستخدمين",
+  "Knowledge base and documentation": "قاعدة معرفة وتوثيق",
+  "Regular software updates": "تحديثات برمجية منتظمة",
+  "Dedicated account management": "إدارة حساب مخصصة",
+  "Strong customer support minimizes downtime and helps your organization maximize the value of the software.":
+    "يقلل دعم العملاء القوي من وقت التوقف ويساعد مؤسستك على تعظيم قيمة البرمجيات.",
+  "7. Prioritize Security and Data Privacy": "7. أعطِ الأولوية للأمان وخصوصية البيانات",
+  "EHS systems store sensitive business and employee information, making data security a top priority.":
+    "تخزّن أنظمة الصحة والسلامة والبيئة معلومات حساسة عن الأعمال والموظفين، مما يجعل أمان البيانات أولوية قصوى.",
+  "Choose software that offers:": "اختر برمجيات توفر:",
+  "Role-based access control": "التحكم في الوصول بناءً على الأدوار",
+  "Data encryption": "تشفير البيانات",
+  "Secure cloud infrastructure": "بنية تحتية سحابية آمنة",
+  "Regular security audits": "تدقيقات أمنية منتظمة",
+  "Automated backups": "نسخ احتياطية تلقائية",
+  "Compliance with international security standards": "الامتثال لمعايير الأمان الدولية",
+  "Robust security measures protect your organization's confidential information and ensure regulatory compliance.":
+    "تحمي إجراءات الأمان القوية معلومات مؤسستك السرية وتضمن الامتثال التنظيمي.",
+  "8. Consider the Total Cost of Ownership": "8. راعِ التكلفة الإجمالية للملكية",
+  "The lowest-priced solution is not always the most cost-effective.": "الحل الأقل سعراً ليس دائماً الأكثر فعالية من حيث التكلفة.",
+  "Evaluate the complete investment, including:": "قيّم الاستثمار الكامل، بما في ذلك:",
+  "Software licensing": "ترخيص البرمجيات",
+  "Implementation costs": "تكاليف التطبيق",
+  "Customization": "التخصيص",
+  "Employee training": "تدريب الموظفين",
+  "Maintenance": "الصيانة",
+  "Technical support": "الدعم التقني",
+  "Future upgrades": "الترقيات المستقبلية",
+  "Focus on long-term value rather than just the initial purchase price.":
+    "ركّز على القيمة طويلة الأمد بدلاً من سعر الشراء الأولي فقط.",
+  "Questions to Ask Before Purchasing EHS Software": "أسئلة يجب طرحها قبل شراء برمجيات الصحة والسلامة والبيئة",
+  "Before finalizing your decision, ask the vendor:": "قبل إنهاء قرارك، اسأل المزوّد:",
+  "Does the software meet our current and future business requirements?": "هل تلبي البرمجيات متطلبات أعمالنا الحالية والمستقبلية؟",
+  "Is it scalable as our organization grows?": "هل قابلة للتوسع مع نمو مؤسستنا؟",
+  "How easy is implementation?": "ما مدى سهولة التطبيق؟",
+  "Is mobile access available?": "هل الوصول عبر الجوال متاح؟",
+  "How secure is our data?": "ما مدى أمان بياناتنا؟",
+  "What support options are included?": "ما خيارات الدعم المشمولة؟",
+  "Can the software integrate with our existing systems?": "هل يمكن للبرمجيات التكامل مع أنظمتنا الحالية؟",
+  "Are software updates included?": "هل التحديثات البرمجية مشمولة؟",
+  "These questions will help you compare vendors more effectively.": "ستساعدك هذه الأسئلة على مقارنة المزوّدين بفعالية أكبر.",
+  "Selecting the right EHS software is an investment in your organization's safety, compliance, and operational excellence. By carefully evaluating your business needs, software features, usability, integration capabilities, vendor reputation, customer support, security, and overall cost, you can choose a solution that delivers long-term value.":
+    "اختيار برمجيات الصحة والسلامة والبيئة المناسبة استثمار في سلامة مؤسستك وامتثالها وتميزها التشغيلي. من خلال التقييم الدقيق لاحتياجات أعمالك وميزات البرمجيات وسهولة استخدامها وقدرات التكامل وسمعة المزوّد ودعم العملاء والأمان والتكلفة الإجمالية، يمكنك اختيار حل يحقق قيمة طويلة الأمد.",
+  "A well-designed EHS management system not only helps organizations stay compliant with regulations but also promotes a safer workplace, improves employee engagement, reduces risks, and drives continuous improvement across all safety processes.":
+    "لا يساعد نظام إدارة الصحة والسلامة والبيئة المصمم جيداً المؤسسات على البقاء ممتثلة للوائح فحسب، بل يعزز أيضاً مكان عمل أكثر أماناً، ويحسّن مشاركة الموظفين، ويقلل المخاطر، ويدفع التحسين المستمر عبر كل عمليات السلامة.",
+  "Choosing the right EHS software today lays the foundation for a safer, smarter, and more resilient organization tomorrow.":
+    "يضع اختيار برمجيات الصحة والسلامة والبيئة المناسبة اليوم الأساس لمؤسسة أكثر أماناً وذكاءً ومرونة غداً.",
+
   // ── /modules/* — shared template strings (identical across all 14 module
   // pages), highest leverage: each translated once here, applies everywhere.
   "See Key Features": "شاهد الميزات الرئيسية",
