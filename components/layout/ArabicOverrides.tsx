@@ -485,6 +485,64 @@ export const EN_TO_AR: Record<string, string> = {
   "Explore Case Studies": "استكشف دراسات الحالة",
   "Know more": "اعرف المزيد",
 
+  // ── /case-studies/reducing-incident-reporting-time-by-68-across-12-industrial-sites
+  "Reducing Incident Reporting Time by 68% Across 12 Industrial Sites":
+    "تقليل وقت الإبلاغ عن الحوادث بنسبة 68% عبر 12 موقعاً صناعياً",
+  "Overview": "نظرة عامة",
+  "Al Fanar Petrochemicals partnered with EHSWatch to replace fragmented, paper-based safety processes with a single digital platform. Within six months of rollout, the company cut incident reporting time by more than two-thirds and brought real-time visibility to EHS performance across every site.":
+    "تعاونت شركة الفنار للبتروكيماويات مع EHSWatch لاستبدال عمليات السلامة الورقية المجزأة بمنصة رقمية واحدة. خلال ستة أشهر من التطبيق، خفّضت الشركة وقت الإبلاغ عن الحوادث بأكثر من الثلثين وحققت رؤية فورية لأداء الصحة والسلامة والبيئة عبر كل موقع.",
+  "About the Client": "عن العميل",
+  "Al Fanar Petrochemicals is a mid-sized petrochemical manufacturer operating 12 production and storage facilities across the GCC, employing over 3,200 staff and contractors. Prior to EHSWatch, the company relied on a mix of paper logs, spreadsheets, and disconnected email threads to manage incident reporting, permits, and audits. This created significant blind spots: safety data took days to consolidate across sites, permit approvals were often delayed or duplicated, and leadership had no unified view of compliance status until monthly reports were manually compiled.":
+    "شركة الفنار للبتروكيماويات هي شركة تصنيع بتروكيماويات متوسطة الحجم تدير 12 منشأة إنتاج وتخزين عبر دول الخليج، وتوظف أكثر من 3,200 موظف ومقاول. قبل EHSWatch، كانت الشركة تعتمد على مزيج من السجلات الورقية وجداول البيانات وسلاسل بريد إلكتروني منفصلة لإدارة الإبلاغ عن الحوادث والتصاريح والتدقيقات. وقد خلق ذلك نقاط عمياء كبيرة: استغرقت بيانات السلامة أياماً لتجميعها عبر المواقع، وكانت موافقات التصاريح غالباً متأخرة أو مكررة، ولم تكن لدى القيادة رؤية موحدة لحالة الامتثال حتى يتم تجميع التقارير الشهرية يدوياً.",
+  "Challenges": "التحديات",
+  "Incident reports took an average of 3–4 days to reach EHS leadership, delaying corrective action":
+    "استغرقت تقارير الحوادث في المتوسط 3-4 أيام للوصول إلى قيادة الصحة والسلامة والبيئة، مما أخّر الإجراءات التصحيحية",
+  "No centralised system for tracking Permit to Work approvals across 12 geographically dispersed sites":
+    "لا يوجد نظام مركزي لتتبع موافقات تصاريح العمل عبر 12 موقعاً متفرقاً جغرافياً",
+  "Safety meetings and action items were tracked inconsistently, with follow-ups frequently lost across email chains":
+    "كانت اجتماعات السلامة وبنود الإجراءات تُتبَّع بشكل غير متسق، مع ضياع المتابعات بشكل متكرر عبر سلاسل البريد الإلكتروني",
+  "Manual audit scheduling led to missed inspection deadlines and inconsistent compliance documentation":
+    "أدت جدولة التدقيق اليدوية إلى تفويت مواعيد التفتيش النهائية وتوثيق امتثال غير متسق",
+  "Leadership lacked real-time visibility into open corrective actions, risking recurring incidents going unaddressed":
+    "افتقرت القيادة إلى رؤية فورية للإجراءات التصحيحية المفتوحة، مما عرّض الحوادث المتكررة لخطر عدم المعالجة",
+  "Solution": "الحل",
+  "EHSWatch worked with Al Fanar’s EHS team to roll out a phased implementation starting with Incident Management and Permit to Work, followed by Meetings Management and Action Tracker across all 12 sites. Site supervisors were trained to log incidents directly from the EHSWatch mobile app, triggering automated notifications to relevant safety officers. Permit approvals moved to a digital workflow with built-in accountability checkpoints, while Meetings Management centralised safety huddles and toolbox talks into a single, searchable record. Action Tracker gave leadership a live dashboard of open, overdue, and completed corrective actions across all facilities, replacing a manual, spreadsheet-driven process.":
+    "عملت EHSWatch مع فريق الصحة والسلامة والبيئة في الفنار لتنفيذ طرح مرحلي بدأ بإدارة الحوادث وتصريح العمل، تلته إدارة الاجتماعات ومتتبع الإجراءات عبر كل المواقع الـ 12. تم تدريب مشرفي المواقع على تسجيل الحوادث مباشرة من تطبيق EHSWatch للجوال، مما يُطلق إشعارات تلقائية لضباط السلامة المعنيين. انتقلت موافقات التصاريح إلى سير عمل رقمي بنقاط مساءلة مدمجة، بينما مركزت إدارة الاجتماعات جلسات السلامة اليومية وجلسات صندوق الأدوات في سجل واحد قابل للبحث. منح متتبع الإجراءات القيادة لوحة معلومات حية للإجراءات التصحيحية المفتوحة والمتأخرة والمكتملة عبر كل المنشآت، لتحل محل عملية يدوية معتمدة على جداول البيانات.",
+  "Results & Metrics": "النتائج والمقاييس",
+  "Metric": "المقياس",
+  "Before EHSWatch": "قبل EHSWatch",
+  "After EHSWatch": "بعد EHSWatch",
+  "Improvement": "التحسن",
+  "Average incident reporting time": "متوسط وقت الإبلاغ عن الحوادث",
+  "3.5 days": "3.5 أيام",
+  "1.1 days": "1.1 يوم",
+  "68% reduction": "انخفاض بنسبة 68%",
+  "Permit to Work approval time": "وقت اعتماد تصريح العمل",
+  "2.2 days": "2.2 يوم",
+  "0.6 days": "0.6 يوم",
+  "73% reduction": "انخفاض بنسبة 73%",
+  "Overdue corrective actions (monthly avg.)": "الإجراءات التصحيحية المتأخرة (متوسط شهري)",
+  "79% reduction": "انخفاض بنسبة 79%",
+  "Safety audits completed on schedule": "تدقيقات السلامة المكتملة في موعدها",
+  "33-point increase": "زيادة بمقدار 33 نقطة",
+  "Sites with real-time EHS dashboard visibility": "المواقع ذات رؤية فورية للوحة معلومات الصحة والسلامة والبيئة",
+  "0 of 12": "0 من 12",
+  "12 of 12": "12 من 12",
+  "100% coverage": "تغطية 100%",
+  "Faster incident response, reducing the window for repeat safety events":
+    "استجابة أسرع للحوادث، مما يقلل نافذة تكرار أحداث السلامة",
+  "Centralised permit approvals, eliminating duplicate or delayed sign-offs":
+    "موافقات تصاريح مركزية، تلغي التوقيعات المكررة أو المتأخرة",
+  "Consistent, searchable records of safety meetings and toolbox talks across all sites":
+    "سجلات متسقة وقابلة للبحث لاجتماعات السلامة وجلسات صندوق الأدوات عبر كل المواقع",
+  "Real-time leadership visibility into open corrective actions and audit status":
+    "رؤية فورية للقيادة على الإجراءات التصحيحية المفتوحة وحالة التدقيق",
+  "Reduced administrative burden on site supervisors, freeing time for on-ground safety work":
+    "عبء إداري أقل على مشرفي المواقع، مما يوفر وقتاً لعمل السلامة الميداني",
+  "EHSWatch Applications": "تطبيقات EHSWatch",
+  "Ready to bring this level of visibility to your EHS operations?":
+    "هل أنت مستعد لجلب هذا المستوى من الرؤية إلى عمليات الصحة والسلامة والبيئة لديك؟",
+
   // ── /modules/* — shared template strings (identical across all 14 module
   // pages), highest leverage: each translated once here, applies everywhere.
   "See Key Features": "شاهد الميزات الرئيسية",
