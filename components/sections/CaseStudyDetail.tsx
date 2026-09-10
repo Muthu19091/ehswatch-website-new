@@ -88,12 +88,12 @@ export default function CaseStudyDetail({
         .cs-body h2 { font-size: 1.4rem; }
         .cs-body h3 { font-size: 1.15rem; }
         .cs-body h4 { font-size: 1.02rem; }
-        .cs-body ul, .cs-body ol { margin: 1rem 0 1.4rem; padding-left: 1.5rem; }
+        .cs-body ul, .cs-body ol { margin: 1rem 0 1.4rem; padding-inline-start: 1.5rem; }
         .cs-body ul { list-style: disc; }
         .cs-body ol { list-style: decimal; }
         .cs-body li { margin: 0.4rem 0; }
         .cs-body table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.95em; }
-        .cs-body th, .cs-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: left; }
+        .cs-body th, .cs-body td { border: 1px solid #e5e7eb; padding: 0.55rem 0.8rem; text-align: start; }
         .cs-body th { background: #f9fafb; font-weight: 600; color: #111827; }
         /* Table scroll container (added by wrapTables). min-width keeps
            columns readable on desktop; scrolls horizontally below ~560px

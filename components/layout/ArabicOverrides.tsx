@@ -580,6 +580,20 @@ export const EN_TO_AR: Record<string, string> = {
   "Ready to bring this level of visibility to your EHS operations?":
     "هل أنت مستعد لجلب هذا المستوى من الرؤية إلى عمليات الصحة والسلامة والبيئة لديك؟",
 
+  // ── /blog — listing page filter dropdowns (native <select>/<option>; these
+  // reach GoogleTranslate's own text-node walker, which pre-populates from
+  // this map before ever hitting the rate-limited live API).
+  "Timeline: All time": "الجدول الزمني: كل الأوقات",
+  "Last month": "الشهر الماضي",
+  "Last 3 months": "آخر 3 أشهر",
+  "This year": "هذا العام",
+  "Topic: All topics": "الموضوع: كل المواضيع",
+  "Analytics": "التحليلات",
+  "Operations": "العمليات",
+  "Safety Culture": "ثقافة السلامة",
+  "Format: All formats": "التنسيق: كل التنسيقات",
+  "Article": "مقالة",
+
   // ── /blog/scaling-ai-in-ehs-sustainability ────────────────────────────────
   "Scaling AI in EHS & Sustainability: From Pilot to Enterprise Value":
     "توسيع نطاق الذكاء الاصطناعي في الصحة والسلامة والبيئة والاستدامة: من التجربة إلى قيمة المؤسسة",
