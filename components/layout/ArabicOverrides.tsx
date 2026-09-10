@@ -482,8 +482,187 @@ export const EN_TO_AR: Record<string, string> = {
   "Talk to Experts": "تحدث إلى الخبراء",
   "Explore Case Studies": "استكشف دراسات الحالة",
   "Know more": "اعرف المزيد",
+
+  // ── /modules/* — shared template strings (identical across all 14 module
+  // pages), highest leverage: each translated once here, applies everywhere.
+  "See Key Features": "شاهد الميزات الرئيسية",
+  "Key Features of": "الميزات الرئيسية لـ",
+  "What Sets EHSWatch": "ما الذي يميز",
+  "Apart": "EHSWatch",
+  "Frequently Asked Questions": "الأسئلة الشائعة",
+  "Get Free Trial Access": "احصل على وصول تجريبي مجاني",
+  "Explore More": "استكشف المزيد",
+  "EHSWatch Modules": "وحدات EHSWatch",
+  "See all modules": "شاهد جميع الوحدات",
+
+  // ── /modules/* — hero headline + "What Sets EHSWatch [X] Apart" heading,
+  // FULL COMBINED STRING per module (not the split lead/span/trailing pattern
+  // used elsewhere). ModuleTemplate.tsx deliberately renders these as ONE
+  // plain text node (no nested span) specifically when Arabic is active —
+  // an existing, intentional fix (comment cites "FE QA #17") to stop the
+  // machine translator producing wrong word order from two independently-
+  // translated fragments. Since there's no span once Arabic renders, only a
+  // key matching the FULL sentence can ever match here.
+  "See Every Risk Before It Becomes an Incident": "اكتشف كل خطر قبل أن يتحول إلى حادثة",
+  "Respond Fast. Prevent More.": "استجب بسرعة. امنع المزيد.",
+  "Every Worker Trained, Qualified and Current": "كل عامل مدرَّب ومؤهل ومحدَّث",
+  "The Last Line of Defence, Digitised.": "خط الدفاع الأخير، بصيغة رقمية.",
+  "Track, Tackle and Transform Every Non-Conformance": "تتبّع كل حالة عدم مطابقة، وعالجها، وحوّلها إلى تحسين",
+  "Where Safety Commitments Become Safety Actions": "حيث تتحول التزامات السلامة إلى إجراءات سلامة فعلية",
+  "Control Every Change Before It Becomes a Risk": "تحكّم في كل تغيير قبل أن يتحول إلى خطر",
+  "Never Miss a Compliance Obligation Again": "لن تفوّت التزام امتثال بعد الآن",
+  "Turn Every Inspection Into Actionable Safety Intelligence.": "حوّل كل عملية تفتيش إلى معلومات سلامة قابلة للتنفيذ.",
+  "Control Your Critical Documents With Confidence": "تحكّم في مستنداتك الحيوية بثقة",
+  "Train Like It's Real. Respond Like It's Life.": "تدرّب كأنه حقيقي. استجب كأنه حياة.",
+  "Every Complaint Deserves a Clear Resolution": "كل شكوى تستحق حلاً واضحاً",
+  "Plan Every Audit. Close Every Gap.": "خطّط لكل تدقيق. أغلق كل فجوة.",
+  "See Risks Earlier. Act Before Incidents Happen.": "اكتشف المخاطر مبكراً. تصرف قبل وقوع الحوادث.",
+  "What Sets EHSWatch Risk Assessment Apart": "ما الذي يميز تقييم المخاطر في EHSWatch",
+  "What Sets EHSWatch Incident Management Apart": "ما الذي يميز إدارة الحوادث في EHSWatch",
+  "What Sets EHSWatch Training Management Apart": "ما الذي يميز إدارة التدريب في EHSWatch",
+  "What Sets EHSWatch Permit to Work Apart": "ما الذي يميز تصريح العمل في EHSWatch",
+  "What Sets EHSWatch Non-Conformance Apart": "ما الذي يميز عدم المطابقة في EHSWatch",
+  "What Sets EHSWatch Meetings Management Apart": "ما الذي يميز إدارة الاجتماعات في EHSWatch",
+  "What Sets EHSWatch Management of Change Apart": "ما الذي يميز إدارة التغيير في EHSWatch",
+  "What Sets EHSWatch Legal Register Apart": "ما الذي يميز السجل القانوني في EHSWatch",
+  "What Sets EHSWatch Inspections Apart": "ما الذي يميز عمليات التفتيش في EHSWatch",
+  "What Sets EHSWatch File Management Apart": "ما الذي يميز إدارة الملفات في EHSWatch",
+  "What Sets EHSWatch Emergency Response Drills Apart": "ما الذي يميز تدريبات الاستجابة للطوارئ في EHSWatch",
+  "What Sets EHSWatch Customer Complaints Apart": "ما الذي يميز شكاوى العملاء في EHSWatch",
+  "What Sets EHSWatch Audit Management Apart": "ما الذي يميز إدارة التدقيق في EHSWatch",
+  "What Sets EHSWatch HSE Observations Apart": "ما الذي يميز ملاحظات الصحة والسلامة والبيئة في EHSWatch",
+  "Modules": "الوحدات",
+
+  // ── /modules/risk-assessment ─────────────────────────────────────────────
+  "See Every": "شاهد كل",
+  "Risk": "خطر",
+  "Before It Becomes an Incident": "قبل أن يتحول إلى حادثة",
+  "EHSWatch Risk Assessment gives your teams the tools to get ahead of risk — identify hazards systematically, score and prioritise by probability and impact, assign and track mitigating controls, and monitor a live risk register continuously from one place.":
+    "تمنح وحدة تقييم المخاطر من EHSWatch فرقك الأدوات اللازمة للاستباق في مواجهة المخاطر — تحديد المخاطر بشكل منهجي، وتقييمها وترتيب أولوياتها حسب الاحتمالية والتأثير، وإسناد ضوابط التخفيف وتتبعها، ومراقبة سجل مخاطر حي باستمرار من مكان واحد.",
+  "Spot the hazard. Score the risk. Stop the incident.": "اكتشف الخطر. قيّم المخاطرة. أوقف الحادثة.",
+  "Why Risk Assessment?": "لماذا تقييم المخاطر؟",
+  "A risk that sits unrecorded in someone's head. An assessment buried in a spreadsheet no one has updated in months. A mitigation action assigned by email to someone who has since left. These are the gaps where preventable incidents take root — not because the hazard was invisible, but because the process to identify, document and track it was too fragmented to work.":
+    "خطر يظل غير مسجَّل في ذهن أحدهم. تقييم مدفون في جدول بيانات لم يُحدَّث منذ أشهر. إجراء تخفيف أُسند عبر بريد إلكتروني لشخص غادر المؤسسة منذ ذلك الحين. هذه هي الفجوات التي تتجذر فيها الحوادث التي يمكن تجنبها — ليس لأن الخطر كان غير مرئي، بل لأن عملية تحديده وتوثيقه وتتبعه كانت مجزأة أكثر من اللازم لتعمل.",
+  "EHSWatch Risk Assessment closes those gaps. Hazards are captured through a structured, configurable process, and risks are scored consistently by probability and impact — so the most serious rise to the top of the register. Mitigating controls are assigned, tracked and verified, and when an incident occurs, the linked assessment is immediately accessible to inform the investigation.":
+    "تسد وحدة تقييم المخاطر من EHSWatch هذه الفجوات. يتم رصد المخاطر من خلال عملية منظمة وقابلة للتخصيص، وتُقيَّم المخاطر باستمرار حسب الاحتمالية والتأثير — بحيث تظهر الأخطر منها في مقدمة السجل. تُسند ضوابط التخفيف وتُتبع وتُتحقق منها، وعند وقوع حادثة، يكون التقييم المرتبط بها متاحاً فوراً للاستعانة به في التحقيق.",
+  "See Risk Assessment in Action": "شاهد تقييم المخاطر أثناء العمل",
+  "From hazard identification to verified control — all in one connected risk management workflow.":
+    "من تحديد الخطر إلى التحقق من الضابط — كل ذلك ضمن سير عمل واحد متصل لإدارة المخاطر.",
+  "Streamlined Hazard Identification": "تحديد مبسّط للمخاطر",
+  "Capture hazards through configurable digital forms that prompt structured identification — keeping hazard capture consistent, thorough and repeatable across all sites, assets and activity types.":
+    "سجّل المخاطر من خلال نماذج رقمية قابلة للتخصيص توجّه عملية تحديد منظمة — بما يحافظ على اتساق رصد المخاطر وشموليته وقابليته للتكرار عبر جميع المواقع والأصول وأنواع الأنشطة.",
+  "Flexible Risk Scoring & Methodology": "تقييم مرن للمخاطر ومنهجية مرنة",
+  "Score identified risks using qualitative, semi-quantitative or quantitative methodologies — fully configurable to match your organisation's existing risk framework.":
+    "قيّم المخاطر المحددة باستخدام منهجيات نوعية أو شبه كمية أو كمية — قابلة للتخصيص بالكامل لتتوافق مع إطار المخاطر الحالي في مؤسستك.",
+  "Risk Matrix Visualisation": "تصور مصفوفة المخاطر",
+  "View the whole risk landscape through a live risk matrix that positions every identified risk by its current probability and impact score, at a glance.":
+    "شاهد المشهد الكامل للمخاطر من خلال مصفوفة مخاطر حية تحدد موقع كل خطر مُحدد حسب درجة احتماليته وتأثيره الحاليين، بنظرة واحدة.",
+  "Comprehensive Live Risk Register": "سجل مخاطر حي وشامل",
+  "Maintain a complete, real-time register that tracks every risk, its current score, assigned controls, responsible owner and last review date — across all sites.":
+    "احتفظ بسجل كامل وفوري يتتبع كل خطر ودرجته الحالية والضوابط المسندة والمسؤول المكلف وتاريخ آخر مراجعة — عبر جميع المواقع.",
+  "Hierarchy of Controls Documentation": "توثيق التسلسل الهرمي للضوابط",
+  "Document the controls applied to each risk using the hierarchy of controls, with every control assigned to a named owner, a review date and a verification requirement.":
+    "وثّق الضوابط المطبقة على كل خطر باستخدام التسلسل الهرمي للضوابط، مع إسناد كل ضابط إلى مسؤول محدد وتاريخ مراجعة ومتطلب تحقق.",
+  "Real-Time Reporting & Analytics": "تقارير وتحليلات فورية",
+  "Generate risk profile reports, control effectiveness summaries, overdue action dashboards and risk trend analyses across sites, asset types, activity categories and time periods.":
+    "أنشئ تقارير ملف المخاطر، وملخصات فعالية الضوابط، ولوحات معلومات الإجراءات المتأخرة، وتحليلات اتجاهات المخاطر عبر المواقع وأنواع الأصول وفئات الأنشطة والفترات الزمنية.",
+  "Flexible methodologies that adapt to your organisation's existing risk framework , rather than forcing a single rigid model across all activity types.":
+    "منهجيات مرنة تتكيف مع إطار المخاطر الحالي في مؤسستك، بدلاً من فرض نموذج واحد صارم على جميع أنواع الأنشطة.",
+  "Standardised risk scoring that brings objectivity and consistency to how risks are prioritised across teams and sites.":
+    "تقييم موحّد للمخاطر يضفي الموضوعية والاتساق على طريقة ترتيب أولويات المخاطر عبر الفرق والمواقع.",
+  "Links to live incident and observation data — risk assessments are updated by what is actually happening in the field, not just by what was anticipated at the last assessment cycle.":
+    "روابط ببيانات الحوادث والملاحظات الحية — تُحدَّث تقييمات المخاطر بناءً على ما يحدث فعلياً في الميدان، لا فقط بناءً على ما كان متوقعاً في دورة التقييم الأخيرة.",
+  "Continuous monitoring through a live risk register turns risk assessment from a periodic compliance exercise into an ongoing operational discipline — with every risk visible, every control tracked and every review date managed.":
+    "تحوّل المراقبة المستمرة عبر سجل مخاطر حي تقييم المخاطر من ممارسة امتثال دورية إلى انضباط تشغيلي مستمر — مع رؤية كل خطر وتتبع كل ضابط وإدارة كل تاريخ مراجعة.",
+  "Role-based access control that protects sensitive risk data while keeping the right people informed.":
+    "تحكم في الوصول قائم على الأدوار يحمي بيانات المخاطر الحساسة مع إبقاء الأشخاص المعنيين على اطلاع.",
+  "Part of a unified EHSWatch platform, so mitigating actions and findings connect seamlessly with the wider safety system.":
+    "جزء من منصة EHSWatch الموحدة، بحيث تتصل إجراءات التخفيف والنتائج بسلاسة مع نظام السلامة الأوسع.",
+  "Trusted by Safety Teams Across Industries": "موثوقة من فرق السلامة في مختلف القطاعات",
+  "What does EHSWatch Risk Assessment do?": "ماذا تفعل وحدة تقييم المخاطر من EHSWatch؟",
+  "What are the benefits of conducting one?": "ما فوائد إجراء تقييم للمخاطر؟",
+  "Which risk assessment methodologies does the module support?": "ما منهجيات تقييم المخاطر التي تدعمها الوحدة؟",
+  "How does the module prioritise risks?": "كيف ترتّب الوحدة أولويات المخاطر؟",
+  "Can mitigation actions be tracked to closure?": "هل يمكن تتبع إجراءات التخفيف حتى إغلاقها؟",
+  "How does it help with ISO 45001 compliance?": "كيف تساعد في الامتثال لمعيار ISO 45001؟",
+  "Is access to risk data controlled?": "هل الوصول إلى بيانات المخاطر مضبوط؟",
+  "Ready To Manage Risk Before It Manages You?": "هل أنت مستعد لإدارة المخاطر قبل أن تديرك؟",
+  "Investigate incidents and link findings directly to the risk assessments that covered the activity — using real incident data to inform and update the live risk register.":
+    "حقق في الحوادث واربط النتائج مباشرة بتقييمات المخاطر التي غطت النشاط — باستخدام بيانات حوادث حقيقية لإثراء سجل المخاطر الحي وتحديثه.",
+  "Link task-specific risk assessments directly to permit records — ensuring every high-risk work authorisation is based on a current, documented hazard assessment for the specific activity":
+    "اربط تقييمات المخاطر الخاصة بالمهمة مباشرة بسجلات التصاريح — بما يضمن استناد كل تصريح عمل عالي الخطورة إلى تقييم مخاطر موثق وحديث للنشاط المحدد",
+  "Conduct site safety inspections, link inspection findings to the corresponding risk assessments they validate or challenge, and update risk scores based on field evidence.":
+    "نفّذ عمليات تفتيش السلامة في الموقع، واربط نتائج التفتيش بتقييمات المخاطر المقابلة التي تؤكدها أو تتحداها، وحدّث درجات المخاطر بناءً على الأدلة الميدانية.",
+  "Assign and close mitigation actions from risk assessments with defined ownership, escalation paths and verified closure confirmation for every identified control gap.":
+    "أسند إجراءات التخفيف من تقييمات المخاطر وأغلقها بمسؤولية محددة ومسارات تصعيد وتأكيد إغلاق موثّق لكل فجوة ضابط محددة.",
+  "Apply AI analysis to risk register data and incident patterns — surfacing risk areas where the assessment may be underestimating likelihood based on what is actually occurring in the field.":
+    "طبّق تحليل الذكاء الاصطناعي على بيانات سجل المخاطر وأنماط الحوادث — للكشف عن مجالات المخاطر التي قد يقلل فيها التقييم من احتمالية وقوعها بناءً على ما يحدث فعلياً في الميدان.",
   "Give your teams a simple way to report, respond and prevent incidents – without adding more admins.":
     "امنح فرقك طريقة بسيطة للإبلاغ والاستجابة ومنع الحوادث — دون إضافة المزيد من الإداريين.",
+
+  // ── /modules/incident-management ─────────────────────────────────────────
+  "Respond Fast.": "استجب بسرعة.",
+  "Prevent": "امنع",
+  "More.": "المزيد.",
+  "EHSWatch Incident Management gives your safety teams a single, structured platform to capture every incident, accident and near miss the moment it happens, investigate it thoroughly with built-in root cause analysis, generate statutory reporting outputs and drive corrective actions to verified closure.":
+    "تمنح وحدة إدارة الحوادث من EHSWatch فرق السلامة لديك منصة واحدة منظمة لرصد كل حادثة وإصابة وحادثة وشيكة لحظة وقوعها، والتحقيق فيها بدقة عبر تحليل مدمج للسبب الجذري، وإنشاء مخرجات إبلاغ نظامية، ودفع الإجراءات التصحيحية حتى إغلاقها الموثّق.",
+  "Why Incident Management?": "لماذا إدارة الحوادث؟",
+  "When an incident happens, every minute matters — yet paper forms and email chains slow everything down. Reports arrive late and incomplete, investigations lose momentum while findings wait to be typed up, corrective actions get lost in inboxes, and without a clear view of root causes, the same incidents keep returning.":
+    "عند وقوع حادثة، تهم كل دقيقة — لكن النماذج الورقية وسلاسل البريد الإلكتروني تُبطئ كل شيء. تصل التقارير متأخرة وغير مكتملة، وتفقد التحقيقات زخمها أثناء انتظار كتابة النتائج، وتضيع الإجراءات التصحيحية في صناديق البريد، وبدون رؤية واضحة للأسباب الجذرية، تستمر الحوادث ذاتها في التكرار.",
+  "EHSWatch Incident Management removes those failure points. Anyone can report in moments from any device, online or offline in the field. Investigations are structured with built-in 5-Why and Fishbone tools, corrective actions are tracked automatically to closure, and every incident feeds live analytics that surface recurring patterns before they generate the next event.":
+    "تزيل وحدة إدارة الحوادث من EHSWatch نقاط الإخفاق هذه. يمكن لأي شخص الإبلاغ في لحظات من أي جهاز، متصلاً أو غير متصل في الميدان. تُنظَّم التحقيقات بأدوات مدمجة لتحليل الأسباب الخمسة ومخطط إيشيكاوا، وتُتبع الإجراءات التصحيحية تلقائياً حتى إغلاقها، وتغذي كل حادثة تحليلات حية تكشف الأنماط المتكررة قبل أن تولّد الحدث التالي.",
+  "See Incident Management in Action": "شاهد إدارة الحوادث أثناء العمل",
+  "Capture, investigate and resolve every safety event, with the analytics to prevent the next.":
+    "سجّل كل حدث سلامة وحقق فيه وحُلّه، مع التحليلات اللازمة لمنع الحدث التالي.",
+  "Instant Incident & Near-Miss Reporting": "إبلاغ فوري عن الحوادث والحوادث الوشيكة",
+  "Report incidents, accidents and near misses from any device in moments — mobile-first with offline capture from the field. One system manages every event type, from injuries and property damage to environmental releases and near misses that surface risk early.":
+    "أبلغ عن الحوادث والإصابات والحوادث الوشيكة من أي جهاز في لحظات — بتصميم يُراعي الجوال أولاً مع رصد دون اتصال من الميدان. يدير نظام واحد كل نوع حدث، من الإصابات وأضرار الممتلكات إلى الانبعاثات البيئية والحوادث الوشيكة التي تكشف المخاطر مبكراً.",
+  "Severity Classification & Risk Scoring": "تصنيف الخطورة وتقييم المخاطر",
+  "Classify every incident by severity, from first-aid and medical-treatment cases to lost-time injuries, high-potential events and fatalities. Automatic scoring supports TRIR, LTIR and DART calculations and feeds safety performance dashboards in real time.":
+    "صنّف كل حادثة حسب الخطورة، من حالات الإسعافات الأولية والعلاج الطبي إلى الإصابات المسببة لفقدان وقت العمل والأحداث عالية الاحتمالية والوفيات. يدعم التقييم التلقائي حسابات TRIR وLTIR وDART ويغذي لوحات معلومات أداء السلامة في الوقت الفعلي.",
+  "Built-In Root Cause Analysis": "تحليل مدمج للسبب الجذري",
+  "Conduct structured investigations using built-in 5-Why, Fishbone (Ishikawa), SCAT and ICAM methodologies — with report forms, workflows, approval chains and notifications all configurable to your processes, without IT support.":
+    "أجرِ تحقيقات منظمة باستخدام منهجيات مدمجة مثل الأسباب الخمسة ومخطط إيشيكاوا وSCAT وICAM — مع نماذج تقارير وسير عمل وسلاسل موافقات وإشعارات قابلة للتخصيص حسب عملياتك، دون الحاجة لدعم تقني.",
+  "Integrated Corrective Action Tracking": "تتبع متكامل للإجراءات التصحيحية",
+  "Investigation findings convert automatically into tracked corrective and preventive actions in Action Tracker — with assigned owners, due dates, escalation paths and closure confirmation.":
+    "تتحول نتائج التحقيق تلقائياً إلى إجراءات تصحيحية ووقائية متتبَّعة في متتبع الإجراءات — مع مسؤولين مُسندين ومواعيد استحقاق ومسارات تصعيد وتأكيد إغلاق.",
+  "Statutory & Regulatory Reporting": "الإبلاغ النظامي والتنظيمي",
+  "Generate RIDDOR reports for the UK HSE, OSHA 300/300A/301 forms for US reporting, and configurable outputs for GCC and other regional requirements — directly from the incident record, no manual reformatting.":
+    "أنشئ تقارير RIDDOR لهيئة الصحة والسلامة البريطانية، ونماذج OSHA 300/300A/301 للإبلاغ الأمريكي، ومخرجات قابلة للتخصيص لمتطلبات دول مجلس التعاون الخليجي والمناطق الأخرى — مباشرة من سجل الحادثة، دون إعادة تنسيق يدوي.",
+  "Real-Time Analytics & Trend Reporting": "تحليلات وتقارير اتجاهات فورية",
+  "Monitor incident rates, near-miss frequencies, root cause categories, site performance and action close-out rates through live dashboards that surface emerging risk trends before they generate the next incident.":
+    "راقب معدلات الحوادث وتكرار الحوادث الوشيكة وفئات الأسباب الجذرية وأداء المواقع ومعدلات إغلاق الإجراءات من خلال لوحات معلومات حية تكشف اتجاهات المخاطر الناشئة قبل أن تولّد الحادثة التالية.",
+  "Part of a unified EHSQ platform, so corrective actions flow straight into Action Tracker and wider workflows.":
+    "جزء من منصة EHSQ موحدة، بحيث تنتقل الإجراءات التصحيحية مباشرة إلى متتبع الإجراءات وسير العمل الأوسع.",
+  "Goes beyond reporting to structured root cause analysis - addressing the systemic cause that prevents recurrence, not just recording the event that already occurred.":
+    "يتجاوز مجرد الإبلاغ إلى تحليل منظم للسبب الجذري — معالجة السبب المنهجي الذي يمنع التكرار، لا مجرد تسجيل الحدث الذي وقع بالفعل.",
+  "Severity classification and automatic rate calculation (TRIR, LTIR, DART) provide the safety performance metrics that leadership, auditors and regulators measure against.":
+    "يوفر تصنيف الخطورة والحساب التلقائي للمعدلات (TRIR وLTIR وDART) مقاييس أداء السلامة التي تقيس القيادة والمدققون والجهات التنظيمية بموجبها.",
+  "Statutory reporting outputs for RIDDOR, OSHA and regional requirements — generated directly from the incident record, eliminating the manual reformatting step that delays regulatory submission.":
+    "مخرجات إبلاغ نظامية لـ RIDDOR وOSHA والمتطلبات الإقليمية — تُنشأ مباشرة من سجل الحادثة، مما يلغي خطوة إعادة التنسيق اليدوية التي تؤخر التقديم التنظيمي.",
+  "Mobile-first with offline capability — incidents are captured the moment they happen, directly from the field, rather than reconstructed hours later with incomplete details.":
+    "تصميم يُراعي الجوال أولاً مع إمكانية العمل دون اتصال — تُرصد الحوادث لحظة وقوعها مباشرة من الميدان، بدلاً من إعادة بنائها بعد ساعات بتفاصيل ناقصة.",
+  "Real-time analytics that turn incident data into forward-looking safety intelligence — identifying where the next incident is most likely to occur before it does.":
+    "تحليلات فورية تحوّل بيانات الحوادث إلى معلومات سلامة استشرافية — تحدد أين يُرجَّح وقوع الحادثة التالية قبل حدوثها.",
+  "Trusted By EHSQ Teams Across Industries": "موثوقة من فرق EHSQ في مختلف القطاعات",
+  "What types of incidents can EHSWatch Incident Management handle?": "ما أنواع الحوادث التي تتعامل معها وحدة إدارة الحوادث من EHSWatch؟",
+  "Does the module support RIDDOR, OSHA and other statutory reporting requirements?": "هل تدعم الوحدة متطلبات الإبلاغ النظامي مثل RIDDOR وOSHA؟",
+  "Does it support root cause analysis?": "هل تدعم تحليل السبب الجذري؟",
+  "Can EHSWatch Incident Management integrate with other EHSQ modules?": "هل يمكن لوحدة إدارة الحوادث من EHSWatch التكامل مع وحدات EHSQ الأخرى؟",
+  "Can it be accessed from mobile devices?": "هل يمكن الوصول إليها من الأجهزة المحمولة؟",
+  "Can the module be customised for our organisation?": "هل يمكن تخصيص الوحدة لمؤسستنا؟",
+  "How secure is incident data?": "ما مدى أمان بيانات الحوادث؟",
+  "Ready to Respond Faster and Prevent More?": "هل أنت مستعد للاستجابة بسرعة أكبر ومنع المزيد؟",
+  "Plan and conduct safety management system audits — incident data and investigation records feed directly into audit evidence and finding analysis.":
+    "خطّط لتدقيقات نظام إدارة السلامة ونفّذها — تغذي بيانات الحوادث وسجلات التحقيق مباشرة أدلة التدقيق وتحليل النتائج.",
+  "Schedule and conduct site safety inspections — link inspection findings to the incident types and locations they correspond to for a complete risk control picture.":
+    "جدول عمليات تفتيش السلامة في الموقع ونفّذها — اربط نتائج التفتيش بأنواع الحوادث ومواقعها المقابلة للحصول على صورة كاملة للسيطرة على المخاطر.",
+  "Assign, track and close corrective actions generated by incident investigations — with defined ownership, escalation paths and a complete audit trail from finding to verified closure.":
+    "أسند الإجراءات التصحيحية الناتجة عن تحقيقات الحوادث وتتبعها وأغلقها — بمسؤولية محددة ومسارات تصعيد ومسار تدقيق كامل من النتيجة إلى الإغلاق الموثّق.",
+  "Identify hazards and document controls — use incident trend data and root cause findings to update risk assessments and validate control effectiveness across sites.":
+    "حدّد المخاطر ووثّق الضوابط — استخدم بيانات اتجاهات الحوادث ونتائج الأسباب الجذرية لتحديث تقييمات المخاطر والتحقق من فعالية الضوابط عبر المواقع.",
+  "Apply AI root cause analysis, event similarity detection and predictive risk scoring to incident data — surfacing patterns and systemic risks automatically across your safety record.":
+    "طبّق تحليل السبب الجذري بالذكاء الاصطناعي وكشف تشابه الأحداث وتقييم المخاطر التنبؤي على بيانات الحوادث — للكشف التلقائي عن الأنماط والمخاطر المنهجية عبر سجل السلامة لديك.",
 
   // ── /privacy-policy — legal text, translated at the client's explicit request.
   // Machine-quality Arabic (same process as the rest of the site); recommend a
