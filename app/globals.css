@@ -353,6 +353,15 @@ html[dir="rtl"] .blog-body table :is(td, th, p, span) {
 html[dir="rtl"] .cs-body table :is(td, th, p, span) {
   text-align: right !important;
 }
+/* <table> has a browser default that computes direction: ltr even inside an
+   RTL ancestor (confirmed live: the surrounding .blog-body/.cs-body itself
+   correctly computes rtl, the <table> element alone doesn't). Left unfixed,
+   a mixed number+Arabic cell like "0 of 12" bidi-reorders against the wrong
+   base direction. Force it to actually inherit the page's real direction. */
+html[dir="rtl"] .blog-body table,
+html[dir="rtl"] .cs-body table {
+  direction: rtl;
+}
 /* BUG-035: the numbered pager keeps its chevron SVGs pointing the LTR way, so in
    Arabic the prev/next arrows point backwards. Mirror them under RTL so "next"
    points toward the next page (left) and "prev" toward the previous (right). */

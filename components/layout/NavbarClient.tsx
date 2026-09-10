@@ -418,7 +418,15 @@ export default function NavbarClient({
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+      // z-[65]: must outrank the mobile menu's z-[60]. The menu is portaled
+      // straight to <body>, so it's a SIBLING stacking context to the
+      // header, not a descendant of it. The language dropdown lives inside
+      // the header with its own z:70 — but that only wins locally, within
+      // the header's context; against the portal, what decides is the
+      // header's OWN z-index, and z-50 < z-60 was losing whenever the
+      // dropdown (which extends downward from the header) overlapped the
+      // open mobile menu, rendering it invisible behind the menu's panel.
+      className="fixed top-0 left-0 right-0 z-[65] flex justify-center"
       style={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
     >
       <nav
