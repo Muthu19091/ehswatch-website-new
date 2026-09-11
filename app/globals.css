@@ -341,6 +341,18 @@ html[dir="rtl"] .blog-body ol {
   padding-left: 0;
   padding-right: 1.4rem;
 }
+/* CMS content pasted from Word/Google Docs bakes a literal dir="ltr" onto
+   every <li> it produces (confirmed live: case-study bullets rendered with
+   the marker stranded on the left, disconnected from the right-aligned
+   text, even though the parent <ul>'s own padding-inline-start already
+   correctly flips to the RTL side). An HTML dir attribute only carries
+   normal specificity, so an !important rule here reliably overrides it —
+   applied to both list types in case a blog post ever gets pasted the
+   same way. */
+html[dir="rtl"] .blog-body li,
+html[dir="rtl"] .cs-body li {
+  direction: rtl !important;
+}
 /* CMS-pasted comparison tables (Office paste, class "Ltr") carry an inline
    text-align:left on every cell and its <p>/<span>. Under Arabic/RTL that pins
    all cell text to the left edge, so the table reads inconsistently against the
