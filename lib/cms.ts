@@ -17,12 +17,37 @@ const CMS_API_URL =
 
 /* ─── Shared shapes ────────────────────────────────────────── */
 
+/**
+ * Every `cover`/`avatar`/`og_image` field across the API is a full
+ * MediaResource — {id, type: "media", attributes: {url, alt, …}} —
+ * NOT a flat {id, url, alt} shape (confirmed against BE's
+ * MediaResource.php and a real /api/v1/pages/about response: its
+ * meta.og_image nests the url under `.attributes.url`). Use mediaUrl()
+ * below rather than reading `.url` directly.
+ */
 export type Media = {
   id: number;
-  url: string;
-  alt: string | null;
-  variants?: { thumb?: string; medium?: string; large?: string };
+  type: 'media';
+  attributes: {
+    name: string | null;
+    file_name: string | null;
+    mime_type: string | null;
+    url: string;
+    alt: string | null;
+    title: string | null;
+    caption: string | null;
+    variants: { thumb: string | null; medium: string | null; large: string | null };
+    uploaded_at: string | null;
+  };
 };
+
+export function mediaUrl(media: Media | null | undefined): string | null {
+  return media?.attributes?.url ?? null;
+}
+
+export function mediaAlt(media: Media | null | undefined, fallback = ''): string {
+  return media?.attributes?.alt ?? fallback;
+}
 
 export type ApiEnvelope<T> = { data: T; meta?: Record<string, unknown> };
 
@@ -76,6 +101,39 @@ export type CaseStudy = {
       meta_description?: string;
       og_image?: Media | null;
     };
+    updated_at: string;
+  };
+};
+
+/**
+ * A single section block inside a Page's `content` array. `data`'s
+ * shape depends on `type` (hero, rich_text, …) — deliberately loose
+ * here; each section component narrows what it reads.
+ */
+export type PageSectionBlock = {
+  type: string;
+  data: Record<string, unknown>;
+};
+
+export type Page = {
+  id: number;
+  type: 'page';
+  attributes: {
+    title: string;
+    slug: string;
+    type: string;
+    template: string | null;
+    status: string;
+    published_at: string | null;
+    content: PageSectionBlock[];
+    meta: {
+      meta_title?: string | null;
+      meta_description?: string | null;
+      canonical_url?: string | null;
+      og_image?: Media | null;
+      robots?: string | null;
+    };
+    structured_data?: Array<Record<string, unknown>>;
     updated_at: string;
   };
 };
@@ -139,6 +197,50 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
 export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
   try {
     const j = await cmsFetch<ApiEnvelope<CaseStudy>>(`/case-studies/${slug}`);
+    return j.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Every active CMS Page's slug — used by app/[slug]/page.tsx's
+ * generateStaticParams() to discover pages at build time. This
+ * project builds with `output: "export"`, so dynamicParams isn't
+ * supported (Next.js requires every path enumerated up front): a page
+ * created in the CMS only appears on the live site after the next
+ * `next build` + deploy, same as blog posts today.
+ *
+ * per_page=100 covers current page volume in one request; revisit
+ * with pagination if the CMS ever holds more Pages than that.
+ */
+export async function getPageSlugs(): Promise<string[]> {
+  const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
+  return (j.data ?? []).map((p) => p.attributes.slug);
+}
+
+/**
+ * Page id → slug, for resolving a LinkPicker "internal" CTA
+ * (page_id-based — the field's own default type in the CMS, so this
+ * is the common case, not an edge case) to a real href. Only ACTIVE
+ * pages are returned by /pages, so a CTA pointing at an unpublished
+ * or deleted page correctly falls back to unresolved rather than
+ * linking somewhere non-public.
+ *
+ * Same endpoint as getPageSlugs() — Next.js's request memoization
+ * dedupes identical fetches within one render pass, so calling both
+ * doesn't double the network cost.
+ */
+export async function getPageIdSlugMap(): Promise<Record<number, string>> {
+  const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
+  const map: Record<number, string> = {};
+  for (const p of j.data ?? []) map[p.id] = p.attributes.slug;
+  return map;
+}
+
+export async function getPage(slug: string): Promise<Page | null> {
+  try {
+    const j = await cmsFetch<ApiEnvelope<Page>>(`/pages/${slug}`);
     return j.data ?? null;
   } catch {
     return null;
