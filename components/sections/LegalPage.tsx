@@ -4,12 +4,21 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LegalPageHero, { heroHasMediaBackground, type HeroBlockData } from "@/components/sections/LegalPageHero";
 import LegalPageRichText from "@/components/sections/LegalPageRichText";
+import CTABanner from "@/components/sections/CTABanner";
 import { getPage, getPageList } from "@/lib/api";
 import { redirectIfMoved } from "@/lib/redirectMoved";
-import { findBlock, buildPageMap } from "@/lib/blocks";
+import { findBlock, buildPageMap, resolveCta } from "@/lib/blocks";
+import { headingHtmlOpt, stripHtmlOpt } from "@/lib/text";
 import { seoExtras, robotsFrom } from "@/lib/seo";
 
 type RichTextBlockData = { body?: string };
+type CtaBannerBlockData = {
+  headline?: string | null;
+  subhead?: string | null;
+  subheadline?: string | null;
+  primary_cta?: unknown;
+  secondary_cta?: unknown;
+};
 
 export async function legalMetadata(slug: string, fallbackTitle: string): Promise<Metadata> {
   const res = await getPage(slug);
@@ -112,10 +121,30 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
           if (block.type === "rich_text") {
             return <LegalPageRichText key={i} body={(block.data as RichTextBlockData).body ?? ""} />;
           }
+          if (block.type === "cta_banner") {
+            // QC-caught live: cookie-policy has a real cta_banner block
+            // an admin added (headline + primary CTA) that silently
+            // never rendered -- this generic fallback only had
+            // components for hero/rich_text. cta_banner is used on 7 of
+            // the 8 bespoke templates, so it's a common block, not an
+            // edge case; reuses the exact same CTABanner component and
+            // resolveCta()/headingHtmlOpt()/stripHtmlOpt() resolution
+            // AboutTemplate.tsx (etc.) already use, for consistency.
+            const cta = block.data as CtaBannerBlockData;
+            return (
+              <CTABanner
+                key={i}
+                cmsHeadline={headingHtmlOpt(cta.headline)}
+                cmsSubhead={stripHtmlOpt(cta.subhead || cta.subheadline)}
+                cmsPrimaryCta={resolveCta(cta.primary_cta, pageMap) ?? undefined}
+                cmsSecondaryCta={resolveCta(cta.secondary_cta, pageMap) ?? undefined}
+              />
+            );
+          }
           // Any other block type: this generic fallback template only
-          // has real components for hero/rich_text -- skip rather than
-          // fail the page, same resilience convention used everywhere
-          // else CMS content is walked.
+          // has real components for hero/rich_text/cta_banner -- skip
+          // rather than fail the page, same resilience convention used
+          // everywhere else CMS content is walked.
           return null;
         })}
       </main>
