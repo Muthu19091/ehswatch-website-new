@@ -102,6 +102,10 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
   const body = richBlocks.map((b) => b.body || "").join("\n");
 
   const backgroundType = hero?.background_type || "none";
+  // Scoped class for the mobile→desktop background-image swap below —
+  // computed once so the div's className and the media-query rule that
+  // targets it can never drift apart again.
+  const heroBgClass = `hero-bg-${slug.replace(/[^a-z0-9]/gi, "")}`;
   const desktopBg = mediaUrl(hero?.desktop_image);
   const mobileBg = mediaUrl(hero?.mobile_image) ?? desktopBg;
   const effectiveDesktopBg = desktopBg ?? mediaUrl(hero?.mobile_image);
@@ -182,15 +186,19 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
         >
           {backgroundType === "image" && effectiveDesktopBg && (
             <div
-              className="absolute inset-0 bg-cover bg-center"
+              className={`absolute inset-0 bg-cover bg-center ${heroBgClass}`}
               style={{
                 backgroundImage: `linear-gradient(rgba(15,23,42,${overlay}), rgba(15,23,42,${overlay})), url(${mobileBg})`,
               }}
             >
               {/* Swap to the desktop crop at sm and above via a scoped style
                   rule rather than duplicating the whole div, since the two
-                  images are otherwise identical in every other respect. */}
-              <style>{`@media (min-width:640px){.hero-bg-${slug.replace(/[^a-z0-9]/gi, "")}{background-image:linear-gradient(rgba(15,23,42,${overlay}),rgba(15,23,42,${overlay})),url(${effectiveDesktopBg})!important;}}`}</style>
+                  images are otherwise identical in every other respect.
+                  QC-caught: this rule previously targeted a class that was
+                  never actually applied to the div above, so the desktop
+                  crop never rendered at any viewport width -- the mobile
+                  image showed everywhere, including desktop. */}
+              <style>{`@media (min-width:640px){.${heroBgClass}{background-image:linear-gradient(rgba(15,23,42,${overlay}),rgba(15,23,42,${overlay})),url(${effectiveDesktopBg})!important;}}`}</style>
             </div>
           )}
           {backgroundType === "video_file" && videoFileUrl && (
@@ -219,7 +227,15 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
             />
           )}
 
-          {backgroundType === "slider" ? (
+          {/* QC-caught: this used to key off backgroundType alone -- an
+              admin who picked "Image slider" but hasn't added any slides
+              yet (or whose slides all lack an image) got a hero with
+              NOTHING in it at all, not even the page's own title, since
+              LegalPageSlider bails out to null and the standard content
+              block below never got a chance to render instead. Falls
+              back to it whenever there's nothing valid to actually show
+              as a slider. */}
+          {backgroundType === "slider" && slides.length > 0 ? (
             // Slides carry their own headline/subheadline/CTA overrides —
             // LegalPageSlider renders the whole text-overlay block itself,
             // not just the background layer, so it doesn't duplicate the

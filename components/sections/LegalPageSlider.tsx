@@ -55,13 +55,20 @@ export default function LegalPageSlider({
 
   return (
     <>
-      {slides.map((slide, i) => (
+      {/* QC-caught: this always used slide.desktopImage regardless of
+          viewport — the (typically much larger) desktop crop was being
+          forced onto every mobile visitor, same mobile-first bug the
+          single-image background type had before it was fixed. Each
+          slide gets its own scoped class + media-query swap, same
+          mechanism as the "image" background type above. */}
+      <style>{`
+        ${slides.map((_, i) => `.legal-slide-bg-${i}{background-image:linear-gradient(rgba(15,23,42,${overlay}),rgba(15,23,42,${overlay})),url(${slides[i].mobileImage})}`).join("\n")}
+        @media (min-width:640px){${slides.map((_, i) => `.legal-slide-bg-${i}{background-image:linear-gradient(rgba(15,23,42,${overlay}),rgba(15,23,42,${overlay})),url(${slides[i].desktopImage})!important}`).join("\n")}}
+      `}</style>
+      {slides.map((_, i) => (
         <div
           key={i}
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${i === index ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          style={{
-            backgroundImage: `linear-gradient(rgba(15,23,42,${overlay}), rgba(15,23,42,${overlay})), url(${slide.desktopImage})`,
-          }}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 legal-slide-bg-${i} ${i === index ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         />
       ))}
 
