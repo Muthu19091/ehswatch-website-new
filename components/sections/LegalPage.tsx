@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GlareButton from "@/components/ui/GlareButton";
+import LegalPageSlider, { type ResolvedSlide } from "@/components/sections/LegalPageSlider";
 import { getPage, getPageList } from "@/lib/api";
 import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, findBlocks, buildPageMap, resolveCta, mediaUrl, normalizeArray } from "@/lib/blocks";
@@ -33,7 +35,17 @@ type HeroBlock = {
   overlay_opacity?: string | number;
   primary_cta?: unknown;
   secondary_cta?: unknown;
+  tertiary_cta?: unknown;
   slides?: unknown;
+  slider_autoplay_seconds?: string | number;
+  slider_show_arrows?: boolean;
+};
+type RawSlide = {
+  image?: unknown;
+  mobile_image?: unknown;
+  headline?: string;
+  subheadline?: string;
+  cta?: unknown;
 };
 type RichTextBlock = { body?: string };
 
@@ -96,23 +108,50 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
   // CardRepeater slides are UUID-keyed objects when edited through
   // Filament, not always a plain array — normalizeArray() (already used
   // elsewhere in this codebase for the same reason) covers both shapes.
-  const slides = normalizeArray<{ image?: unknown; mobile_image?: unknown }>(hero?.slides);
-  const firstSlideImage = mediaUrl(slides[0]?.image) ?? mediaUrl(slides[0]?.mobile_image);
+  const rawSlides = normalizeArray<RawSlide>(hero?.slides);
+  const slides: ResolvedSlide[] = [];
+  for (const s of rawSlides) {
+    const desktopImage = mediaUrl(s.image) ?? mediaUrl(s.mobile_image);
+    if (!desktopImage) continue; // a slide with no image at all can't render as a background
+    const mobileImage = mediaUrl(s.mobile_image) ?? desktopImage;
+    slides.push({
+      desktopImage,
+      mobileImage,
+      headline: s.headline,
+      subheadline: stripHtml(s.subheadline) || undefined,
+      cta: resolveCta(s.cta, pageMap),
+    });
+  }
+  const sliderAutoplaySeconds = Number(hero?.slider_autoplay_seconds) || 0;
+  const sliderShowArrows = hero?.slider_show_arrows !== false; // HeroBlock.php's own default(true)
   const videoFileUrl = mediaUrl(hero?.background_video);
   const videoPosterUrl = mediaUrl(hero?.video_poster);
   const youtubeEmbedUrl = backgroundType === "video_url" && hero?.video_url
     ? youTubeBackgroundEmbed(hero.video_url)
     : null;
 
+  // video_poster is uploaded independently of the video itself (an admin
+  // can set it before entering a Video URL, or before a video file
+  // finishes uploading) -- it's a real fallback background in its own
+  // right for video_file/video_url, not just the <video poster> attribute
+  // for when a video IS configured. Without this, picking "External
+  // video URL" and uploading only the poster (no URL yet) silently fell
+  // through to a plain white background, ignoring an image the admin had
+  // already set.
+  const usePosterFallback =
+    (backgroundType === "video_file" && !videoFileUrl && Boolean(videoPosterUrl)) ||
+    (backgroundType === "video_url" && !youtubeEmbedUrl && Boolean(videoPosterUrl));
+
   const hasMediaBackground =
     (backgroundType === "image" && Boolean(effectiveDesktopBg)) ||
-    (backgroundType === "slider" && Boolean(firstSlideImage)) ||
-    (backgroundType === "video_file" && Boolean(videoFileUrl)) ||
-    (backgroundType === "video_url" && Boolean(youtubeEmbedUrl));
+    (backgroundType === "slider" && slides.length > 0) ||
+    (backgroundType === "video_file" && (Boolean(videoFileUrl) || usePosterFallback)) ||
+    (backgroundType === "video_url" && (Boolean(youtubeEmbedUrl) || usePosterFallback));
 
   const overlay = overlayAlpha(hero?.overlay_opacity);
   const primaryCta = resolveCta(hero?.primary_cta, pageMap);
   const secondaryCta = resolveCta(hero?.secondary_cta, pageMap);
+  const tertiaryCta = resolveCta(hero?.tertiary_cta, pageMap);
 
   return (
     <>
@@ -154,16 +193,6 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
               <style>{`@media (min-width:640px){.hero-bg-${slug.replace(/[^a-z0-9]/gi, "")}{background-image:linear-gradient(rgba(15,23,42,${overlay}),rgba(15,23,42,${overlay})),url(${effectiveDesktopBg})!important;}}`}</style>
             </div>
           )}
-          {backgroundType === "slider" && firstSlideImage && (
-            // Static first slide — this generic fallback template renders
-            // structure, not the full interactive carousel (autoplay/arrows)
-            // the dedicated Slider section component has; a page that needs
-            // that should use a real template, not the generic one.
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `linear-gradient(rgba(15,23,42,${overlay}), rgba(15,23,42,${overlay})), url(${firstSlideImage})` }}
-            />
-          )}
           {backgroundType === "video_file" && videoFileUrl && (
             <div className="absolute inset-0 overflow-hidden">
               <video className="w-full h-full object-cover" src={videoFileUrl} poster={videoPosterUrl} autoPlay muted loop playsInline />
@@ -183,51 +212,83 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
               <div className="absolute inset-0" style={{ background: `rgba(15,23,42,${overlay})` }} />
             </div>
           )}
+          {usePosterFallback && videoPosterUrl && (
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `linear-gradient(rgba(15,23,42,${overlay}), rgba(15,23,42,${overlay})), url(${videoPosterUrl})` }}
+            />
+          )}
 
-          <div className="relative z-10 max-w-[820px] mx-auto px-6">
-            {hero?.eyebrow && (
-              <span className={`block mb-3 font-[family-name:var(--font-dm-sans)] font-semibold text-[13px] tracking-[0.08em] uppercase ${hasMediaBackground ? "text-white/80" : "text-[#ff6d00]"}`}>
-                {hero.eyebrow}
-              </span>
-            )}
-            <h1 className={`font-[family-name:var(--font-dm-sans)] text-[32px] md:text-[44px] font-bold leading-[1.15] ${hasMediaBackground ? "text-white" : "text-[#111827]"}`}>
-              {headline}
-            </h1>
-            {(() => {
-              const sub = stripHtml(hero?.subheadline);
-              return sub ? (
-              <p className={`mt-4 font-[family-name:var(--font-dm-sans)] text-[16px] md:text-[17px] leading-relaxed ${hasMediaBackground ? "text-white/85" : "text-[#6b7280]"}`}>
-                {sub}
-              </p>
-              ) : null;
-            })()}
-            {(primaryCta || secondaryCta) && (
-              <div className="flex flex-wrap items-center gap-4 mt-6">
-                {primaryCta && (
-                  <GlareButton
-                    href={primaryCta.url}
-                    videoUrl={primaryCta.videoUrl}
-                    newTab={primaryCta.newTab}
-                    className="px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white"
-                    style={{ backgroundImage: "linear-gradient(102deg, #ffa964 0%, #ff8e37 34%, #ff7812 50%, #ff6d00 120%)" }}
-                  >
-                    {primaryCta.label}
-                  </GlareButton>
-                )}
-                {secondaryCta && (
-                  <GlareButton
-                    href={secondaryCta.url}
-                    videoUrl={secondaryCta.videoUrl}
-                    newTab={secondaryCta.newTab}
-                    className={`px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] border ${hasMediaBackground ? "border-white text-white" : "border-[#111827] text-[#111827]"}`}
-                    fillColor="transparent"
-                  >
-                    {secondaryCta.label}
-                  </GlareButton>
-                )}
-              </div>
-            )}
-          </div>
+          {backgroundType === "slider" ? (
+            // Slides carry their own headline/subheadline/CTA overrides —
+            // LegalPageSlider renders the whole text-overlay block itself,
+            // not just the background layer, so it doesn't duplicate the
+            // shared block below.
+            <LegalPageSlider
+              slides={slides}
+              fallbackHeadline={headline}
+              fallbackSubheadlineHtml={hero?.subheadline ?? ""}
+              autoplaySeconds={sliderAutoplaySeconds}
+              showArrows={sliderShowArrows}
+              overlay={overlay}
+              hasMediaBackground={hasMediaBackground}
+            />
+          ) : (
+            <div className="relative z-10 max-w-[820px] mx-auto px-6">
+              {hero?.eyebrow && (
+                <span className={`block mb-3 font-[family-name:var(--font-dm-sans)] font-semibold text-[13px] tracking-[0.08em] uppercase ${hasMediaBackground ? "text-white/80" : "text-[#ff6d00]"}`}>
+                  {hero.eyebrow}
+                </span>
+              )}
+              <h1 className={`font-[family-name:var(--font-dm-sans)] text-[32px] md:text-[44px] font-bold leading-[1.15] ${hasMediaBackground ? "text-white" : "text-[#111827]"}`}>
+                {headline}
+              </h1>
+              {(() => {
+                const sub = stripHtml(hero?.subheadline);
+                return sub ? (
+                <p className={`mt-4 font-[family-name:var(--font-dm-sans)] text-[16px] md:text-[17px] leading-relaxed ${hasMediaBackground ? "text-white/85" : "text-[#6b7280]"}`}>
+                  {sub}
+                </p>
+                ) : null;
+              })()}
+              {(primaryCta || secondaryCta || tertiaryCta) && (
+                <div className="flex flex-wrap items-center gap-4 mt-6">
+                  {primaryCta && (
+                    <GlareButton
+                      href={primaryCta.url}
+                      videoUrl={primaryCta.videoUrl}
+                      newTab={primaryCta.newTab}
+                      className="px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] text-white"
+                      style={{ backgroundImage: "linear-gradient(102deg, #ffa964 0%, #ff8e37 34%, #ff7812 50%, #ff6d00 120%)" }}
+                    >
+                      {primaryCta.label}
+                    </GlareButton>
+                  )}
+                  {secondaryCta && (
+                    <GlareButton
+                      href={secondaryCta.url}
+                      videoUrl={secondaryCta.videoUrl}
+                      newTab={secondaryCta.newTab}
+                      className={`px-7 py-[10px] rounded-full font-[family-name:var(--font-dm-sans)] font-medium text-[15px] border ${hasMediaBackground ? "border-white text-white" : "border-[#111827] text-[#111827]"}`}
+                      fillColor="transparent"
+                    >
+                      {secondaryCta.label}
+                    </GlareButton>
+                  )}
+                  {tertiaryCta && (
+                    <Link
+                      href={tertiaryCta.url}
+                      target={tertiaryCta.newTab ? "_blank" : undefined}
+                      rel={tertiaryCta.newTab ? "noopener noreferrer" : undefined}
+                      className={`font-[family-name:var(--font-dm-sans)] font-medium text-[15px] underline underline-offset-2 ${hasMediaBackground ? "text-white" : "text-[#ff6d00]"}`}
+                    >
+                      {tertiaryCta.label}
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         {/* Body */}
