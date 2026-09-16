@@ -215,8 +215,18 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
  * with pagination if the CMS ever holds more Pages than that.
  */
 export async function getPageSlugs(): Promise<string[]> {
-  const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
-  return (j.data ?? []).map((p) => p.attributes.slug);
+  try {
+    const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
+    return (j.data ?? []).map((p) => p.attributes.slug);
+  } catch (err) {
+    // Used by generateStaticParams() — an uncaught throw here fails the
+    // ENTIRE `next build`, blocking deployment of every existing page
+    // (about/, pricing/, …), not just CMS-authored ones. A transient
+    // CMS API blip at build time should mean "this run's CMS pages
+    // don't get (re)generated," not "nothing ships."
+    console.error('getPageSlugs() failed — CMS-authored pages will not be generated this build:', err);
+    return [];
+  }
 }
 
 /**
@@ -232,10 +242,20 @@ export async function getPageSlugs(): Promise<string[]> {
  * doesn't double the network cost.
  */
 export async function getPageIdSlugMap(): Promise<Record<number, string>> {
-  const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
-  const map: Record<number, string> = {};
-  for (const p of j.data ?? []) map[p.id] = p.attributes.slug;
-  return map;
+  try {
+    const j = await cmsFetch<ApiEnvelope<Page[]>>('/pages?per_page=100');
+    const map: Record<number, string> = {};
+    for (const p of j.data ?? []) map[p.id] = p.attributes.slug;
+    return map;
+  } catch (err) {
+    // Same reasoning as getPageSlugs(): this is awaited inside a
+    // Promise.all() alongside getPage() in app/[slug]/page.tsx — an
+    // uncaught throw here would fail that page's build (and, being a
+    // shared build step, risks the whole `next build`). Degrades to
+    // "internal page-id CTAs fall back to '#' this build" instead.
+    console.error('getPageIdSlugMap() failed — internal page-id CTAs will not resolve this build:', err);
+    return {};
+  }
 }
 
 export async function getPage(slug: string): Promise<Page | null> {
