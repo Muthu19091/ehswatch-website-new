@@ -50,9 +50,23 @@ export async function middleware(request: NextRequest) {
   const cookiePayload = JSON.stringify({ slug, token, exp });
   const headers = new Headers(request.headers);
   const existing = headers.get("cookie");
+  // A browser that already holds a page_preview cookie from an earlier
+  // preview visit (lives up to 1hr — very plausible after clicking a
+  // couple of preview links in one session) would otherwise end up with
+  // TWO page_preview= entries in this header once the fresh one below is
+  // appended; cookie parsers conventionally take the FIRST match, so the
+  // stale cookie silently won over a genuinely fresh token — confirmed:
+  // a brand-new preview link rendered the old draft content, not the
+  // current one. Strip any existing page_preview entry first so only
+  // the fresh value this request just verified can ever be read.
+  const strippedCookie = (existing ?? "")
+    .split(";")
+    .map((c) => c.trim())
+    .filter((c) => c && !c.startsWith("page_preview="))
+    .join("; ");
   headers.set(
     "cookie",
-    `${existing ? existing + "; " : ""}page_preview=${encodeURIComponent(cookiePayload)}`,
+    `${strippedCookie ? strippedCookie + "; " : ""}page_preview=${encodeURIComponent(cookiePayload)}`,
   );
 
   const response = NextResponse.rewrite(target, { request: { headers } });
