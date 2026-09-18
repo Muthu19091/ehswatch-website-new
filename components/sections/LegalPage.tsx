@@ -80,6 +80,7 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
       <Navbar lightHero={!firstBlockIsMediaHero} />
       <main>
         <style>{`
+          .legal-body h1 { font-size: 1.85rem; font-weight: 700; color: #111827; margin: 0 0 1.1rem; line-height: 1.2; }
           .legal-body h2 { font-size: 1.45rem; font-weight: 700; color: #111827; margin: 2.4rem 0 0.9rem; }
           .legal-body h3 { font-size: 1.15rem; font-weight: 600; color: #111827; margin: 1.8rem 0 0.7rem; }
           .legal-body p { margin: 0 0 1.1rem; }
@@ -94,6 +95,9 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
           .legal-body table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.95em; }
           .legal-body th, .legal-body td { border: 1px solid #e5e7eb; padding: 0.6rem 0.8rem; text-align: left; }
           .legal-body th { background: #f9fafb; font-weight: 600; color: #111827; }
+          .legal-body code { background: #f3f4f6; color: #b34700; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+          .legal-body pre { background: #111827; color: #e5e7eb; padding: 1rem 1.2rem; border-radius: 8px; margin: 1.2rem 0; overflow-x: auto; font-size: 0.875em; line-height: 1.6; }
+          .legal-body pre code { background: none; color: inherit; padding: 0; }
         `}</style>
 
         {!hasHeroBlock && (

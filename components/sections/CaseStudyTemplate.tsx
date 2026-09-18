@@ -111,6 +111,7 @@ export default function CaseStudyTemplate({
            Force it back on every descendant with !important. */
         .cs-body :is(p, span, li, div, strong, em, a) { font-family: var(--font-dm-sans), sans-serif !important; }
         .cs-body :is(p, span, li, div, strong, em) { color: #374151 !important; }
+        .cs-body h1 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.9rem; color: #0a0f1e; margin: 0 0 1.1rem; letter-spacing: -0.02em; }
         .cs-body h2 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.5rem; color: #0a0f1e; margin: 2.4rem 0 0.9rem; letter-spacing: -0.02em; }
         .cs-body h3 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.2rem; color: #0a0f1e; margin: 2rem 0 0.7rem; letter-spacing: -0.01em; }
         .cs-body h4 { font-family: var(--font-gothic-a1), sans-serif; font-weight: 700; font-size: 1.05rem; color: #0a0f1e; margin: 1.7rem 0 0.6rem; }
