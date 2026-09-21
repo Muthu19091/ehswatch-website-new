@@ -78,13 +78,6 @@ function resolveCmsCta(raw: any, pageMap?: PageMap): { label: string; href: stri
   return c ? { label: c.label, href: c.url } : undefined;
 }
 
-// Split a heading so its last `words` words render in the accent colour
-function splitTail(text: string, words = 2): [string, string] {
-  const parts = text.trim().split(/\s+/);
-  if (parts.length <= words) return ["", text.trim()];
-  return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
-}
-
 // Canonicalise CMS HTML so it matches what the browser produces after parsing,
 // before injecting via dangerouslySetInnerHTML — otherwise React throws a
 // hydration mismatch (#418) on the IRIS page. Two round-trip differences bite:
@@ -1478,9 +1471,10 @@ export default function IrisPage({
       ? { label: cmsCtaBanner.button.button.label, href: cmsCtaBanner.button.button.url || "#" }
       : undefined);
   const ctaBannerSecondary = resolveCmsCta(cmsCtaBanner?.secondary_cta, cmsPageMap);
-  const [problemsHeadStart, problemsHeadTail] = splitTail(
-    cmsProblemsHeading?.trim() || "",
-  );
+  // FE-HO-12: the ONLY source of the blue highlight is a real CMS-authored
+  // <span> — no last-2-words guess.
+  const rawProblemsHeading = cmsProblemsHeading?.trim() || "";
+  const hasSpanProblemsHeading = rawProblemsHeading.includes("<span");
   const problemsSubheading = cmsProblemsSubheading?.trim() || "";
 
   // ACTIVE_PROBLEMS: CMS items only — no fallback content. The SVG icon and
@@ -1938,12 +1932,15 @@ export default function IrisPage({
       <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
         <div className="max-w-[1160px] mx-auto">
           {/* Heading */}
-          {(problemsHeadTail || problemsSubheading) && (
+          {(rawProblemsHeading || problemsSubheading) && (
           <div className="text-center mb-10 md:mb-14" ref={problemsHeadRef}>
-            {problemsHeadTail && (
+            {rawProblemsHeading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b] iris-reveal-target">
-                {problemsHeadStart}
-                <span style={{ color: "#155eef" }}>{problemsHeadTail}</span>
+                {hasSpanProblemsHeading ? (
+                  <span dangerouslySetInnerHTML={{ __html: rawProblemsHeading }} />
+                ) : (
+                  rawProblemsHeading
+                )}
               </h2>
             )}
             {problemsSubheading && (

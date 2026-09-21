@@ -54,7 +54,7 @@ export default async function IrisTemplate({ slug }: { slug: string }) {
           cmsHero={cmsHero}
           cmsTextCta={cmsTextCta}
           cmsProblems={cmsProblems.length > 0 ? cmsProblems : undefined}
-          cmsProblemsHeading={cmsIconFeatures?.heading || undefined}
+          cmsProblemsHeading={headingHtml(cmsIconFeatures?.heading) || undefined}
           cmsProblemsSubheading={cmsIconFeatures?.subheading || undefined}
           cmsCapabilities={cmsCapabilities && cmsCapabilities.length > 0 ? cmsCapabilities as Array<{ title?: string; description?: string; eyebrow?: string; sub_items?: unknown[] }> : undefined}
           cmsStepsHeading={headingHtml(cmsNumberSteps?.heading) || undefined}

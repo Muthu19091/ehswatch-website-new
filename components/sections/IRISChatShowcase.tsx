@@ -533,19 +533,6 @@ interface IRISChatShowcaseProps {
   }>;
 }
 
-// Split heading at the first comma so the tail renders in blue; falls back to
-// highlighting the last three words when there is no comma.
-function splitShowcaseHeading(text: string): [string, string] {
-  const t = text.trim();
-  const commaIdx = t.indexOf(",");
-  if (commaIdx > 0 && commaIdx < t.length - 1) {
-    return [t.slice(0, commaIdx + 1) + " ", t.slice(commaIdx + 1).trim()];
-  }
-  const parts = t.split(/\s+/);
-  if (parts.length <= 3) return ["", t];
-  return [parts.slice(0, -3).join(" ") + " ", parts.slice(-3).join(" ")];
-}
-
 export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }: IRISChatShowcaseProps = {}) {
   const outerRef     = useRef<HTMLDivElement>(null);
   const stepCountRef = useRef(0);
@@ -586,16 +573,13 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
 
   // CMS-only heading/subheading — no hardcoded fallback copy.
   //
-  // FE-HO-12: prefer a real CMS-authored <span> (an editor's own chosen
-  // word/phrase, preserved by lib/text.ts's headingHtml() the same way
-  // Home's headings already work) over this section's own hardcoded
-  // "split at the first comma, else last 3 words" auto-highlight —
-  // falls back to that unchanged when no span is present, so nothing
-  // changes for existing content until an editor opts in.
+  // FE-HO-12: the ONLY source of the blue highlight is a real CMS-authored
+  // <span> (an editor's own chosen word/phrase, preserved by lib/text.ts's
+  // headingHtml() the same way Home's headings already work) — no
+  // comma-split, no last-3-words guess. No span means no highlight.
   const rawHeading = cmsHeading?.trim() || "";
   const hasSpanHeading = rawHeading.includes("<span");
-  const [headingStart, headingTail] = hasSpanHeading ? ["", ""] : splitShowcaseHeading(rawHeading);
-  const hasHeading = hasSpanHeading || Boolean(headingTail);
+  const hasHeading = Boolean(rawHeading);
   const subheading = cmsSubheading?.trim() || "";
 
   // Refs to avoid stale closures and prevent re-triggering on every scroll tick
@@ -718,10 +702,7 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
               {hasSpanHeading ? (
                 <span dangerouslySetInnerHTML={{ __html: rawHeading }} />
               ) : (
-                <>
-                  {headingStart}
-                  <span style={{ color:"#155eef" }}>{headingTail}</span>
-                </>
+                rawHeading
               )}
             </h2>
           )}

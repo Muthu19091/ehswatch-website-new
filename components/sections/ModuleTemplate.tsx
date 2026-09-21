@@ -35,7 +35,6 @@ export interface ModuleTemplateProps {
     headline: string;
     subheadline?: string;
     boldTagline?: string;
-    headlineAccent?: string;
     primaryCta?: ModuleCta;
     secondaryCta?: ModuleCta;
   };
@@ -82,33 +81,22 @@ const FEATURE_COLORS = ["#155eef", "#059669", "#f59e0b", "#7c3aed", "#0891b2", "
 const MODULE_COLORS = ["#ef4444", "#6366f1", "#f59e0b", "#059669", "#0891b2"];
 
 // Split a heading so its last 1–2 words render in blue (matches the design)
-function splitHeadline(text: string, words = 1): [string, string] {
-  const parts = text.trim().split(/\s+/);
-  if (parts.length <= words) return ["", text.trim()];
-  return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
-}
-
 /**
  * FE-HO-12 (client report: "highlight is always applied to the last word
- * only"): every heading on this page used to always auto-highlight a fixed
- * word count with no way for an editor to choose the word/phrase — this
- * page never even read a real CMS <span> at all. lib/text.ts's headingHtml()
- * already preserves a <span> an editor wraps their chosen text in (same
- * mechanism the Home page's headings use) and strips it back out to plain
- * text when none is present -- so a heading that HAS one always contains a
- * literal "<span" once processed that way.
- *
- * Prefers that CMS-chosen highlight; when the editor hasn't added one,
- * falls back to whatever auto-highlight this section already had (a plain
- * heading, unhighlighted, or a computed last-N-words split — `fallback`
- * decides which), so nothing changes for existing content until an editor
- * actually opts in.
+ * only, remove that kind of code -- only highlight when the API heading
+ * actually has a <span> in it"): every guess-based auto-highlight (last-N-
+ * words split, comma-split, module-name detection) has been removed. The
+ * ONLY source of the blue highlight now is a real <span> an editor wraps
+ * their chosen text in, preserved by lib/text.ts's headingHtml() the same
+ * way Home's headings already work (and recoloured by it too) -- a heading
+ * that has one always contains a literal "<span" once processed that way.
+ * No span in the API data means no highlight at all, full stop.
  */
-function renderHeading(html: string, fallback?: () => React.ReactNode) {
+function renderHeading(html: string) {
   if (html.includes("<span")) {
     return <span dangerouslySetInnerHTML={{ __html: html }} />;
   }
-  return fallback ? fallback() : html;
+  return html;
 }
 
 function CTAButton({ href, label, variant = "primary", videoUrl }: { href: string; label: string; variant?: "primary" | "ghost"; videoUrl?: string }) {
@@ -319,45 +307,11 @@ export default function ModuleTemplate({
     return () => window.removeEventListener("ehs-locale", check);
   }, []);
 
-  // FE-HO-12: a real CMS-authored <span> (headingHtml() in moduleContent.ts
-  // preserves one the same way Home's headings do) takes priority over the
-  // separate `headline_accent` field, which in turn takes priority over the
-  // last-word fallback. Skips the accent/last-word computation entirely when
-  // a span is present -- running substring matching against HTML-containing
-  // text would produce nonsense.
-  let headStart = "", headHighlight = "", headEnd = "";
+  // FE-HO-12: the ONLY source of the hero headline highlight is a real
+  // CMS-authored <span> (headingHtml() in moduleContent.ts preserves one
+  // the same way Home's headings do) -- no accent field, no auto-guessed
+  // fallback.
   const hasSpanHeadline = hero.headline.includes("<span");
-  if (!hasSpanHeadline) {
-    const accent = hero.headlineAccent?.trim();
-    const accentIdx = accent ? hero.headline.toLowerCase().indexOf(accent.toLowerCase()) : -1;
-    if (accent && accentIdx >= 0) {
-      headStart = hero.headline.slice(0, accentIdx);
-      headHighlight = hero.headline.slice(accentIdx, accentIdx + accent.length);
-      headEnd = hero.headline.slice(accentIdx + accent.length);
-    } else {
-      [headStart, headHighlight] = splitHeadline(hero.headline);
-    }
-  }
-  // Highlight the module name inside the "What Sets … Apart" heading (e.g.
-  // "What Sets EHSWatch [File Management] Apart"), matching the ActionTracker
-  // design — instead of an arbitrary last-two-words split that would colour
-  // "… Management Apart" and vary per module (client FE QA: keep it consistent).
-  let apartStart = "", apartHighlight = "", apartEnd = "";
-  if (apart?.heading) {
-    const h = apart.heading;
-    const idx = moduleName ? h.toLowerCase().indexOf(moduleName.toLowerCase()) : -1;
-    if (idx >= 0) {
-      apartStart = h.slice(0, idx);
-      apartHighlight = h.slice(idx, idx + moduleName.length);
-      apartEnd = h.slice(idx + moduleName.length);
-    } else {
-      // Fallbacks: keep a trailing "Apart" un-highlighted; else last word.
-      const m = h.match(/^(.*?)(\s+Apart\s*)$/i);
-      if (m) { apartHighlight = m[1]; apartEnd = m[2]; }
-      else { [apartStart, apartHighlight] = splitHeadline(h); }
-    }
-  }
-
   return (
     <>
       <style>{`
@@ -422,14 +376,8 @@ export default function ModuleTemplate({
               // fragments translate independently and garble word order),
               // even when a CMS <span> exists -- strip it back to text.
               hasSpanHeadline ? hero.headline.replace(/<[^>]*>/g, "") : hero.headline
-            ) : hasSpanHeadline ? (
-              <span dangerouslySetInnerHTML={{ __html: hero.headline }} />
             ) : (
-              <>
-                {headStart}
-                <span style={{ color: "#1d4ed8" }}>{headHighlight}</span>
-                {headEnd}
-              </>
+              renderHeading(hero.headline)
             )}
           </h1>
 
@@ -488,13 +436,7 @@ export default function ModuleTemplate({
             <div className="text-center mb-12 md:mb-16">
               {features.heading && (
                 <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                  {renderHeading(features.heading, () => {
-                    // Highlight the full module name (FE-QA: 3-word names like
-                    // "Permit to Work" were split by the last-2-words fallback).
-                    const m = features.heading.match(/^(key features of\s+)(.+)$/i);
-                    const [s, h] = m ? [m[1], m[2]] : splitHeadline(features.heading, 2);
-                    return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-                  })}
+                  {renderHeading(features.heading)}
                 </h2>
               )}
               {features.subheading && (
@@ -541,15 +483,9 @@ export default function ModuleTemplate({
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {apart.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                {renderHeading(apart.heading, () =>
-                  isArabic ? apart.heading : (
-                    <>
-                      {apartStart}
-                      <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
-                      {apartEnd}
-                    </>
-                  )
-                )}
+                {isArabic && apart.heading.includes("<span")
+                  ? apart.heading.replace(/<[^>]*>/g, "")
+                  : renderHeading(apart.heading)}
               </h2>
             )}
             {apart.items.length > 0 ? (
@@ -656,10 +592,7 @@ export default function ModuleTemplate({
           <div className="max-w-[1160px] mx-auto">
             {moreModules.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-center mb-10 md:mb-14 text-[#0a0f1e]">
-                {renderHeading(moreModules.heading, () => {
-                  const [s, h] = splitHeadline(moreModules.heading, 2);
-                  return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-                })}
+                {renderHeading(moreModules.heading)}
               </h2>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
