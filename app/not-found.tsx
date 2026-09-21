@@ -53,7 +53,11 @@ export default async function NotFound() {
   }>(blocks, "hero");
 
   const eyebrow = hero?.eyebrow?.trim() || "404";
-  const headline = hero?.headline?.trim() || "We couldn't find that page";
+  // headline was previously passed raw to a plain JSX interpolation -- a
+  // CMS <span> highlight rendered as literal, escaped tag text instead of
+  // a coloured word (confirmed live). headingHtmlOpt() colours it when
+  // present, plain text otherwise.
+  const headline = headingHtmlOpt(hero?.headline) || "We couldn't find that page";
   const subheadline =
     stripHtmlOpt(hero?.subheadline) ||
     "The link you followed may be broken, or the page may have been moved.";
@@ -81,7 +85,11 @@ export default async function NotFound() {
               {eyebrow}
             </span>
             <h1 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[52px] leading-[1.08] text-gray-900 tracking-[-0.03em]">
-              {headline}
+              {headline.includes("<span") ? (
+                <span dangerouslySetInnerHTML={{ __html: headline }} />
+              ) : (
+                headline
+              )}
             </h1>
             <p className="font-[family-name:var(--font-dm-sans)] text-[16px] text-gray-600 leading-[1.75] max-w-[460px] text-pretty">
               {subheadline}
