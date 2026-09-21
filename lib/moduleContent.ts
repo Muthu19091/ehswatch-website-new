@@ -1,6 +1,6 @@
 import type { ModuleTemplateProps, ModuleCta } from "@/components/sections/ModuleTemplate";
 import type { CmsProductModule, CmsClientLogo } from "@/lib/types";
-import { stripHtml, stripHtmlOpt } from "@/lib/text";
+import { headingHtml, stripHtml, stripHtmlOpt } from "@/lib/text";
 import { findBlock, normalizeArray, resolveCta as resolveCtaBlock, type PageMap } from "@/lib/blocks";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -127,7 +127,7 @@ export function buildModuleTemplateProps(
   const why: ModuleTemplateProps["why"] | undefined =
     imageTextBlock?.heading && imageTextBlock?.body
       ? {
-          heading: stripHtml(imageTextBlock.heading),
+          heading: headingHtml(imageTextBlock.heading),
           bodyHtml: imageTextBlock.body,
           imageUrl: imageTextBlock.image?.url || undefined,
           cta: whyCta,
@@ -156,7 +156,7 @@ export function buildModuleTemplateProps(
   const features: ModuleTemplateProps["features"] | undefined =
     featureItems.length > 0
       ? {
-          heading: stripHtml(iconFeaturesBlock?.heading) || "",
+          heading: headingHtml(iconFeaturesBlock?.heading) || "",
           subheading: stripHtmlOpt(iconFeaturesBlock?.subheading),
           items: featureItems,
         }
@@ -185,7 +185,7 @@ export function buildModuleTemplateProps(
   const useGrid = apartItems.length > 0 && nonListText.length === 0;
   const apart: ModuleTemplateProps["apart"] | undefined = richBody
     ? {
-        heading: stripHtml(richTextBlock?.heading) || "",
+        heading: headingHtml(richTextBlock?.heading) || "",
         items: useGrid ? apartItems : [],
         bodyHtml: richBody,
       }
@@ -203,7 +203,7 @@ export function buildModuleTemplateProps(
 
   const faqs: ModuleTemplateProps["faqs"] | undefined =
     faqItems.length > 0
-      ? { heading: stripHtml(faqBlock?.heading) || "", items: faqItems }
+      ? { heading: headingHtml(faqBlock?.heading) || "", items: faqItems }
       : undefined;
 
   const ctaBlock = findBlock<{
@@ -345,7 +345,7 @@ export function buildModuleTemplateProps(
   const moreModules: ModuleTemplateProps["moreModules"] | undefined =
     otherModules.length > 0
       ? {
-          heading: stripHtml(modulesBlock?.heading) || "",
+          heading: headingHtml(modulesBlock?.heading) || "",
           linkText: stripHtmlOpt((modulesBlock as { link_text?: string })?.link_text) || undefined,
           sectionCta,
           modules: otherModules,
@@ -377,7 +377,7 @@ export function buildModuleTemplateProps(
   const clientStrip: ModuleTemplateProps["clientStrip"] | undefined =
     clientStripBlock && clientLogos.length > 0
       ? {
-          heading: stripHtml(clientStripBlock.heading) || "",
+          heading: headingHtml(clientStripBlock.heading) || "",
           subheading: stripHtmlOpt(clientStripBlock.subheading),
           logos: clientLogos,
         }

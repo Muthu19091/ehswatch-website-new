@@ -88,6 +88,29 @@ function splitHeadline(text: string, words = 1): [string, string] {
   return [parts.slice(0, -words).join(" ") + " ", parts.slice(-words).join(" ")];
 }
 
+/**
+ * FE-HO-12 (client report: "highlight is always applied to the last word
+ * only"): every heading on this page used to always auto-highlight a fixed
+ * word count with no way for an editor to choose the word/phrase — this
+ * page never even read a real CMS <span> at all. lib/text.ts's headingHtml()
+ * already preserves a <span> an editor wraps their chosen text in (same
+ * mechanism the Home page's headings use) and strips it back out to plain
+ * text when none is present -- so a heading that HAS one always contains a
+ * literal "<span" once processed that way.
+ *
+ * Prefers that CMS-chosen highlight; when the editor hasn't added one,
+ * falls back to whatever auto-highlight this section already had (a plain
+ * heading, unhighlighted, or a computed last-N-words split — `fallback`
+ * decides which), so nothing changes for existing content until an editor
+ * actually opts in.
+ */
+function renderHeading(html: string, fallback?: () => React.ReactNode) {
+  if (html.includes("<span")) {
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  }
+  return fallback ? fallback() : html;
+}
+
 function CTAButton({ href, label, variant = "primary", videoUrl }: { href: string; label: string; variant?: "primary" | "ghost"; videoUrl?: string }) {
   if (variant === "primary") {
     return (
@@ -217,7 +240,7 @@ function FAQAccordion({ heading, items, id }: { heading: string; items: Array<{ 
         {heading && (
           <div className="text-center">
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-              {heading}
+              {renderHeading(heading)}
             </h2>
           </div>
         )}
@@ -429,7 +452,7 @@ export default function ModuleTemplate({
           <div className="max-w-[1160px] mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
             <div className={`flex flex-col gap-6 w-full ${why.imageUrl ? "lg:w-[40%]" : "max-w-[760px] mx-auto"}`}>
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                {why.heading}
+                {renderHeading(why.heading)}
               </h2>
               <div
                 className="mt-why-body font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] leading-[1.8] text-[#4b5563] text-pretty"
@@ -451,13 +474,13 @@ export default function ModuleTemplate({
             <div className="text-center mb-12 md:mb-16">
               {features.heading && (
                 <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                  {(() => {
+                  {renderHeading(features.heading, () => {
                     // Highlight the full module name (FE-QA: 3-word names like
                     // "Permit to Work" were split by the last-2-words fallback).
                     const m = features.heading.match(/^(key features of\s+)(.+)$/i);
                     const [s, h] = m ? [m[1], m[2]] : splitHeadline(features.heading, 2);
                     return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-                  })()}
+                  })}
                 </h2>
               )}
               {features.subheading && (
@@ -504,12 +527,14 @@ export default function ModuleTemplate({
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {apart.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-                {isArabic ? apart.heading : (
-                  <>
-                    {apartStart}
-                    <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
-                    {apartEnd}
-                  </>
+                {renderHeading(apart.heading, () =>
+                  isArabic ? apart.heading : (
+                    <>
+                      {apartStart}
+                      <span style={{ color: "#1d4ed8" }}>{apartHighlight}</span>
+                      {apartEnd}
+                    </>
+                  )
                 )}
               </h2>
             )}
@@ -549,7 +574,7 @@ export default function ModuleTemplate({
           <div className="max-w-[1160px] mx-auto flex flex-col items-center text-center gap-4 md:gap-6">
             {clientStrip.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] md:text-[32px] leading-tight tracking-[-0.02em] text-[#0a0f1e] max-w-[780px]">
-                {clientStrip.heading}
+                {renderHeading(clientStrip.heading)}
               </h2>
             )}
             {clientStrip.subheading && (
@@ -617,10 +642,10 @@ export default function ModuleTemplate({
           <div className="max-w-[1160px] mx-auto">
             {moreModules.heading && (
               <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-center mb-10 md:mb-14 text-[#0a0f1e]">
-                {(() => {
+                {renderHeading(moreModules.heading, () => {
                   const [s, h] = splitHeadline(moreModules.heading, 2);
                   return (<>{s}<span style={{ color: "#1d4ed8" }}>{h}</span></>);
-                })()}
+                })}
               </h2>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
