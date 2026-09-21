@@ -4,6 +4,7 @@ import { useState } from "react";
 import { basePath } from "@/lib/basePath";
 import TurnstileField from "@/components/ui/TurnstileField";
 import type { CmsForm } from "@/lib/types";
+import { headingHtml } from "@/lib/text";
 
 const DARK = "#1B1B1B";
 const DARK_MID = "rgba(27,27,27,0.8)";
@@ -33,7 +34,10 @@ export default function BlogNewsletter({ formAttrs }: BlogNewsletterProps = {}) 
   // section heading render only when the CMS form provides them.
   const successHeading = formAttrs?.success_heading?.trim() || "";
   const successMsg  = formAttrs?.success_message?.trim() || "";
-  const heading = formAttrs?.description?.trim() || null;
+  // Rendered as a large bold H2 like any other section heading -- goes
+  // through headingHtml() so a CMS <span> highlight is coloured (and any
+  // other markup is safely stripped) instead of passing raw HTML through.
+  const heading = headingHtml(formAttrs?.description) || null;
   // The submit button must carry a label to stay operable — CMS submit_label,
   // with a neutral non-marketing word as the last resort.
   const submitLabel = formAttrs?.submit_label?.trim() || "Subscribe";

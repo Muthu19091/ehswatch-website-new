@@ -1459,8 +1459,15 @@ export default function IrisPage({
   const heroHeadline    = keepBrandsEnglish(normalizeCmsHtml(cmsHero?.headline || ""))
     // Colour the CMS accent <span> brand-blue (double-colour heading) without
     // touching the notranslate brand spans keepBrandsEnglish injects.
-    .replace(/<span(?![^>]*notranslate)([^>]*)>/i, '<span$1 style="color:#1d4ed8">');
+    .replace(/<span(?![^>]*notranslate)([^>]*)>/i, '<span$1 style="color:#155eef">');
   const heroSubheadline = cmsHero?.subheadline ? keepBrandsEnglish(normalizeCmsHtml(cmsHero.subheadline)) : undefined;
+  // "About IRIS" section title -- same CMS <span> accent as the hero headline
+  // above, previously passed straight to dangerouslySetInnerHTML with no
+  // colour applied at all (rendered as plain, uncoloured text).
+  const textCtaTitle = cmsTextCta?.title?.trim()
+    ? keepBrandsEnglish(normalizeCmsHtml(cmsTextCta.title))
+        .replace(/<span(?![^>]*notranslate)([^>]*)>/i, '<span$1 style="color:#155eef">')
+    : "";
   const heroPrimaryCta   = resolveCmsCta(cmsHero?.primary_cta, cmsPageMap);
   const heroSecondaryCta = resolveCmsCta(cmsHero?.secondary_cta, cmsPageMap);
   const ctaBannerHeadline = cmsCtaBanner?.headline?.trim() || "";
@@ -1906,9 +1913,9 @@ export default function IrisPage({
         style={{ background: "#F8FBFF" }}
       >
         <div className="max-w-[760px] mx-auto text-center flex flex-col gap-5 iris-reveal-target">
-          {cmsTextCta?.title?.trim() && (
+          {textCtaTitle && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[38px] md:text-[46px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-              <span dangerouslySetInnerHTML={{ __html: keepBrandsEnglish(normalizeCmsHtml(cmsTextCta.title)) }} />
+              <span dangerouslySetInnerHTML={{ __html: textCtaTitle }} />
             </h2>
           )}
 

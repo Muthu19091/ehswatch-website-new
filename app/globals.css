@@ -200,7 +200,7 @@ html[dir="rtl"] .contact-cols {
    RTL only — the English space renders fine. */
 html[dir="rtl"] :is(h1, h2, h3, h4) .hd-hl,
 html[dir="rtl"] :is(h1, h2, h3, h4) .text-\[\#155eef\],
-html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="1d4ed8"],
+html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="155eef"],
 html[dir="rtl"] :is(h1, h2, h3, h4) span[style*="0060f9"] {
   margin-inline: 0.22em;
 }

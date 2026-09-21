@@ -742,7 +742,9 @@ export default function ProductHowItWorks({
 
   // CMS-only heading/subheading — no hardcoded fallback copy.
   const rawHeading = cmsHeading?.trim() || "";
-  const headingSpanMatch = rawHeading.match(/<span>([\s\S]*?)<\/span>/);
+  // headingHtmlOpt() outputs an attributed span (class="hd-hl" style="color:...")
+  // -- match any/no attributes, not just a bare <span>.
+  const headingSpanMatch = rawHeading.match(/<span\b[^>]*>([\s\S]*?)<\/span>/);
   const headingSpanText = headingSpanMatch ? headingSpanMatch[1] : "";
   const headingPlain = rawHeading.replace(/<[^>]+>/g, "");
   const headingSpanIdx = headingSpanText ? headingPlain.indexOf(headingSpanText) : -1;

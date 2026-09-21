@@ -278,10 +278,12 @@ export default function ProductModules({
 
   // Resolve heading — CMS-only, strip HTML tags and split on <span> for styled portion
   const rawHeading = cmsHeading?.trim() || "";
-  const spanMatch = rawHeading.match(/<span>([\s\S]*?)<\/span>/);
+  // headingHtmlOpt() outputs an attributed span (class="hd-hl" style="color:...")
+  // -- match any/no attributes, not just a bare <span>.
+  const spanMatch = rawHeading.match(/<span\b[^>]*>([\s\S]*?)<\/span>/);
   const spanText = spanMatch ? spanMatch[1] : "";
   const plainHeading = rawHeading.replace(/<[^>]+>/g, "");
-  const spanIdx = plainHeading.indexOf(spanText);
+  const spanIdx = spanText ? plainHeading.indexOf(spanText) : -1;
   const headingBefore = spanIdx >= 0 ? plainHeading.slice(0, spanIdx) : plainHeading;
   const headingAfter = spanIdx >= 0 ? plainHeading.slice(spanIdx + spanText.length) : "";
 
@@ -295,7 +297,7 @@ export default function ProductModules({
           {plainHeading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
               {headingBefore}
-              {spanText && <span style={{ color: "#0060F9" }}>{spanText}</span>}
+              {spanText && <span style={{ color: "#155eef" }}>{spanText}</span>}
               {headingAfter}
             </h2>
           )}

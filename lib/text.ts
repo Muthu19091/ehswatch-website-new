@@ -73,7 +73,7 @@ export function stripHtmlOpt(value: string | null | undefined): string | undefin
  * Heading guard for the "half black / half blue" pattern. Editors wrap the
  * part they want highlighted in a <span> (`first half <span>second half</span>`)
  * and this preserves ONLY that span — stripping every other tag and all span
- * attributes for safety — then recolours the span to the brand blue (#1d4ed8).
+ * attributes for safety — then recolours the span to the brand blue (#155eef).
  * Headings with no <span> come out as plain text, identical to stripHtml, so
  * existing headings are unaffected. Output is safe HTML for
  * dangerouslySetInnerHTML (only a bare, recoloured <span> can survive).
@@ -94,7 +94,7 @@ export function headingHtml(value: string | null | undefined): string {
     // The .hd-hl class lets CSS restore the inline gap in Arabic (RTL), where
     // the machine translator drops the space at the span's edge and glues the
     // adjacent words together (e.g. "النشاطمصمم").
-    .replace(/<span\b[^>]*>/gi, '<span class="hd-hl" style="color:#1d4ed8">')
+    .replace(/<span\b[^>]*>/gi, '<span class="hd-hl" style="color:#155eef">')
     .replace(/\s+/g, " ")
     .trim();
 }

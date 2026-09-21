@@ -2455,7 +2455,7 @@ export const EN_TO_AR: Record<string, string> = {
 // so we can render a multi-line heading with its highlight span intact.
 const EN_TO_AR_HTML: Record<string, string> = {
   "EHSQ Insights, Beyond The Dashboard":
-    '\u0645\u0642\u0627\u0644\u0627\u062a EHSQ<br /><span style="color:#1d4ed8">\u0645\u0627 \u0648\u0631\u0627\u0621 \u0644\u0648\u062d\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a</span>',
+    '\u0645\u0642\u0627\u0644\u0627\u062a EHSQ<br /><span style="color:#155eef">\u0645\u0627 \u0648\u0631\u0627\u0621 \u0644\u0648\u062d\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a</span>',
 };
 
 const LABEL_EN_TO_AR: Record<string, string> = {

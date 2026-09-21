@@ -564,7 +564,7 @@ export default function ActionTrackerPage() {
             style={{ animationDelay: "80ms" }}
           >
             Turn Findings Into{" "}
-            <span style={{ color: "#1d4ed8" }}>Results</span>
+            <span style={{ color: "#155eef" }}>Results</span>
           </h1>
 
           <p
@@ -629,7 +629,7 @@ export default function ActionTrackerPage() {
         <div className="max-w-[1160px] mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[42px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
-              Key Features of <span style={{ color: "#1d4ed8" }}>Action Tracker</span>
+              Key Features of <span style={{ color: "#155eef" }}>Action Tracker</span>
             </h2>
             <p className="font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] text-[#6b7280] mt-4 max-w-[500px] mx-auto text-pretty leading-[1.7]">
               Everything your team needs to close actions without chasing them.
@@ -694,7 +694,7 @@ export default function ActionTrackerPage() {
           {/* Left — heading */}
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#0a0f1e]">
             What Sets EHSWatch<br />
-            <span style={{ color: "#1d4ed8" }}>Action Tracker</span> Apart
+            <span style={{ color: "#155eef" }}>Action Tracker</span> Apart
           </h2>
 
           {/* Right — simple list */}
@@ -748,7 +748,7 @@ export default function ActionTrackerPage() {
       <section className="py-[70px] md:py-[90px] px-4 md:px-6 bg-white">
         <div className="max-w-[1160px] mx-auto">
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-center mb-10 md:mb-14 text-[#0a0f1e]">
-            Explore More <span style={{ color: "#1d4ed8" }}>EHSWatch Modules</span>
+            Explore More <span style={{ color: "#155eef" }}>EHSWatch Modules</span>
           </h2>
           {/* Single row — divider-line grid matching ProductModules */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">

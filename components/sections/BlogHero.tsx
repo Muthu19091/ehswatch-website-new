@@ -16,7 +16,7 @@ export default function BlogHero({ headline, subheadline, eyebrow }: BlogHeroPro
   // Strip any inline color from CMS <span> and apply our brand blue
   const styledHeadline = headlineHtml.replace(
     /<span>/gi,
-    '<span style="color:#1d4ed8">'
+    '<span style="color:#155eef">'
   );
 
   const subheadlineText = subheadline?.trim() || "";

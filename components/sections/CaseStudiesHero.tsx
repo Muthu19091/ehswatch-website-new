@@ -76,7 +76,7 @@ export default function CaseStudiesHero({ cmsEyebrow, cmsHeadline, cmsSubheadlin
             {/* CMS headline may carry a <span> for the blue highlight — render it, restyled */}
             <span
               dangerouslySetInnerHTML={{
-                __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+                __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">'),
               }}
             />
           </h1>

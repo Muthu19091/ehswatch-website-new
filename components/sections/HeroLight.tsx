@@ -88,7 +88,7 @@ export default function HeroLight() {
         >
           From Manual Chaos to{" "}
           <br className="hidden sm:block" />
-          <span style={{ color: "#1d4ed8" }}>Smart Safety.</span>
+          <span style={{ color: "#155eef" }}>Smart Safety.</span>
         </h1>
 
         <p

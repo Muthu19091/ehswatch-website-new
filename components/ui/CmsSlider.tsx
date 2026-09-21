@@ -67,7 +67,7 @@ export default function CmsSlider({
             <h2
               className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.02em] text-[#0a0f1e] mb-3"
               dangerouslySetInnerHTML={{
-                __html: heading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+                __html: heading.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">'),
               }}
             />
           )}

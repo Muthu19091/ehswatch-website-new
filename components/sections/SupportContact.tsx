@@ -63,7 +63,7 @@ export default function SupportContact({
   ].filter(Boolean) as ContactInfoItem[];
 
   // CMS-only: no hardcoded fallback heading/copy.
-  const headingHtml = (heading?.trim() || "").replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">');
+  const headingHtml = (heading?.trim() || "").replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">');
   const desc = subheading?.trim() || "";
 
   return (

@@ -87,7 +87,7 @@ export default function ContactPage({
 
   /* Form section heading — CMS-only (rendered only when formHeading is set) */
   const sectionHeading = formHeading
-    ? formHeading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">')
+    ? formHeading.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">')
     : "";
 
   return (
@@ -121,7 +121,7 @@ export default function ContactPage({
               className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[52px] md:text-[64px] leading-[1.05] tracking-[-0.03em] text-[#0a0f1e] animate-hero-rise"
               style={{ animationDelay: "80ms" }}
               dangerouslySetInnerHTML={{
-                __html: heroHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+                __html: heroHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">'),
               }}
             />
           )}
@@ -307,7 +307,7 @@ export default function ContactPage({
                   <h2
                     className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[32px] md:text-[38px] leading-tight tracking-[-0.02em] text-[#0a0f1e] mb-3"
                     dangerouslySetInnerHTML={{
-                      __html: galleryData.heading.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+                      __html: galleryData.heading.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">'),
                     }}
                   />
                 )}

@@ -92,7 +92,7 @@ export default function SolutionsHero({
           className="font-[family-name:var(--font-gothic-a1)] font-bold text-[30px] sm:text-[42px] md:text-[54px] leading-[1.08] text-gray-900 tracking-[-0.03em] animate-hero-rise"
           style={{ animationDelay: "80ms" }}
           dangerouslySetInnerHTML={{
-            __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#1d4ed8">'),
+            __html: cmsHeadline.replace(/<span\b[^>]*>/gi, '<span style="color:#155eef">'),
           }}
         />
 
