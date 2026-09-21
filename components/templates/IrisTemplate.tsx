@@ -7,6 +7,7 @@ import { getPage, getPageList } from "@/lib/api";
 import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, iconFeaturesToArray, buildPageMap } from "@/lib/blocks";
 import { robotsFrom, seoExtras } from "@/lib/seo";
+import { headingHtml } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +57,7 @@ export default async function IrisTemplate({ slug }: { slug: string }) {
           cmsProblemsHeading={cmsIconFeatures?.heading || undefined}
           cmsProblemsSubheading={cmsIconFeatures?.subheading || undefined}
           cmsCapabilities={cmsCapabilities && cmsCapabilities.length > 0 ? cmsCapabilities as Array<{ title?: string; description?: string; eyebrow?: string; sub_items?: unknown[] }> : undefined}
-          cmsStepsHeading={cmsNumberSteps?.heading || undefined}
+          cmsStepsHeading={headingHtml(cmsNumberSteps?.heading) || undefined}
           cmsStepsSubheading={cmsNumberSteps?.subheading || undefined}
           cmsCtaBanner={cmsCtaBanner}
           cmsPageMap={pageMap}

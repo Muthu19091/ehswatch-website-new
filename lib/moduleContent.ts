@@ -90,7 +90,7 @@ export function buildModuleTemplateProps(
 
   const hero: ModuleTemplateProps["hero"] = {
     eyebrow: stripHtmlOpt(heroBlock?.eyebrow),
-    headline: stripHtml(heroBlock?.headline) || name,
+    headline: headingHtml(heroBlock?.headline) || name,
     subheadline: stripHtmlOpt(heroBlock?.subheadline) || stripHtmlOpt(mod.tagline),
     boldTagline: stripHtmlOpt(heroBlock?.bold_tagline),
     // FE-HO-12: which word in the hero headline is highlighted blue. Prefer the

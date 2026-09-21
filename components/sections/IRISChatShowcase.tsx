@@ -585,7 +585,17 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
   stepCountRef.current = features.length;
 
   // CMS-only heading/subheading — no hardcoded fallback copy.
-  const [headingStart, headingTail] = splitShowcaseHeading(cmsHeading?.trim() || "");
+  //
+  // FE-HO-12: prefer a real CMS-authored <span> (an editor's own chosen
+  // word/phrase, preserved by lib/text.ts's headingHtml() the same way
+  // Home's headings already work) over this section's own hardcoded
+  // "split at the first comma, else last 3 words" auto-highlight —
+  // falls back to that unchanged when no span is present, so nothing
+  // changes for existing content until an editor opts in.
+  const rawHeading = cmsHeading?.trim() || "";
+  const hasSpanHeading = rawHeading.includes("<span");
+  const [headingStart, headingTail] = hasSpanHeading ? ["", ""] : splitShowcaseHeading(rawHeading);
+  const hasHeading = hasSpanHeading || Boolean(headingTail);
   const subheading = cmsSubheading?.trim() || "";
 
   // Refs to avoid stale closures and prevent re-triggering on every scroll tick
@@ -700,13 +710,19 @@ export default function IRISChatShowcase({ cmsHeading, cmsSubheading, cmsSteps }
   return (
     <>
       {/* Heading — CMS-only, hidden when not configured */}
-      {(headingTail || subheading) && (
+      {(hasHeading || subheading) && (
       <section className="pt-[80px] md:pt-[100px] pb-0 px-6 bg-white">
         <div className="max-w-[1160px] mx-auto flex flex-col items-center text-center gap-3">
-          {headingTail && (
+          {hasHeading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] leading-tight tracking-[-0.025em] text-[#1b1b1b]">
-              {headingStart}
-              <span style={{ color:"#155eef" }}>{headingTail}</span>
+              {hasSpanHeading ? (
+                <span dangerouslySetInnerHTML={{ __html: rawHeading }} />
+              ) : (
+                <>
+                  {headingStart}
+                  <span style={{ color:"#155eef" }}>{headingTail}</span>
+                </>
+              )}
             </h2>
           )}
           {subheading && (

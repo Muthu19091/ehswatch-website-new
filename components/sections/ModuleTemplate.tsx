@@ -319,17 +319,24 @@ export default function ModuleTemplate({
     return () => window.removeEventListener("ehs-locale", check);
   }, []);
 
-  // FE-HO-12: highlight the CMS-chosen accent word (if set and present in the
-  // headline); otherwise fall back to highlighting the last word.
-  let headStart: string, headHighlight: string, headEnd = "";
-  const accent = hero.headlineAccent?.trim();
-  const accentIdx = accent ? hero.headline.toLowerCase().indexOf(accent.toLowerCase()) : -1;
-  if (accent && accentIdx >= 0) {
-    headStart = hero.headline.slice(0, accentIdx);
-    headHighlight = hero.headline.slice(accentIdx, accentIdx + accent.length);
-    headEnd = hero.headline.slice(accentIdx + accent.length);
-  } else {
-    [headStart, headHighlight] = splitHeadline(hero.headline);
+  // FE-HO-12: a real CMS-authored <span> (headingHtml() in moduleContent.ts
+  // preserves one the same way Home's headings do) takes priority over the
+  // separate `headline_accent` field, which in turn takes priority over the
+  // last-word fallback. Skips the accent/last-word computation entirely when
+  // a span is present -- running substring matching against HTML-containing
+  // text would produce nonsense.
+  let headStart = "", headHighlight = "", headEnd = "";
+  const hasSpanHeadline = hero.headline.includes("<span");
+  if (!hasSpanHeadline) {
+    const accent = hero.headlineAccent?.trim();
+    const accentIdx = accent ? hero.headline.toLowerCase().indexOf(accent.toLowerCase()) : -1;
+    if (accent && accentIdx >= 0) {
+      headStart = hero.headline.slice(0, accentIdx);
+      headHighlight = hero.headline.slice(accentIdx, accentIdx + accent.length);
+      headEnd = hero.headline.slice(accentIdx + accent.length);
+    } else {
+      [headStart, headHighlight] = splitHeadline(hero.headline);
+    }
   }
   // Highlight the module name inside the "What Sets … Apart" heading (e.g.
   // "What Sets EHSWatch [File Management] Apart"), matching the ActionTracker
@@ -410,7 +417,14 @@ export default function ModuleTemplate({
             className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[50px] md:text-[58px] leading-[1.06] text-[#0a0f1e] tracking-[-0.03em] animate-hero-rise"
             style={{ animationDelay: "80ms" }}
           >
-            {isArabic ? hero.headline : (
+            {isArabic ? (
+              // Arabic: always one plain text node (FE QA #17 -- split
+              // fragments translate independently and garble word order),
+              // even when a CMS <span> exists -- strip it back to text.
+              hasSpanHeadline ? hero.headline.replace(/<[^>]*>/g, "") : hero.headline
+            ) : hasSpanHeadline ? (
+              <span dangerouslySetInnerHTML={{ __html: hero.headline }} />
+            ) : (
               <>
                 {headStart}
                 <span style={{ color: "#1d4ed8" }}>{headHighlight}</span>
