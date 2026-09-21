@@ -34,6 +34,16 @@ const nextConfig: NextConfig = {
       static: 30,
     },
   },
+  // Standalone static pages living under public/ (outside the CMS/React
+  // app) -- e.g. a one-off campaign landing page. Each folder needs both
+  // entries because trailingSlash:true makes "/name" and "/name/" two
+  // different URLs, both of which must resolve to the folder's file.
+  async rewrites() {
+    return [
+      { source: "/test", destination: "/test/test.html" },
+      { source: "/test/", destination: "/test/test.html" },
+    ];
+  },
   async redirects() {
     return [
       { source: "/solutions", destination: "/industries", permanent: true },
