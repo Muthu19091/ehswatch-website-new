@@ -138,6 +138,7 @@ export function buildModuleTemplateProps(
 
   const richTextBlock = findBlock<{
     heading?: string;
+    subheading?: string;
     body?: string;
     anchor?: string;
   }>(blocks, "rich_text");
@@ -160,6 +161,7 @@ export function buildModuleTemplateProps(
   const apart: ModuleTemplateProps["apart"] | undefined = richBody
     ? {
         heading: headingHtml(richTextBlock?.heading) || "",
+        subheading: stripHtmlOpt(richTextBlock?.subheading),
         items: useGrid ? apartItems : [],
         bodyHtml: richBody,
       }

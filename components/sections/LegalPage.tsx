@@ -11,7 +11,7 @@ import { findBlock, buildPageMap, resolveCta } from "@/lib/blocks";
 import { headingHtmlOpt, stripHtmlOpt } from "@/lib/text";
 import { seoExtras, robotsFrom } from "@/lib/seo";
 
-type RichTextBlockData = { body?: string };
+type RichTextBlockData = { heading?: string; subheading?: string; body?: string };
 type CtaBannerBlockData = {
   headline?: string | null;
   subhead?: string | null;
@@ -123,7 +123,15 @@ export default async function LegalPage({ slug, fallbackTitle }: { slug: string;
             );
           }
           if (block.type === "rich_text") {
-            return <LegalPageRichText key={i} body={(block.data as RichTextBlockData).body ?? ""} />;
+            const rt = block.data as RichTextBlockData;
+            return (
+              <LegalPageRichText
+                key={i}
+                heading={headingHtmlOpt(rt.heading)}
+                subheading={stripHtmlOpt(rt.subheading)}
+                body={rt.body ?? ""}
+              />
+            );
           }
           if (block.type === "cta_banner") {
             // QC-caught live: cookie-policy has a real cta_banner block

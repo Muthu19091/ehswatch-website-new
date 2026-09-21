@@ -106,7 +106,11 @@ export default function LegalPageSlider({
 
       <div className="relative z-10 max-w-[820px] mx-auto px-6">
         <h1 className={`font-[family-name:var(--font-dm-sans)] text-[32px] md:text-[44px] font-bold leading-[1.15] ${hasMediaBackground ? "text-white" : "text-[#111827]"}`}>
-          {shownHeadline}
+          {shownHeadline.includes("<span") ? (
+            <span dangerouslySetInnerHTML={{ __html: shownHeadline }} />
+          ) : (
+            shownHeadline
+          )}
         </h1>
         {shownSubheadline && (
           <div

@@ -51,6 +51,7 @@ export interface ModuleTemplateProps {
   };
   apart?: {
     heading: string;
+    subheading?: string;
     items: string[];
     bodyHtml?: string;
   };
@@ -487,6 +488,11 @@ export default function ModuleTemplate({
                   ? apart.heading.replace(/<[^>]*>/g, "")
                   : renderHeading(apart.heading)}
               </h2>
+            )}
+            {apart.subheading && (
+              <p className="mt-3 font-[family-name:var(--font-dm-sans)] text-[15px] sm:text-[16px] text-[#6b7280] text-pretty leading-[1.7]">
+                {apart.subheading}
+              </p>
             )}
             {apart.items.length > 0 ? (
               <div className="flex flex-col gap-4">

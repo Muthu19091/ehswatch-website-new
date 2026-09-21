@@ -2,7 +2,7 @@ import Link from "next/link";
 import GlareButton from "@/components/ui/GlareButton";
 import LegalPageSlider, { type ResolvedSlide } from "@/components/sections/LegalPageSlider";
 import { resolveCta, mediaUrl, normalizeArray, type PageMap } from "@/lib/blocks";
-import { stripHtml } from "@/lib/text";
+import { stripHtml, headingHtml } from "@/lib/text";
 
 /**
  * Every field HeroBlock.php's "Background type" select actually offers
@@ -104,7 +104,12 @@ export default function LegalPageHero({
   pageMap: PageMap;
   fallbackHeadline: string;
 }) {
-  const headline = hero.headline?.trim() || fallbackHeadline;
+  // headline was previously passed raw to a plain JSX interpolation --
+  // a CMS <span> highlight rendered as literal, escaped tag text
+  // ("Terms of <span>Service</span>") instead of a coloured word.
+  // headingHtml() colours it when present, plain text otherwise --
+  // fallbackHeadline (the page title) is always plain, never spanned.
+  const headline = headingHtml(hero.headline) || fallbackHeadline;
   const backgroundType = hero.background_type || "none";
   // Scoped class for the mobile→desktop background-image swap below —
   // computed once so the div's className and the media-query rule that
@@ -125,7 +130,7 @@ export default function LegalPageHero({
     slides.push({
       desktopImage,
       mobileImage,
-      headline: s.headline,
+      headline: headingHtml(s.headline) || undefined,
       subheadline: stripHtml(s.subheadline) || undefined,
       cta: resolveCta(s.cta, pageMap),
     });
@@ -217,7 +222,11 @@ export default function LegalPageHero({
             </span>
           )}
           <h1 className={`font-[family-name:var(--font-dm-sans)] text-[32px] md:text-[44px] font-bold leading-[1.15] ${hasMediaBackground ? "text-white" : "text-[#111827]"}`}>
-            {headline}
+            {headline.includes("<span") ? (
+              <span dangerouslySetInnerHTML={{ __html: headline }} />
+            ) : (
+              headline
+            )}
           </h1>
           {(() => {
             const sub = stripHtml(hero.subheadline);
