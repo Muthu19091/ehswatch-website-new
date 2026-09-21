@@ -138,20 +138,16 @@ export default function HeroV2({
                 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[36px] sm:text-[48px] md:text-[62px] lg:text-[72px] xl:text-[77px] leading-[1.1] text-[#0f172a] tracking-[0.2px] lg:tracking-[0.5px] animate-hero-rise"
                 style={{ animationDelay: "60ms" }}
               >
-                {headline.includes("<br") ? (
+                {/* FE-HO-12: the ONLY source of the blue highlight is a real
+                    CMS-authored <span> -- no more hardcoded "Smart Safety"
+                    string match. (headline is already processed by
+                    headingHtmlOpt() at the call site, which only preserves
+                    <span>, so a <br> is no longer possible here either --
+                    removed along with the string match it was tangled with.) */}
+                {headline.includes("<span") ? (
                   <span dangerouslySetInnerHTML={{ __html: headline }} />
                 ) : (
-                  <>
-                    {headline.includes("Smart Safety") ? (
-                      <>
-                        {headline.split("Smart Safety")[0]}
-                        <br className="hidden sm:block" />
-                        {"Smart Safety" + headline.split("Smart Safety")[1]}
-                      </>
-                    ) : (
-                      headline
-                    )}
-                  </>
+                  headline
                 )}
               </h1>
               )}

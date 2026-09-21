@@ -185,7 +185,7 @@ export default async function HomePage() {
       <Navbar lightHero />
       <main>
         <Hero
-          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(heroBlock?.headline)}
           cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
           cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
@@ -227,18 +227,18 @@ export default async function HomePage() {
           }
         />
         <OnePlatform
-          cmsHeading={tabsCarouselBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(tabsCarouselBlock?.heading)}
           cmsSubheading={tabsCarouselBlock?.subheading || undefined}
           cmsTabs={cmsPlatformTabs}
         />
         <AISection
-          cmsHeading={imageTextBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(imageTextBlock?.heading)}
           cmsBody={imageTextBlock?.body || undefined}
           cmsCtaLabel={aiCta?.label || undefined}
           cmsCtaUrl={aiCta?.url || undefined}
         />
         <WorkEnvironments
-          cmsHeading={solutionBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(solutionBlock?.heading)}
           cmsSubheading={solutionBlock?.subheading || undefined}
           cmsEyebrow={stripHtmlOpt(solutionBlock?.eyebrow)}
           cmsCards={solutionCards}
@@ -250,7 +250,7 @@ export default async function HomePage() {
           subtitle={stripHtmlOpt(testimonialsBlock?.subheading) ?? ""}
         />
         <Blogs
-          cmsHeading={blogBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(blogBlock?.heading)}
           cmsSubheading={blogBlock?.subheading || undefined}
           cmsPosts={cmsBlogPosts}
           cmsViewAllCta={resolveCta(blogBlock?.view_all_cta, pageMap) ?? undefined}

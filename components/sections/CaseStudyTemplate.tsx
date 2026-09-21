@@ -279,7 +279,11 @@ export default function CaseStudyTemplate({
               <section className="my-14">
                 {applicationsHeading && (
                   <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[22px] sm:text-[26px] leading-tight text-[#0a0f1e] mb-5">
-                    {applicationsHeading}
+                    {applicationsHeading.includes("<span") ? (
+                      <span dangerouslySetInnerHTML={{ __html: applicationsHeading }} />
+                    ) : (
+                      applicationsHeading
+                    )}
                   </h2>
                 )}
                 <div className="grid grid-cols-2 gap-3">

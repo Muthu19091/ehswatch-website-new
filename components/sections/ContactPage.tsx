@@ -213,7 +213,11 @@ export default function ContactPage({
               {/* Section label from icon_features.heading */}
               {officesHeading && (
                 <p className="font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9ca3af]">
-                  {officesHeading}
+                  {officesHeading.includes("<span") ? (
+                    <span dangerouslySetInnerHTML={{ __html: officesHeading }} />
+                  ) : (
+                    officesHeading
+                  )}
                 </p>
               )}
               {resolvedOfficeItems.map((item, idx) => (

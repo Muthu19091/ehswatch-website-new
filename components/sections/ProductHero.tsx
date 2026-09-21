@@ -25,12 +25,12 @@ export default function ProductHero({
   const ctaHref = cmsPrimaryCta?.url?.trim();
   const showCta = !!ctaLabel && !!ctaHref && ctaHref !== "#";
 
-  // Split headline on first period so we can render line break + styled span
-  // If CMS provides a <span> tag we strip it and apply styling ourselves
-  const plainHeadline = headlineRaw.replace(/<[^>]+>/g, "");
-  const periodIdx = plainHeadline.indexOf(".");
-  const firstPart = periodIdx >= 0 ? plainHeadline.slice(0, periodIdx + 1) : plainHeadline;
-  const secondPart = periodIdx >= 0 ? plainHeadline.slice(periodIdx + 1).trim() : "";
+  // FE-HO-12: the ONLY source of the blue highlight is a real CMS-authored
+  // <span> (headingHtmlOpt() at the call site already preserved + recoloured
+  // one, same mechanism every other heading on the site uses) -- no more
+  // auto-splitting on the first period and ignoring whatever span an editor
+  // actually added.
+  const hasSpanHeadline = headlineRaw.includes("<span");
 
   return (
     <section
@@ -110,17 +110,15 @@ export default function ProductHero({
             {cmsEyebrow}
           </span>
         )}
-        {plainHeadline && (
+        {headlineRaw && (
           <h1
             className="font-[family-name:var(--font-gothic-a1)] font-bold text-[34px] sm:text-[48px] md:text-[60px] leading-[1.06] text-gray-900 tracking-[-0.03em] animate-hero-rise"
             style={{ animationDelay: "80ms" }}
           >
-            {firstPart}
-            {secondPart && (
-              <>
-                <br />
-                <span style={{ color: "#1d4ed8" }}>{secondPart}</span>
-              </>
+            {hasSpanHeadline ? (
+              <span dangerouslySetInnerHTML={{ __html: headlineRaw }} />
+            ) : (
+              headlineRaw
             )}
           </h1>
         )}

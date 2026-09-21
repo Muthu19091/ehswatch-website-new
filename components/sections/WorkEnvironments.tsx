@@ -171,11 +171,12 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
   const heading    = cmsHeading?.trim()    || "";
   const subheading = cmsSubheading?.trim() || "";
 
-  // Split heading to apply blue highlight to last two words
-  const headingWords = heading.split(" ");
-  const highlightCount = 2;
-  const headingMain  = headingWords.slice(0, -highlightCount).join(" ");
-  const headingBlue  = headingWords.slice(-highlightCount).join(" ");
+  // FE-HO-12: the ONLY source of the blue highlight is a real CMS-authored
+  // <span> -- no more last-2-words guess (heading is already processed by
+  // headingHtml() at the call site, which uses the same .hd-hl class this
+  // component's own Arabic RTL gap-fix already relied on, so that behaviour
+  // carries over unchanged).
+  const hasSpanHeading = heading.includes("<span");
 
   return (
     <section ref={sectionRef} className="bg-[#f8fbff] pt-[60px] md:pt-[80px] lg:pt-[106px] pb-[60px] md:pb-[80px]">
@@ -189,12 +190,11 @@ export default function WorkEnvironments({ cmsHeading, cmsSubheading, cmsEyebrow
           )}
           {heading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[34px] md:text-[40px] lg:text-[44px] leading-[1.18] text-[#1b1b1b] text-balance">
-              {/* Non-breaking space before the highlighted words: a regular space
-                  here collapses on mobile (text-balance) AND gets dropped between
-                  the text node and the <span> after Google Translate reorders the
-                  Arabic — both of which glued the words together ("عاليةصُممت"). */}
-              {`${headingMain} `}
-              <span className="text-[#155eef] wenv-hl">{headingBlue}</span>
+              {hasSpanHeading ? (
+                <span dangerouslySetInnerHTML={{ __html: heading }} />
+              ) : (
+                heading
+              )}
             </h2>
           )}
           {subheading && (

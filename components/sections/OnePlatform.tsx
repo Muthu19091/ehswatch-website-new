@@ -551,12 +551,11 @@ export default function OnePlatform({ cmsHeading, cmsSubheading, cmsTabs }: OneP
         <div className="text-center mb-10 md:mb-14">
           {sectionHeading && (
           <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-tight text-[#1b1b1b]">
-            {(() => {
-              const HIGHLIGHT = "Everyday Safety";
-              const idx = sectionHeading.indexOf(HIGHLIGHT);
-              if (idx === -1) return <>{sectionHeading}</>;
-              return <>{sectionHeading.slice(0, idx)}<span className="text-[#155eef]">{HIGHLIGHT}</span>{sectionHeading.slice(idx + HIGHLIGHT.length)}</>;
-            })()}
+            {sectionHeading.includes("<span") ? (
+              <span dangerouslySetInnerHTML={{ __html: sectionHeading }} />
+            ) : (
+              sectionHeading
+            )}
           </h2>
           )}
           {sectionSubheading && (

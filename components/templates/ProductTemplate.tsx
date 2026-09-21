@@ -129,7 +129,7 @@ export default async function ProductTemplate({ slug }: { slug: string }) {
       <main>
         <ProductHero
           cmsEyebrow={stripHtmlOpt(heroBlock?.eyebrow)}
-          cmsHeadline={stripHtmlOpt(heroBlock?.headline)}
+          cmsHeadline={headingHtmlOpt(heroBlock?.headline)}
           cmsSubheadline={stripHtmlOpt(heroBlock?.subheadline)}
           cmsPrimaryCta={resolveCta(heroBlock?.primary_cta, pageMap) ?? undefined}
         />
@@ -141,12 +141,12 @@ export default async function ProductTemplate({ slug }: { slug: string }) {
         />
         <Stats cmsItems={statsItems} />
         <ProductHowItWorks
-          cmsHeading={numberStepsBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(numberStepsBlock?.heading)}
           cmsSubheading={numberStepsBlock?.subheading || undefined}
           cmsSteps={rawSteps.length > 0 ? rawSteps : undefined}
         />
         <ProductModules
-          cmsHeading={productModulesBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(productModulesBlock?.heading)}
           cmsSubheading={productModulesBlock?.subheading || undefined}
           cmsModules={cmsModules.length > 0 ? cmsModules : undefined}
           cmsVisibleCount={productModulesBlock?.visible_count}

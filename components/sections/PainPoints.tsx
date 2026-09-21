@@ -55,11 +55,15 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
 
   // Heading: the CMS follows the "<span>highlight</span>" convention inside a
   // single heading string — split it into the dark line and the blue line.
-  // Without a span, fall back to heading + subheading as two lines.
+  // Without a span, fall back to heading + subheading as two lines, both
+  // dark (FE-HO-12: blue is only ever applied to text a real CMS <span>
+  // actually wrapped -- previously line 2 was hardcoded blue unconditionally,
+  // even when it was just the plain subheading with no span involved).
   const spanMatch = cmsHeading?.match(/^([\s\S]*?)<span[^>]*>([\s\S]*?)<\/span>/i);
   const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").trim();
   const headingLine1 = (spanMatch ? stripTags(spanMatch[1]) : (cmsHeading ? stripTags(cmsHeading) : "")) || "";
   const headingLine2 = (spanMatch ? stripTags(spanMatch[2]) : cmsSubheading) || "";
+  const headingLine2Color = spanMatch ? "text-[#155eef]" : "text-[#1b1b1b]";
   // Text after the </span> (e.g. "... <span>foo</span> bar") — kept dynamic
   // so editors can append copy past the blue highlight; rendered dark inline.
   const headingAfter = spanMatch ? stripTags(cmsHeading!.slice(spanMatch[0].length)) : "";
@@ -113,7 +117,7 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
             <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] lg:text-[32px] leading-tight lg:leading-[48px] text-[#1b1b1b] tracking-[-0.5px] lg:tracking-[-0.6px]">
               {headingLine1}
             </p>
-            <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] lg:text-[32px] leading-tight lg:leading-[48px] text-[#155eef] tracking-[-0.5px] lg:tracking-[-0.6px]">
+            <p className={`font-[family-name:var(--font-gothic-a1)] font-bold text-[24px] lg:text-[32px] leading-tight lg:leading-[48px] ${headingLine2Color} tracking-[-0.5px] lg:tracking-[-0.6px]`}>
               {headingLine2}{headingAfter ? <span className="text-[#1b1b1b]"> {headingAfter}</span> : null}
             </p>
           </div>
@@ -131,7 +135,7 @@ export default function PainPoints({ cmsHeading, cmsSubheading, cmsItems }: Pain
             <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[30px] leading-tight text-[#1b1b1b] tracking-[-0.5px]">
               {headingLine1}
             </p>
-            <p className="font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[30px] leading-tight text-[#155eef] tracking-[-0.5px]">
+            <p className={`font-[family-name:var(--font-gothic-a1)] font-bold text-[26px] sm:text-[30px] leading-tight ${headingLine2Color} tracking-[-0.5px]`}>
               {headingLine2}{headingAfter ? <span className="text-[#1b1b1b]"> {headingAfter}</span> : null}
             </p>
           </div>

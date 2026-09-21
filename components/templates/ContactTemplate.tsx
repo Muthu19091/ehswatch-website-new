@@ -5,7 +5,7 @@ import ContactPage from "@/components/sections/ContactPage";
 import { getForm, getPage, getPageList } from "@/lib/api";
 import { redirectIfMoved } from "@/lib/redirectMoved";
 import { findBlock, normalizeArray, resolveHref, resolveCta, buildPageMap } from "@/lib/blocks";
-import { stripHtmlOpt } from "@/lib/text";
+import { stripHtmlOpt, headingHtmlOpt } from "@/lib/text";
 import type { Metadata } from "next";
 import { robotsFrom, seoExtras } from "@/lib/seo";
 
@@ -200,14 +200,14 @@ export default async function ContactTemplate({ slug }: { slug: string }) {
           formSlug={formSlug}
           formTabs={formTabs}
           heroEyebrow={heroBlock?.eyebrow || undefined}
-          heroHeadline={heroBlock?.headline || undefined}
+          heroHeadline={headingHtmlOpt(heroBlock?.headline)}
           heroSubheadline={stripHtmlOpt(heroBlock?.subheadline) || undefined}
           heroPrimaryCtaLabel={heroPrimaryCtaLabel || undefined}
           heroPrimaryCtaHref={heroPrimaryCtaHref || undefined}
-          formHeading={formEmbed?.heading || undefined}
+          formHeading={headingHtmlOpt(formEmbed?.heading)}
           formSubheading={formEmbed?.subheading || undefined}
           formDescription={formEmbed?.description || undefined}
-          officesHeading={officesBlock?.heading || undefined}
+          officesHeading={headingHtmlOpt(officesBlock?.heading)}
           officeItems={officeItems}
           trustBadges={trustBadges.length > 0 ? trustBadges : undefined}
           sliderData={sliderData}

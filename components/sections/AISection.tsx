@@ -255,12 +255,8 @@ export default function AISection({ cmsHeading, cmsBody, cmsCtaLabel, cmsCtaUrl 
             <div className="flex flex-col gap-4 md:gap-[18px]">
             {headingText && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[40px] lg:text-[46px] leading-tight md:leading-[1.3] text-[#1b1b1b]">
-              {headingText.includes("Safety Team") ? (
-                <>
-                  {headingText.split("Safety Team")[0]}
-                  <span className="text-[#155eef]">Safety Team</span>
-                  {headingText.split("Safety Team")[1]}
-                </>
+              {headingText.includes("<span") ? (
+                <span dangerouslySetInnerHTML={{ __html: headingText }} />
               ) : (
                 headingText
               )}

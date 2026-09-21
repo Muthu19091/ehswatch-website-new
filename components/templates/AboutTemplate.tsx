@@ -47,7 +47,7 @@ export default async function AboutTemplate({ slug }: { slug: string }) {
   }>(blocks, "hero");
 
   const heroEyebrow = heroData?.eyebrow || undefined;
-  const heroHeadline = heroData?.headline || undefined;
+  const heroHeadline = headingHtmlOpt(heroData?.headline);
   const heroSubheadline = stripHtmlOpt(heroData?.subheadline);
   // Resolve the hero CTA through resolveCta so Page (page_id) links work too —
   // the old anchor/url-only extraction dropped internal Page links (no href →
@@ -78,7 +78,7 @@ export default async function AboutTemplate({ slug }: { slug: string }) {
     image?: { url?: string | null } | string | null;
   }>(blocks, "image_text");
 
-  const storyHeading = imageTextData?.heading || undefined;
+  const storyHeading = headingHtmlOpt(imageTextData?.heading);
   const storySubheading = stripHtmlOpt(imageTextData?.subheading);
   const storyBody = richHtml(imageTextData?.body) || undefined;
   const storyImage =
@@ -103,7 +103,7 @@ export default async function AboutTemplate({ slug }: { slug: string }) {
       icon?: string | null;
     }>(block.items);
     return {
-      heading: block.heading || undefined,
+      heading: headingHtmlOpt(block.heading),
       subheading: block.subheading || undefined,
       items:
         rawItems.length > 0

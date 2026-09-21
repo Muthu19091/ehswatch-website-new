@@ -89,7 +89,7 @@ export default async function CaseStudyDetailTemplate({ slug, listingSlug = "cas
           cmsStudy={cmsStudy}
           allSlugs={allSlugs.length > 0 ? allSlugs : undefined}
           applications={applications}
-          applicationsHeading={pms?.heading || undefined}
+          applicationsHeading={headingHtmlOpt(pms?.heading)}
           ctaSection={ctaSection}
           listingSlug={listingSlug}
         />

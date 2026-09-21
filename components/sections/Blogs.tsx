@@ -153,10 +153,9 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
   const displayBlogs = (cmsPosts && cmsPosts.length > 0) ? normalisePosts(cmsPosts) : [];
   if (displayBlogs.length === 0) return null;
 
-  // Split heading for blue highlight on "EHSWatch Blog" portion
-  const [headingStart, headingHighlight] = heading.includes("EHSWatch")
-    ? [heading.split("EHSWatch")[0], "EHSWatch" + heading.split("EHSWatch")[1]]
-    : [heading, ""];
+  // FE-HO-12: the ONLY source of the blue highlight is a real CMS-authored
+  // <span> -- no more hardcoded "EHSWatch" string match.
+  const hasSpanHeading = heading.includes("<span");
 
   return (
     <section className="bg-[#f8fbff] py-14 md:py-[90px] px-4 md:px-6">
@@ -168,9 +167,10 @@ export default function Blogs({ cmsHeading, cmsSubheading, cmsPosts, cmsViewAllC
           <div className="text-center mb-10 md:mb-12">
             {heading && (
             <h2 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[28px] sm:text-[36px] md:text-[42px] leading-[1.1] text-[#0f1728]">
-              {headingStart}
-              {headingHighlight && (
-                <span className="text-[#155eef]">{headingHighlight}</span>
+              {hasSpanHeading ? (
+                <span dangerouslySetInnerHTML={{ __html: heading }} />
+              ) : (
+                heading
               )}
             </h2>
             )}

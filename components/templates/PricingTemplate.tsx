@@ -213,7 +213,7 @@ export default async function PricingTemplate({ slug }: { slug: string }) {
             "Is active" off in the form admin hides the whole section. */}
         {calcFormAttrs && (
         <PricingCalculator
-          cmsHeading={calcBlock?.heading || formEmbedBlock?.heading || undefined}
+          cmsHeading={headingHtmlOpt(calcBlock?.heading || formEmbedBlock?.heading)}
           cmsSubheading={calcBlock?.subheading || formEmbedBlock?.description || undefined}
           cmsFormSlug={calcFormSlug}
           cmsFormSteps={calcFormAttrs?.steps}

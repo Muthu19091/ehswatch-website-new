@@ -87,7 +87,7 @@ export default async function IndustriesTemplate({ slug }: { slug: string }) {
       <main>
         <SolutionsHero
           cmsEyebrow={stripHtmlOpt(cmsHero?.eyebrow)}
-          cmsHeadline={stripHtmlOpt(cmsHero?.headline)}
+          cmsHeadline={headingHtmlOpt(cmsHero?.headline)}
           cmsSubheadline={stripHtmlOpt(cmsHero?.subheadline)}
           cmsPrimaryCta={resolveCta(cmsHero?.primary_cta, pageMap) ?? undefined}
           cmsSecondaryCta={resolveCta(cmsHero?.secondary_cta, pageMap) ?? undefined}
