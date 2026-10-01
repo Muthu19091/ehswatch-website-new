@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Gothic_A1, Inter, Instrument_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
 import PagePreviewBanner from "@/components/layout/PagePreviewBanner";
@@ -170,6 +171,7 @@ export default async function RootLayout({
             same cookies the React handler would, then reloading so the server
             + Google Translate pick the language up. Stands down for good once
             LanguageSwitcher sets __lsHydrated. */}
+		<Script id="ehsw-summit-banner-script" src={`${BASE}/js/summit-banner.js`} strategy="afterInteractive" />
         <script
           data-cfasync="false"
           dangerouslySetInnerHTML={{
@@ -186,6 +188,11 @@ export default async function RootLayout({
             CMS (Settings → tracking.head_script / body_script), so editing the
             tag in the dashboard reflects site-wide with no code change. */}
         <TrackingScripts head={headTracking} body={bodyTracking} />
+        {/* HSE Intelligence Summit 2026 announcement bar (public/js/summit-banner.js).
+            afterInteractive: it edits <body> and the navbar, so it must run after
+            hydration. It hides itself once the event is over (15 Oct 2026). The id
+            must differ from "ehsw-summit-banner", the bar's own element id: the
+            script bails out if an element with that id already exists. */}
       </body>
     </html>
   );

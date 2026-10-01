@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
       static: 30,
     },
   },
+  async rewrites() {
+  return [
+    { source: "/events/hseintelligencesummit2026", destination: "/events/hseintelligencesummit2026/index.html" },
+    { source: "/events/hseintelligencesummit2026/", destination: "/events/hseintelligencesummit2026/index.html" },
+  ];
+}, 
   async redirects() {
     return [
       { source: "/solutions", destination: "/industries", permanent: true },
