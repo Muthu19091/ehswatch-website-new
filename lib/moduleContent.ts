@@ -234,7 +234,12 @@ export function buildModuleTemplateProps(
   const vcNum = Number(modulesBlock?.visible_count);
   const cap = Number.isFinite(vcNum) && vcNum > 0 ? vcNum : undefined;
 
-  if (moduleSource === "inline") {
+  if (!modulesBlock) {
+    // No product_modules block on this page at all (e.g. the editor removed
+    // it) — don't fall back to auto-listing every active module. Absence of
+    // the block means the section is off, not "source: all".
+    otherModules = [];
+  } else if (moduleSource === "inline") {
     // Inline source — each card's copy/icon/link is authored directly on this
     // page's block (includes a per-page contextual IRIS AI card). Self-contained,
     // so no lookup against the global module pool.
