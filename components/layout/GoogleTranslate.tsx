@@ -217,7 +217,16 @@ export default function GoogleTranslate() {
       raf = window.requestAnimationFrame(() => { raf = 0; if (isArabic()) run(collect(), collectPh()); });
     };
     const mo = new MutationObserver(schedule);
-    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+    // attributes/attributeFilter: ArabicOverrides.tsx clears translate="no"
+    // and the notranslate class on an element whose content has moved on to
+    // something it no longer recognizes (e.g. a different tab was
+    // selected) — that's an attribute-only change, no new text node, so
+    // without watching it here this element would stay permanently
+    // excluded from machine translation even once it's eligible again.
+    mo.observe(document.body, {
+      childList: true, subtree: true, characterData: true,
+      attributes: true, attributeFilter: ["translate", "class"],
+    });
     const timers = [400, 1200, 2500].map((ms) => window.setTimeout(schedule, ms));
     const safety = window.setTimeout(reveal, 5000);
 

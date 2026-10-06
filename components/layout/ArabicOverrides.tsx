@@ -2608,6 +2608,23 @@ export default function ArabicOverrides() {
           !matchesCurrentKey && storedEnHit && EN_TO_AR[storedEnHit] !== undefined &&
           norm(EN_TO_AR[storedEnHit]) === text;
         const enHit = matchesCurrentKey ? text : matchesOwnStoredTranslation ? storedEnHit : null;
+        if (!enHit && storedEnHit) {
+          // This element was tagged earlier (it was showing different,
+          // curated content then — e.g. a different tab), but its current
+          // text no longer matches that identity at all. Clear the stale
+          // markers rather than leaving them stuck: translate="no" and
+          // .notranslate permanently exclude this node from GoogleTranslate.
+          // tsx's own machine-translation sweep, so without this an element
+          // whose content legitimately changed would silently stop getting
+          // ANY Arabic (not even the generic machine translation every other
+          // uncurated element on the site gets) for the rest of the page's
+          // life, even though the content is now something totally
+          // different that was simply never curated.
+          el.removeAttribute("data-ar-en");
+          el.removeAttribute("translate");
+          el.classList.remove("notranslate");
+          if (FORCE_LTR.has(storedEnHit) || FORCE_RTL.has(storedEnHit)) el.removeAttribute("dir");
+        }
         if (enHit && EN_TO_AR[enHit] !== undefined) {
           // Skip wrapper containers — target the inner element so we keep its styling.
           if (isWrapperFor(el, enHit)) return;
