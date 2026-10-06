@@ -655,7 +655,7 @@ function MobileStep({
       </div>
 
       <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
-        Step {step.n}
+        {`Step ${step.n}`}
       </span>
       <h3 className="font-[family-name:var(--font-gothic-a1)] font-bold text-[20px] sm:text-[22px] leading-snug mt-2 mb-2 text-[#0a0f1e]">
         {step.title}

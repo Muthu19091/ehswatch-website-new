@@ -2597,7 +2597,20 @@ export default function ArabicOverrides() {
           // Keep a Latin-brand-led header reading left-to-right in both languages.
           if (FORCE_LTR.has(enHit)) el.setAttribute("dir", "ltr");
           else if (FORCE_RTL.has(enHit)) el.setAttribute("dir", "rtl");
-          const want = ar ? EN_TO_AR[enHit] : enHit;
+
+          // English mode: never rewrite text back to the remembered phrase.
+          // The current DOM text is authoritative here — it may be fresh,
+          // React-driven content for an element whose wording legitimately
+          // changes after mount (a tab, an accordion, a step list driven by
+          // state/CMS data). Rewriting it also breaks elements whose text
+          // spans multiple child text nodes (e.g. "Step " + "1"): the logic
+          // below only ever touches the first non-empty node, so writing the
+          // full remembered phrase into just that one node duplicates the
+          // rest ("Step 1" + "1" -> "Step 11"). Only actually translating TO
+          // Arabic needs to touch text; coming back to English is
+          // GoogleTranslate.tsx's revertEn() job, not this re-scan.
+          if (!ar) return;
+          const want = EN_TO_AR[enHit];
 
           // A child ELEMENT that itself carries meaningful text (e.g. a nested
           // "IRIS" span inside "About IRIS") is part of the same translatable
