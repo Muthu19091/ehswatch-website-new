@@ -2587,7 +2587,27 @@ export default function ArabicOverrides() {
         }
 
         // English-keyed overrides.
-        const enHit = Object.prototype.hasOwnProperty.call(EN_TO_AR, text) ? text : el.getAttribute("data-ar-en");
+        //
+        // The stored data-ar-en fallback exists so we can re-find an
+        // element's English identity after its text has ALREADY been
+        // swapped to Arabic (so we can re-translate it, or restore it).
+        // But it must only kick in when the current text genuinely IS that
+        // remembered identity (either the English key itself, or the exact
+        // Arabic we last wrote for it) — never as a blind fallback whenever
+        // the current text happens not to match any key directly. Without
+        // that guard, an element whose wording legitimately changes after
+        // mount (a tab, an accordion, a CMS-driven step list) gets its fresh
+        // content silently overwritten with a DIFFERENT, stale phrase: the
+        // bug was visible in English (tab 2's text replaced by tab 1's
+        // remembered English) and in Arabic (tab 2's text replaced by tab
+        // 1's remembered ARABIC) alike, since neither case re-checks that
+        // the stored identity still matches what's actually on screen.
+        const storedEnHit = el.getAttribute("data-ar-en");
+        const matchesCurrentKey = Object.prototype.hasOwnProperty.call(EN_TO_AR, text);
+        const matchesOwnStoredTranslation =
+          !matchesCurrentKey && storedEnHit && EN_TO_AR[storedEnHit] !== undefined &&
+          norm(EN_TO_AR[storedEnHit]) === text;
+        const enHit = matchesCurrentKey ? text : matchesOwnStoredTranslation ? storedEnHit : null;
         if (enHit && EN_TO_AR[enHit] !== undefined) {
           // Skip wrapper containers — target the inner element so we keep its styling.
           if (isWrapperFor(el, enHit)) return;
@@ -2597,20 +2617,7 @@ export default function ArabicOverrides() {
           // Keep a Latin-brand-led header reading left-to-right in both languages.
           if (FORCE_LTR.has(enHit)) el.setAttribute("dir", "ltr");
           else if (FORCE_RTL.has(enHit)) el.setAttribute("dir", "rtl");
-
-          // English mode: never rewrite text back to the remembered phrase.
-          // The current DOM text is authoritative here — it may be fresh,
-          // React-driven content for an element whose wording legitimately
-          // changes after mount (a tab, an accordion, a step list driven by
-          // state/CMS data). Rewriting it also breaks elements whose text
-          // spans multiple child text nodes (e.g. "Step " + "1"): the logic
-          // below only ever touches the first non-empty node, so writing the
-          // full remembered phrase into just that one node duplicates the
-          // rest ("Step 1" + "1" -> "Step 11"). Only actually translating TO
-          // Arabic needs to touch text; coming back to English is
-          // GoogleTranslate.tsx's revertEn() job, not this re-scan.
-          if (!ar) return;
-          const want = EN_TO_AR[enHit];
+          const want = ar ? EN_TO_AR[enHit] : enHit;
 
           // A child ELEMENT that itself carries meaningful text (e.g. a nested
           // "IRIS" span inside "About IRIS") is part of the same translatable

@@ -919,7 +919,7 @@ export default function ProductHowItWorks({
           >
             <div className="flex items-center gap-2 mb-4">
               <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[11px] text-[#155eef] tracking-[1.6px] uppercase">
-                Step {steps[activeStep].n}
+                {`Step ${steps[activeStep].n}`}
               </span>
               <span className="inline-block w-7 h-[1.5px] bg-[#155eef] opacity-35 rounded-full" />
             </div>
