@@ -40,6 +40,12 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 // Site-wide metadata. Favicon + apple-touch icon come from Site Settings
 // (brand.favicon / brand.apple_touch_icon) when set, falling back to the bundled
 // assets — so changing the icon in the CMS reflects on the site (BUG-154).
+//
+// The CMS-uploaded file itself lives on cms.ehswatch.com, which disallows ALL
+// crawling via robots.txt, so a <link> pointed straight at it can never be
+// indexed by Google no matter how often the homepage is re-crawled. Routing
+// through our own /api/favicon proxy serves the same bytes from ehswatch.com
+// (a domain Google CAN crawl) while keeping the CMS editable.
 export async function generateMetadata(): Promise<Metadata> {
   const settingsRes = await getSettings().catch(() => null);
   const data = settingsRes?.data as {
@@ -51,14 +57,8 @@ export async function generateMetadata(): Promise<Metadata> {
     seo?: { canonical_base_url?: string };
   } | null;
   const brand = data?.brand;
-  const fav = brand?.favicon?.attributes;
-  const faviconUrl = fav?.url;
-  // Emit the correct <link type> for whatever format the editor uploaded
-  // (svg / ico / png) so browsers that ignore an untyped icon still pick it up.
-  const faviconType = fav?.mime_type;
-  const appleAttrs = brand?.apple_touch_icon?.attributes;
-  const appleUrl = appleAttrs?.url;
-  const appleType = appleAttrs?.mime_type || "image/png";
+  const faviconUrl = brand?.favicon?.attributes?.url;
+  const appleUrl = brand?.apple_touch_icon?.attributes?.url;
   const origin = (data?.seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
 
   return {
@@ -67,17 +67,17 @@ export async function generateMetadata(): Promise<Metadata> {
     description: "AI-powered EHS platform to streamline reporting everywhere.",
     icons: {
       icon: faviconUrl
-        ? [{ url: faviconUrl, ...(faviconType ? { type: faviconType } : {}) }]
+        ? [{ url: BASE + "/api/favicon", type: "image/png" }]
         : [
             // Bundled fallback: SVG for modern browsers, PNG for iOS/iPad Safari.
             { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
             { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
           ],
-      shortcut: faviconUrl || BASE + "/images/favicon-96.png",
+      shortcut: faviconUrl ? BASE + "/api/favicon" : BASE + "/images/favicon-96.png",
       // Apple home-screen icon: declare 180x180 so iOS picks it up. Requires a
       // real SQUARE PNG in Site Settings (a large non-square photo won't render).
       apple: appleUrl
-        ? [{ url: appleUrl, sizes: "180x180", type: appleType }]
+        ? [{ url: BASE + "/api/favicon?v=apple", sizes: "180x180", type: "image/png" }]
         : BASE + "/images/apple-touch-icon.png",
     },
   };
