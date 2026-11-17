@@ -38,6 +38,11 @@ const nextConfig: NextConfig = {
   return [
     { source: "/events/hseintelligencesummit2026", destination: "/events/hseintelligencesummit2026/index.html" },
     { source: "/events/hseintelligencesummit2026/", destination: "/events/hseintelligencesummit2026/index.html" },
+    // Clean, extensioned aliases for the CMS-favicon proxy (see app/api/favicon/route.ts).
+    // A plain-extension URL skips the global trailingSlash redirect and matches
+    // Google's recommended absolute-URL-with-extension favicon format.
+    { source: "/favicon.png", destination: "/api/favicon" },
+    { source: "/apple-touch-icon.png", destination: "/api/favicon?v=apple" },
   ];
 }, 
   async redirects() {
