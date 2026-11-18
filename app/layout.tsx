@@ -45,10 +45,12 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 // crawling via robots.txt, so a <link> pointed straight at it can never be
 // indexed by Google no matter how often the homepage is re-crawled. Routing
 // through our own /api/favicon proxy serves the same bytes from ehswatch.com
-// (a domain Google CAN crawl) while keeping the CMS editable. /favicon.png and
+// (a domain Google CAN crawl) while keeping the CMS editable. /favicon.ico and
 // /apple-touch-icon.png are rewrites (next.config.ts) to that same proxy — a
 // plain-extension URL skips the global trailingSlash redirect, and the
-// absolute URL matches Google's recommended favicon format.
+// absolute URL matches Google's recommended favicon format. The declared
+// `type` always reflects the real CMS mime_type (not a hardcoded guess), so
+// it can't drift out of sync with whatever file format gets uploaded.
 export async function generateMetadata(): Promise<Metadata> {
   const settingsRes = await getSettings().catch(() => null);
   const data = settingsRes?.data as {
@@ -61,7 +63,9 @@ export async function generateMetadata(): Promise<Metadata> {
   } | null;
   const brand = data?.brand;
   const faviconUrl = brand?.favicon?.attributes?.url;
+  const faviconMime = brand?.favicon?.attributes?.mime_type;
   const appleUrl = brand?.apple_touch_icon?.attributes?.url;
+  const appleMime = brand?.apple_touch_icon?.attributes?.mime_type;
   const origin = (data?.seo?.canonical_base_url || "https://ehswatch.com").replace(/\/+$/, "");
 
   return {
@@ -70,17 +74,17 @@ export async function generateMetadata(): Promise<Metadata> {
     description: "AI-powered EHS platform to streamline reporting everywhere.",
     icons: {
       icon: faviconUrl
-        ? [{ url: `${origin}${BASE}/favicon.png`, type: "image/png" }]
+        ? [{ url: `${origin}${BASE}/favicon.ico`, type: faviconMime || "image/vnd.microsoft.icon" }]
         : [
             // Bundled fallback: SVG for modern browsers, PNG for iOS/iPad Safari.
             { url: BASE + "/images/EHS%20fav%20icon.svg", type: "image/svg+xml" },
             { url: BASE + "/images/favicon-96.png", type: "image/png", sizes: "96x96" },
           ],
-      shortcut: faviconUrl ? `${origin}${BASE}/favicon.png` : BASE + "/images/favicon-96.png",
+      shortcut: faviconUrl ? `${origin}${BASE}/favicon.ico` : BASE + "/images/favicon-96.png",
       // Apple home-screen icon: declare 180x180 so iOS picks it up. Requires a
       // real SQUARE PNG in Site Settings (a large non-square photo won't render).
       apple: appleUrl
-        ? [{ url: `${origin}${BASE}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" }]
+        ? [{ url: `${origin}${BASE}/apple-touch-icon.png`, sizes: "180x180", type: appleMime || "image/png" }]
         : BASE + "/images/apple-touch-icon.png",
     },
   };
